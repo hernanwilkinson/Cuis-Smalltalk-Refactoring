@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3083] on 31 May 2017 at 8:57:24 pm'!
-'Description New windows for rename method'!
-!provides: 'Refactoring' 1 5!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3083] on 1 June 2017 at 4:32:40 pm'!
+'Description Warning on rename instance variable'!
+!provides: 'Refactoring' 1 6!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -301,6 +301,15 @@ classAndSelector
 
 	^String streamContents: [:stream | self printClassAndSelectorOn: stream ]! !
 
+!CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 6/1/2017 16:19:53'!
+hasArgumentOrTemporary: aVariable
+
+	| methodNode |
+	
+	methodNode := self methodNode.
+	
+	^methodNode tempNames includes: aVariable ! !
+
 !CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 5/25/2017 19:01:16'!
 printClassAndSelectorOn: aStream 
 	
@@ -430,17 +439,22 @@ messageListMenu
 	^ aMenu
 ! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 5/24/2017 21:42:37'!
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/1/2017 16:30:08'!
 renameInstVar
 
 	model selectedClassOrMetaClass ifNotNil: [ :aClass |
 		aClass chooseDefiningInstanceVariableAlphabeticallyThenDo: [ :oldInstanceVariable | | newInstanceVariable |
 			newInstanceVariable _ FillInTheBlankMorph request: 'Enter new name:' initialAnswer: oldInstanceVariable onCancel: [ ^self ].
-			[| rename |
+			[[| rename |
 			rename := RenameInstanceVariable from: oldInstanceVariable to: newInstanceVariable in: aClass.
 			rename apply.
 			self model acceptedContentsChanged ]
-				on: Refactoring exceptionClass 
+				on: Refactoring warningClass
+				do: [ :aRefactoringWarning | 
+					(self confirm: aRefactoringWarning messageText, ' Continue?')
+						ifTrue: [ aRefactoringWarning resume ]
+						ifFalse: [ aRefactoringWarning return: nil ]]]
+				on: Refactoring errorClass 
 				do: [ :aRefactoringError | self inform: aRefactoringError messageText ]]]! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 5/31/2017 19:23:04'!
@@ -856,8 +870,8 @@ assertCanRunTest
 	self assertNoTestDataClassCategoryExist.
 	! !
 
-!RefactoringTest methodsFor: 'assertions' stamp: 'HAW 5/31/2017 19:54:25'!
-assertCreation: aCreationBlock warningsWith: aMessageTextCreator 
+!RefactoringTest methodsFor: 'assertions' stamp: 'HAW 6/1/2017 14:30:58'!
+assertCreation: aCreationBlock warnsWith: aMessageTextCreator 
 
 	self 
 		should: aCreationBlock 
@@ -1017,15 +1031,10 @@ classToRefactorName
 
 	^#ClassWithInstVar! !
 
-!RenameInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 5/26/2017 19:42:39'!
-createClassNamed: aName
-
-	^self createClassNamed: aName instanceVariableNames: oldVariable ! !
-
-!RenameInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 21:44:44'!
+!RenameInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 6/1/2017 14:28:02'!
 createClassToRefactor
 	
-	classToRefactor := self createClassNamed: self classToRefactorName! !
+	classToRefactor := self createClassNamed: self classToRefactorName instanceVariableNames: oldVariable ! !
 
 !RenameInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 21:36:47'!
 createClassToRefactorAndAssertRenameCreationFailsWith: aMessageTextCreator
@@ -1210,6 +1219,77 @@ test14NewVariableOfExistingInstancesReferToOldVariableValue
 	rename apply.
 	
 	self assert: 1 equals:  (instance instVarNamed: newVariable).
+	! !
+
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 16:16:39'!
+test15WarnsWhenNewVariableEqualsTemporaryVariableOfAMethodInClass
+
+	| selector |
+
+	self createClassToRefactor.
+	selector := #m1.
+	classToRefactor compile: selector, ' | ', newVariable, ' | ', newVariable, ' := 10.'.
+	
+	self 
+		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
+		warnsWith: [ RenameInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+	! !
+
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 16:17:24'!
+test16WarnsWhenNewVariableEqualsArgumentOfAMethodInClass
+
+	| selector |
+
+	self createClassToRefactor.
+	selector := #m1:.
+	classToRefactor compile: selector, newVariable.
+	
+	self 
+		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
+		warnsWith: [ RenameInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+	! !
+
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 16:22:20'!
+test17WarnsWhenNewVariableEqualsArgumentOfABlockInAMethodInClass
+
+	| selector |
+
+	self createClassToRefactor.
+	selector := #m1.
+	classToRefactor compile: selector, ' [ :', newVariable, ' | ] value: 1'.
+	
+	self 
+		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
+		warnsWith: [ RenameInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+	! !
+
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 16:23:12'!
+test18WarnsWhenNewVariableEqualsTemporaryOfABlockInAMethodInClass
+
+	| selector |
+
+	self createClassToRefactor.
+	selector := #m1.
+	classToRefactor compile: selector, ' [ | ', newVariable, ' | ] value'.
+	
+	self 
+		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
+		warnsWith: [ RenameInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+	! !
+
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 16:24:55'!
+test19WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
+
+	| selector subclass |
+
+	self createClassToRefactor.
+	subclass := self createClassNamed: #SubclassOfClassToRefactor subclassOf: classToRefactor.
+	selector := #m1.
+	subclass compile: selector, ' | ', newVariable, ' | '.
+	
+	self 
+		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
+		warnsWith: [ RenameInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (subclass>>selector)) ].
 	! !
 
 !RenameMethodTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:26:45'!
@@ -1615,8 +1695,8 @@ test21NewSelectorCanNotBeImplementedOnAnyClassImplementingOldSelector
 		failsWith: [ RenameMethod errorMessageForNewSelector: newSelector implementedInAll: (Array with: Object) ]
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/31/2017 20:41:59'!
-test22WarnigsWhenOverridesSuperclassImplementation
+!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 14:31:16'!
+test22WarnsWhenOverridesSuperclassImplementation
 
 	| implementors |
 	
@@ -1626,7 +1706,7 @@ test22WarnigsWhenOverridesSuperclassImplementation
 	
 	self 
 		assertCreation: [ RenameMethod from: oldSelector to: newSelector implementors: implementors senders: #() ]
-		warningsWith: [ RenameMethod warningMessageForImplementationOf: newSelector in: Number willOverrideImplementationIn: Object ]
+		warnsWith: [ RenameMethod warningMessageForImplementationOf: newSelector in: Number willOverrideImplementationIn: Object ]
 ! !
 
 !Refactoring methodsFor: 'applying' stamp: 'HAW 5/24/2017 21:08:11'!
@@ -1780,7 +1860,7 @@ errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes
 
 	^ 'Instance variable ''' , aName , ''' is already defined in ' , classes asCommaStringAnd.! !
 
-!RenameInstanceVariable class methodsFor: 'instance creation' stamp: 'HAW 5/24/2017 21:45:33'!
+!RenameInstanceVariable class methodsFor: 'instance creation' stamp: 'HAW 6/1/2017 14:36:08'!
 from: anOldvariable to: aNewVariable in: aClassToRefactor 
 	
 	| validNewVariable |
@@ -1788,6 +1868,8 @@ from: anOldvariable to: aNewVariable in: aClassToRefactor
 	self assert: aClassToRefactor defines: anOldvariable.
 	validNewVariable := self assertIsValidInstanceVariableName: aNewVariable.
 	self assert: validNewVariable isNotAlreadyDefinedIn: aClassToRefactor.
+	
+	self warnIf: validNewVariable isDefinedInMethodsOf: aClassToRefactor.
 	
 	^self new initializeFrom: anOldvariable to: validNewVariable in: aClassToRefactor 
 ! !
@@ -1806,6 +1888,30 @@ signalInvalidInstanceVariable: aName
 signalNewInstanceVariable: aName alreadyDefinedInAll: classes
 
 	^ self error: (self errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes).! !
+
+!RenameInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/1/2017 16:26:59'!
+warnIf: newVariable isDefinedInMethodsOf: aClass 
+	
+	| methodsDefiningNewVariable |
+	
+	methodsDefiningNewVariable := OrderedCollection new.
+	aClass withAllSubclassesDo: [ :class | methodsDefiningNewVariable addAll: (class methodsSelect: [:aMethod | aMethod hasArgumentOrTemporary: newVariable ]) ].
+	
+	methodsDefiningNewVariable notEmpty ifTrue: [ self warnNewVariable: newVariable willBeHiddenAtAll: methodsDefiningNewVariable ].! !
+
+!RenameInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/1/2017 16:12:54'!
+warnNewVariable: newVariable willBeHiddenAtAll: methods
+
+	^self warning: (self warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods)! !
+
+!RenameInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/1/2017 16:16:12'!
+warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
+ 
+	^String streamContents: [ :stream |
+		stream 
+			nextPutAll: newVariable;
+			nextPutAll: ' will be hidden at '.
+		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
 !RenameMethod methodsFor: 'applying' stamp: 'HAW 5/31/2017 16:50:58'!
 apply

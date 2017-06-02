@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3083] on 1 June 2017 at 4:32:40 pm'!
-'Description Warning on rename instance variable'!
-!provides: 'Refactoring' 1 6!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3083] on 2 June 2017 at 8:09:41 am'!
+'Description Partial implementation of Rename Class'!
+!provides: 'Refactoring' 1 7!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -81,6 +81,16 @@ TestCase subclass: #RefactoringTest
 RefactoringTest class
 	instanceVariableNames: ''!
 
+!classDefinition: #RenameClassTest category: #Refactoring!
+RefactoringTest subclass: #RenameClassTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RenameClassTest class' category: #Refactoring!
+RenameClassTest class
+	instanceVariableNames: ''!
+
 !classDefinition: #RenameInstanceVariableTest category: #Refactoring!
 RefactoringTest subclass: #RenameInstanceVariableTest
 	instanceVariableNames: 'oldVariable newVariable classToRefactor'
@@ -109,6 +119,16 @@ Object subclass: #Refactoring
 	category: 'Refactoring'!
 !classDefinition: 'Refactoring class' category: #Refactoring!
 Refactoring class
+	instanceVariableNames: ''!
+
+!classDefinition: #RenameClass category: #Refactoring!
+Refactoring subclass: #RenameClass
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RenameClass class' category: #Refactoring!
+RenameClass class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameInstanceVariable category: #Refactoring!
@@ -870,6 +890,14 @@ assertCanRunTest
 	self assertNoTestDataClassCategoryExist.
 	! !
 
+!RefactoringTest methodsFor: 'assertions' stamp: 'HAW 6/1/2017 19:01:00'!
+assertCreation: aCreationBlock failsWith: aMessageTextCreator
+
+	self 
+		should: aCreationBlock 
+		raise: self refactoringError
+		withMessageText: aMessageTextCreator ! !
+
 !RefactoringTest methodsFor: 'assertions' stamp: 'HAW 6/1/2017 14:30:58'!
 assertCreation: aCreationBlock warnsWith: aMessageTextCreator 
 
@@ -1013,18 +1041,36 @@ tearDown
 		SystemOrganization removeSystemCategories: classCategories.
 		Browser allInstancesDo: [:aBrowser | aBrowser changed: #systemCategoryList ]]! !
 
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/1/2017 18:59:24'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/1/2017 19:44:41'!
+test01NewClassNameHasToBeDifferentToOldOne
+
+	self 
+		assertCreation: [ RenameClass from: self class to: self class name ]
+		failsWith: [ RenameClass newNameEqualsOldNameErrorMessage]! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/1/2017 19:45:21'!
+test02NewClassNameCanNotBeEmpty
+
+	self 
+		assertCreation: [ RenameClass from: self class to: ' ' ]
+		failsWith: [ RenameClass newNameIsEmptyErrorMessage]! !
+
 !RenameInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:10:47'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
-!RenameInstanceVariableTest methodsFor: 'assertions' stamp: 'HAW 5/28/2017 22:01:42'!
+!RenameInstanceVariableTest methodsFor: 'assertions' stamp: 'HAW 6/1/2017 19:00:37'!
 assertRenameCreationFailsWith: aMessageTextCreator
 
 	self
-		should: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
-		raise: self refactoringError 
-		withMessageText: aMessageTextCreator ! !
+		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
+		failsWith: aMessageTextCreator ! !
 
 !RenameInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 21:44:51'!
 classToRefactorName
@@ -1304,14 +1350,6 @@ allClassCategoriesOfTestData
 anotherClassCategoryOfTestData
 
 	^self classCategoryOfTestData,'3'! !
-
-!RenameMethodTest methodsFor: 'assertions' stamp: 'HAW 5/28/2017 22:02:58'!
-assertCreation: aCreationBlock failsWith: aMessageTextCreator
-
-	self 
-		should: aCreationBlock 
-		raise: self refactoringError
-		withMessageText: aMessageTextCreator ! !
 
 !RenameMethodTest methodsFor: 'assertions' stamp: 'HAW 5/25/2017 23:37:07'!
 assertWasNotRenamedInClass: aClass 
@@ -1745,6 +1783,26 @@ warningClass
 	^RefactoringWarning
 	
 ! !
+
+!RenameClass class methodsFor: 'assertions' stamp: 'HAW 6/1/2017 19:06:21'!
+assert: aClass isNotNamed: aNewName
+
+	aClass name = aNewName ifTrue: [ self signalNewNameEqualsOldName]! !
+
+!RenameClass class methodsFor: 'instance creation' stamp: 'HAW 6/1/2017 19:01:53'!
+from: aClass to: aNewClassName
+
+	self assert: aClass isNotNamed: aNewClassName.! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/1/2017 19:07:08'!
+newNameEqualsOldNameErrorMessage
+	
+	^'New class name equals old one'! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/1/2017 19:07:27'!
+signalNewNameEqualsOldName
+	
+	self error: self newNameEqualsOldNameErrorMessage! !
 
 !RenameInstanceVariable methodsFor: 'evaluating - private' stamp: 'HAW 5/26/2017 18:47:05'!
 addNewInstanceVariable

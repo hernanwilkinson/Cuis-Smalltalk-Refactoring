@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3083] on 2 June 2017 at 8:09:41 am'!
-'Description Partial implementation of Rename Class'!
-!provides: 'Refactoring' 1 7!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3092] on 2 June 2017 at 6:30:54 pm'!
+'Description More tests on RenameClass. Still not functioning'!
+!provides: 'Refactoring' 1 8!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -123,7 +123,7 @@ Refactoring class
 
 !classDefinition: #RenameClass category: #Refactoring!
 Refactoring subclass: #RenameClass
-	instanceVariableNames: ''
+	instanceVariableNames: 'classToRename newClassName system undeclared'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -1053,12 +1053,58 @@ test01NewClassNameHasToBeDifferentToOldOne
 		assertCreation: [ RenameClass from: self class to: self class name ]
 		failsWith: [ RenameClass newNameEqualsOldNameErrorMessage]! !
 
-!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/1/2017 19:45:21'!
-test02NewClassNameCanNotBeEmpty
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/2/2017 10:50:26'!
+test02NewClassNameHasToBeASymbol
 
 	self 
-		assertCreation: [ RenameClass from: self class to: ' ' ]
-		failsWith: [ RenameClass newNameIsEmptyErrorMessage]! !
+		assertCreation: [ RenameClass from: self class to: 'aString' ]
+		failsWith: [ RenameClass newNameMustBeSymbolErrorMessage]! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/2/2017 11:37:16'!
+test03NewClassNameHasToStartWithUppercaseLetter
+
+	self 
+		assertCreation: [ RenameClass from: self class to: #_A ]
+		failsWith: [ RenameClass newNameMustStartWithUppercaseLetterErrorMessage]! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/2/2017 11:47:55'!
+test04NewClassShouldNotExist
+
+	| newClassName |
+	
+	newClassName := #Object.
+	
+	self 
+		assertCreation: [ RenameClass from: self class to: newClassName in: Smalltalk ]
+		failsWith: [ RenameClass errorMessageForAlreadyExistClassNamed: newClassName ]! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/2/2017 11:54:36'!
+test05NewClassShouldNotBeUndeclare
+
+	| newClassName undeclared |
+	
+	newClassName := #UndeclareClass.
+	undeclared := Dictionary new.
+	undeclared at: newClassName put: nil.
+	
+	self 
+		assertCreation: [ RenameClass from: self class to: newClassName in: Smalltalk undeclared: undeclared ]
+		failsWith: [ RenameClass errorMessageForNewClassIsUndeclared: newClassName ]! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/2/2017 12:08:52'!
+test06OldClassIsRenamedToNewClass
+
+	| oldClassName newClassName rename |
+	
+	oldClassName := #OldClass.
+	newClassName := #NewClass.
+	self createClassNamed: oldClassName.
+	
+	rename := RenameClass from: self class to: newClassName in: Smalltalk undeclared: Undeclared.
+	rename apply.
+	
+	self assert: (Smalltalk classNamed: oldClassName) isNil.
+	self deny: (Smalltalk classNamed: newClassName) isNil! !
 
 !RenameInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:10:47'!
 allClassCategoriesOfTestData
@@ -1784,25 +1830,113 @@ warningClass
 	
 ! !
 
+!RenameClass methodsFor: 'initialization' stamp: 'HAW 6/2/2017 12:10:30'!
+initializeFrom: aClass to: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
+
+	classToRename := aClass.
+	newClassName := aNewClassName.
+	system := aSystem.
+	undeclared := anUndeclaredDictionary ! !
+
+!RenameClass class methodsFor: 'assertions' stamp: 'HAW 6/2/2017 11:46:33'!
+assert: aNewClassName doesNotExistIn: aSystem
+	
+	(aSystem classNamed: aNewClassName) ifNotNil: [ self signalAlreadyExistClassNamed: aNewClassName ]! !
+
 !RenameClass class methodsFor: 'assertions' stamp: 'HAW 6/1/2017 19:06:21'!
 assert: aClass isNotNamed: aNewName
 
 	aClass name = aNewName ifTrue: [ self signalNewNameEqualsOldName]! !
 
-!RenameClass class methodsFor: 'instance creation' stamp: 'HAW 6/1/2017 19:01:53'!
+!RenameClass class methodsFor: 'assertions' stamp: 'HAW 6/2/2017 11:57:47'!
+assert: aNewClassName isNotUndeclaredIn: anUndeclaredDictionary
+
+	(anUndeclaredDictionary includesKey: aNewClassName) ifTrue: [ self signalNewClassIsUndeclared: aNewClassName ]! !
+
+!RenameClass class methodsFor: 'assertions' stamp: 'HAW 6/2/2017 11:34:59'!
+assertIsSymbol: aNewClassName
+
+	aNewClassName isSymbol ifFalse: [ self signalNewNameMustBeSymbol]! !
+
+!RenameClass class methodsFor: 'assertions' stamp: 'HAW 6/2/2017 11:38:55'!
+assertStartsWithUppercaseLetter: aNewClassName
+
+	aNewClassName first isUppercase ifFalse: [ self signalNewNameMustStartWithUppercaseLetter]! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:48:29'!
+errorMessageForAlreadyExistClassNamed: aNewClassName
+
+	^aNewClassName, ' already exist'! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:58:55'!
+errorMessageForNewClassIsUndeclared: aNewClassName
+
+	^aNewClassName, ' is undeclared'! !
+
+!RenameClass class methodsFor: 'instance creation' stamp: 'HAW 6/2/2017 11:43:48'!
 from: aClass to: aNewClassName
 
-	self assert: aClass isNotNamed: aNewClassName.! !
+	^self from: aClass to: aNewClassName in: Smalltalk
+	! !
+
+!RenameClass class methodsFor: 'instance creation' stamp: 'HAW 6/2/2017 11:55:32'!
+from: aClass to: aNewClassName in: aSystem
+
+	^self from: aClass to: aNewClassName in: aSystem undeclared: Undeclared 
+	
+	! !
+
+!RenameClass class methodsFor: 'instance creation' stamp: 'HAW 6/2/2017 12:09:52'!
+from: aClass to: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
+	
+	self assert: aClass isNotNamed: aNewClassName.
+	self assertIsSymbol: aNewClassName.
+	self assertStartsWithUppercaseLetter: aNewClassName.
+	self assert: aNewClassName doesNotExistIn: aSystem.
+	self assert: aNewClassName isNotUndeclaredIn: anUndeclaredDictionary.
+	
+	^self new initializeFrom: aClass to: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
+! !
 
 !RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/1/2017 19:07:08'!
 newNameEqualsOldNameErrorMessage
 	
 	^'New class name equals old one'! !
 
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:36:01'!
+newNameMustBeSymbolErrorMessage
+	
+	^'New class name must be a symbol'! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:39:53'!
+newNameMustStartWithUppercaseLetterErrorMessage
+
+	^'New class name must start with an uppercase letter'! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:47:46'!
+signalAlreadyExistClassNamed: aNewClassName
+
+	self error: (self errorMessageForAlreadyExistClassNamed: aNewClassName)! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:58:32'!
+signalNewClassIsUndeclared: aNewClassName
+
+	self error: (self errorMessageForNewClassIsUndeclared: aNewClassName)! !
+
 !RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/1/2017 19:07:27'!
 signalNewNameEqualsOldName
 	
 	self error: self newNameEqualsOldNameErrorMessage! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:35:35'!
+signalNewNameMustBeSymbol
+	
+	self error: self newNameMustBeSymbolErrorMessage! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:39:20'!
+signalNewNameMustStartWithUppercaseLetter
+	
+	self error: self  newNameMustStartWithUppercaseLetterErrorMessage! !
 
 !RenameInstanceVariable methodsFor: 'evaluating - private' stamp: 'HAW 5/26/2017 18:47:05'!
 addNewInstanceVariable

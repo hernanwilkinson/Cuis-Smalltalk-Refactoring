@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3092] on 2 June 2017 at 6:30:54 pm'!
-'Description More tests on RenameClass. Still not functioning'!
-!provides: 'Refactoring' 1 8!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 4 June 2017 at 7:31:33 pm'!
+'Description RenameClass implemented. Few refactoring to remove repeated code on the way...'!
+!provides: 'Refactoring' 1 9!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -19,6 +19,16 @@ Warning subclass: #RefactoringWarning
 	category: 'Refactoring'!
 !classDefinition: 'RefactoringWarning class' category: #Refactoring!
 RefactoringWarning class
+	instanceVariableNames: ''!
+
+!classDefinition: #RenameClassRewriter category: #Refactoring!
+ParseNodeVisitor subclass: #RenameClassRewriter
+	instanceVariableNames: 'refactoring'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RenameClassRewriter class' category: #Refactoring!
+RenameClassRewriter class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameInstanceVariableRewriter category: #Refactoring!
@@ -123,7 +133,7 @@ Refactoring class
 
 !classDefinition: #RenameClass category: #Refactoring!
 Refactoring subclass: #RenameClass
-	instanceVariableNames: 'classToRename newClassName system undeclared'
+	instanceVariableNames: 'classToRename newClassName system undeclared rewriter classToRenameOriginalName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -161,6 +171,30 @@ Object subclass: #RenameMethodRequest
 RenameMethodRequest class
 	instanceVariableNames: ''!
 
+
+!Browser methodsFor: '*Refactoring' stamp: 'HAW 6/4/2017 19:13:55'!
+renameClass
+
+	self selectedClassOrMetaClass ifNotNil: [ :aBehavior | | classToRename newName |
+		classToRename := aBehavior theNonMetaClass.
+		newName := FillInTheBlankMorph request: 'Enter new name:' initialAnswer: classToRename name onCancel: [ ^self ].
+		newName := newName withBlanksTrimmed asSymbol.
+		[[| rename renamedReferences originalClassName |
+		originalClassName := classToRename theNonMetaClass name.
+		rename := RenameClass from: classToRename to: newName in: Smalltalk undeclared: Undeclared.
+		renamedReferences := rename apply.
+		self changed: #classList.
+		self selectClass: classToRename.
+		renamedReferences ifNotEmpty: [ 
+			MessageSetWindow openMessageList: renamedReferences label: 'Renamed references' autoSelect: originalClassName ]]
+				on: Refactoring refactoringWarningClass 
+				do: [ :aRefactoringWarning | 
+					(self confirm: aRefactoringWarning messageText, ' Continue?')
+						ifTrue: [ aRefactoringWarning resume ]
+						ifFalse: [ aRefactoringWarning return: nil ]]]
+				on: Refactoring refactoringErrorClass 
+				do: [ :aRefactoringError | self inform: aRefactoringError messageText ]].
+	! !
 
 !MessageSet methodsFor: '*Refactoring' stamp: 'HAW 5/31/2017 15:33:51'!
 addMethodReference: aMethodReferenceToAdd ifIncluded: aBlockClosure 
@@ -249,6 +283,27 @@ withSubclassesThatDefineInstanceVariable: aName do: foundBlock ifNone: noneBlock
 	^definingSubclasses isEmpty 
 		ifTrue: noneBlock 
 		ifFalse: [ foundBlock value: definingSubclasses ]! !
+
+!Class methodsFor: '*Refactoring' stamp: 'HAW 6/4/2017 17:35:03'!
+rename: aString 
+	"The new name of the receiver is the argument, aString."
+
+	| newName |
+	(newName _ aString asSymbol) ~= self name
+		ifFalse: [^ self].
+	(Smalltalk includesKey: newName)
+		ifTrue: [^ self error: newName , ' already exists'].
+	(Undeclared includesKey: newName)
+		ifTrue: [self inform: 'There are references to, ' , aString printString , '
+from Undeclared. Check them after this change.'].
+
+	self safeRenameTo: newName.! !
+
+!Class methodsFor: '*Refactoring' stamp: 'HAW 6/4/2017 17:35:15'!
+safeRenameTo: newName
+
+	Smalltalk renameClass: self as: newName.
+	name _ newName! !
 
 !SystemOrganizer methodsFor: '*Refactoring' stamp: 'HAW 5/28/2017 23:06:08'!
 hasCategory: aCategory
@@ -373,20 +428,10 @@ generateSource
 	
 	^String streamContents: [ :stream | self printOn: stream ]! !
 
-!LiteralNode methodsFor: '*Refactoring' stamp: 'HAW 5/25/2017 21:37:55'!
-applyRename: aRenameMethod 
-	
-	(aRenameMethod shouldRename: key) ifTrue: [ key := aRenameMethod newSelector ]! !
+!LeafNode methodsFor: '*Refactoring' stamp: 'HAW 6/4/2017 18:30:35'!
+key: aKey
 
-!SelectorNode methodsFor: '*Refactoring' stamp: 'HAW 5/24/2017 21:22:44'!
-applyRename: aRenameMethod
-
-	(aRenameMethod shouldRename: self key) ifTrue: [ self key: aRenameMethod newSelector ]! !
-
-!InstanceVariableNode methodsFor: '*Refactoring' stamp: 'HAW 5/24/2017 21:58:53'!
-applyRename: aRenameInstanceVariable
-
-	(aRenameInstanceVariable shouldRename: self name) ifTrue: [ self name: aRenameInstanceVariable newVariable]! !
+	key := aKey ! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 5/22/2017 23:20:02'!
 classListMenu
@@ -459,7 +504,7 @@ messageListMenu
 	^ aMenu
 ! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/1/2017 16:30:08'!
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/4/2017 19:04:17'!
 renameInstVar
 
 	model selectedClassOrMetaClass ifNotNil: [ :aClass |
@@ -469,20 +514,20 @@ renameInstVar
 			rename := RenameInstanceVariable from: oldInstanceVariable to: newInstanceVariable in: aClass.
 			rename apply.
 			self model acceptedContentsChanged ]
-				on: Refactoring warningClass
+				on: Refactoring refactoringWarningClass 
 				do: [ :aRefactoringWarning | 
 					(self confirm: aRefactoringWarning messageText, ' Continue?')
 						ifTrue: [ aRefactoringWarning resume ]
 						ifFalse: [ aRefactoringWarning return: nil ]]]
-				on: Refactoring errorClass 
+				on: Refactoring refactoringErrorClass 
 				do: [ :aRefactoringError | self inform: aRefactoringError messageText ]]]! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 5/31/2017 19:23:04'!
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/3/2017 11:59:59'!
 renameMethod
 	
 	model selectedMessageName ifNotNil: [ :oldSelector | 
 		[(RenameMethodRequest for: oldSelector in: model selectedClassOrMetaClass) value]
-			on: Refactoring errorClass 
+			on: Refactoring refactoringErrorClass 
 			do: [ :aRefactoringError | self inform: aRefactoringError messageText ]]
 ! !
 
@@ -537,15 +582,35 @@ should: aBlockToFail raise: anExceptionHandlingCondition withMessageText: anExpe
 		raise: anExceptionHandlingCondition 
 		withExceptionDo: [ :anException | self assert: anExpectedErrorMessageCreator value equals: anException messageText ]! !
 
+!RenameClassRewriter methodsFor: 'initialization' stamp: 'HAW 6/4/2017 18:10:45'!
+initializeFor: aRenameClass 
+	
+	refactoring := aRenameClass ! !
+
+!RenameClassRewriter methodsFor: 'visiting' stamp: 'HAW 6/4/2017 18:38:46'!
+visitLiteralNode: aLiteralNode
+
+	(refactoring shouldRename: aLiteralNode key) ifTrue: [ aLiteralNode key: refactoring newClassName ]! !
+
+!RenameClassRewriter methodsFor: 'visiting' stamp: 'HAW 6/4/2017 18:36:42'!
+visitLiteralVariableNode: aLiteralVariableNode
+
+	(refactoring shouldRename: aLiteralVariableNode name asSymbol) ifTrue: [ aLiteralVariableNode name: refactoring newClassName ]! !
+
+!RenameClassRewriter class methodsFor: 'instance creation' stamp: 'HAW 6/4/2017 18:10:11'!
+for: aRenameClass 
+	
+	^self new initializeFor: aRenameClass ! !
+
 !RenameInstanceVariableRewriter methodsFor: 'initialization' stamp: 'HAW 5/24/2017 22:01:31'!
 initializeFor: aRenameInstanceVariable 
 	
 	refactoring := aRenameInstanceVariable ! !
 
-!RenameInstanceVariableRewriter methodsFor: 'visiting' stamp: 'HAW 5/24/2017 22:01:10'!
+!RenameInstanceVariableRewriter methodsFor: 'visiting' stamp: 'HAW 6/4/2017 19:26:47'!
 visitInstanceVariableNode: anInstanceVariableNode
 
-	anInstanceVariableNode applyRename: refactoring.! !
+	(refactoring shouldRename: anInstanceVariableNode name) ifTrue: [ anInstanceVariableNode name: refactoring newVariable]! !
 
 !RenameInstanceVariableRewriter class methodsFor: 'as yet unclassified' stamp: 'HAW 5/22/2017 22:10:39'!
 for: aRenameInstanceVariable 
@@ -557,15 +622,15 @@ initializeOf: aRenameMethod
 
 	refactoring := aRenameMethod.! !
 
-!RenameMethodRewriter methodsFor: 'visiting' stamp: 'HAW 5/26/2017 00:35:24'!
+!RenameMethodRewriter methodsFor: 'visiting' stamp: 'HAW 6/4/2017 19:27:58'!
 visitLiteralNode: aLiteralNode
 
-	aLiteralNode applyRename: refactoring.! !
+	(refactoring shouldRename: aLiteralNode key) ifTrue: [ aLiteralNode key: refactoring newSelector ]! !
 
-!RenameMethodRewriter methodsFor: 'visiting' stamp: 'HAW 5/24/2017 22:03:49'!
+!RenameMethodRewriter methodsFor: 'visiting' stamp: 'HAW 6/4/2017 19:28:52'!
 visitSelectorNode: aSelectorNode
 
-	aSelectorNode applyRename: refactoring.! !
+	(refactoring shouldRename: aSelectorNode key) ifTrue: [ aSelectorNode key: refactoring newSelector ]! !
 
 !RenameMethodRewriter class methodsFor: 'instance creation' stamp: 'HAW 5/24/2017 19:36:19'!
 of: aRenameMethod 
@@ -846,21 +911,21 @@ openChanges
 		
 	MessageSetWindow openMessageList: changedMethods asSortedCollection label: 'Rename method changes' ! !
 
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 20:53:29'!
+!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/3/2017 12:06:04'!
 rename
 		
 	[[ self
 		applyRename;
 		delete;
 		openChanges ]
-			on: Refactoring warningClass
+			on: Refactoring refactoringWarningClass 
 			do: [ :aRefactoringWarning | 
 				(self confirm: aRefactoringWarning messageText, ' Continue?')
 					ifTrue: [ aRefactoringWarning resume ]
 					ifFalse: [ 
 						self delete.
 						aRefactoringWarning return: nil ]]]
-			on: Refactoring errorClass 
+			on: Refactoring refactoringErrorClass 
 			do: [ :aRefactoringError | self inform: aRefactoringError messageText ]! !
 
 !RenameMethodSendersWindow class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 17:31:45'!
@@ -1012,15 +1077,15 @@ denyExistsClassCategory: aClassCategory
 		
 	self deny: (SystemOrganization hasCategory: aClassCategory) description: 'Can not run test because class category ', aClassCategory, ' already exists'! !
 
-!RefactoringTest methodsFor: 'exceptions' stamp: 'HAW 5/28/2017 21:33:11'!
+!RefactoringTest methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:26'!
 refactoringError
-	
-	^Refactoring errorClass - MessageNotUnderstood ! !
 
-!RefactoringTest methodsFor: 'exceptions' stamp: 'HAW 5/31/2017 19:55:06'!
+	^ Refactoring refactoringErrorClass - MessageNotUnderstood.! !
+
+!RefactoringTest methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 12:05:52'!
 refactoringWarning
-	
-	^Refactoring warningClass - MessageNotUnderstood ! !
+
+	^ Refactoring refactoringWarningClass - MessageNotUnderstood.! !
 
 !RefactoringTest methodsFor: 'setup/teardown' stamp: 'HAW 5/28/2017 23:28:29'!
 setUp
@@ -1091,20 +1156,128 @@ test05NewClassShouldNotBeUndeclare
 		assertCreation: [ RenameClass from: self class to: newClassName in: Smalltalk undeclared: undeclared ]
 		failsWith: [ RenameClass errorMessageForNewClassIsUndeclared: newClassName ]! !
 
-!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/2/2017 12:08:52'!
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/4/2017 19:12:10'!
 test06OldClassIsRenamedToNewClass
 
-	| oldClassName newClassName rename |
+	| oldClassName newClassName classToRefactor rename |
+
+	oldClassName :=  'OldClassTest07' asSymbol.
+	newClassName := 'NewClassTest07' asSymbol.
+	classToRefactor := self createClassNamed: oldClassName.
 	
-	oldClassName := #OldClass.
-	newClassName := #NewClass.
-	self createClassNamed: oldClassName.
-	
-	rename := RenameClass from: self class to: newClassName in: Smalltalk undeclared: Undeclared.
+	rename := RenameClass from: classToRefactor to: newClassName in: Smalltalk undeclared: Undeclared.
 	rename apply.
 	
 	self assert: (Smalltalk classNamed: oldClassName) isNil.
-	self deny: (Smalltalk classNamed: newClassName) isNil! !
+	self deny: (Smalltalk classNamed: newClassName) isNil.! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/4/2017 18:18:12'!
+test07OldClassDirectReferencesAreRenamed
+
+	| oldClassName newClassName classToRefactor selector rename referencingMethod |
+	
+	oldClassName := 'OldClassTest07' asSymbol.
+	newClassName := 'NewClassTest07' asSymbol.
+	classToRefactor := self createClassNamed: oldClassName.
+	selector := #m1.
+	classToRefactor compile: selector, ' ', oldClassName asString, ' new'.
+	
+	rename := RenameClass from: classToRefactor to: newClassName in: Smalltalk undeclared: Undeclared.
+	rename apply.
+	
+	referencingMethod := (Smalltalk classNamed: newClassName) compiledMethodAt: selector.
+	self assert: (referencingMethod hasLiteralThorough: newClassName).
+	self deny: (referencingMethod hasLiteralThorough: oldClassName)! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/4/2017 18:19:04'!
+test08OldClassLiteralReferencesAreRenamed
+
+	| oldClassName newClassName classToRefactor selector rename referencingMethod |
+	
+	oldClassName := 'OldClassTest08' asSymbol.
+	newClassName := 'NewClassTest8' asSymbol.
+	classToRefactor := self createClassNamed: oldClassName.
+	selector := #m1.
+	classToRefactor compile: selector, ' #', oldClassName asString, ' size'.
+	
+	rename := RenameClass from: classToRefactor to: newClassName in: Smalltalk undeclared: Undeclared.
+	rename apply.
+	
+	referencingMethod := (Smalltalk classNamed: newClassName) compiledMethodAt: selector.
+	self assert: (referencingMethod hasLiteralThorough: newClassName).
+	self deny: (referencingMethod hasLiteralThorough: oldClassName)! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/4/2017 18:36:22'!
+test09OtherClassDirectReferencesAreNotRenamed
+
+	| oldClassName newClassName classToRefactor selector rename referencingMethod |
+	
+	oldClassName := 'OldClassTest09' asSymbol.
+	newClassName := 'NewClassTest09' asSymbol.
+	classToRefactor := self createClassNamed: oldClassName.
+	selector := #m1.
+	classToRefactor compile: selector, ' ', oldClassName asString, ' new. Object new'.
+	
+	rename := RenameClass from: classToRefactor to: newClassName in: Smalltalk undeclared: Undeclared.
+	rename apply.
+	
+	referencingMethod := (Smalltalk classNamed: newClassName) compiledMethodAt: selector.
+	self assert: (referencingMethod hasLiteralThorough: newClassName).
+	self deny: (referencingMethod hasLiteralThorough: oldClassName).
+	self assert: (referencingMethod hasLiteralThorough: #Object).
+! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/4/2017 19:07:19'!
+test10OtherLiteralReferencesAreNotRenamed
+
+	| oldClassName newClassName classToRefactor selector rename referencingMethod |
+	
+	oldClassName := 'OldClassTest10' asSymbol.
+	newClassName := 'NewClassTest10' asSymbol.
+	classToRefactor := self createClassNamed: oldClassName.
+	selector := #m1.
+	classToRefactor compile: selector, ' #', oldClassName asString, ' size. #Object size'.
+	
+	rename := RenameClass from: classToRefactor to: newClassName in: Smalltalk undeclared: Undeclared.
+	rename apply.
+	
+	referencingMethod := (Smalltalk classNamed: newClassName) compiledMethodAt: selector.
+	self assert: (referencingMethod hasLiteralThorough: newClassName).
+	self deny: (referencingMethod hasLiteralThorough: oldClassName).
+	self assert: (referencingMethod hasLiteralThorough: #Object).
+! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/4/2017 18:44:47'!
+test11OldClassDirectAndLiteralReferencesAreRenameAtOnce
+
+	| oldClassName newClassName classToRefactor selector rename renamedReferences |
+	
+	oldClassName := 'OldClassTest11' asSymbol.
+	newClassName := 'NewClassTest11' asSymbol.
+	classToRefactor := self createClassNamed: oldClassName.
+	selector := #m1.
+	classToRefactor compile: selector, ' ', oldClassName asString, ' new. #', oldClassName asString, ' size'.
+	
+	rename := RenameClass from: classToRefactor to: newClassName in: Smalltalk undeclared: Undeclared.
+	renamedReferences := rename apply.
+	
+	self assert: 1 equals: renamedReferences size.
+	self assert: selector equals: renamedReferences anyOne selector.
+	self assert: newClassName equals: renamedReferences anyOne classSymbol ! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/4/2017 18:47:31'!
+test12NewClassNameHasToBeASymbol
+
+	self 
+		assertCreation: [ RenameClass from: self class class to: #Object ]
+		failsWith: [ RenameClass classToRenameCanNotBeMetaclassErrorMessage]! !
+
+!RenameClassTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/4/2017 19:07:53'!
+test13NewClassNameHasToBeASymbol
+
+	self 
+		assertCreation: [ RenameClass from: self class to: '' asSymbol ]
+		failsWith: [ RenameClass newClassNameCanNotBeEmptyErrorMessage]! !
 
 !RenameInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:10:47'!
 allClassCategoriesOfTestData
@@ -1798,45 +1971,95 @@ apply
 
 	self subclassResponsibility ! !
 
-!Refactoring methodsFor: 'exceptions' stamp: 'HAW 5/24/2017 21:26:12'!
-error: aMessage
+!Refactoring methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:53:35'!
+refactoringError: aMessage
 
-	self class error: aMessage ! !
+	self class refactoringError: aMessage.! !
 
-!Refactoring methodsFor: 'exceptions' stamp: 'HAW 5/28/2017 21:31:21'!
-errorClass
+!Refactoring methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:02'!
+refactoringErrorClass
 
-	^self class errorClass! !
+	^ self class refactoringErrorClass.! !
 
-!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 5/28/2017 21:31:50'!
-error: aMessage
+!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:07'!
+refactoringError: aMessage
 
-	self errorClass signal: aMessage! !
+	self refactoringErrorClass signal: aMessage.! !
 
-!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 5/28/2017 21:31:30'!
-errorClass
+!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:21'!
+refactoringErrorClass
 
-	^RefactoringError! !
+	^ RefactoringError.! !
 
-!Refactoring class methodsFor: 'warnings' stamp: 'HAW 5/31/2017 20:42:39'!
-warning: aMessageText 
+!Refactoring class methodsFor: 'warnings' stamp: 'HAW 6/3/2017 12:01:04'!
+refactoringWarning: aMessageText
+
+	^ RefactoringWarning signal: aMessageText.! !
+
+!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 12:05:48'!
+refactoringWarningClass
+
+	^ RefactoringWarning.! !
+
+!RenameClass methodsFor: 'applying' stamp: 'HAW 6/4/2017 18:09:21'!
+apply
 	
-	^RefactoringWarning signal: aMessageText ! !
-
-!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 5/31/2017 19:55:54'!
-warningClass
+	classToRename safeRenameTo: newClassName.
+	^self renameReferences.
 	
-	^RefactoringWarning
-	
-! !
+	! !
 
-!RenameClass methodsFor: 'initialization' stamp: 'HAW 6/2/2017 12:10:30'!
+!RenameClass methodsFor: 'initialization' stamp: 'HAW 6/4/2017 18:26:15'!
 initializeFrom: aClass to: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
 
 	classToRename := aClass.
+	classToRenameOriginalName := aClass name.
 	newClassName := aNewClassName.
 	system := aSystem.
-	undeclared := anUndeclaredDictionary ! !
+	undeclared := anUndeclaredDictionary.
+	
+	rewriter := RenameClassRewriter for: self! !
+
+!RenameClass methodsFor: 'accessing' stamp: 'HAW 6/4/2017 18:16:33'!
+newClassName
+	
+	^newClassName ! !
+
+!RenameClass methodsFor: 'accessing' stamp: 'HAW 6/4/2017 18:24:56'!
+referencesToOldClass
+	
+	^system allCallsOn: newClassName! !
+
+!RenameClass methodsFor: 'accessing' stamp: 'HAW 6/4/2017 18:25:56'!
+referencesToOldClassName
+	
+	^system allCallsOn: classToRenameOriginalName! !
+
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 6/4/2017 18:08:27'!
+renameReference: aMethodReference 
+	
+	| methodNode newSource |
+	
+	methodNode := aMethodReference compiledMethod methodNode.
+	methodNode accept: rewriter.
+	newSource := methodNode generateSource.
+	
+	aMethodReference actualClass compile: newSource ! !
+
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 6/4/2017 18:24:40'!
+renameReferences
+	
+	| references |
+	
+	references := (self referencesToOldClass asSet, self referencesToOldClassName asSet) asOrderedCollection.
+	references do: [ :aReference | self renameReference: aReference ].
+	
+	^references! !
+
+!RenameClass methodsFor: 'testing' stamp: 'HAW 6/4/2017 18:35:46'!
+shouldRename: aSymbol 
+	
+	^classToRenameOriginalName = aSymbol ! !
 
 !RenameClass class methodsFor: 'assertions' stamp: 'HAW 6/2/2017 11:46:33'!
 assert: aNewClassName doesNotExistIn: aSystem
@@ -1853,6 +2076,16 @@ assert: aNewClassName isNotUndeclaredIn: anUndeclaredDictionary
 
 	(anUndeclaredDictionary includesKey: aNewClassName) ifTrue: [ self signalNewClassIsUndeclared: aNewClassName ]! !
 
+!RenameClass class methodsFor: 'assertions' stamp: 'HAW 6/4/2017 19:08:53'!
+assertIsNotEmpty: aNewName
+
+	aNewName isEmpty ifTrue: [ self signalNewClassNameCanNotBeEmpty]! !
+
+!RenameClass class methodsFor: 'assertions' stamp: 'HAW 6/4/2017 18:49:54'!
+assertIsNotMeta: aBehavior
+
+	aBehavior isMeta ifTrue: [ self signalClassToRenameCanNotBeMetaclass]! !
+
 !RenameClass class methodsFor: 'assertions' stamp: 'HAW 6/2/2017 11:34:59'!
 assertIsSymbol: aNewClassName
 
@@ -1862,6 +2095,11 @@ assertIsSymbol: aNewClassName
 assertStartsWithUppercaseLetter: aNewClassName
 
 	aNewClassName first isUppercase ifFalse: [ self signalNewNameMustStartWithUppercaseLetter]! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/4/2017 18:50:36'!
+classToRenameCanNotBeMetaclassErrorMessage
+	
+	^'Class to rename can not be a metaclass'! !
 
 !RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:48:29'!
 errorMessageForAlreadyExistClassNamed: aNewClassName
@@ -1886,17 +2124,24 @@ from: aClass to: aNewClassName in: aSystem
 	
 	! !
 
-!RenameClass class methodsFor: 'instance creation' stamp: 'HAW 6/2/2017 12:09:52'!
+!RenameClass class methodsFor: 'instance creation' stamp: 'HAW 6/4/2017 19:08:16'!
 from: aClass to: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
 	
+	self assertIsNotMeta: aClass.
 	self assert: aClass isNotNamed: aNewClassName.
 	self assertIsSymbol: aNewClassName.
+	self assertIsNotEmpty: aNewClassName.
 	self assertStartsWithUppercaseLetter: aNewClassName.
 	self assert: aNewClassName doesNotExistIn: aSystem.
 	self assert: aNewClassName isNotUndeclaredIn: anUndeclaredDictionary.
 	
 	^self new initializeFrom: aClass to: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
 ! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/4/2017 19:09:29'!
+newClassNameCanNotBeEmptyErrorMessage
+	
+	^'New class name can not be empty'! !
 
 !RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/1/2017 19:07:08'!
 newNameEqualsOldNameErrorMessage
@@ -1913,30 +2158,40 @@ newNameMustStartWithUppercaseLetterErrorMessage
 
 	^'New class name must start with an uppercase letter'! !
 
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:47:46'!
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:53:46'!
 signalAlreadyExistClassNamed: aNewClassName
 
-	self error: (self errorMessageForAlreadyExistClassNamed: aNewClassName)! !
+	self refactoringError: (self errorMessageForAlreadyExistClassNamed: aNewClassName).! !
 
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:58:32'!
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/4/2017 18:50:56'!
+signalClassToRenameCanNotBeMetaclass
+	
+	self refactoringError: self classToRenameCanNotBeMetaclassErrorMessage! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:53:49'!
 signalNewClassIsUndeclared: aNewClassName
 
-	self error: (self errorMessageForNewClassIsUndeclared: aNewClassName)! !
+	self refactoringError: (self errorMessageForNewClassIsUndeclared: aNewClassName).! !
 
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/1/2017 19:07:27'!
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/4/2017 19:09:13'!
+signalNewClassNameCanNotBeEmpty
+	
+	self refactoringError: self newClassNameCanNotBeEmptyErrorMessage! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:53:53'!
 signalNewNameEqualsOldName
-	
-	self error: self newNameEqualsOldNameErrorMessage! !
 
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:35:35'!
+	self refactoringError: self newNameEqualsOldNameErrorMessage.! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:53:57'!
 signalNewNameMustBeSymbol
-	
-	self error: self newNameMustBeSymbolErrorMessage! !
 
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:39:20'!
+	self refactoringError: self newNameMustBeSymbolErrorMessage.! !
+
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:04'!
 signalNewNameMustStartWithUppercaseLetter
-	
-	self error: self  newNameMustStartWithUppercaseLetterErrorMessage! !
+
+	self refactoringError: self newNameMustStartWithUppercaseLetterErrorMessage.! !
 
 !RenameInstanceVariable methodsFor: 'evaluating - private' stamp: 'HAW 5/26/2017 18:47:05'!
 addNewInstanceVariable
@@ -2066,20 +2321,20 @@ from: anOldvariable to: aNewVariable in: aClassToRefactor
 	^self new initializeFrom: anOldvariable to: validNewVariable in: aClassToRefactor 
 ! !
 
-!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 5/24/2017 21:53:57'!
+!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:22'!
 signalInstanceVariable: aName notDefinedIn: aClass
-	
-	^ self error: (self errorMessageForInstanceVariable: aName notDefinedIn: aClass).! !
 
-!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 5/24/2017 21:54:02'!
+	^ self refactoringError: (self errorMessageForInstanceVariable: aName notDefinedIn: aClass).! !
+
+!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:27'!
 signalInvalidInstanceVariable: aName
 
-	^ self error: (self errorMessageForInvalidInstanceVariable: aName).! !
+	^ self refactoringError: (self errorMessageForInvalidInstanceVariable: aName).! !
 
-!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 5/24/2017 21:54:13'!
+!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:43'!
 signalNewInstanceVariable: aName alreadyDefinedInAll: classes
 
-	^ self error: (self errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes).! !
+	^ self refactoringError: (self errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes).! !
 
 !RenameInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/1/2017 16:26:59'!
 warnIf: newVariable isDefinedInMethodsOf: aClass 
@@ -2091,10 +2346,10 @@ warnIf: newVariable isDefinedInMethodsOf: aClass
 	
 	methodsDefiningNewVariable notEmpty ifTrue: [ self warnNewVariable: newVariable willBeHiddenAtAll: methodsDefiningNewVariable ].! !
 
-!RenameInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/1/2017 16:12:54'!
+!RenameInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/3/2017 12:01:19'!
 warnNewVariable: newVariable willBeHiddenAtAll: methods
 
-	^self warning: (self warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods)! !
+	^ self refactoringWarning: (self warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods).! !
 
 !RenameInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/1/2017 16:16:12'!
 warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
@@ -2295,10 +2550,10 @@ assertAllSenders: senders send: aSelector
 assertIsNotEmpty: aSymbol 
 	self shouldBeImplemented! !
 
-!RenameMethod class methodsFor: 'assertions' stamp: 'HAW 5/25/2017 18:47:45'!
+!RenameMethod class methodsFor: 'assertions' stamp: 'HAW 6/3/2017 11:54:48'!
 assertIsNotEmpty: aCollection signalMessageText: errorMessageText
 
-	aCollection isEmpty ifTrue: [ self error: errorMessageText ]! !
+	aCollection isEmpty ifTrue: [ self refactoringError: errorMessageText ].! !
 
 !RenameMethod class methodsFor: 'assertions' stamp: 'HAW 5/26/2017 00:44:37'!
 assertIsValidToRenameFrom: anOldSelector to: aNewSelector
@@ -2453,35 +2708,35 @@ oldSelectorCanNotBeEmptyErrorMessage
 	
 	^'Old selector can not be empty'! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:23:20'!
+!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:52'!
 signalInvalidImplementors: invalidImplementors
 
-	self error: (self errorMessageForInvalidImplementors: invalidImplementors)! !
+	self refactoringError: (self errorMessageForInvalidImplementors: invalidImplementors).! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:50:23'!
+!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:07'!
 signalInvalidSenders: invalidSender of: aSelector
 
-	self error: (self errorMessageForInvalidSenders: invalidSender of: aSelector)! !
+	self refactoringError: (self errorMessageForInvalidSenders: invalidSender of: aSelector).! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 20:02:44'!
+!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:23'!
 signalNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector
+	
+	self refactoringError: (self errorMessageForNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector).! !
 
-	self error: (self errorMessageForNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector)! !
+!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:38'!
+signalNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector
+	
+	self refactoringError: (self errorMessageForNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector).! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/31/2017 19:40:10'!
-signalNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector 
-
-	self error: (self errorMessageForNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector)! !
-
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:56:36'!
+!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:54'!
 signalNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector
 
-	self error: (self errorMessageForNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector)! !
+	self refactoringError: (self errorMessageForNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector).! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/26/2017 00:41:43'!
+!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:58'!
 signalNewSelectorEqualToOldSelector
-	
-	self error: self newSelectorEqualToOldSelectorErrorMessage ! !
+
+	self refactoringError: self newSelectorEqualToOldSelectorErrorMessage.! !
 
 !RenameMethod class methodsFor: 'assertions' stamp: 'HAW 5/31/2017 20:56:22'!
 warnIfImplementionsOf: aNewSelector overridesImplementationInSuperclassesOf: implementorsCollection
@@ -2492,10 +2747,10 @@ warnIfImplementionsOf: aNewSelector overridesImplementationInSuperclassesOf: imp
 			do: [ :aSuperclass | self warnImplementionOf: aNewSelector in: anImplementor methodClass willOverrideImplementationIn: aSuperclass ]
 			ifNone: []]! !
 
-!RenameMethod class methodsFor: 'warnings' stamp: 'HAW 5/31/2017 20:40:00'!
+!RenameMethod class methodsFor: 'warnings' stamp: 'HAW 6/3/2017 12:01:34'!
 warnImplementionOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass
-
-	self warning: (self warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass)! !
+	
+	self refactoringWarning: (self warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass).! !
 
 !RenameMethod class methodsFor: 'warnings' stamp: 'HAW 5/31/2017 20:41:39'!
 warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass

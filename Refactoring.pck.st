@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 4 June 2017 at 7:31:33 pm'!
-'Description RenameClass implemented. Few refactoring to remove repeated code on the way...'!
-!provides: 'Refactoring' 1 9!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 5 June 2017 at 7:13:31 pm'!
+'Description major refactoring'!
+!provides: 'Refactoring' 1 10!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -53,7 +53,7 @@ RenameMethodRewriter class
 
 !classDefinition: #RenameMethodMessageSetWindow category: #Refactoring!
 MessageSetWindow subclass: #RenameMethodMessageSetWindow
-	instanceVariableNames: 'oldSelector newSelector otherMethods'
+	instanceVariableNames: 'request'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -143,7 +143,7 @@ RenameClass class
 
 !classDefinition: #RenameInstanceVariable category: #Refactoring!
 Refactoring subclass: #RenameInstanceVariable
-	instanceVariableNames: 'classToRefactor newVariable oldVariable rewriter'
+	instanceVariableNames: 'classToRefactor newVariable oldVariable rewriter renamedReferences'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -161,9 +161,39 @@ Refactoring subclass: #RenameMethod
 RenameMethod class
 	instanceVariableNames: ''!
 
+!classDefinition: #RefactoringRequest category: #Refactoring!
+Object subclass: #RefactoringRequest
+	instanceVariableNames: 'requestExitBlock refactoring changes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RefactoringRequest class' category: #Refactoring!
+RefactoringRequest class
+	instanceVariableNames: ''!
+
+!classDefinition: #RenameClassRequest category: #Refactoring!
+RefactoringRequest subclass: #RenameClassRequest
+	instanceVariableNames: 'browser classToRename newClassName'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RenameClassRequest class' category: #Refactoring!
+RenameClassRequest class
+	instanceVariableNames: ''!
+
+!classDefinition: #RenameInstanceVariableRequest category: #Refactoring!
+RefactoringRequest subclass: #RenameInstanceVariableRequest
+	instanceVariableNames: 'classToRefactor oldInstanceVariable newInstanceVariable browser'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RenameInstanceVariableRequest class' category: #Refactoring!
+RenameInstanceVariableRequest class
+	instanceVariableNames: ''!
+
 !classDefinition: #RenameMethodRequest category: #Refactoring!
-Object subclass: #RenameMethodRequest
-	instanceVariableNames: 'oldSelector newSelector scopeChoice implementors senders implementingClass'
+RefactoringRequest subclass: #RenameMethodRequest
+	instanceVariableNames: 'oldSelector newSelector scopeChoice implementors senders implementingClass browser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -172,29 +202,11 @@ RenameMethodRequest class
 	instanceVariableNames: ''!
 
 
-!Browser methodsFor: '*Refactoring' stamp: 'HAW 6/4/2017 19:13:55'!
+!Browser methodsFor: '*Refactoring' stamp: 'HAW 6/5/2017 18:41:14'!
 renameClass
 
-	self selectedClassOrMetaClass ifNotNil: [ :aBehavior | | classToRename newName |
-		classToRename := aBehavior theNonMetaClass.
-		newName := FillInTheBlankMorph request: 'Enter new name:' initialAnswer: classToRename name onCancel: [ ^self ].
-		newName := newName withBlanksTrimmed asSymbol.
-		[[| rename renamedReferences originalClassName |
-		originalClassName := classToRename theNonMetaClass name.
-		rename := RenameClass from: classToRename to: newName in: Smalltalk undeclared: Undeclared.
-		renamedReferences := rename apply.
-		self changed: #classList.
-		self selectClass: classToRename.
-		renamedReferences ifNotEmpty: [ 
-			MessageSetWindow openMessageList: renamedReferences label: 'Renamed references' autoSelect: originalClassName ]]
-				on: Refactoring refactoringWarningClass 
-				do: [ :aRefactoringWarning | 
-					(self confirm: aRefactoringWarning messageText, ' Continue?')
-						ifTrue: [ aRefactoringWarning resume ]
-						ifFalse: [ aRefactoringWarning return: nil ]]]
-				on: Refactoring refactoringErrorClass 
-				do: [ :aRefactoringError | self inform: aRefactoringError messageText ]].
-	! !
+	self selectedClassOrMetaClass ifNotNil: [ :aBehavior |
+		(RenameClassRequest on: self for: aBehavior theNonMetaClass) value ].! !
 
 !MessageSet methodsFor: '*Refactoring' stamp: 'HAW 5/31/2017 15:33:51'!
 addMethodReference: aMethodReferenceToAdd ifIncluded: aBlockClosure 
@@ -504,32 +516,18 @@ messageListMenu
 	^ aMenu
 ! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/4/2017 19:04:17'!
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/5/2017 18:41:41'!
 renameInstVar
 
 	model selectedClassOrMetaClass ifNotNil: [ :aClass |
-		aClass chooseDefiningInstanceVariableAlphabeticallyThenDo: [ :oldInstanceVariable | | newInstanceVariable |
-			newInstanceVariable _ FillInTheBlankMorph request: 'Enter new name:' initialAnswer: oldInstanceVariable onCancel: [ ^self ].
-			[[| rename |
-			rename := RenameInstanceVariable from: oldInstanceVariable to: newInstanceVariable in: aClass.
-			rename apply.
-			self model acceptedContentsChanged ]
-				on: Refactoring refactoringWarningClass 
-				do: [ :aRefactoringWarning | 
-					(self confirm: aRefactoringWarning messageText, ' Continue?')
-						ifTrue: [ aRefactoringWarning resume ]
-						ifFalse: [ aRefactoringWarning return: nil ]]]
-				on: Refactoring refactoringErrorClass 
-				do: [ :aRefactoringError | self inform: aRefactoringError messageText ]]]! !
+		(RenameInstanceVariableRequest on: self for: aClass) value ].
+		! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/3/2017 11:59:59'!
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/5/2017 18:41:51'!
 renameMethod
 	
 	model selectedMessageName ifNotNil: [ :oldSelector | 
-		[(RenameMethodRequest for: oldSelector in: model selectedClassOrMetaClass) value]
-			on: Refactoring refactoringErrorClass 
-			do: [ :aRefactoringError | self inform: aRefactoringError messageText ]]
-! !
+		(RenameMethodRequest for: oldSelector in: model selectedClassOrMetaClass) value ]! !
 
 !MessageSetWindow class methodsFor: '*Refactoring' stamp: 'HAW 5/31/2017 15:16:51'!
 openFullProtocolForClass: aClass 
@@ -573,6 +571,84 @@ openSubProtocolForClass: aClass
 	label _ 'Sub-protocol of: ', aClass name.
 
 	^self open: aPBrowser label: label! !
+
+!Theme methodsFor: '*Refactoring' stamp: 'HAW 6/5/2017 12:05:16'!
+miscellaneousIcons
+
+	"Everything else."
+
+	^ {
+		#('restore display (r)' 'set display depth...' 'move windows onscreen' 'Utilities saveDisplay.') -> #displayIcon.
+		#('changes...' 'dual change sorter' 'change sets with this method' 'find a change sorter' 'recent changes in file' 'Undo / Redo history' 'code file contents' 'package file contents') -> #changesIcon.
+		#('Install New Updates' 'update' 'turn on auto-update (a)' 'update list (u)' 'install code' 'fileIn entire file' 'install package') -> #updateIcon.
+		#('find again (g)' 'full stack (k)') -> #systemIcon.
+		#('print it (p)' 'check change set for slips') -> #printIcon.
+		#('accept (s)' 'make changes go to me (m)') -> #acceptIcon.
+		#('cancel (l)' 'turn off auto-update (a)') -> #cancelIcon.
+		#('debug...' 'Debug it (D)' 'toggle break on entry') -> #debugIcon.
+		#('close' 'close all debuggers' 'close top window') -> #closeIcon.
+		#('collapse' 'hide taskbar' 'collapse all windows') -> #collapseIcon.
+		#('expand / contract' 'show taskbar' 'restore all windows') -> #expandIcon.
+		#('menu') -> #windowMenuIcon.
+		#('browse all' 'browser' 'browse it (b)' 'MessageTally UI and browse' 'browse recent submissions' 'browse full (b)' 'find changed browsers...' 'browse (b)' 'browse my changes') -> #editFindReplaceIcon.
+		#('workspace' 'workspace with contents') -> #terminalIcon.
+		#('styled text editor' 'text editor'  'basic text editor'  'unicode editor' 'edit this list' 'edit postscript...' 'add postscript...') -> #textEditorIcon.
+		#('file list' 'find a fileList' 'compress file') -> #systemFileManagerIcon.
+		#('transcript' 'find a transcript' 'Transcript clear.' 'log to transcript') -> #printerIcon.
+		#('process browser' 'vm statistics' 'MessageTally all Processes') -> #systemMonitorIcon.
+		#('emergency evaluator' 'conflicts with other change sets' 'check for slips' 'conflicts with change set opposite' 'conflicts with category opposite') -> #emblemImportantIcon.
+		#('change sorter') -> #halfRefreshIcon.
+		#('SUnit Test Runner' 'Accept & Run Test in Class (t)' 'Accept & Run Test in Category (y)' 'Run tests (t)' 'Run tests' 'Run test (t)' 'Accept & Debug Test (r)' 'Debug test (r)') -> #weatherFewCloudsIcon.
+		#('Font Sizes...' 'system fonts...' 'set font... (k)') -> #preferencesDesktopFontIcon.
+		#('full screen on') -> #viewFullscreenIcon.
+		#('full screen off') -> #exitFullscreenIcon.
+		#('set desktop color...') -> #wallpaperIcon.
+		#('preferences...' 'All preferences...' 'what to show...' 'view as hex') -> #preferencesIcon.
+		#('Editor keyboard shortcuts') -> #keyboardShortcutsIcon.
+		#('world menu help') -> #globeIcon.		"currently unused, but a neat icon"
+		#('useful expressions' 'class comments with it' 'check for uncommented methods' 'check for uncommented classes') -> #chatIcon.
+		#('set code author...' 'check for other authors' 'check for any other authors') -> #usersIcon.
+		#('space left') -> #removableMediaIcon.
+		#('start drawing all again' 'window color...') -> #graphicsIcon.
+		#('start stepping again') -> #mediaPlaybackStartIcon.
+		#('file out current change set' 'fileOut' 'File out and remove (o)' 'File out and keep (k)') -> #fileOutIcon.
+		#('recently logged changes...' 'versions (v)' 'recent classes... (r)' 'trim history' 'Profile it') -> #clockIcon.
+		#('senders of it (n)' 'senders of... (n)' 'local senders of...' 'senders (n)') -> #mailForwardIcon.
+		#('implementors of it (m)' 'implementors of... (m)' 'implementors of sent messages') -> #developmentIcon.
+		#('references to it (N)') -> #addressBookIcon.
+		#('class var refs...' 'class refs (N)' 'class variables' 'class vars' 'local implementors of...' 'subclass template') -> #classIcon.
+		#('inst var refs...' 'inst var defs...' 'sample instance') -> #instanceIcon.
+		#('Use Selection for Find (j)' 'rename class ...' 'rename...' 'change title...' 'rename inst var...' 'rename method') -> #saveAsIcon.
+		#('smalltalk options' 'method source with it' 'browse method (O)' 'check for uncategorized methods') -> #scriptIcon.
+		#('method strings with it (E)' 'Toggle WordWrap') -> #genericTextIcon.
+		#('browse hierarchy (h)' 'move to top' 'promote to top of list') -> #goTopIcon.
+		#('move up' 'make next-to-topmost') -> #goUpIcon.
+		#('move to bottom' 'send to back' 'send top window to back') -> #goBottomIcon.
+		#('inheritance (i)' 'move down') -> #goDownIcon.
+		#('browse protocol (p)' 'spawn sub-protocol') -> #spreadsheetIcon.
+		#('spawn full protocol') -> #speadsheetTemplateIcon.
+		#('alphabetize') -> #fontXGenericIcon.
+		#('Installed Packages' 'browse' 'show category (C)' 'categorize all uncategorized' 'select change set...' 'view affected class categories') -> #packageIcon.
+		#('remove from current change set' 'remove empty categories' 'subtract other side (-)' 'remove from this browser') -> #listRemoveIcon.
+		#('add to current change set' 'add all meths to current chgs' 'add preamble (p)' 'More...') -> #listAddIcon.
+		#('toggle diffing (D)' 'toggle selections') -> #switchIcon.
+		#('reorganize' 'create inst var accessors' 'ChangeSorter reorderChangeSets.' 'reorder all change sets' 'by name' 'by size' 'by date') -> #sendReceiveIcon.
+		#('unsent methods' 'unreferenced class vars' 'unreferenced inst vars' 'Undeclared inspect.' 'Undeclared removeUnreferencedKeys; inspect.' 'ChangeSorter removeEmptyUnnamedChangeSets.' 'check for unsent messages') -> #junkIcon.
+		#('find changed windows...') -> #newWindowIcon.
+		#('make undraggable') -> #pushPinIcon.
+		#('Utilities saveScreenshot.') -> #stillCameraIcon.
+		#('add new directory') -> #newFolderIcon.
+		#('select all' 'deselect all') -> #selectAllIcon.
+		#('sort by date') -> #dateIcon.
+		#('justified') -> #formatJustifyFillIcon.
+		#('centered') -> #formatJustifyCenterIcon.
+		#('set alignment...' 'leftFlush') -> #formatJustifyLeftIcon.
+		#('rightFlush') -> #formatJustifyRightIcon.
+		#('signal Semaphore (S)') -> #haloHelpIcon.
+		#('Change Paragraph Style...' 'Change Character Style...' 'Remove Character Style' 'Replace all uses of Paragraph Style...' 'Replace all uses of Character Style...' 'Set Default Font...') -> #fontXGenericIcon.
+		#('Clear Font') -> #newIcon.
+		#('code file browser' 'package file browser') -> #findIcon.
+	}! !
 
 !TestCase methodsFor: '*Refactoring' stamp: 'HAW 5/28/2017 22:01:33'!
 should: aBlockToFail raise: anExceptionHandlingCondition withMessageText: anExpectedErrorMessageCreator
@@ -735,17 +811,20 @@ inform: aClass doesNotImplement: aSelector
 
  	self inform: aClass name, ' does not implement #', aSelector ! !
 
-!RenameMethodMessageSetWindow methodsFor: 'initialization' stamp: 'HAW 5/31/2017 17:06:41'!
-initializeFrom: anOldSelector to: aNewSelector otherMethods: otherMethodsCollections
-	
-	oldSelector := anOldSelector.
-	newSelector := aNewSelector.
-	otherMethods := otherMethodsCollections ! !
+!RenameMethodMessageSetWindow methodsFor: 'initialization' stamp: 'HAW 6/5/2017 17:32:02'!
+initializeFrom: aRenameMethodRequest
 
-!RenameMethodMessageSetWindow methodsFor: 'testing' stamp: 'HAW 5/31/2017 17:13:32'!
+	request := aRenameMethodRequest ! !
+
+!RenameMethodMessageSetWindow methodsFor: 'testing' stamp: 'HAW 6/5/2017 17:40:16'!
 isMessageSelected
 
-	^model selection notNil ! !
+	^model isNil ifTrue: [ false ] ifFalse: [ model selection notNil ]! !
+
+!RenameMethodMessageSetWindow methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:44'!
+oldSelector
+	
+	^request oldSelector ! !
 
 !RenameMethodMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:07:19'!
 remove
@@ -760,30 +839,30 @@ withClassNamed: aName do: aBlock
 		ifNil: [ self inform: 'Class ', aName, ' does not exist' ].
 ! !
 
-!RenameMethodMessageSetWindow class methodsFor: 'as yet unclassified' stamp: 'HAW 5/31/2017 16:59:25'!
+!RenameMethodMessageSetWindow class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 16:59:25'!
 methodReferencesOf: methods
 
 	^methods asOrderedCollection collect: [:aCompiledMethod | aCompiledMethod methodReference ].
 ! !
 
-!RenameMethodMessageSetWindow class methodsFor: 'as yet unclassified' stamp: 'HAW 5/31/2017 17:04:43'!
-openToRenameFrom: oldSelector to: newSelector methods: methods otherMethods: otherMethods label: aLabel
+!RenameMethodMessageSetWindow class methodsFor: 'instance creation' stamp: 'HAW 6/5/2017 17:50:12'!
+openFrom: aRenameMethodRequest methods: methods label: aLabel
 
 	| window |
 	
-	window := self openMessageList: (self methodReferencesOf: methods) label: aLabel autoSelect: oldSelector.
-	window initializeFrom: oldSelector to: newSelector otherMethods: otherMethods.
+	window := self openMessageList: (self methodReferencesOf: methods) label: aLabel autoSelect: aRenameMethodRequest oldSelector.
+	window initializeFrom: aRenameMethodRequest.
 	
 	^window 
 
 ! !
 
-!RenameMethodImplementorsWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 20:35:25'!
+!RenameMethodImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:33:16'!
 add
 		
 	self 
 		do: [ :classOfImplementorToAdd | self addImplementorIn: classOfImplementorToAdd ]
-		withEnteredClassLabeled:  'Class that implements ', oldSelector ! !
+		withEnteredClassLabeled:  'Class that implements ', self oldSelector ! !
 
 !RenameMethodImplementorsWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:20:27'!
 addButtonsTo: row color: buttonColor
@@ -794,28 +873,24 @@ addButtonsTo: row color: buttonColor
 	self addButton: self createCancelButton to: row color: buttonColor.
 ! !
 
-!RenameMethodImplementorsWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 20:35:13'!
+!RenameMethodImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:33:26'!
 addImplementorIn: classOfImplementorToAdd 
 
 	| implementorToAdd |
 	
 	implementorToAdd := classOfImplementorToAdd 
-		compiledMethodAt: oldSelector 
-		ifAbsent: [ ^self inform: classOfImplementorToAdd doesNotImplement: oldSelector ].
+		compiledMethodAt: self oldSelector 
+		ifAbsent: [ ^self inform: classOfImplementorToAdd doesNotImplement: self oldSelector ].
 		
 	self addToList: implementorToAdd! !
 
-!RenameMethodImplementorsWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 20:33:12'!
+!RenameMethodImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:34:39'!
 continue
 
-	| newImplementors |
-	
-	newImplementors := self compiledMethodsFrom: model messageList.
+	request implementors: (self compiledMethodsFrom: model messageList).
 	self delete.	
 	
-	RenameMethodSendersWindow openToRenameFrom: oldSelector to: newSelector implementors: newImplementors senders: otherMethods 
-
-	! !
+	RenameMethodSendersWindow openFrom: request ! !
 
 !RenameMethodImplementorsWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:22:05'!
 createContinueButton
@@ -828,18 +903,21 @@ createContinueButton
 
 ! !
 
-!RenameMethodImplementorsWindow class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 17:32:03'!
-openToRenameFrom: oldSelector to: newSelector implementors: implementors senders: senders
+!RenameMethodImplementorsWindow class methodsFor: 'instance creation' stamp: 'HAW 6/5/2017 17:50:57'!
+openFrom: aRenameMethodRequest
 
-	^ self openToRenameFrom: oldSelector to: newSelector methods: implementors otherMethods: senders label: 'Implementors of #', oldSelector, ' to Rename' 
+	^self 
+		openFrom: aRenameMethodRequest 
+		methods: aRenameMethodRequest implementors 
+		label: 'Implementors of #', aRenameMethodRequest oldSelector, ' to Rename'  
 ! !
 
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:48:37'!
+!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:36:00'!
 add
 	
 	self 
 		do: [ :classOfSenderToAdd | self askAndAddSenderOf: classOfSenderToAdd ]
-		withEnteredClassLabeled: 'Class that sends #', oldSelector
+		withEnteredClassLabeled: 'Class that sends #', self oldSelector
 		! !
 
 !RenameMethodSendersWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:24:40'!
@@ -852,38 +930,32 @@ addButtonsTo: row color: buttonColor
 	self addButton: self createCancelButton to: row color: buttonColor.
 ! !
 
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 18:19:34'!
-applyRename
-		
-	| rename |
-	
-	rename := RenameMethod from: oldSelector to: newSelector implementors: otherMethods senders: (self compiledMethodsFrom: model messageList).
-	changedMethods := rename apply.
-	! !
-
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 18:18:24'!
+!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:35:00'!
 askAndAddSenderOf: classOfSenderToAdd 
 		
 	| senderSelector senderToAdd |
 	
-	senderSelector := FillInTheBlankMorph request: 'Selector of sender of #', oldSelector onCancel: [^self ].
+	senderSelector := FillInTheBlankMorph request: 'Selector of sender of #', self oldSelector onCancel: [^self ].
 	senderToAdd := classOfSenderToAdd 
 		compiledMethodAt: senderSelector asSymbol
 		ifAbsent: [ ^self inform: classOfSenderToAdd doesNotImplement: senderSelector asSymbol].
 		
-	(senderToAdd refersToLiteral: oldSelector) ifFalse: [ ^self inform: senderToAdd classAndSelector, ' does not refer to #', oldSelector ].
+	(senderToAdd refersToLiteral: self oldSelector) ifFalse: [ ^self inform: senderToAdd classAndSelector, ' does not refer to #', self oldSelector ].
 	
 	self addToList: senderToAdd ! !
 
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 20:51:46'!
+!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:53:15'!
 backToImplementors
 	
-	| senders |
-	
-	senders := self compiledMethodsFrom: model messageList.
+	self changeRequestSenders.
 	self delete.
 	
-	RenameMethodImplementorsWindow openToRenameFrom: oldSelector to: newSelector implementors: otherMethods senders: senders
+	RenameMethodImplementorsWindow openFrom: request! !
+
+!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:53:24'!
+changeRequestSenders
+	
+	request senders: (self compiledMethodsFrom: model messageList).
 	! !
 
 !RenameMethodSendersWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:25:20'!
@@ -906,33 +978,22 @@ createRenameButton
 		label: 'Rename!!'.
 ! !
 
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 18:24:13'!
-openChanges
-		
-	MessageSetWindow openMessageList: changedMethods asSortedCollection label: 'Rename method changes' ! !
-
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/3/2017 12:06:04'!
+!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 18:19:08'!
 rename
-		
-	[[ self
-		applyRename;
-		delete;
-		openChanges ]
-			on: Refactoring refactoringWarningClass 
-			do: [ :aRefactoringWarning | 
-				(self confirm: aRefactoringWarning messageText, ' Continue?')
-					ifTrue: [ aRefactoringWarning resume ]
-					ifFalse: [ 
-						self delete.
-						aRefactoringWarning return: nil ]]]
-			on: Refactoring refactoringErrorClass 
-			do: [ :aRefactoringError | self inform: aRefactoringError messageText ]! !
+	
+	self changeRequestSenders.
+	request browser: self. 
+	
+	request wizardEnded.
+	! !
 
-!RenameMethodSendersWindow class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 17:31:45'!
-openToRenameFrom: oldSelector to: newSelector implementors: implementors senders: senders
+!RenameMethodSendersWindow class methodsFor: 'instance creation' stamp: 'HAW 6/5/2017 17:51:19'!
+openFrom: aRenameMethodRequest
 
-	^ self openToRenameFrom: oldSelector to: newSelector methods: senders otherMethods: implementors label: 'Senders of #', oldSelector, ' to Rename' 
-! !
+	^self 
+		openFrom: aRenameMethodRequest 
+		methods: aRenameMethodRequest senders 
+		label: 'Senders of #', aRenameMethodRequest oldSelector, ' to Rename' ! !
 
 !RefactoringTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:12:24'!
 allClassCategoriesOfTestData
@@ -1971,16 +2032,6 @@ apply
 
 	self subclassResponsibility ! !
 
-!Refactoring methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:53:35'!
-refactoringError: aMessage
-
-	self class refactoringError: aMessage.! !
-
-!Refactoring methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:02'!
-refactoringErrorClass
-
-	^ self class refactoringErrorClass.! !
-
 !Refactoring class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:07'!
 refactoringError: aMessage
 
@@ -2199,14 +2250,16 @@ addNewInstanceVariable
 	classToRefactor addInstVarName: newVariable.
 	! !
 
-!RenameInstanceVariable methodsFor: 'applying' stamp: 'HAW 5/26/2017 18:49:50'!
+!RenameInstanceVariable methodsFor: 'applying' stamp: 'HAW 6/5/2017 16:53:57'!
 apply
 
 	self 
 		addNewInstanceVariable;
 		copyOldInstanceVariableToNewOne;
 		renameReferencesToOldVariable;
-		removeOldInstanceVariable
+		removeOldInstanceVariable.
+		
+	^renamedReferences 
 		! !
 
 !RenameInstanceVariable methodsFor: 'evaluating - private' stamp: 'HAW 5/26/2017 18:47:41'!
@@ -2238,9 +2291,10 @@ removeOldInstanceVariable
 
 	classToRefactor removeInstVarName: oldVariable.! !
 
-!RenameInstanceVariable methodsFor: 'evaluating - private' stamp: 'HAW 5/26/2017 18:52:07'!
+!RenameInstanceVariable methodsFor: 'evaluating - private' stamp: 'HAW 6/5/2017 16:52:04'!
 renameReferencesToOldVariable
 	
+	renamedReferences := OrderedCollection new.
 	classToRefactor withAllSubclassesDo: [ :aClass | self renameReferencesToOldVariableInClass: aClass ]! !
 
 !RenameInstanceVariable methodsFor: 'evaluating - private' stamp: 'HAW 5/26/2017 18:51:53'!
@@ -2252,7 +2306,7 @@ renameReferencesToOldVariableInClass: aClass
 	referencingMethodNames do: [ :referencingMethodName | self renameReferencesToOldVariableInMethod: (aClass compiledMethodAt: referencingMethodName) ]
 	! !
 
-!RenameInstanceVariable methodsFor: 'evaluating - private' stamp: 'HAW 5/26/2017 18:53:21'!
+!RenameInstanceVariable methodsFor: 'evaluating - private' stamp: 'HAW 6/5/2017 16:53:40'!
 renameReferencesToOldVariableInMethod: aCompiledMethod 
 	
 	| methodNode newSource |
@@ -2261,7 +2315,8 @@ renameReferencesToOldVariableInMethod: aCompiledMethod
 	methodNode accept: rewriter.
 	newSource := methodNode generateSource.
 	
-	aCompiledMethod methodClass compile: newSource ! !
+	aCompiledMethod methodClass compile: newSource.
+	renamedReferences add: aCompiledMethod methodReference ! !
 
 !RenameInstanceVariable methodsFor: 'testing' stamp: 'HAW 5/24/2017 21:58:30'!
 shouldRename: aName
@@ -2757,46 +2812,266 @@ warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplement
 
 	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name, '.'! !
 
-!RenameMethodRequest methodsFor: 'evaluating - private' stamp: 'HAW 5/31/2017 18:38:58'!
-askNewSelectorOnCancel: cancelBlock
+!RefactoringRequest methodsFor: 'refactoring - applying' stamp: 'HAW 6/5/2017 18:06:39'!
+applyRefactoring
+
+	changes := refactoring apply! !
+
+!RefactoringRequest methodsFor: 'refactoring - creation' stamp: 'HAW 6/5/2017 18:05:46'!
+createRefactoring
+
+	self subclassResponsibility ! !
+
+!RefactoringRequest methodsFor: 'refactoring - creation' stamp: 'HAW 6/5/2017 18:05:20'!
+createRefactoringHandlingRefactoringExceptions
+
+	self valueHandlingRefactoringExceptions: [ refactoring := self createRefactoring ]
+	! !
+
+!RefactoringRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 14:24:04'!
+endRequest
+
+	^requestExitBlock value! !
+
+!RefactoringRequest methodsFor: 'exception handling' stamp: 'HAW 6/5/2017 18:47:40'!
+handleRefactoringError: aRefactoringError 
+
+	self inform: aRefactoringError messageText.
+	self endRequest ! !
+
+!RefactoringRequest methodsFor: 'exception handling' stamp: 'HAW 6/5/2017 18:47:32'!
+handleRefactoringWarning: aRefactoringWarning
+	
+	(self confirm: aRefactoringWarning messageText, ' Continue?')
+		ifTrue: [ aRefactoringWarning resume ]
+		ifFalse: [ self endRequest]! !
+
+!RefactoringRequest methodsFor: 'request information' stamp: 'HAW 6/5/2017 16:03:04'!
+request: aLabel initialAnswer: anAnswer
+
+	^self request: aLabel initialAnswer: anAnswer onCancel: requestExitBlock ! !
+
+!RefactoringRequest methodsFor: 'request information' stamp: 'HAW 6/5/2017 16:03:30'!
+request: aLabel initialAnswer: anAnswer onCancel: cancelBlock
+
+	^FillInTheBlankMorph request: aLabel initialAnswer: anAnswer onCancel: cancelBlock ! !
+
+!RefactoringRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 19:04:16'!
+requestRefactoringParameters
+
+	self subclassResponsibility ! !
+
+!RefactoringRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 19:05:35'!
+requestRefactoringParametersHandlingRefactoringExceptions
+
+	self valueHandlingRefactoringExceptions: [ self requestRefactoringParameters ]
+	! !
+
+!RefactoringRequest methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 18:06:53'!
+showChanges
+
+	self subclassResponsibility 	
+	! !
+
+!RefactoringRequest methodsFor: 'evaluating' stamp: 'HAW 6/5/2017 19:05:50'!
+value
+
+	requestExitBlock := [ ^self ].
+	
+	self 
+		requestRefactoringParametersHandlingRefactoringExceptions;
+		createRefactoringHandlingRefactoringExceptions;
+		applyRefactoring;
+		showChanges
+	
+	! !
+
+!RefactoringRequest methodsFor: 'exception handling' stamp: 'HAW 6/5/2017 18:04:52'!
+valueHandlingRefactoringExceptions: aBlock
+
+	^[aBlock
+		on: Refactoring refactoringWarningClass 
+		do: [ :aRefactoringWarning | self handleRefactoringWarning: aRefactoringWarning ]]
+		on: Refactoring refactoringErrorClass 
+		do: [ :aRefactoringError | self handleRefactoringError: aRefactoringError ]
+	! !
+
+!RenameClassRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 16:02:13'!
+askNewClassName
+
+	newClassName := self request: 'Enter new name:' initialAnswer: classToRename name.
+	newClassName := newClassName withBlanksTrimmed asSymbol.
+	! !
+
+!RenameClassRequest methodsFor: 'refactoring - creation' stamp: 'HAW 6/5/2017 18:07:28'!
+createRefactoring
+
+	^RenameClass from: classToRename to: newClassName in: Smalltalk undeclared: Undeclared.
+	
+! !
+
+!RenameClassRequest methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 16:05:00'!
+informChangesToBrowser
+	
+	browser changed: #classList.
+	browser selectClass: classToRename.
+! !
+
+!RenameClassRequest methodsFor: 'initialization' stamp: 'HAW 6/5/2017 16:55:57'!
+initializeOn: aBrowser for: aClass
+
+	browser := aBrowser.
+	classToRename := aClass.
+	! !
+
+!RenameClassRequest methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 18:08:13'!
+openChangedMethods
+
+	changes ifNotEmpty: [ 
+		MessageSetWindow openMessageList: changes label: 'Renamed references' autoSelect: newClassName ]
+! !
+
+!RenameClassRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 19:05:08'!
+requestRefactoringParameters
+
+	self askNewClassName! !
+
+!RenameClassRequest methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 18:07:55'!
+showChanges
+
+	self 
+		informChangesToBrowser;
+		openChangedMethods
+! !
+
+!RenameClassRequest class methodsFor: 'instance creation' stamp: 'HAW 6/5/2017 12:27:45'!
+on: aBrowser for: aClass
+
+	^self new initializeOn: aBrowser for: aClass! !
+
+!RenameInstanceVariableRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 16:49:50'!
+askNewVariableName
+		
+	newInstanceVariable := self request: 'Enter new name:' initialAnswer: oldInstanceVariable. 
+	newInstanceVariable := newInstanceVariable withBlanksTrimmed ! !
+
+!RenameInstanceVariableRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 16:18:06'!
+chooseInstanceVariable
+		
+	classToRefactor chooseDefiningInstanceVariableAlphabeticallyThenDo: [ :anOldInstanceVariable | ^oldInstanceVariable := anOldInstanceVariable ].
+	self endRequest ! !
+
+!RenameInstanceVariableRequest methodsFor: 'refactoring - creation' stamp: 'HAW 6/5/2017 18:09:13'!
+createRefactoring
+		
+	^RenameInstanceVariable from: oldInstanceVariable to: newInstanceVariable in: classToRefactor.
+	! !
+
+!RenameInstanceVariableRequest methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 16:54:45'!
+informChangesToBrowser
+		
+	browser model acceptedContentsChanged! !
+
+!RenameInstanceVariableRequest methodsFor: 'initialization' stamp: 'HAW 6/5/2017 16:58:13'!
+initializeOn: aBrowserWindow for: aClassToRefactor 
+	
+	browser := aBrowserWindow.
+	classToRefactor := aClassToRefactor ! !
+
+!RenameInstanceVariableRequest methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 18:09:39'!
+openChangedMethods 
+
+	changes ifNotEmpty: [ 
+		MessageSetWindow openMessageList: changes label: 'Renamed references' autoSelect: newInstanceVariable ]
+! !
+
+!RenameInstanceVariableRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 19:05:16'!
+requestRefactoringParameters
+
+	self 
+		chooseInstanceVariable;
+		askNewVariableName! !
+
+!RenameInstanceVariableRequest methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 18:09:30'!
+showChanges
+
+	self 
+		informChangesToBrowser;
+		openChangedMethods ! !
+
+!RenameInstanceVariableRequest class methodsFor: 'instance creation' stamp: 'HAW 6/5/2017 16:57:44'!
+on: aBrowserWindow for: aClassToRefactor
+	
+	^self new initializeOn: aBrowserWindow for: aClassToRefactor 
+! !
+
+!RenameMethodRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 17:02:06'!
+askNewSelector
 
 	| enteredString |
 	
-	enteredString := FillInTheBlankMorph request: 'Enter new selector:' initialAnswer: oldSelector onCancel: [ ^cancelBlock value ].
-	newSelector := enteredString asSymbol.
+	enteredString := self request: 'Enter new selector:' initialAnswer: oldSelector.
+	newSelector := enteredString withBlanksTrimmed asSymbol.
 		
 ! !
 
-!RenameMethodRequest methodsFor: 'evaluating - private' stamp: 'HAW 5/31/2017 18:40:35'!
-askScopeOnCancel: cancelBlock
+!RenameMethodRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 17:01:11'!
+askScope
 
 	| scopeMenu |
 	
 	scopeMenu := PopUpMenu labelArray: {'In Class'. 'In Hierarchy'. 'In Category'. 'In Hierarchy and its Categories'. 'In System'}.
 	scopeChoice := scopeMenu startUpWithCaption: 'Select Rename Scope'.
-	scopeChoice ifNil: [ ^cancelBlock value].
+	scopeChoice ifNil: [ self endRequest ].
 	! !
 
-!RenameMethodRequest methodsFor: 'evaluating - private' stamp: 'HAW 5/31/2017 18:39:27'!
+!RenameMethodRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 5/31/2017 18:39:27'!
 assertCanRenameMethod
 		
 	RenameMethod assertIsValidToRenameFrom: oldSelector to: newSelector.
 	! !
 
-!RenameMethodRequest methodsFor: 'evaluating - private' stamp: 'HAW 5/31/2017 19:27:15'!
+!RenameMethodRequest methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:46:58'!
+browser: aRenameMethodSendersWindow 
+	
+	browser := aRenameMethodSendersWindow ! !
+
+!RenameMethodRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 18:54:15'!
 calculateImplementorsAndSenders
 		
 	implementors := IdentitySet new.
 	senders := IdentitySet new.
 	
-	scopeChoice = 1 ifTrue: [RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders forClassAndMetaOf: implementingClass].
-	scopeChoice = 2 ifTrue: [RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inHierarchyOf: implementingClass].
-	scopeChoice = 3 ifTrue: [RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inCategory: implementingClass category organizedBy: SystemOrganization].
-	scopeChoice = 4 ifTrue: [RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inCategoriesAndHierarchyOf: implementingClass organizedBy: SystemOrganization ].
-	scopeChoice = 5 ifTrue: [RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ].
+	scopeChoice = 1 ifTrue: [
+		RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders forClassAndMetaOf: implementingClass].
+	scopeChoice = 2 ifTrue: [
+		RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inHierarchyOf: implementingClass].
+	scopeChoice = 3 ifTrue: [
+		RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inCategory: implementingClass category organizedBy: SystemOrganization].
+	scopeChoice = 4 ifTrue: [
+		RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inCategoriesAndHierarchyOf: implementingClass organizedBy: SystemOrganization ].
+	scopeChoice = 5 ifTrue: [
+		RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ].
+	
 	(scopeChoice between: 1 and: 5) ifFalse: [ self error: 'Unknown scope option' ].
 		
 		! !
+
+!RenameMethodRequest methodsFor: 'refactoring - creation' stamp: 'HAW 6/5/2017 18:17:23'!
+createRefactoring
+	
+	^RenameMethod from: oldSelector to: newSelector implementors: implementors senders: senders.
+	! !
+
+!RenameMethodRequest methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:07'!
+implementors
+	
+	^implementors ! !
+
+!RenameMethodRequest methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:39:17'!
+implementors: implementorsCollection
+
+	implementors := implementorsCollection ! !
 
 !RenameMethodRequest methodsFor: 'initialization' stamp: 'HAW 5/31/2017 19:24:05'!
 initializeFor: aSelector in: aClass
@@ -2804,21 +3079,63 @@ initializeFor: aSelector in: aClass
 	oldSelector := aSelector.
 	implementingClass := aClass! !
 
-!RenameMethodRequest methodsFor: 'evaluating - private' stamp: 'HAW 5/31/2017 20:46:59'!
-startWizard
-		
-	RenameMethodImplementorsWindow openToRenameFrom: oldSelector to: newSelector implementors: implementors senders: senders! !
+!RenameMethodRequest methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:21'!
+oldSelector
+	
+	^oldSelector ! !
 
-!RenameMethodRequest methodsFor: 'evaluation' stamp: 'HAW 5/31/2017 18:37:53'!
-value
+!RenameMethodRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 19:05:21'!
+requestRefactoringParameters
 
 	self
-		askNewSelectorOnCancel: [ ^self ];
+		askNewSelector;
 		assertCanRenameMethod;
-		askScopeOnCancel: [^self];
+		askScope
+		! !
+
+!RenameMethodRequest methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:40:32'!
+senders
+	
+	^senders ! !
+
+!RenameMethodRequest methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:41:12'!
+senders: sendersCollection
+ 
+	senders := sendersCollection ! !
+
+!RenameMethodRequest methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 18:18:46'!
+showChanges
+		
+	browser delete.
+	MessageSetWindow openMessageList: changes asSortedCollection label: 'Rename method changes' ! !
+
+!RenameMethodRequest methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 17:28:23'!
+startWizard
+		
+	RenameMethodImplementorsWindow openFrom: self! !
+
+!RenameMethodRequest methodsFor: 'evaluation' stamp: 'HAW 6/5/2017 19:06:02'!
+value
+
+	requestExitBlock := [ ^self ].
+	
+	self 
+		requestRefactoringParametersHandlingRefactoringExceptions;
 		calculateImplementorsAndSenders;
 		startWizard
 		! !
+
+!RenameMethodRequest methodsFor: 'evaluation' stamp: 'HAW 6/5/2017 18:16:43'!
+wizardEnded
+
+	requestExitBlock := [ ^self ].
+	
+	self 
+		createRefactoringHandlingRefactoringExceptions;
+		applyRefactoring;
+		showChanges
+	
+			! !
 
 !RenameMethodRequest class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 19:23:37'!
 for: aSelector in: aClass 

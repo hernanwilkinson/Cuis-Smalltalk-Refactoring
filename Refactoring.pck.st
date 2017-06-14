@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 11 June 2017 at 7:27:22 pm'!
-'Description add instance variable implementation. Refactoring of Rename Instance Variable to use AddInstanceVariable'!
-!provides: 'Refactoring' 1 12!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 14 June 2017 at 7:39:22 am'!
+'Description remove instance variable beginning'!
+!provides: 'Refactoring' 1 13!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -101,6 +101,16 @@ RefactoringTest subclass: #AddInstanceVariableTest
 AddInstanceVariableTest class
 	instanceVariableNames: ''!
 
+!classDefinition: #RemoveInstanceVariableTest category: #Refactoring!
+RefactoringTest subclass: #RemoveInstanceVariableTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RemoveInstanceVariableTest class' category: #Refactoring!
+RemoveInstanceVariableTest class
+	instanceVariableNames: ''!
+
 !classDefinition: #RenameClassTest category: #Refactoring!
 RefactoringTest subclass: #RenameClassTest
 	instanceVariableNames: ''
@@ -149,6 +159,16 @@ Refactoring subclass: #AddInstanceVariable
 	category: 'Refactoring'!
 !classDefinition: 'AddInstanceVariable class' category: #Refactoring!
 AddInstanceVariable class
+	instanceVariableNames: ''!
+
+!classDefinition: #RemoveInstanceVariable category: #Refactoring!
+Refactoring subclass: #RemoveInstanceVariable
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RemoveInstanceVariable class' category: #Refactoring!
+RemoveInstanceVariable class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameClass category: #Refactoring!
@@ -1383,6 +1403,26 @@ test13WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 	
 	! !
 
+!RemoveInstanceVariableTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/12/2017 19:07:22'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
+!RemoveInstanceVariableTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/12/2017 19:10:08'!
+test01CanNotRemoveAnInstanceVariableNotDefinedInClass
+
+	| variableToRemove classToRefactor |
+	
+	variableToRemove := 'a'.
+	classToRefactor := self createClassNamed: #ClassWithoutInstVar.
+	
+	self 
+		assertCreation: [ RemoveInstanceVariable named: variableToRemove from: classToRefactor ]
+		failsWith: [ RemoveInstanceVariable errorMessageForInstanceVariable: variableToRemove notDefinedIn: classToRefactor ].
+		
+	
+	! !
+
 !RenameClassTest methodsFor: 'class factory' stamp: 'HAW 6/1/2017 18:59:24'!
 allClassCategoriesOfTestData
 
@@ -2382,6 +2422,27 @@ warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
 			nextPutAll: newVariable;
 			nextPutAll: ' will be hidden at '.
 		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
+
+!RemoveInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/12/2017 19:11:50'!
+assert: aClass defines: anInstanceVariable
+
+	(aClass definesInstanceVariableNamed: anInstanceVariable) ifFalse: [ self signalInstanceVariable: anInstanceVariable notDefinedIn: aClass ].! !
+
+!RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/12/2017 19:12:41'!
+errorMessageForInstanceVariable: aName notDefinedIn: aClass
+
+	^ 'Instance variable ''' , aName , ''' is not defined in ' , aClass name.! !
+
+!RemoveInstanceVariable class methodsFor: 'instance creation' stamp: 'HAW 6/12/2017 19:11:22'!
+named: aVariable from: aClassToRefactor 
+	
+	self assert: aClassToRefactor defines: aVariable.
+! !
+
+!RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/12/2017 19:12:12'!
+signalInstanceVariable: aName notDefinedIn: aClass
+
+	^ self refactoringError: (self errorMessageForInstanceVariable: aName notDefinedIn: aClass).! !
 
 !RenameClass methodsFor: 'applying' stamp: 'HAW 6/4/2017 18:09:21'!
 apply

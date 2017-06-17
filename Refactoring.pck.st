@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 14 June 2017 at 7:39:22 am'!
-'Description remove instance variable beginning'!
-!provides: 'Refactoring' 1 13!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 17 June 2017 at 8:23:48 pm'!
+'Description remove instance variable done. refactoring on rename inst var'!
+!provides: 'Refactoring' 1 14!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -163,7 +163,7 @@ AddInstanceVariable class
 
 !classDefinition: #RemoveInstanceVariable category: #Refactoring!
 Refactoring subclass: #RemoveInstanceVariable
-	instanceVariableNames: ''
+	instanceVariableNames: 'variableToRemove classToRefactor'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -219,6 +219,16 @@ RefactoringApplier subclass: #AddInstanceVariableApplier
 	category: 'Refactoring'!
 !classDefinition: 'AddInstanceVariableApplier class' category: #Refactoring!
 AddInstanceVariableApplier class
+	instanceVariableNames: ''!
+
+!classDefinition: #RemoveInstanceVariableApplier category: #Refactoring!
+RefactoringApplier subclass: #RemoveInstanceVariableApplier
+	instanceVariableNames: 'classToRefactor browser variableToRemove'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RemoveInstanceVariableApplier class' category: #Refactoring!
+RemoveInstanceVariableApplier class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameClassApplier category: #Refactoring!
@@ -305,8 +315,8 @@ withSuperclassThatIncludesSelector: aSelector do: aFoundClosure ifNone: aNoneClo
 				ifNil: aNoneClosure 
 				ifNotNil: aFoundClosure ]! !
 
-!ClassDescription methodsFor: '*Refactoring' stamp: 'jmv 5/24/2017 00:29:00'!
-chooseDefiningInstanceVariableAlphabeticallyThenDo: aBlock
+!ClassDescription methodsFor: '*Refactoring' stamp: 'HAW 6/17/2017 19:56:03'!
+chooseDefiningInstanceVariableAlphabeticallyWith: aCaption thenDo: aBlock
 	
 	| vars index |
 	"Put up a menu of the instance variables in the receiver, presented in alphabetical order, and when the user chooses one, evaluate aBlock with the chosen variable as its parameter."
@@ -314,7 +324,7 @@ chooseDefiningInstanceVariableAlphabeticallyThenDo: aBlock
 	vars _ self instVarNames sorted.
 	vars isEmpty ifTrue: [^ self inform: 'There are no instance variables defined in ', self name].
 
-	index _ (PopUpMenu labelArray: vars lines: #()) startUpWithCaption: 'Select instance variable to rename'.
+	index _ (PopUpMenu labelArray: vars lines: #()) startUpWithCaption: aCaption.
 	index = 0 ifTrue: [^ self].
 	aBlock value: (vars at: index)! !
 
@@ -501,7 +511,7 @@ addInstVar
 	model selectedClassOrMetaClass ifNotNil: [ :aClass |
 		(AddInstanceVariableApplier on: self for: aClass) value ].! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/11/2017 19:15:08'!
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/17/2017 19:52:58'!
 classListMenu
 	"Set up the menu to apply to the receiver's class list, honoring the #shifted boolean"
 
@@ -519,7 +529,8 @@ classListMenu
 		('show comment'			editComment			''		model)
 		-
 		('add inst var...'				addInstVar)
-		('rename inst var...'				renameInstVar)
+		('rename inst var...'			renameInstVar)
+		('remove inst var...'			removeInstVar)
 		('inst var refs...'				browseInstVarRefs)
 		('inst var defs...'			browseInstVarDefs)
 		-
@@ -572,6 +583,12 @@ messageListMenu
 			('more...'						openShiftedMessageListMenu)).
 	^ aMenu
 ! !
+
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/17/2017 19:53:15'!
+removeInstVar
+	
+	model selectedClassOrMetaClass ifNotNil: [ :aClass |
+		(RemoveInstanceVariableApplier on: self for: aClass) value ].! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/6/2017 09:47:34'!
 renameInstVar
@@ -628,7 +645,7 @@ openSubProtocolForClass: aClass
 
 	^self open: aPBrowser label: label! !
 
-!Theme methodsFor: '*Refactoring' stamp: 'HAW 6/11/2017 19:25:02'!
+!Theme methodsFor: '*Refactoring' stamp: 'HAW 6/17/2017 20:22:41'!
 miscellaneousIcons
 
 	"Everything else."
@@ -689,7 +706,7 @@ miscellaneousIcons
 		#('add to current change set' 'add all meths to current chgs' 'add preamble (p)' 'More...' 'add inst var...') -> #listAddIcon.
 		#('toggle diffing (D)' 'toggle selections') -> #switchIcon.
 		#('reorganize' 'create inst var accessors' 'ChangeSorter reorderChangeSets.' 'reorder all change sets' 'by name' 'by size' 'by date') -> #sendReceiveIcon.
-		#('unsent methods' 'unreferenced class vars' 'unreferenced inst vars' 'Undeclared inspect.' 'Undeclared removeUnreferencedKeys; inspect.' 'ChangeSorter removeEmptyUnnamedChangeSets.' 'check for unsent messages') -> #junkIcon.
+		#('unsent methods' 'unreferenced class vars' 'unreferenced inst vars' 'Undeclared inspect.' 'Undeclared removeUnreferencedKeys; inspect.' 'ChangeSorter removeEmptyUnnamedChangeSets.' 'check for unsent messages' ) -> #junkIcon.
 		#('find changed windows...') -> #newWindowIcon.
 		#('make undraggable') -> #pushPinIcon.
 		#('Utilities saveScreenshot.') -> #stillCameraIcon.
@@ -704,6 +721,7 @@ miscellaneousIcons
 		#('Change Paragraph Style...' 'Change Character Style...' 'Remove Character Style' 'Replace all uses of Paragraph Style...' 'Replace all uses of Character Style...' 'Set Default Font...') -> #fontXGenericIcon.
 		#('Clear Font') -> #newIcon.
 		#('code file browser' 'package file browser') -> #findIcon.
+		#('remove inst var...') -> #deleteIcon.
 	}! !
 
 !TestCase methodsFor: '*Refactoring' stamp: 'HAW 5/28/2017 22:01:33'!
@@ -1403,12 +1421,12 @@ test13WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 	
 	! !
 
-!RemoveInstanceVariableTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/12/2017 19:07:22'!
+!RemoveInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 6/12/2017 19:07:22'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
-!RemoveInstanceVariableTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/12/2017 19:10:08'!
+!RemoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/12/2017 19:10:08'!
 test01CanNotRemoveAnInstanceVariableNotDefinedInClass
 
 	| variableToRemove classToRefactor |
@@ -1420,6 +1438,38 @@ test01CanNotRemoveAnInstanceVariableNotDefinedInClass
 		assertCreation: [ RemoveInstanceVariable named: variableToRemove from: classToRefactor ]
 		failsWith: [ RemoveInstanceVariable errorMessageForInstanceVariable: variableToRemove notDefinedIn: classToRefactor ].
 		
+	
+	! !
+
+!RemoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 19:31:54'!
+test02CanNotRemoveInstanceVariableWithReferences
+
+	| variableToRemove classToRefactor selector |
+	
+	variableToRemove := 'a'.
+	classToRefactor := self createClassNamed: #ClassWithoutInstVar instanceVariableNames: variableToRemove.
+	selector := #m1.
+	classToRefactor compile: selector,' ^', variableToRemove.
+	
+	self 
+		assertCreation: [ RemoveInstanceVariable named: variableToRemove from: classToRefactor ]
+		failsWith: [ RemoveInstanceVariable errorMessageForInstanceVariable: variableToRemove isReferencedInAll: (Array with: classToRefactor>>selector) ].
+		
+	
+	! !
+
+!RemoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 19:43:34'!
+test03WhenAppliedRemovesInstanceVariable
+
+	| variableToRemove classToRefactor remove |
+	
+	variableToRemove := 'a'.
+	classToRefactor := self createClassNamed: #ClassWithoutInstVar instanceVariableNames: variableToRemove.
+	
+	remove := RemoveInstanceVariable named: variableToRemove from: classToRefactor.
+	remove apply.
+	
+	self deny: (classToRefactor definesInstanceVariableNamed: variableToRemove)	
 	
 	! !
 
@@ -1640,25 +1690,25 @@ test01CanNotRenameAnInstanceVariableNotDefinedInClass
 	self assertRenameCreationFailsWith: [ RenameInstanceVariable errorMessageForInstanceVariable: oldVariable notDefinedIn: classToRefactor ]
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/6/2017 09:48:39'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:01:33'!
 test02NewVariableNameCanNotBeEmpty
 	
 	newVariable := '   '.
-	self createClassToRefactorAndAssertRenameCreationFailsWith: [RenameInstanceVariable newVariableCanNotBeEmptyErrorMessage ]
+	self createClassToRefactorAndAssertRenameCreationFailsWith: [AddInstanceVariable newVariableCanNotBeEmptyErrorMessage ]
 ! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 5/27/2017 11:20:09'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:00:28'!
 test03NewVariableNameCanNotContainBlanks
 	
 	newVariable := 'a b'.
-	self createClassToRefactorAndAssertRenameCreationFailsWith: [RenameInstanceVariable errorMessageForInvalidInstanceVariable: newVariable]
+	self createClassToRefactorAndAssertRenameCreationFailsWith: [AddInstanceVariable errorMessageForInvalidInstanceVariable: newVariable]
 ! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 5/27/2017 11:20:19'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:00:33'!
 test04NewVariableNameCanNotContainInvalidCharacters
 
 	newVariable := '2a'.
-	self createClassToRefactorAndAssertRenameCreationFailsWith: [RenameInstanceVariable errorMessageForInvalidInstanceVariable: newVariable]
+	self createClassToRefactorAndAssertRenameCreationFailsWith: [AddInstanceVariable errorMessageForInvalidInstanceVariable: newVariable]
 ! !
 
 !RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 21:33:30'!
@@ -1671,14 +1721,14 @@ test05ValidNewVariableNameGetBlanksTrimmed
 		shouldnt: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
 		raise: self refactoringError ! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 5/27/2017 11:20:29'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:00:58'!
 test06NewVariableNameCanNotBeDefinedInClass
 
 	newVariable := oldVariable.
-	self createClassToRefactorAndAssertRenameCreationFailsWith: [RenameInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactor )]
+	self createClassToRefactorAndAssertRenameCreationFailsWith: [AddInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactor )]
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 21:46:07'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:01:05'!
 test07NewVariableNameCanNotBeDefinedInSuperclasses
 
 	|  classToRefactorSuperclass  |
@@ -1686,12 +1736,12 @@ test07NewVariableNameCanNotBeDefinedInSuperclasses
 	classToRefactorSuperclass := self createClassNamed: #SuperclassWithInstVar instanceVariableNames: newVariable.
 	classToRefactor := self createClassNamed: self classToRefactorName subclassOf: classToRefactorSuperclass instanceVariableNames: oldVariable.
 	
-	self assertRenameCreationFailsWith: [RenameInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSuperclass)]
+	self assertRenameCreationFailsWith: [AddInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSuperclass)]
 	
 	
 ! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 5/27/2017 11:28:48'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:01:14'!
 test08NewVariableNameCanNotBeDefinedInAnySubclass
 
 	| classToRefactorSubclass |
@@ -1699,7 +1749,7 @@ test08NewVariableNameCanNotBeDefinedInAnySubclass
 	self createClassToRefactor.
 	classToRefactorSubclass := self createClassNamed: #SubclassWithInstVar subclassOf: classToRefactor instanceVariableNames: newVariable.
 	
-	self assertRenameCreationFailsWith: [RenameInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSubclass)]
+	self assertRenameCreationFailsWith: [AddInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSubclass)]
 	
 		! !
 
@@ -1803,7 +1853,7 @@ test14NewVariableOfExistingInstancesReferToOldVariableValue
 	self assert: 1 equals:  (instance instVarNamed: newVariable).
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 16:16:39'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:02:51'!
 test15WarnsWhenNewVariableEqualsTemporaryVariableOfAMethodInClass
 
 	| selector |
@@ -1814,10 +1864,10 @@ test15WarnsWhenNewVariableEqualsTemporaryVariableOfAMethodInClass
 	
 	self 
 		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
-		warnsWith: [ RenameInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 16:17:24'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:02:56'!
 test16WarnsWhenNewVariableEqualsArgumentOfAMethodInClass
 
 	| selector |
@@ -1828,10 +1878,10 @@ test16WarnsWhenNewVariableEqualsArgumentOfAMethodInClass
 	
 	self 
 		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
-		warnsWith: [ RenameInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 16:22:20'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:03:00'!
 test17WarnsWhenNewVariableEqualsArgumentOfABlockInAMethodInClass
 
 	| selector |
@@ -1842,10 +1892,10 @@ test17WarnsWhenNewVariableEqualsArgumentOfABlockInAMethodInClass
 	
 	self 
 		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
-		warnsWith: [ RenameInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 16:23:12'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:03:03'!
 test18WarnsWhenNewVariableEqualsTemporaryOfABlockInAMethodInClass
 
 	| selector |
@@ -1856,10 +1906,10 @@ test18WarnsWhenNewVariableEqualsTemporaryOfABlockInAMethodInClass
 	
 	self 
 		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
-		warnsWith: [ RenameInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 16:24:55'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:03:08'!
 test19WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 
 	| selector subclass |
@@ -1871,7 +1921,7 @@ test19WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 	
 	self 
 		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
-		warnsWith: [ RenameInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (subclass>>selector)) ].
+		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (subclass>>selector)) ].
 	! !
 
 !RenameMethodTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:26:45'!
@@ -2423,21 +2473,60 @@ warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
 			nextPutAll: ' will be hidden at '.
 		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
+!RemoveInstanceVariable methodsFor: 'applying' stamp: 'HAW 6/17/2017 19:46:45'!
+apply
+	
+	classToRefactor removeInstVarName: variableToRemove ! !
+
+!RemoveInstanceVariable methodsFor: 'initialization' stamp: 'HAW 6/17/2017 19:45:18'!
+initializeNamed: aVariable from: aClassToRefactor 
+
+	variableToRemove := aVariable.
+	classToRefactor := aClassToRefactor ! !
+
 !RemoveInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/12/2017 19:11:50'!
 assert: aClass defines: anInstanceVariable
 
 	(aClass definesInstanceVariableNamed: anInstanceVariable) ifFalse: [ self signalInstanceVariable: anInstanceVariable notDefinedIn: aClass ].! !
+
+!RemoveInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/17/2017 19:38:33'!
+assert: aVaraible isNotReferencedInHierarchyOf: aClassToRefactor
+
+	| references |
+	
+	references := OrderedCollection new.
+	aClassToRefactor withAllSubclassesDo: [ :aClass | 
+		(aClass whichSelectorsAccess: aVaraible) do: [ :aSelector | references add: aClass >> aSelector ]].
+	
+	references notEmpty ifTrue: [ self signalInstanceVariable: aVaraible isReferencedInAll: references ]! !
+
+!RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/17/2017 19:30:35'!
+errorMessageForInstanceVariable: aVariable isReferencedInAll: methods
+
+	^String streamContents: [ :stream |
+		stream 
+			nextPutAll: aVariable;
+			nextPutAll: ' is referenced in '.
+		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
 !RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/12/2017 19:12:41'!
 errorMessageForInstanceVariable: aName notDefinedIn: aClass
 
 	^ 'Instance variable ''' , aName , ''' is not defined in ' , aClass name.! !
 
-!RemoveInstanceVariable class methodsFor: 'instance creation' stamp: 'HAW 6/12/2017 19:11:22'!
+!RemoveInstanceVariable class methodsFor: 'instance creation' stamp: 'HAW 6/17/2017 19:44:39'!
 named: aVariable from: aClassToRefactor 
 	
 	self assert: aClassToRefactor defines: aVariable.
+	self assert: aVariable isNotReferencedInHierarchyOf: aClassToRefactor.
+	
+	^self new initializeNamed: aVariable from: aClassToRefactor 
 ! !
+
+!RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/17/2017 19:39:25'!
+signalInstanceVariable: aVariable isReferencedInAll: methods
+
+	self refactoringError: (self errorMessageForInstanceVariable: aVariable isReferencedInAll: methods)! !
 
 !RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/12/2017 19:12:12'!
 signalInstanceVariable: aName notDefinedIn: aClass
@@ -2692,12 +2781,12 @@ renameReferencesToOldVariable
 	renamedReferences := OrderedCollection new.
 	self classToRefactor withAllSubclassesDo: [ :aClass | self renameReferencesToOldVariableInClass: aClass ]! !
 
-!RenameInstanceVariable methodsFor: 'applying - private' stamp: 'HAW 5/26/2017 18:51:53'!
+!RenameInstanceVariable methodsFor: 'applying - private' stamp: 'HAW 6/17/2017 19:17:33'!
 renameReferencesToOldVariableInClass: aClass 
 
 	| referencingMethodNames |
 	
-	referencingMethodNames _ aClass whichSelectorsAccess: oldVariable.
+	referencingMethodNames := aClass whichSelectorsAccess: oldVariable.
 	referencingMethodNames do: [ :referencingMethodName | self renameReferencesToOldVariableInMethod: (aClass compiledMethodAt: referencingMethodName) ]
 	! !
 
@@ -2723,44 +2812,10 @@ assert: aClass defines: anInstanceVariable
 
 	(aClass definesInstanceVariableNamed: anInstanceVariable) ifFalse: [ self signalInstanceVariable: anInstanceVariable notDefinedIn: aClass ].! !
 
-!RenameInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 5/24/2017 21:51:47'!
-assert: aVariable isNotAlreadyDefinedIn: aClass
-	
-	^ aClass
-		withClassesThatDefineInHierarchyInstanceVariable: aVariable
-		do: [ :definingClasses | self signalNewInstanceVariable: aVariable alreadyDefinedInAll: definingClasses ]
-		ifNone: [ ].! !
-
-!RenameInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/6/2017 09:55:25'!
-assertIsNotEmpty: aNewVariable
-
-	aNewVariable isEmpty ifTrue: [ self signalNewVariableCanNotBeEmpty]! !
-
-!RenameInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/6/2017 09:54:07'!
-assertIsValidInstanceVariableName: aName
-
-	| scannedNames |
-
-	scannedNames _ Scanner new scanFieldNames: aName.
-	scannedNames size = 1 ifFalse: [ self signalInvalidInstanceVariable: aName ].
-	scannedNames first = aName ifFalse: [ self signalInvalidInstanceVariable: aName ].
-
-	^ scannedNames first.! !
-
 !RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 5/24/2017 21:56:02'!
 errorMessageForInstanceVariable: aName notDefinedIn: aClass
 
 	^ 'Instance variable ''' , aName , ''' is not defined in ' , aClass name.! !
-
-!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 5/24/2017 21:53:34'!
-errorMessageForInvalidInstanceVariable: aName
-
-	^ '''' , aName , ''' is not a valid instance variable name'.! !
-
-!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 5/24/2017 21:56:15'!
-errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes
-
-	^ 'Instance variable ''' , aName , ''' is already defined in ' , classes asCommaStringAnd.! !
 
 !RenameInstanceVariable class methodsFor: 'instance creation' stamp: 'HAW 6/11/2017 19:04:59'!
 from: anOldvariable to: aNewVariable in: aClassToRefactor 
@@ -2772,54 +2827,10 @@ from: anOldvariable to: aNewVariable in: aClassToRefactor
 	
 	^self new initializeFrom: anOldvariable addingWith: addInstanceVariable ! !
 
-!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/6/2017 09:56:10'!
-newVariableCanNotBeEmptyErrorMessage
-	
-	^'New variable can not be empty'! !
-
 !RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:22'!
 signalInstanceVariable: aName notDefinedIn: aClass
 
 	^ self refactoringError: (self errorMessageForInstanceVariable: aName notDefinedIn: aClass).! !
-
-!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:27'!
-signalInvalidInstanceVariable: aName
-
-	^ self refactoringError: (self errorMessageForInvalidInstanceVariable: aName).! !
-
-!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:43'!
-signalNewInstanceVariable: aName alreadyDefinedInAll: classes
-
-	^ self refactoringError: (self errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes).! !
-
-!RenameInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/6/2017 09:55:55'!
-signalNewVariableCanNotBeEmpty
-	
-	self refactoringError: self newVariableCanNotBeEmptyErrorMessage! !
-
-!RenameInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/1/2017 16:26:59'!
-warnIf: newVariable isDefinedInMethodsOf: aClass 
-	
-	| methodsDefiningNewVariable |
-	
-	methodsDefiningNewVariable := OrderedCollection new.
-	aClass withAllSubclassesDo: [ :class | methodsDefiningNewVariable addAll: (class methodsSelect: [:aMethod | aMethod hasArgumentOrTemporary: newVariable ]) ].
-	
-	methodsDefiningNewVariable notEmpty ifTrue: [ self warnNewVariable: newVariable willBeHiddenAtAll: methodsDefiningNewVariable ].! !
-
-!RenameInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/3/2017 12:01:19'!
-warnNewVariable: newVariable willBeHiddenAtAll: methods
-
-	^ self refactoringWarning: (self warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods).! !
-
-!RenameInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/1/2017 16:16:12'!
-warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
- 
-	^String streamContents: [ :stream |
-		stream 
-			nextPutAll: newVariable;
-			nextPutAll: ' will be hidden at '.
-		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
 !RenameMethod methodsFor: 'applying' stamp: 'HAW 5/31/2017 16:50:58'!
 apply
@@ -3343,6 +3354,50 @@ on: aBrowserWindow for: aClassToRefactor
 	^self new initializeOn: aBrowserWindow for: aClassToRefactor 
 ! !
 
+!RemoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/17/2017 19:56:28'!
+chooseInstanceVariable
+
+	classToRefactor 
+		chooseDefiningInstanceVariableAlphabeticallyWith: 'Select instance variable to remove'
+		thenDo: [ :aVariableToRemove | ^variableToRemove := aVariableToRemove ].
+	self endRequest 
+
+	! !
+
+!RemoveInstanceVariableApplier methodsFor: 'refactoring - creation' stamp: 'HAW 6/17/2017 19:50:03'!
+createRefactoring
+		
+	^RemoveInstanceVariable named: variableToRemove from: classToRefactor ! !
+
+!RemoveInstanceVariableApplier methodsFor: 'refactoring - changes' stamp: 'HAW 6/17/2017 19:48:10'!
+informChangesToBrowser
+		
+	browser model acceptedContentsChanged! !
+
+!RemoveInstanceVariableApplier methodsFor: 'initialization' stamp: 'HAW 6/17/2017 19:48:10'!
+initializeOn: aBrowserWindow for: aClassToRefactor 
+	
+	browser := aBrowserWindow.
+	classToRefactor := aClassToRefactor ! !
+
+!RemoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/17/2017 19:51:21'!
+requestRefactoringParameters
+
+	self chooseInstanceVariable.
+
+	! !
+
+!RemoveInstanceVariableApplier methodsFor: 'refactoring - changes' stamp: 'HAW 6/17/2017 19:50:31'!
+showChanges
+
+	self informChangesToBrowser! !
+
+!RemoveInstanceVariableApplier class methodsFor: 'instance creation' stamp: 'HAW 6/17/2017 19:48:10'!
+on: aBrowserWindow for: aClassToRefactor
+	
+	^self new initializeOn: aBrowserWindow for: aClassToRefactor 
+! !
+
 !RenameClassApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 16:02:13'!
 askNewClassName
 
@@ -3402,10 +3457,12 @@ askNewVariableName
 	newInstanceVariable := self request: 'Enter new name:' initialAnswer: oldInstanceVariable. 
 	newInstanceVariable := newInstanceVariable withBlanksTrimmed ! !
 
-!RenameInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 16:18:06'!
+!RenameInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/17/2017 19:56:46'!
 chooseInstanceVariable
 		
-	classToRefactor chooseDefiningInstanceVariableAlphabeticallyThenDo: [ :anOldInstanceVariable | ^oldInstanceVariable := anOldInstanceVariable ].
+	classToRefactor 
+		chooseDefiningInstanceVariableAlphabeticallyWith: 'Select instance variable to rename'
+		thenDo: [ :anOldInstanceVariable | ^oldInstanceVariable := anOldInstanceVariable ].
 	self endRequest ! !
 
 !RenameInstanceVariableApplier methodsFor: 'refactoring - creation' stamp: 'HAW 6/5/2017 18:09:13'!

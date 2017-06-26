@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3092] on 26 June 2017 at 11:03:11 am'!
-'Description rename temporary implemented!! - Menu link was missing'!
-!provides: 'Refactoring' 1 17!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3092] on 26 June 2017 at 5:27:33 pm'!
+'Description First Exract to Temporary tests'!
+!provides: 'Refactoring' 1 18!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -179,6 +179,16 @@ Refactoring subclass: #AddInstanceVariable
 	category: 'Refactoring'!
 !classDefinition: 'AddInstanceVariable class' category: #Refactoring!
 AddInstanceVariable class
+	instanceVariableNames: ''!
+
+!classDefinition: #ExtractToTemporary category: #Refactoring!
+Refactoring subclass: #ExtractToTemporary
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ExtractToTemporary class' category: #Refactoring!
+ExtractToTemporary class
 	instanceVariableNames: ''!
 
 !classDefinition: #RemoveInstanceVariable category: #Refactoring!
@@ -553,6 +563,31 @@ valuesSelect: aCondition
 	self valuesDo: [ :aValue | (aCondition value: aValue) ifTrue: [ selected add: aValue ]].
 	
 	^selected! !
+
+!Parser methodsFor: '*Refactoring' stamp: 'HAW 6/26/2017 16:20:01'!
+parse: sourceStreamOrString class: behavior noPattern: aBoolean
+
+	^ self 
+		parse: sourceStreamOrString readStream 
+		class: behavior
+		noPattern: aBoolean 
+		context: nil 
+		notifying: nil 
+		ifFail: [^nil]! !
+
+!Parser class methodsFor: '*Refactoring' stamp: 'HAW 6/26/2017 16:17:57'!
+parse: sourceCode class: aClass
+
+	^self parse: sourceCode class: aClass noPattern: false! !
+
+!Parser class methodsFor: '*Refactoring' stamp: 'HAW 6/26/2017 16:17:40'!
+parse: sourceCode class: aClass noPattern: aBoolean
+
+	^(self new
+		encoderClass: EncoderForV3PlusClosures;
+		parse: sourceCode class: aClass noPattern: aBoolean)
+			sourceText: sourceCode;
+			yourself! !
 
 !ParseNode methodsFor: '*Refactoring' stamp: 'HAW 5/24/2017 19:44:09'!
 generateSource
@@ -1586,24 +1621,123 @@ test13WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 	
 	! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/17/2017 20:53:33'!
-test01
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
+allClassCategoriesOfTestData
 
-	"
-	classToRefactor := self createClassNamed: #ClassToExtractToTemporary.
-	selector := #m1.
-	classToRefactor compile: selector, ' 1'.
-	method := classToRefactor >> selector.
-	newTemporary := 't1'.
+	^Array with: self classCategoryOfTestData ! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:33:08'!
+classToRefactorName
+
+	^#ClassToExtractTemp! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:54'!
+methodNodeOf: aSourceCode
+
+	^self methodNodeOf: aSourceCode in: self class! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:13:33'!
+methodNodeOf: aSourceCode in: aClass
+
+	^Parser parse: aSourceCode class: aClass ! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:16:32'!
+methodNodeToExtractOf: aSourceCode
+
+	^self methodNodeToExtractOf: aSourceCode in: self class! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 17:25:58'!
+methodNodeToExtractOf: aSourceCode in: aClass
+
+	^ExtractToTemporary paseNodeToExtractFrom: (Parser parse: aSourceCode class: aClass noPattern: true)! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:35:39'!
+test01NewVariableCanNotBeEmpty
+
+	| newVariable colaborationToExtract methodNodeToRefactor |
 	
-	extract := ExtractToTemporary named: newTemporary colaboration: '1' in: method.
-	extract apply.
+	newVariable := ''.
+	colaborationToExtract := self methodNodeToExtractOf: '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 1'.
 	
-	newMethod := classToRefactor >> selector.
-	self assert: newMethod hasArgumentOrTemporary: newTemporary.
+	self 
+		assertCreation: [ ExtractToTemporary named: newVariable with: colaborationToExtract  in: methodNodeToRefactor ]
+		failsWith: [ ExtractToTemporary newVariableCanNotBeEmptyErrorMessage ]
+		
+	"self assert: newMethod hasArgumentOrTemporary: newTemporary.
 	self assert: t1 es iniciailizado con '1'.
 	self assert: donde decia '1' dice t1
 	"! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:35:34'!
+test02NewVariableHasToBeValid
+
+	| newVariable colaborationToExtract methodNodeToRefactor |
+	
+	newVariable := 'a b'.
+	colaborationToExtract := self methodNodeToExtractOf: '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 1'.
+	
+	self 
+		assertCreation: [ ExtractToTemporary named: newVariable with: colaborationToExtract  in: methodNodeToRefactor ]
+		failsWith: [ ExtractToTemporary errorMessageForInvalidTemporaryVariable: newVariable ]
+	! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:35:29'!
+test03NewVariableNameCanNotBeDefinedInMethod
+
+	| newVariable colaborationToExtract methodNodeToRefactor |
+	
+	newVariable := 'new'.
+	colaborationToExtract := self methodNodeToExtractOf: '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 | ', newVariable, ' | 1'.
+	
+	self 
+		assertCreation: [ ExtractToTemporary named: newVariable with: colaborationToExtract  in: methodNodeToRefactor ]
+		failsWith: [ ExtractToTemporary errorMessageForNewTemporaryVariable: newVariable isAlreadyDefinedIn: methodNodeToRefactor ]
+	! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:35:20'!
+test04WarnsIfNewTemporaryIsEqualToInstanceVariableInClass
+
+	| newVariable colaborationToExtract methodNodeToRefactor classToRefactor |
+	
+	newVariable := 'new'.
+	classToRefactor := self createClassNamed: self classToRefactorName instanceVariableNames: newVariable.
+	colaborationToExtract := self methodNodeToExtractOf: '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 1' in: classToRefactor.
+	
+	self 
+		assertCreation: [ ExtractToTemporary named: newVariable with: colaborationToExtract  in: methodNodeToRefactor ]
+		warnsWith: [ ExtractToTemporary warningMessageFor: newVariable willHideInstanceVariableDefinedIn: classToRefactor ]! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:37:31'!
+test05WarnsIfNewTemporaryIsEqualToInstanceVariableInAnySuperclass
+
+	| newVariable colaborationToExtract methodNodeToRefactor classToRefactor superclassToRefactor |
+	
+	newVariable := 'new'.
+	superclassToRefactor := self createClassNamed: #ClassToRefactorSuperclass instanceVariableNames: newVariable.
+	classToRefactor := self createClassNamed: self classToRefactorName subclassOf: superclassToRefactor.
+	colaborationToExtract := self methodNodeToExtractOf: '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 1' in: classToRefactor.
+	
+	self 
+		assertCreation: [ ExtractToTemporary named: newVariable with: colaborationToExtract  in: methodNodeToRefactor ]
+		warnsWith: [ ExtractToTemporary warningMessageFor: newVariable willHideInstanceVariableDefinedIn: superclassToRefactor ]! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 17:20:49'!
+test06ColaborationToExtractMustBePartOfMethodNodeToRefactor
+
+	| newVariable colaborationToExtract methodNodeToRefactor |
+	
+	newVariable := 'new'.
+	colaborationToExtract := self methodNodeToExtractOf: '3'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 1'.
+	
+	self 
+		assertCreation: [ ExtractToTemporary named: newVariable with: colaborationToExtract  in: methodNodeToRefactor ]
+		failsWith: [ ExtractToTemporary errorMessageMethodNodeToRefactorDoesNotInclude: colaborationToExtract ]! !
 
 !RemoveInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 6/12/2017 19:07:22'!
 allClassCategoriesOfTestData
@@ -2532,10 +2666,10 @@ methodNodeOf: aSourceCode
 
 	^self methodNodeOf: aSourceCode in: self class! !
 
-!RenameTemporaryTest methodsFor: 'class factory' stamp: 'HAW 6/25/2017 21:57:15'!
+!RenameTemporaryTest methodsFor: 'class factory' stamp: 'HAW 6/26/2017 16:12:55'!
 methodNodeOf: aSourceCode in: aClass
 
-	^RenameTemporary methodNodeOf: aSourceCode in: aClass ! !
+	^Parser methodNodeOf: aSourceCode in: aClass ! !
 
 !RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 6/25/2017 21:55:03'!
 test01VariableToRenameHasToBeDefined
@@ -2825,6 +2959,113 @@ warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
 			nextPutAll: newVariable;
 			nextPutAll: ' will be hidden at '.
 		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
+
+!ExtractToTemporary class methodsFor: 'pre-conditions' stamp: 'HAW 6/26/2017 17:15:41'!
+assert: aMethodNodeToExtract isIncludedIn: aMethodNodeToRefactor
+
+	(aMethodNodeToExtract isOnlySubnodeOf: aMethodNodeToRefactor in: aMethodNodeToRefactor) ifFalse: [
+		self signalMethodNodeToRefactorDoesNotInclude: aMethodNodeToExtract ]! !
+
+!ExtractToTemporary class methodsFor: 'pre-conditions' stamp: 'HAW 6/26/2017 16:30:52'!
+assert: aNewVariable isNotDefinedIn: aMethodNode 
+	
+	(aMethodNode tempNames includes: aNewVariable) ifTrue: [ self signalNewTemporaryVariable: aNewVariable isAlreadyDefinedIn: aMethodNode ]
+	! !
+
+!ExtractToTemporary class methodsFor: 'pre-conditions' stamp: 'HAW 6/26/2017 16:23:25'!
+assertIsNotEmpty: aNewVariable
+
+	aNewVariable isEmpty ifTrue: [ self signalNewVariableCanNotBeEmpty ]! !
+
+!ExtractToTemporary class methodsFor: 'pre-conditions' stamp: 'HAW 6/26/2017 16:27:32'!
+assertIsValidVariableName: aName
+
+	| scannedNames |
+
+	scannedNames _ Scanner new scanFieldNames: aName.
+	scannedNames size = 1 ifFalse: [ self signalInvalidTemporaryVariable: aName ].
+	scannedNames first = aName ifFalse: [ self signalInvalidTemporaryVariable: aName ].! !
+
+!ExtractToTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/26/2017 16:28:07'!
+errorMessageForInvalidTemporaryVariable: aName
+
+	^ '''' , aName , ''' is not a valid temporary variable name'.! !
+
+!ExtractToTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/26/2017 16:31:23'!
+errorMessageForNewTemporaryVariable: aNewVariable isAlreadyDefinedIn: aMethodNode
+
+	^aNewVariable, ' is already defined in ', aMethodNode classAndSelector ! !
+
+!ExtractToTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/26/2017 17:24:14'!
+errorMessageMethodNodeToRefactorDoesNotInclude: aMethodNodeToExtract
+
+	^'The colaboration ', aMethodNodeToExtract generateSource, ' is not included in the method to refactor'! !
+
+!ExtractToTemporary class methodsFor: 'instance creation' stamp: 'HAW 6/26/2017 17:24:31'!
+named: aNewVariable with: aMethodNodeToExtract in: aMethodNodeToRefactor
+
+	|  trimmedNewVariable |
+	
+	trimmedNewVariable := aNewVariable withBlanksTrimmed.
+	
+	self assertIsNotEmpty: trimmedNewVariable.
+	self assertIsValidVariableName: trimmedNewVariable.
+	self assert: trimmedNewVariable isNotDefinedIn: aMethodNodeToRefactor.
+	self assert: aMethodNodeToExtract isIncludedIn: aMethodNodeToRefactor.
+	
+	self warnIf: trimmedNewVariable isDefinedAsInstanceVariableInHierarchyOf: aMethodNodeToRefactor methodClass.
+
+	self halt.
+	! !
+
+!ExtractToTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/26/2017 16:24:10'!
+newVariableCanNotBeEmptyErrorMessage
+	
+	^'New variable can not be empty'! !
+
+!ExtractToTemporary class methodsFor: 'method node to extract' stamp: 'HAW 6/26/2017 17:25:33'!
+paseNodeToExtractFrom: aMethodNode
+
+	^aMethodNode block statements first expr.
+	! !
+
+!ExtractToTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/26/2017 16:27:51'!
+signalInvalidTemporaryVariable: aName
+
+	^ self refactoringError: (self errorMessageForInvalidTemporaryVariable: aName).! !
+
+!ExtractToTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/26/2017 17:16:32'!
+signalMethodNodeToRefactorDoesNotInclude: aMethodNodeToExtract
+
+	^self refactoringError: (self errorMessageMethodNodeToRefactorDoesNotInclude: aMethodNodeToExtract)! !
+
+!ExtractToTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/26/2017 16:31:08'!
+signalNewTemporaryVariable: aNewVariable isAlreadyDefinedIn: aMethodNode
+
+	self refactoringError: (self errorMessageForNewTemporaryVariable: aNewVariable isAlreadyDefinedIn: aMethodNode )! !
+
+!ExtractToTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/26/2017 16:23:49'!
+signalNewVariableCanNotBeEmpty
+	
+	self refactoringError: self newVariableCanNotBeEmptyErrorMessage! !
+
+!ExtractToTemporary class methodsFor: 'warnings' stamp: 'HAW 6/26/2017 16:34:44'!
+warn: aNewVariable willHideInstanceVariableDefinedIn: aClass 
+
+	self refactoringWarning: (self warningMessageFor: aNewVariable willHideInstanceVariableDefinedIn: aClass)! !
+
+!ExtractToTemporary class methodsFor: 'pre-conditions' stamp: 'HAW 6/26/2017 16:33:25'!
+warnIf: aNewVariable isDefinedAsInstanceVariableInHierarchyOf: aClass 
+	
+	| classDefiningNewVariable |
+	
+	classDefiningNewVariable := aClass whichClassDefinesInstanceVariable: aNewVariable ifNone: [ ^self ].
+	self warn: aNewVariable willHideInstanceVariableDefinedIn: classDefiningNewVariable ! !
+
+!ExtractToTemporary class methodsFor: 'warnings' stamp: 'HAW 6/26/2017 16:35:04'!
+warningMessageFor: aNewVariable willHideInstanceVariableDefinedIn: aClass
+
+	^aNewVariable, ' will hide instance variable defined in ', aClass name! !
 
 !RemoveInstanceVariable methodsFor: 'applying' stamp: 'HAW 6/17/2017 19:46:45'!
 apply
@@ -3652,14 +3893,10 @@ from: anOldVariable to: aNewVariable in: aMethodNode
 	^self new initializeFrom: anOldVariable to: trimmedNewVariable in: aMethodNode
 ! !
 
-!RenameTemporary class methodsFor: 'method node creation' stamp: 'HAW 6/25/2017 21:53:31'!
+!RenameTemporary class methodsFor: 'method node creation' stamp: 'HAW 6/26/2017 16:11:06'!
 methodNodeOf: aSourceCode in: aClass
 
-	^(Parser new
-		encoderClass: EncoderForV3PlusClosures;
-		parse: aSourceCode class: aClass)
-			sourceText: aSourceCode;
-			yourself! !
+	^Parser parse: aSourceCode class: aClass! !
 
 !RenameTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/25/2017 21:53:31'!
 newVariableCanNotBeEmptyErrorMessage
@@ -4019,24 +4256,19 @@ browser: aRenameMethodSendersWindow
 	
 	browser := aRenameMethodSendersWindow ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 18:54:15'!
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 15:01:25'!
 calculateImplementorsAndSenders
 		
 	implementors := IdentitySet new.
 	senders := IdentitySet new.
 	
-	scopeChoice = 1 ifTrue: [
-		RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders forClassAndMetaOf: implementingClass].
-	scopeChoice = 2 ifTrue: [
-		RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inHierarchyOf: implementingClass].
-	scopeChoice = 3 ifTrue: [
-		RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inCategory: implementingClass category organizedBy: SystemOrganization].
-	scopeChoice = 4 ifTrue: [
-		RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inCategoriesAndHierarchyOf: implementingClass organizedBy: SystemOrganization ].
-	scopeChoice = 5 ifTrue: [
-		RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ].
+	scopeChoice = 1 ifTrue: [ ^self implementorsAndSendersForClass ].
+	scopeChoice = 2 ifTrue: [ ^self implementorsAndSendersForHierarchy ].
+	scopeChoice = 3 ifTrue: [ ^self implementorsAndSendersInCategory ].
+	scopeChoice = 4 ifTrue: [ ^self implementorsAndSendersInCategoryAndHierarchy ].
+	scopeChoice = 5 ifTrue: [ ^self implementorsAndSendersInSystem ].
 	
-	(scopeChoice between: 1 and: 5) ifFalse: [ self error: 'Unknown scope option' ].
+	self error: 'Unknown scope option' 
 		
 		! !
 
@@ -4055,6 +4287,41 @@ implementors
 implementors: implementorsCollection
 
 	implementors := implementorsCollection ! !
+
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 14:57:42'!
+implementorsAndSendersForClass
+
+	^RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders forClassAndMetaOf: implementingClass! !
+
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 14:58:31'!
+implementorsAndSendersForHierarchy 
+		
+	^RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inHierarchyOf: implementingClass! !
+
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 14:59:34'!
+implementorsAndSendersInCategory 
+
+	^RenameMethod 
+		addImplementorsOf: oldSelector 
+		to: implementors 
+		andSendersTo: senders 
+		inCategory: implementingClass category 
+		organizedBy: SystemOrganization! !
+
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 15:00:35'!
+implementorsAndSendersInCategoryAndHierarchy 
+
+	^RenameMethod 
+		addImplementorsOf: oldSelector 
+		to: implementors 
+		andSendersTo: senders 
+		inCategoriesAndHierarchyOf: implementingClass 
+		organizedBy: SystemOrganization ! !
+
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 15:01:15'!
+implementorsAndSendersInSystem
+		
+	^RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ! !
 
 !RenameMethodApplier methodsFor: 'initialization' stamp: 'HAW 5/31/2017 19:24:05'!
 initializeFor: aSelector in: aClass
@@ -4155,12 +4422,12 @@ createRefactoring
 	^RenameTemporary from: oldVariable to: newVariable in: methodNode 
 	! !
 
-!RenameTemporaryApplier methodsFor: 'initialization' stamp: 'HAW 6/25/2017 21:54:57'!
+!RenameTemporaryApplier methodsFor: 'initialization' stamp: 'HAW 6/26/2017 16:12:40'!
 initializeOn: aSmalltalkEditor
 
 	smalltalkEditor := aSmalltalkEditor.
 	classToRefactor := smalltalkEditor codeProvider selectedClassOrMetaClass.
-	methodNode := RenameTemporary methodNodeOf: smalltalkEditor actualContents string in: classToRefactor.
+	methodNode := Parser methodNodeOf: smalltalkEditor actualContents string in: classToRefactor.
 ! !
 
 !RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/25/2017 21:29:58'!

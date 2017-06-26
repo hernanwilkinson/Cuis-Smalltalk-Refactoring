@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 25 June 2017 at 10:02:59 pm'!
-'Description rename temporary implemented!!'!
-!provides: 'Refactoring' 1 15!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3092] on 26 June 2017 at 11:03:11 am'!
+'Description rename temporary implemented!! - Menu link was missing'!
+!provides: 'Refactoring' 1 17!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -609,6 +609,66 @@ renameTemporary
 	
 	self codeProvider isEditingMethod ifTrue: [ (RenameTemporaryApplier on: self) value ].
 ! !
+
+!SmalltalkEditor class methodsFor: '*Refactoring' stamp: 'HAW 6/26/2017 11:01:29'!
+initializeMenu
+	"Initialize the mouseButton2 (right button) pop-up menu and corresponding messages."
+	"
+	Editor initialize
+	"
+
+	menu _ SelectionMenu fromArray: {
+		{'Help...'.										#openHelp}.
+		#-.
+		{'Do it (d)'.									#doIt}.
+		{'Print it (p)'.									#printIt}.
+		{'Inspect it (i)'.								#inspectIt}.
+		{'Explore it (I)'.								#exploreIt}.
+		{'Debug it (D)'.								#debugIt}.
+		{'Profile it'.									#profileIt}.
+		#-.
+		{'Explain'.										#explain}.
+		{'Browse it (b)'.								#browseIt}.
+		{'Senders of it (n)'.							#sendersOfIt}.
+		{'Implementors of it (m)'.					#implementorsOfIt}.
+		{'References to it (N)'.						#referencesToIt}.
+		#-.
+		{'Rename temporary'.						#renameTemporary}.
+		#-.
+		{'Method Strings with it (E)'.				#methodStringsContainingit}.
+		{'Method Source with it'.					#methodSourceContainingIt}.
+		{'Class Comments with it'.					#classCommentsContainingIt}.
+		#-.
+		{'Accept (s)'.									#acceptContents}.
+		{'Cancel (l)'.									#cancelEdits}.
+		{'Accept & Run Test in Class (t)'.			#acceptAndTest}.
+		{'Accept & Run Test in Category (y)'.		#acceptAndTestAll}.
+		{'Accept & Debug Test (r)'.					#acceptAndDebugTest}.
+		#-.
+		{'More...'.										#getMenu2}.
+	}.
+	menu2 _ SelectionMenu fromArray: {
+		{'Find...(f)'.									#find}.
+		{'Find Again (g)'.								#findAgain}.
+		{'Use Selection for Find (j)'.				#setSearchString}.
+		#-.
+		{'Undo - multiple (z)'.						#undo}.
+		{'Redo - multiple (Z)'.						#redo}.
+		{'Undo / Redo history'.						#offerUndoHistory}.
+		#-.
+		{'Copy (c)'.									#copySelection}.
+		{'Cut (x)'.										#cut}.
+		{'Paste (v)'.									#paste}.
+		{'Paste without Format'.						#pasteString}.
+		{'Paste...'.									#pasteRecent}.
+		#-.
+		{'Toggle WordWrap'.						#wrapOnOff}.
+		{'Set Font... (k)'.								#offerFontMenu}.
+		{'Clear Font'.									#clearFont}.
+		{'Set Default Font...'.						#offerDefaultFontMenu}.
+		#-.
+		{'More...'.										#getMenu}.
+	}! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/11/2017 19:16:33'!
 addInstVar

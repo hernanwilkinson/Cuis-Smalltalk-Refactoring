@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 30 June 2017 at 6:41:24 am'!
-'Description Minor renames on Extract to Temporary tests'!
-!provides: 'Refactoring' 1 20!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 4 July 2017 at 8:47:16 pm'!
+'Description fix on rename temporary tests'!
+!provides: 'Refactoring' 1 22!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -2713,10 +2713,10 @@ methodNodeOf: aSourceCode
 
 	^self methodNodeOf: aSourceCode in: self class! !
 
-!RenameTemporaryTest methodsFor: 'class factory' stamp: 'HAW 6/26/2017 16:12:55'!
+!RenameTemporaryTest methodsFor: 'class factory' stamp: 'HAW 7/3/2017 18:53:20'!
 methodNodeOf: aSourceCode in: aClass
 
-	^Parser methodNodeOf: aSourceCode in: aClass ! !
+	^Parser parse: aSourceCode class: aClass! !
 
 !RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 6/25/2017 21:55:03'!
 test01VariableToRenameHasToBeDefined

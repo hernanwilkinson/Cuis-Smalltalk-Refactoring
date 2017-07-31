@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 4 July 2017 at 8:47:16 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 13 July 2017 at 9:27:55 pm'!
 'Description fix on rename temporary tests'!
-!provides: 'Refactoring' 1 22!
+!provides: 'Refactoring' 1 23!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -4354,14 +4354,14 @@ askNewSelector
 		
 ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 17:01:11'!
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 7/13/2017 19:46:48'!
 askScope
 
 	| scopeMenu |
 	
 	scopeMenu := PopUpMenu labelArray: {'In Class'. 'In Hierarchy'. 'In Category'. 'In Hierarchy and its Categories'. 'In System'}.
 	scopeChoice := scopeMenu startUpWithCaption: 'Select Rename Scope'.
-	scopeChoice ifNil: [ self endRequest ].
+	scopeChoice = 0 ifTrue: [ self endRequest ].
 	! !
 
 !RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 5/31/2017 18:39:27'!
@@ -4541,12 +4541,12 @@ createRefactoring
 	^RenameTemporary from: oldVariable to: newVariable in: methodNode 
 	! !
 
-!RenameTemporaryApplier methodsFor: 'initialization' stamp: 'HAW 6/26/2017 16:12:40'!
+!RenameTemporaryApplier methodsFor: 'initialization' stamp: 'HAW 7/7/2017 09:41:06'!
 initializeOn: aSmalltalkEditor
 
 	smalltalkEditor := aSmalltalkEditor.
 	classToRefactor := smalltalkEditor codeProvider selectedClassOrMetaClass.
-	methodNode := Parser methodNodeOf: smalltalkEditor actualContents string in: classToRefactor.
+	methodNode := Parser parse: smalltalkEditor actualContents string class: classToRefactor.
 ! !
 
 !RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/25/2017 21:29:58'!

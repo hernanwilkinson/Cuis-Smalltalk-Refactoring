@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3094] on 13 July 2017 at 9:27:55 pm'!
-'Description fix on rename temporary tests'!
-!provides: 'Refactoring' 1 23!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3161] on 31 August 2017 at 4:38:05 pm'!
+'Description Changes to support differences with refactorings on DenotativeObject'!
+!provides: 'Refactoring' 1 24!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -3638,11 +3638,11 @@ shouldRename: aSelector
 
 	^oldSelector = aSelector ! !
 
-!RenameMethod class methodsFor: 'implementors and senders' stamp: 'HAW 5/26/2017 00:07:02'!
+!RenameMethod class methodsFor: 'implementors and senders' stamp: 'HAW 8/31/2017 16:00:13'!
 addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aPotentialClassToRefactor
 	
-	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor.
-	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor class.
+	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor theNonMetaClass.
+	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor theMetaClass.
 
 ! !
 
@@ -4150,10 +4150,10 @@ valueHandlingRefactoringExceptions: aBlock
 		do: [ :aRefactoringError | self handleRefactoringError: aRefactoringError ]
 	! !
 
-!AddInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/11/2017 19:18:25'!
+!AddInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/30/2017 18:12:33'!
 askNewVariableName
 		
-	newInstanceVariable := self request: 'Enter new variable name:'. 
+	newInstanceVariable := self request: self newVariableNameLabel. 
 	newInstanceVariable := newInstanceVariable withBlanksTrimmed ! !
 
 !AddInstanceVariableApplier methodsFor: 'refactoring - creation' stamp: 'HAW 6/11/2017 19:19:25'!
@@ -4173,6 +4173,11 @@ initializeOn: aBrowserWindow for: aClassToRefactor
 	browser := aBrowserWindow.
 	classToRefactor := aClassToRefactor ! !
 
+!AddInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/30/2017 18:12:47'!
+newVariableNameLabel
+	
+	^'Enter new variable name:'! !
+
 !AddInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/11/2017 19:18:00'!
 requestRefactoringParameters
 
@@ -4189,11 +4194,11 @@ on: aBrowserWindow for: aClassToRefactor
 	^self new initializeOn: aBrowserWindow for: aClassToRefactor 
 ! !
 
-!RemoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/17/2017 19:56:28'!
+!RemoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/30/2017 18:22:28'!
 chooseInstanceVariable
 
 	classToRefactor 
-		chooseDefiningInstanceVariableAlphabeticallyWith: 'Select instance variable to remove'
+		chooseDefiningInstanceVariableAlphabeticallyWith: self selectVariableLabel
 		thenDo: [ :aVariableToRemove | ^variableToRemove := aVariableToRemove ].
 	self endRequest 
 
@@ -4221,6 +4226,11 @@ requestRefactoringParameters
 	self chooseInstanceVariable.
 
 	! !
+
+!RemoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/30/2017 18:22:41'!
+selectVariableLabel
+	
+	^'Select instance variable to remove'! !
 
 !RemoveInstanceVariableApplier methodsFor: 'refactoring - changes' stamp: 'HAW 6/17/2017 19:50:31'!
 showChanges
@@ -4292,11 +4302,11 @@ askNewVariableName
 	newInstanceVariable := self request: 'Enter new name:' initialAnswer: oldInstanceVariable. 
 	newInstanceVariable := newInstanceVariable withBlanksTrimmed ! !
 
-!RenameInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/17/2017 19:56:46'!
+!RenameInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/30/2017 17:27:08'!
 chooseInstanceVariable
 		
 	classToRefactor 
-		chooseDefiningInstanceVariableAlphabeticallyWith: 'Select instance variable to rename'
+		chooseDefiningInstanceVariableAlphabeticallyWith: self selectVariableLabel
 		thenDo: [ :anOldInstanceVariable | ^oldInstanceVariable := anOldInstanceVariable ].
 	self endRequest ! !
 
@@ -4317,12 +4327,15 @@ initializeOn: aBrowserWindow for: aClassToRefactor
 	browser := aBrowserWindow.
 	classToRefactor := aClassToRefactor ! !
 
-!RenameInstanceVariableApplier methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 18:09:39'!
+!RenameInstanceVariableApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/30/2017 17:30:22'!
 openChangedMethods 
 
-	changes ifNotEmpty: [ 
-		MessageSetWindow openMessageList: changes label: 'Renamed references' autoSelect: newInstanceVariable ]
-! !
+	changes ifNotEmpty: [ self openChangedMethodsWhenChangesNotEmpty ]! !
+
+!RenameInstanceVariableApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/30/2017 17:30:13'!
+openChangedMethodsWhenChangesNotEmpty 
+
+	MessageSetWindow openMessageList: changes label: 'Renamed references' autoSelect: newInstanceVariable ! !
 
 !RenameInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 19:05:16'!
 requestRefactoringParameters
@@ -4330,6 +4343,11 @@ requestRefactoringParameters
 	self 
 		chooseInstanceVariable;
 		askNewVariableName! !
+
+!RenameInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/30/2017 17:27:22'!
+selectVariableLabel
+	
+	^'Select instance variable to rename'! !
 
 !RenameInstanceVariableApplier methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 18:09:30'!
 showChanges
@@ -4354,20 +4372,20 @@ askNewSelector
 		
 ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 7/13/2017 19:46:48'!
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:37:25'!
 askScope
 
 	| scopeMenu |
 	
-	scopeMenu := PopUpMenu labelArray: {'In Class'. 'In Hierarchy'. 'In Category'. 'In Hierarchy and its Categories'. 'In System'}.
+	scopeMenu := PopUpMenu labelArray: self scopeOptionLabels.
 	scopeChoice := scopeMenu startUpWithCaption: 'Select Rename Scope'.
 	scopeChoice = 0 ifTrue: [ self endRequest ].
 	! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 5/31/2017 18:39:27'!
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:05'!
 assertCanRenameMethod
 		
-	RenameMethod assertIsValidToRenameFrom: oldSelector to: newSelector.
+	self renameMethodClass assertIsValidToRenameFrom: oldSelector to: newSelector.
 	! !
 
 !RenameMethodApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:46:58'!
@@ -4391,10 +4409,16 @@ calculateImplementorsAndSenders
 		
 		! !
 
-!RenameMethodApplier methodsFor: 'refactoring - creation' stamp: 'HAW 6/5/2017 18:17:23'!
+!RenameMethodApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:22:32'!
+closeBrowser
+	
+	browser delete.
+	! !
+
+!RenameMethodApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/31/2017 15:35:10'!
 createRefactoring
 	
-	^RenameMethod from: oldSelector to: newSelector implementors: implementors senders: senders.
+	^self renameMethodClass from: oldSelector to: newSelector implementors: implementors senders: senders.
 	! !
 
 !RenameMethodApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:07'!
@@ -4407,40 +4431,40 @@ implementors: implementorsCollection
 
 	implementors := implementorsCollection ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 14:57:42'!
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:14'!
 implementorsAndSendersForClass
 
-	^RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders forClassAndMetaOf: implementingClass! !
+	^self renameMethodClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders forClassAndMetaOf: implementingClass! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 14:58:31'!
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:18'!
 implementorsAndSendersForHierarchy 
 		
-	^RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inHierarchyOf: implementingClass! !
+	^self renameMethodClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inHierarchyOf: implementingClass! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 14:59:34'!
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:22'!
 implementorsAndSendersInCategory 
 
-	^RenameMethod 
+	^self renameMethodClass 
 		addImplementorsOf: oldSelector 
 		to: implementors 
 		andSendersTo: senders 
 		inCategory: implementingClass category 
 		organizedBy: SystemOrganization! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 15:00:35'!
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:28'!
 implementorsAndSendersInCategoryAndHierarchy 
 
-	^RenameMethod 
+	^self renameMethodClass 
 		addImplementorsOf: oldSelector 
 		to: implementors 
 		andSendersTo: senders 
 		inCategoriesAndHierarchyOf: implementingClass 
 		organizedBy: SystemOrganization ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 15:01:15'!
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:32'!
 implementorsAndSendersInSystem
 		
-	^RenameMethod addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ! !
+	^self renameMethodClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ! !
 
 !RenameMethodApplier methodsFor: 'initialization' stamp: 'HAW 5/31/2017 19:24:05'!
 initializeFor: aSelector in: aClass
@@ -4448,10 +4472,21 @@ initializeFor: aSelector in: aClass
 	oldSelector := aSelector.
 	implementingClass := aClass! !
 
+!RenameMethodApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:16:24'!
+messageSetWindowClass
+		
+	^MessageSetWindow 
+	! !
+
 !RenameMethodApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:21'!
 oldSelector
 	
 	^oldSelector ! !
+
+!RenameMethodApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/31/2017 15:35:59'!
+renameMethodClass
+
+	^RenameMethod ! !
 
 !RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 19:05:21'!
 requestRefactoringParameters
@@ -4461,6 +4496,11 @@ requestRefactoringParameters
 		assertCanRenameMethod;
 		askScope
 		! !
+
+!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:37:37'!
+scopeOptionLabels
+	
+	^{'In Class'. 'In Hierarchy'. 'In Category'. 'In Hierarchy and its Categories'. 'In System'}.! !
 
 !RenameMethodApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:40:32'!
 senders
@@ -4472,11 +4512,17 @@ senders: sendersCollection
  
 	senders := sendersCollection ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 18:18:46'!
+!RenameMethodApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:23:00'!
 showChanges
 		
-	browser delete.
-	MessageSetWindow openMessageList: changes asSortedCollection label: 'Rename method changes' ! !
+	self 
+		closeBrowser;
+		showChangesInMessageSetWindow! !
+
+!RenameMethodApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:23:11'!
+showChangesInMessageSetWindow
+
+	self messageSetWindowClass openMessageList: changes asSortedCollection label: 'Rename method changes' ! !
 
 !RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 17:28:23'!
 startWizard

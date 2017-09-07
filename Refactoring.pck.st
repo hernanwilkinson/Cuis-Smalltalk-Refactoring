@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3161] on 31 August 2017 at 4:38:05 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3168] on 7 September 2017 at 4:45:18 pm'!
 'Description Changes to support differences with refactorings on DenotativeObject'!
-!provides: 'Refactoring' 1 24!
+!provides: 'Refactoring' 1 25!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -384,14 +384,22 @@ withSuperclassThatIncludesSelector: aSelector do: aFoundClosure ifNone: aNoneClo
 				ifNil: aNoneClosure 
 				ifNotNil: aFoundClosure ]! !
 
-!ClassDescription methodsFor: '*Refactoring' stamp: 'HAW 6/17/2017 19:56:03'!
+!ClassDescription methodsFor: '*Refactoring' stamp: 'HAW 9/7/2017 15:41:34'!
 chooseDefiningInstanceVariableAlphabeticallyWith: aCaption thenDo: aBlock
+	
+	^self 
+		chooseDefiningInstanceVariableAlphabeticallyWith: aCaption 
+		thenDo: aBlock 
+		ifNone: [ ^ self inform: 'There are no instance variables defined in ', self name ]! !
+
+!ClassDescription methodsFor: '*Refactoring' stamp: 'HAW 9/7/2017 15:40:15'!
+chooseDefiningInstanceVariableAlphabeticallyWith: aCaption thenDo: aBlock ifNone: noneBlock
 	
 	| vars index |
 	"Put up a menu of the instance variables in the receiver, presented in alphabetical order, and when the user chooses one, evaluate aBlock with the chosen variable as its parameter."
 
 	vars _ self instVarNames sorted.
-	vars isEmpty ifTrue: [^ self inform: 'There are no instance variables defined in ', self name].
+	vars isEmpty ifTrue: [^ noneBlock value ].
 
 	index _ (PopUpMenu labelArray: vars lines: #()) startUpWithCaption: aCaption.
 	index = 0 ifTrue: [^ self].

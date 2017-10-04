@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3168] on 7 September 2017 at 4:45:18 pm'!
-'Description Changes to support differences with refactorings on DenotativeObject'!
-!provides: 'Refactoring' 1 25!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3192] on 4 October 2017 at 5:18:17 pm'!
+'Description Support for syntax error when renaming temporary'!
+!provides: 'Refactoring' 1 26!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -647,10 +647,14 @@ hasUnacceptedEdits: aBoolean
 
 	^morph hasUnacceptedEdits: aBoolean ! !
 
-!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 6/25/2017 21:47:20'!
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 10/4/2017 17:06:10'!
 renameTemporary
 	
-	self codeProvider isEditingMethod ifTrue: [ (RenameTemporaryApplier on: self) value ].
+	self codeProvider isEditingMethod ifTrue: [ | applier |
+		[ applier := RenameTemporaryApplier on: self ] 
+			on: Error 
+			do: [:anError | ^self inform: (RenameTemporaryApplier errorMessageForCanNotParseMethod: anError) ].
+		applier value ].
 ! !
 
 !SmalltalkEditor class methodsFor: '*Refactoring' stamp: 'HAW 6/26/2017 11:01:29'!
@@ -2726,7 +2730,7 @@ methodNodeOf: aSourceCode in: aClass
 
 	^Parser parse: aSourceCode class: aClass! !
 
-!RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 6/25/2017 21:55:03'!
+!RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 10/4/2017 17:04:33'!
 test01VariableToRenameHasToBeDefined
 
 	| newVariable oldVariable methodNode |
@@ -2738,7 +2742,7 @@ test01VariableToRenameHasToBeDefined
 	
 	self 
 		assertCreation: [ RenameTemporary from: oldVariable to: newVariable in: methodNode ]
-		failsWith: [ RenameTemporary errorMessageForITemporaryVariable: oldVariable notDefinedIn: methodNode ]! !
+		failsWith: [ RenameTemporary errorMessageForTemporaryVariable: oldVariable notDefinedIn: methodNode ]! !
 
 !RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 6/25/2017 21:55:08'!
 test02NewVariableNameCanNotBeEmpty
@@ -3989,11 +3993,6 @@ assertIsValidVariableName: aName
 	scannedNames first = aName ifFalse: [ self signalInvalidTemporaryVariable: aName ].! !
 
 !RenameTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/25/2017 21:53:31'!
-errorMessageForITemporaryVariable: aVariable notDefinedIn: aMethodNode
-
-	^'Temporary variable ', aVariable, ' is not defined in ', aMethodNode classAndSelector ! !
-
-!RenameTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/25/2017 21:53:31'!
 errorMessageForInvalidTemporaryVariable: aName
 
 	^ '''' , aName , ''' is not a valid temporary variable name'.! !
@@ -4002,6 +4001,11 @@ errorMessageForInvalidTemporaryVariable: aName
 errorMessageForNewTemporaryVariable: aNewVariable isAlreadyDefinedIn: aMethodNode
 
 	^aNewVariable, ' is already defined in ', aMethodNode classAndSelector ! !
+
+!RenameTemporary class methodsFor: 'exceptions' stamp: 'HAW 10/4/2017 17:04:37'!
+errorMessageForTemporaryVariable: aVariable notDefinedIn: aMethodNode
+
+	^'Temporary variable ', aVariable, ' is not defined in ', aMethodNode classAndSelector ! !
 
 !RenameTemporary class methodsFor: 'instance creation' stamp: 'HAW 6/25/2017 21:53:31'!
 from: anOldVariable to: aNewVariable in: aMethodNode
@@ -4045,10 +4049,10 @@ signalNewVariableCanNotBeEmpty
 	
 	self refactoringError: self newVariableCanNotBeEmptyErrorMessage! !
 
-!RenameTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/25/2017 21:53:31'!
+!RenameTemporary class methodsFor: 'exceptions' stamp: 'HAW 10/4/2017 17:04:27'!
 signalTemporaryVariable: aVariable notDefinedIn: aMethodNode
 
-	self refactoringError: (self errorMessageForITemporaryVariable: aVariable notDefinedIn: aMethodNode)! !
+	self refactoringError: (self errorMessageForTemporaryVariable: aVariable notDefinedIn: aMethodNode)! !
 
 !RenameTemporary class methodsFor: 'warnings' stamp: 'HAW 6/25/2017 21:53:31'!
 warn: aNewVariable willHideInstanceVariableDefinedIn: aClass 
@@ -4571,23 +4575,27 @@ askNewVariableName
 		
 	newVariable := (self request: 'Enter new name:' initialAnswer: oldVariable) withBlanksTrimmed ! !
 
-!RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/25/2017 22:00:52'!
+!RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 10/4/2017 17:11:11'!
 chooseTemporaryVariable
 	
 	| variables |
 	
 	variables := methodNode tempNames.
 	variables isEmpty 
-		ifTrue: [self inform: 'There are no temporary to rename']
-		ifFalse: [ | selection |
-			selection :=  smalltalkEditor selection string withBlanksTrimmed.
-			(smalltalkEditor hasSelection and: [variables includes: selection]) 
-				ifTrue: [ ^ oldVariable := selection ]
-				ifFalse: [ | index |
-					index := (PopUpMenu labelArray: variables lines: #()) startUpWithCaption: 'Select temporary to rename'.
-					index ~= 0 ifTrue: [^ oldVariable := variables at: index ]]].
+		ifTrue: [ self noTemporaryToRename ]
+		ifFalse: [ self chooseTemporaryVariableFrom: variables ]
 	
-	self endRequest ! !
+	! !
+
+!RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 10/4/2017 17:15:17'!
+chooseTemporaryVariableFrom: variables
+	
+	 | selection |
+			
+	selection :=  smalltalkEditor selection string withBlanksTrimmed.
+	oldVariable := (self is: selection temporaryVariableFrom: variables) 
+		ifTrue: [ selection ]
+		ifFalse: [ self selectTemporaryVariableFrom: variables]! !
 
 !RenameTemporaryApplier methodsFor: 'refactoring - creation' stamp: 'HAW 6/25/2017 21:54:40'!
 createRefactoring
@@ -4603,12 +4611,34 @@ initializeOn: aSmalltalkEditor
 	methodNode := Parser parse: smalltalkEditor actualContents string class: classToRefactor.
 ! !
 
+!RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 10/4/2017 17:13:25'!
+is: selection temporaryVariableFrom: variables
+		
+	^smalltalkEditor hasSelection and: [variables includes: selection]! !
+
+!RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 10/4/2017 17:09:43'!
+noTemporaryToRename
+	
+	self inform: 'There are no temporary to rename'.
+	self endRequest ! !
+
 !RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/25/2017 21:29:58'!
 requestRefactoringParameters
 
 	self 
 		chooseTemporaryVariable;
 		askNewVariableName! !
+
+!RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 10/4/2017 17:16:25'!
+selectTemporaryVariableFrom: variables
+
+	| selectionIndex |
+	
+	selectionIndex := (PopUpMenu labelArray: variables lines: #()) startUpWithCaption: 'Select temporary to rename'.
+	
+	^selectionIndex = 0 
+		ifTrue: [ self endRequest ]
+		ifFalse: [ variables at: selectionIndex ]! !
 
 !RenameTemporaryApplier methodsFor: 'refactoring - changes' stamp: 'HAW 6/25/2017 21:49:46'!
 showChanges
@@ -4619,6 +4649,15 @@ showChanges
 			hasUnacceptedEdits: true;
 			acceptContents ]
 	! !
+
+!RenameTemporaryApplier class methodsFor: 'exceptions' stamp: 'HAW 10/4/2017 17:05:53'!
+errorMessageForCanNotParseMethod: anError
+
+	^ String streamContents: [ :stream |
+		stream
+			nextPutAll: 'Method can not be parsed due to:';
+			newLine;
+			nextPutAll: anError messageText ]! !
 
 !RenameTemporaryApplier class methodsFor: 'instance creation' stamp: 'HAW 6/25/2017 21:29:37'!
 on: aSmalltalkEditor

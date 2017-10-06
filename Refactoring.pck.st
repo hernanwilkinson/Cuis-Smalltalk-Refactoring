@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3192] on 4 October 2017 at 5:18:17 pm'!
-'Description Support for syntax error when renaming temporary'!
-!provides: 'Refactoring' 1 26!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3192] on 6 October 2017 at 6:36:56 am'!
+'Description Extract to temporary simple case implementation'!
+!provides: 'Refactoring' 1 27!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -183,7 +183,7 @@ AddInstanceVariable class
 
 !classDefinition: #ExtractToTemporary category: #Refactoring!
 Refactoring subclass: #ExtractToTemporary
-	instanceVariableNames: ''
+	instanceVariableNames: 'newVariable parseNodeToExtract methodNodeToRefactor newTemporary'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -647,12 +647,12 @@ hasUnacceptedEdits: aBoolean
 
 	^morph hasUnacceptedEdits: aBoolean ! !
 
-!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 10/4/2017 17:06:10'!
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 10/4/2017 17:29:01'!
 renameTemporary
 	
 	self codeProvider isEditingMethod ifTrue: [ | applier |
 		[ applier := RenameTemporaryApplier on: self ] 
-			on: Error 
+			on: SyntaxErrorNotification 
 			do: [:anError | ^self inform: (RenameTemporaryApplier errorMessageForCanNotParseMethod: anError) ].
 		applier value ].
 ! !
@@ -1643,6 +1643,14 @@ classToRefactorName
 
 	^#ClassToExtractTemp! !
 
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/4/2017 18:42:13'!
+m1
+
+	| t1 |
+	
+	t1 := 1.
+	t1! !
+
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:54'!
 methodNodeOf: aSourceCode
 
@@ -1797,6 +1805,71 @@ test10SourceCodeToExtractHasToBeOneStatement
 	self 
 		assertCreation: [ ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor ]
 		failsWith: [ ExtractToTemporary sourceCodeToExtractHasToBeOneStatementErrorMessage ]! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/4/2017 18:01:59'!
+test11WhenNoTemporariesExtractCreatesTemporariesAndAddsTemporaryNamedAsDefined
+
+	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode |
+	
+	newVariable := 't1'.
+	sourceCodeToExtract := '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 1'.
+	
+	extract := ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor.
+	newMethodNode := extract apply.
+	
+	self assert: (newMethodNode hasArgumentOrTemporary: newVariable)
+	! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/4/2017 18:02:21'!
+test12WhenThereAreTemporariesExtractAddsTemporaryNamedAsDefined
+
+	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode |
+	
+	newVariable := 't1'.
+	sourceCodeToExtract := '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 | t2 | 1'.
+	
+	extract := ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor.
+	newMethodNode := extract apply.
+	
+	self assert: (newMethodNode hasArgumentOrTemporary: newVariable)
+	! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/4/2017 18:38:31'!
+test13ExtractAssignsColaborationToExtractToNewTemporary
+
+	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode assignment |
+	
+	newVariable := 't1'.
+	sourceCodeToExtract := '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 1'.
+	
+	extract := ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor.
+	newMethodNode := extract apply.
+	
+	self assert: newMethodNode block statements size > 1.
+	assignment := newMethodNode block statements first.
+	self assert: assignment isAssignmentNode.
+	self assert: assignment variable equals: newMethodNode temporaries first.
+	self assert: assignment value equals: extract parseNodeToExtract.
+	self assert: assignment value isLiteralNode.
+	self assert: assignment value literalValue equals: 1! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/4/2017 18:44:49'!
+test14ExtractRemovesSourceCodeToExtract
+
+	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode |
+	
+	newVariable := 't1'.
+	sourceCodeToExtract := '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 1'.
+	
+	extract := ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor.
+	newMethodNode := extract apply.
+	
+	self deny: (newMethodNode block statements includes: extract parseNodeToExtract).
+	self assert: newMethodNode block statements second equals: extract newTemporary! !
 
 !RemoveInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 6/12/2017 19:07:22'!
 allClassCategoriesOfTestData
@@ -3019,6 +3092,39 @@ warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
 			nextPutAll: ' will be hidden at '.
 		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
+!ExtractToTemporary methodsFor: 'applying' stamp: 'HAW 10/4/2017 18:45:06'!
+apply
+	
+	| temporaries statements |
+	
+	newTemporary := methodNodeToRefactor encoder bindTemp: newVariable.
+	temporaries := methodNodeToRefactor temporaries asOrderedCollection.
+	temporaries add: newTemporary.
+	
+	methodNodeToRefactor temporaries: temporaries.
+	statements := methodNodeToRefactor block statements.
+	statements addFirst: (AssignmentNode new variable: newTemporary value: parseNodeToExtract).
+	statements replaceAll: parseNodeToExtract with: newTemporary.
+	
+	^methodNodeToRefactor ! !
+
+!ExtractToTemporary methodsFor: 'initialization' stamp: 'HAW 10/4/2017 17:43:11'!
+initializeNamed: aNewVariable with: aParseNodeToExtract in: aMethodNodeToRefactor
+ 
+	newVariable := aNewVariable.
+	parseNodeToExtract := aParseNodeToExtract.
+	methodNodeToRefactor := aMethodNodeToRefactor ! !
+
+!ExtractToTemporary methodsFor: 'accessing' stamp: 'HAW 10/4/2017 18:45:19'!
+newTemporary
+	
+	^newTemporary ! !
+
+!ExtractToTemporary methodsFor: 'accessing' stamp: 'HAW 10/4/2017 18:38:13'!
+parseNodeToExtract
+	
+	^parseNodeToExtract! !
+
 !ExtractToTemporary class methodsFor: 'pre-conditions' stamp: 'HAW 6/30/2017 06:25:21'!
 assert: aSourceCodeToExtract isIncludedIn: aMethodNodeToRefactor
 
@@ -3085,10 +3191,10 @@ errorMessageMethodNodeToRefactorDoesNotInclude: aSourceCodeToExtract
 
 	^'The source code {', aSourceCodeToExtract, '} is not included in the method to refactor'! !
 
-!ExtractToTemporary class methodsFor: 'instance creation' stamp: 'HAW 6/30/2017 06:21:46'!
+!ExtractToTemporary class methodsFor: 'instance creation' stamp: 'HAW 10/4/2017 17:41:59'!
 named: aNewVariable with: aSourceCodeToExtract in: aMethodNodeToRefactor
 
-	|  trimmedNewVariable aParseNodeToExtract trimmedSourceCodeToExtract aMethodNodeToExtract |
+	|  trimmedNewVariable parseNodeToExtract trimmedSourceCodeToExtract methodNodeToExtract |
 	
 	trimmedNewVariable := aNewVariable withBlanksTrimmed.
 	
@@ -3101,15 +3207,16 @@ named: aNewVariable with: aSourceCodeToExtract in: aMethodNodeToRefactor
 	self assertIsNotReturn: trimmedSourceCodeToExtract. 
 	self assert: trimmedSourceCodeToExtract isIncludedIn: aMethodNodeToRefactor.
 
-	[ aMethodNodeToExtract := Parser parse: trimmedSourceCodeToExtract class: aMethodNodeToRefactor methodClass noPattern: true ]
+	[ methodNodeToExtract := Parser parse: trimmedSourceCodeToExtract class: aMethodNodeToRefactor methodClass noPattern: true ]
 		on: SyntaxErrorNotification 
 		do: [ :anError | self signalColaborationToExtractHasSyntaxError: anError ].
 	
-	aParseNodeToExtract := self paseNodeToExtractFrom: aMethodNodeToExtract. 
+	parseNodeToExtract := self paseNodeToExtractFrom: methodNodeToExtract. 
 
 	self warnIf: trimmedNewVariable isDefinedAsInstanceVariableInHierarchyOf: aMethodNodeToRefactor methodClass.
 
-	aParseNodeToExtract halt.
+	^self new initializeNamed: trimmedNewVariable with: parseNodeToExtract in: aMethodNodeToRefactor
+ 
 	! !
 
 !ExtractToTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/26/2017 16:24:10'!
@@ -4023,11 +4130,6 @@ from: anOldVariable to: aNewVariable in: aMethodNode
 	
 	^self new initializeFrom: anOldVariable to: trimmedNewVariable in: aMethodNode
 ! !
-
-!RenameTemporary class methodsFor: 'method node creation' stamp: 'HAW 6/26/2017 16:11:06'!
-methodNodeOf: aSourceCode in: aClass
-
-	^Parser parse: aSourceCode class: aClass! !
 
 !RenameTemporary class methodsFor: 'exceptions' stamp: 'HAW 6/25/2017 21:53:31'!
 newVariableCanNotBeEmptyErrorMessage

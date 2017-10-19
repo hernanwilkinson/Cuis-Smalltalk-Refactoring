@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3192] on 6 October 2017 at 6:36:56 am'!
-'Description Extract to temporary simple case implementation'!
-!provides: 'Refactoring' 1 27!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3195] on 19 October 2017 at 3:55:38 pm'!
+'Description Extract to temporary more cases implementation'!
+!provides: 'Refactoring' 1 28!
 !classDefinition: #RefactoringError category: #Refactoring!
 Error subclass: #RefactoringError
 	instanceVariableNames: ''
@@ -19,6 +19,26 @@ Warning subclass: #RefactoringWarning
 	category: 'Refactoring'!
 !classDefinition: 'RefactoringWarning class' category: #Refactoring!
 RefactoringWarning class
+	instanceVariableNames: ''!
+
+!classDefinition: #ExtractToTemporaryRewriter category: #Refactoring!
+ParseNodeVisitor subclass: #ExtractToTemporaryRewriter
+	instanceVariableNames: 'refactoring finder'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ExtractToTemporaryRewriter class' category: #Refactoring!
+ExtractToTemporaryRewriter class
+	instanceVariableNames: ''!
+
+!classDefinition: #ParseNodeToReplaceFinder category: #Refactoring!
+ParseNodeVisitor subclass: #ParseNodeToReplaceFinder
+	instanceVariableNames: 'refactoring currentBlock nodesToReplace blockContainingFirstNodeToReplace firstNodeToReplaceIndex currentStatementIndex'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ParseNodeToReplaceFinder class' category: #Refactoring!
+ParseNodeToReplaceFinder class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameClassRewriter category: #Refactoring!
@@ -602,6 +622,11 @@ generateSource
 	
 	^String streamContents: [ :stream | self printOn: stream ]! !
 
+!ParseNode methodsFor: '*Refactoring' stamp: 'HAW 10/19/2017 05:54:57'!
+isReturn
+
+	^false! !
+
 !LeafNode methodsFor: '*Refactoring' stamp: 'HAW 6/4/2017 18:30:35'!
 key: aKey
 
@@ -626,6 +651,11 @@ hasArgumentOrTemporary: aVariable
 tempNodes
 	
 	^encoder tempNodes ! !
+
+!ReturnNode methodsFor: '*Refactoring' stamp: 'HAW 10/19/2017 05:55:14'!
+isReturn
+
+	^true! !
 
 !TextEditor methodsFor: '*Refactoring' stamp: 'HAW 6/25/2017 21:42:54'!
 actualContents
@@ -943,6 +973,116 @@ should: aBlockToFail raise: anExceptionHandlingCondition withMessageText: anExpe
 		should: aBlockToFail 
 		raise: anExceptionHandlingCondition 
 		withExceptionDo: [ :anException | self assert: anExpectedErrorMessageCreator value equals: anException messageText ]! !
+
+!ExtractToTemporaryRewriter methodsFor: 'initialization' stamp: 'HAW 10/18/2017 18:21:40'!
+initializeOf: anExtractToTemporary on: aParseNodeToReplaceFinder 
+	
+	refactoring := anExtractToTemporary.
+	finder := aParseNodeToReplaceFinder ! !
+
+!ExtractToTemporaryRewriter methodsFor: 'visiting' stamp: 'HAW 10/18/2017 18:26:27'!
+visitBlockNode: aBlockNode
+
+	| statements |
+	
+	statements := aBlockNode statements.
+	statements withIndexDo: [ :statement :index |
+		(finder shouldReplace: statement)
+			ifTrue: [ statements at: index put: refactoring newTemporary ]
+			ifFalse: [ statement accept: self]]! !
+
+!ExtractToTemporaryRewriter methodsFor: 'visiting' stamp: 'HAW 10/19/2017 06:24:35'!
+visitMessageNode: aMessageNode
+
+	aMessageNode receiver accept: self.
+	aMessageNode selector accept: self.
+	aMessageNode argumentsInEvaluationOrder withIndexDo: [:argument :index | 
+		(finder shouldReplace: argument)
+			ifTrue: [ aMessageNode arguments at: index put: refactoring newTemporary ]
+			ifFalse: [ argument accept: self]]! !
+
+!ExtractToTemporaryRewriter methodsFor: 'visiting' stamp: 'HAW 10/19/2017 06:06:05'!
+visitReturnNode: aReturnNode
+
+	(finder shouldReplace: aReturnNode expr)
+		ifTrue: [ aReturnNode expr: refactoring newTemporary ]
+		ifFalse: [ super visitReturnNode: aReturnNode ]! !
+
+!ExtractToTemporaryRewriter class methodsFor: 'instance creation' stamp: 'HAW 10/18/2017 18:21:16'!
+of: anExtractToTemporary on: aParseNodeToReplaceFinder 
+	
+	^self new initializeOf: anExtractToTemporary on: aParseNodeToReplaceFinder 
+	! !
+
+!ParseNodeToReplaceFinder methodsFor: 'as yet unclassified' stamp: 'HAW 10/19/2017 06:03:12'!
+addNodeToReplace: aParseNode
+
+	nodesToReplace isEmpty ifTrue: [ 
+		blockContainingFirstNodeToReplace := currentBlock.
+		firstNodeToReplaceIndex := currentStatementIndex ].
+	
+	nodesToReplace add: aParseNode.! !
+
+!ParseNodeToReplaceFinder methodsFor: 'as yet unclassified' stamp: 'HAW 10/18/2017 18:30:44'!
+blockContainingFirstNodeToReplace
+	
+	^blockContainingFirstNodeToReplace! !
+
+!ParseNodeToReplaceFinder methodsFor: 'as yet unclassified' stamp: 'HAW 10/18/2017 18:31:00'!
+firstNodeToReplace
+	
+	^nodesToReplace first! !
+
+!ParseNodeToReplaceFinder methodsFor: 'as yet unclassified' stamp: 'HAW 10/18/2017 18:39:56'!
+firstNodeToReplaceIndex
+	
+	^firstNodeToReplaceIndex! !
+
+!ParseNodeToReplaceFinder methodsFor: 'initialization' stamp: 'HAW 10/18/2017 18:12:47'!
+initializeOf: anExtractToTemporary
+
+	refactoring := anExtractToTemporary.
+	nodesToReplace := OrderedCollection new.! !
+
+!ParseNodeToReplaceFinder methodsFor: 'as yet unclassified' stamp: 'HAW 10/18/2017 18:12:47'!
+keepCurrentBlockIfFirstNodeToReplace
+	
+	nodesToReplace isEmpty ifTrue: [ blockContainingFirstNodeToReplace := currentBlock ].
+! !
+
+!ParseNodeToReplaceFinder methodsFor: 'as yet unclassified' stamp: 'HAW 10/18/2017 18:26:50'!
+shouldReplace: aParseNode
+
+	^nodesToReplace includes: aParseNode ! !
+
+!ParseNodeToReplaceFinder methodsFor: 'visiting' stamp: 'HAW 10/19/2017 06:02:34'!
+visitBlockNode: aBlockNode
+
+	| previousBlock |
+	
+	previousBlock := currentBlock.
+	currentBlock := aBlockNode.
+	
+	aBlockNode statements withIndexDo: [:statement :index | 
+		currentStatementIndex := index.
+		statement accept: self].
+	
+	currentBlock := previousBlock ! !
+
+!ParseNodeToReplaceFinder methodsFor: 'visiting' stamp: 'HAW 10/18/2017 18:12:47'!
+visitLiteralNode: aLiteralNode
+
+	(refactoring shouldExtract: aLiteralNode) ifTrue: [ self addNodeToReplace: aLiteralNode ]! !
+
+!ParseNodeToReplaceFinder methodsFor: 'visiting' stamp: 'HAW 10/19/2017 06:20:02'!
+visitMessageNode: aMessageNode
+
+	super visitMessageNode: aMessageNode! !
+
+!ParseNodeToReplaceFinder class methodsFor: 'instance creation' stamp: 'HAW 10/18/2017 18:12:47'!
+of: anExtractToTemporary
+	
+	^self new initializeOf: anExtractToTemporary ! !
 
 !RenameClassRewriter methodsFor: 'initialization' stamp: 'HAW 6/4/2017 18:10:45'!
 initializeFor: aRenameClass 
@@ -1638,6 +1778,19 @@ allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/19/2017 05:41:39'!
+assertIsAssigment: aParseNode of: newVariable toLiteralValueOf: aValue
+
+	self assert: aParseNode isAssignmentNode.
+	self assert: aParseNode variable name equals: newVariable.
+	self assert: aParseNode value isLiteralNode.
+	self assert: aParseNode value literalValue equals: aValue! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/19/2017 05:45:03'!
+assertIsReturnSelf: aParseNode
+
+	self assert: aParseNode isReturnSelf ! !
+
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:33:08'!
 classToRefactorName
 
@@ -1661,7 +1814,7 @@ methodNodeOf: aSourceCode in: aClass
 
 	^Parser parse: aSourceCode class: aClass ! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/30/2017 06:39:17'!
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/18/2017 17:28:45'!
 test01NewVariableCanNotBeEmpty
 
 	| newVariable sourceCodeToExtract methodNodeToRefactor |
@@ -1673,11 +1826,7 @@ test01NewVariableCanNotBeEmpty
 	self 
 		assertCreation: [ ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor ]
 		failsWith: [ ExtractToTemporary newVariableCanNotBeEmptyErrorMessage ]
-		
-	"self assert: newMethod hasArgumentOrTemporary: newTemporary.
-	self assert: t1 es iniciailizado con '1'.
-	self assert: donde decia '1' dice t1
-	"! !
+		! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/30/2017 06:39:27'!
 test02NewVariableHasToBeValid
@@ -1775,8 +1924,8 @@ test08SourceCodeToExtractCanNotBeEmpty
 		assertCreation: [ ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor ]
 		failsWith: [ ExtractToTemporary sourceCodeToExtractCanNotBeEmptyErrorMessage]! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/30/2017 06:38:23'!
-test09SourceCodeToExtractCanNotHaveSintaxErrors
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/18/2017 17:29:54'!
+test09SourceCodeToExtractCanNotHaveSyntaxErrors
 
 	| newVariable sourceCodeToExtract methodNodeToRefactor expectedSyntaxErrorMessage |
 	
@@ -1836,28 +1985,8 @@ test12WhenThereAreTemporariesExtractAddsTemporaryNamedAsDefined
 	self assert: (newMethodNode hasArgumentOrTemporary: newVariable)
 	! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/4/2017 18:38:31'!
-test13ExtractAssignsColaborationToExtractToNewTemporary
-
-	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode assignment |
-	
-	newVariable := 't1'.
-	sourceCodeToExtract := '1'.
-	methodNodeToRefactor := self methodNodeOf: 'm1 1'.
-	
-	extract := ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor.
-	newMethodNode := extract apply.
-	
-	self assert: newMethodNode block statements size > 1.
-	assignment := newMethodNode block statements first.
-	self assert: assignment isAssignmentNode.
-	self assert: assignment variable equals: newMethodNode temporaries first.
-	self assert: assignment value equals: extract parseNodeToExtract.
-	self assert: assignment value isLiteralNode.
-	self assert: assignment value literalValue equals: 1! !
-
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/4/2017 18:44:49'!
-test14ExtractRemovesSourceCodeToExtract
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/19/2017 05:39:16'!
+test13CodeToExtractIsAssignToNewTemporaryBeforeCodeToExtract
 
 	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode |
 	
@@ -1868,8 +1997,104 @@ test14ExtractRemovesSourceCodeToExtract
 	extract := ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor.
 	newMethodNode := extract apply.
 	
+	self assert: newMethodNode block statements size > 1.
+	self assertIsAssigment: newMethodNode block statements first of: newVariable toLiteralValueOf: sourceCodeToExtract asNumber. 
+! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/19/2017 05:52:10'!
+test14ExtractOfLiteralAtTopBlockWorksAsExpected
+
+	"WorksAsExpected means: 1) extracted code is assign to new temporary 2) extracted code is replaced by temporary - Hernan"
+	
+	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode newMethodNodeStatements |
+	
+	newVariable := 't1'.
+	sourceCodeToExtract := '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 1'.
+	
+	extract := ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor.
+	newMethodNode := extract apply.
+	
+	newMethodNodeStatements := newMethodNode block statements.
+	self assert: newMethodNodeStatements size equals: 3.
+	self assertIsAssigment: newMethodNodeStatements first of: newVariable toLiteralValueOf: sourceCodeToExtract asNumber. 
+	self assert: newMethodNodeStatements second equals: extract newTemporary.
+	self assert: newMethodNodeStatements third isReturnSelf! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/18/2017 17:31:31'!
+test15
+
+	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode |
+	
+	newVariable := 't1'.
+	sourceCodeToExtract := '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 ^1'.
+	
+	extract := ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor.
+	newMethodNode := extract apply.
+	
 	self deny: (newMethodNode block statements includes: extract parseNodeToExtract).
 	self assert: newMethodNode block statements second equals: extract newTemporary! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/19/2017 05:52:19'!
+test15ExtractOfMoreThanOneLiteralAtTopBlockWorksAsExpected
+
+	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode newMethodNodeStatements |
+	
+	newVariable := 't1'.
+	sourceCodeToExtract := '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 1. 1.'.
+	
+	extract := ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor.
+	newMethodNode := extract apply.
+	
+	newMethodNodeStatements := newMethodNode block statements.
+	self assert: newMethodNodeStatements size equals: 4.
+	self assertIsAssigment: newMethodNodeStatements first of: newVariable toLiteralValueOf: sourceCodeToExtract asNumber. 
+	self assert: newMethodNodeStatements second equals: extract newTemporary.
+	self assert: newMethodNodeStatements third equals: extract newTemporary.
+	self assert: newMethodNodeStatements fourth isReturnSelf! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/19/2017 06:08:02'!
+test16ExtractOfLiteralAtReturnAtTopBlockExpressionWorksAsExpected
+
+	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode newMethodNodeStatements |
+	
+	newVariable := 't1'.
+	sourceCodeToExtract := '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 ^1'.
+	
+	extract := ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor.
+	newMethodNode := extract apply.
+	
+	newMethodNodeStatements := newMethodNode block statements.
+	self assert: newMethodNodeStatements size equals: 2.
+	self assertIsAssigment: newMethodNodeStatements first of: newVariable toLiteralValueOf: sourceCodeToExtract asNumber. 
+	self assert: newMethodNodeStatements second isReturn.
+	self assert: newMethodNodeStatements second isVariableReference.
+	self assert: newMethodNodeStatements second expr name equals: newVariable.
+	! !
+
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/19/2017 06:17:38'!
+test17ExtractOfLiteralAtMessageSendAtTopBlockExpressionWorksAsExpected
+
+	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode newMethodNodeStatements |
+	
+	newVariable := 't1'.
+	sourceCodeToExtract := '1'.
+	methodNodeToRefactor := self methodNodeOf: 'm1 2+1'.
+	
+	extract := ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor.
+	newMethodNode := extract apply.
+	
+	newMethodNodeStatements := newMethodNode block statements.
+	self assert: newMethodNodeStatements size equals: 3.
+	self assertIsAssigment: newMethodNodeStatements first of: newVariable toLiteralValueOf: sourceCodeToExtract asNumber. 
+	self assert: (newMethodNodeStatements second 
+		isMessage: #+ 
+		receiver: [ :receiver | receiver isLiteralNode and: [ receiver literalValue = 2 ]]
+		arguments: [ :collaborator | collaborator = extract newTemporary ]).
+	self assert: newMethodNodeStatements third isReturnSelf ! !
 
 !RemoveInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 6/12/2017 19:07:22'!
 allClassCategoriesOfTestData
@@ -3092,19 +3317,23 @@ warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
 			nextPutAll: ' will be hidden at '.
 		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
-!ExtractToTemporary methodsFor: 'applying' stamp: 'HAW 10/4/2017 18:45:06'!
+!ExtractToTemporary methodsFor: 'applying' stamp: 'HAW 10/18/2017 18:39:22'!
 apply
 	
-	| temporaries statements |
+	| temporaries finder rewriter |
 	
 	newTemporary := methodNodeToRefactor encoder bindTemp: newVariable.
 	temporaries := methodNodeToRefactor temporaries asOrderedCollection.
 	temporaries add: newTemporary.
 	
 	methodNodeToRefactor temporaries: temporaries.
-	statements := methodNodeToRefactor block statements.
-	statements addFirst: (AssignmentNode new variable: newTemporary value: parseNodeToExtract).
-	statements replaceAll: parseNodeToExtract with: newTemporary.
+	finder := ParseNodeToReplaceFinder of: self.
+	methodNodeToRefactor accept: finder.
+	rewriter := ExtractToTemporaryRewriter of: self on: finder.
+	methodNodeToRefactor accept: rewriter.
+	finder blockContainingFirstNodeToReplace statements 
+		add: (AssignmentNode new variable: newTemporary value: parseNodeToExtract) 
+		beforeIndex: finder firstNodeToReplaceIndex. 
 	
 	^methodNodeToRefactor ! !
 
@@ -3124,6 +3353,11 @@ newTemporary
 parseNodeToExtract
 	
 	^parseNodeToExtract! !
+
+!ExtractToTemporary methodsFor: 'testing' stamp: 'HAW 10/18/2017 18:08:31'!
+shouldExtract: aParseNode
+
+	^parseNodeToExtract = aParseNode ! !
 
 !ExtractToTemporary class methodsFor: 'pre-conditions' stamp: 'HAW 6/30/2017 06:25:21'!
 assert: aSourceCodeToExtract isIncludedIn: aMethodNodeToRefactor

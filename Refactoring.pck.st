@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3285] on 31 March 2018 at 11:12:28 pm'!
-'Description merge miscellaneous icons'!
-!provides: 'Refactoring' 1 30!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3285] on 4 April 2018 at 8:28:54 pm'!
+'Description RenameClass does not accepts new name with spaces'!
+!provides: 'Refactoring' 1 31!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -1710,8 +1710,8 @@ test11OldClassDirectAndLiteralReferencesAreRenameAtOnce
 	self assert: selector equals: renamedReferences anyOne selector.
 	self assert: newClassName equals: renamedReferences anyOne classSymbol ! !
 
-!RenameClassTest methodsFor: 'tests' stamp: 'HAW 6/4/2017 18:47:31'!
-test12NewClassNameHasToBeASymbol
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 4/4/2018 19:56:09'!
+test12CanNotRenameAMetaclass
 
 	self 
 		assertCreation: [ RenameClass from: self class class to: #Object ]
@@ -1723,6 +1723,18 @@ test13NewClassNameHasToBeASymbol
 	self 
 		assertCreation: [ RenameClass from: self class to: '' asSymbol ]
 		failsWith: [ RenameClass newClassNameCanNotBeEmptyErrorMessage]! !
+
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 4/4/2018 19:59:34'!
+test14NewClassNameCanNotHaveSpaces
+
+	| oldClassName classToRefactor |
+
+	oldClassName :=  'OldClassTest14' asSymbol.
+	classToRefactor := self createClassNamed: oldClassName.
+
+	self 
+		assertCreation: [ RenameClass from: classToRefactor to: 'With spaces' asSymbol ]
+		failsWith: [ RenameClass newClassNameCanNotHaveSpacesErrorMessage]! !
 
 !RenameInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:10:47'!
 allClassCategoriesOfTestData
@@ -3077,6 +3089,11 @@ assert: aNewClassName isNotUndeclaredIn: anUndeclaredDictionary
 
 	(anUndeclaredDictionary includesKey: aNewClassName) ifTrue: [ self signalNewClassIsUndeclared: aNewClassName ]! !
 
+!RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 4/4/2018 20:28:11'!
+assertHasNoSpaces: aNewClassName
+
+	(aNewClassName includes: Character space) ifTrue: [ self signalNewClassNameCanNotHaveSpaces ]! !
+
 !RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 6/4/2017 19:08:53'!
 assertIsNotEmpty: aNewName
 
@@ -3117,6 +3134,11 @@ newClassNameCanNotBeEmptyErrorMessage
 	
 	^'New class name can not be empty'! !
 
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 4/4/2018 20:03:42'!
+newClassNameCanNotHaveSpacesErrorMessage
+	
+	^'New class name can not have spaces'! !
+
 !RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/1/2017 19:07:08'!
 newNameEqualsOldNameErrorMessage
 	
@@ -3152,6 +3174,11 @@ signalNewClassNameCanNotBeEmpty
 	
 	self refactoringError: self newClassNameCanNotBeEmptyErrorMessage! !
 
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 4/4/2018 20:09:25'!
+signalNewClassNameCanNotHaveSpaces
+	
+	self refactoringError: self newClassNameCanNotHaveSpacesErrorMessage ! !
+
 !RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:53:53'!
 signalNewNameEqualsOldName
 
@@ -3180,14 +3207,15 @@ from: aClass to: aNewClassName in: aSystem
 	
 	! !
 
-!RenameClass class methodsFor: 'instance creation' stamp: 'HAW 6/6/2017 09:52:19'!
+!RenameClass class methodsFor: 'instance creation' stamp: 'HAW 4/4/2018 20:09:47'!
 from: aClass to: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
-	
+
 	self assertIsNotMeta: aClass.
 	self assert: aClass isNotNamed: aNewClassName.
 	self assertIsNotEmpty: aNewClassName withBlanksTrimmed.
 	self assertIsSymbol: aNewClassName.
 	self assertStartsWithUppercaseLetter: aNewClassName.
+	self assertHasNoSpaces: aNewClassName.
 	self assert: aNewClassName doesNotExistIn: aSystem.
 	self assert: aNewClassName isNotUndeclaredIn: anUndeclaredDictionary.
 	

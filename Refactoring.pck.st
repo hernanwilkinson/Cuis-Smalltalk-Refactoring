@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3285] on 4 April 2018 at 8:28:54 pm'!
-'Description RenameClass does not accepts new name with spaces'!
-!provides: 'Refactoring' 1 31!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3285] on 15 April 2018 at 12:42:01 pm'!
+'Description Support for new icon definition'!
+!provides: 'Refactoring' 1 32!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2732,6 +2732,11 @@ warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
 			nextPutAll: ' will be hidden at '.
 		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
+!AddInstanceVariable class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:13:00'!
+addMiscellaneousIconsTo: aCollectorCollection
+
+	aCollectorCollection add: #('add inst var...') -> #listAddIcon! !
+
 !ExtractToTemporary methodsFor: 'applying' stamp: 'HAW 10/18/2017 18:39:22'!
 apply
 	
@@ -3013,6 +3018,11 @@ named: aVariable from: aClassToRefactor
 	
 	^self new initializeNamed: aVariable from: aClassToRefactor 
 ! !
+
+!RemoveInstanceVariable class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:16:15'!
+addMiscellaneousIconsTo: aCollectorCollection
+	
+	aCollectorCollection add: #('remove inst var...') -> #deleteIcon! !
 
 !RenameClass methodsFor: 'applying' stamp: 'HAW 6/4/2017 18:09:21'!
 apply
@@ -3328,6 +3338,11 @@ from: anOldvariable to: aNewVariable in: aClassToRefactor
 	addInstanceVariable := AddInstanceVariable named: aNewVariable to: aClassToRefactor.
 	
 	^self new initializeFrom: anOldvariable addingWith: addInstanceVariable ! !
+
+!RenameInstanceVariable class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:11:41'!
+addMiscellaneousIconsTo: aCollection
+
+	aCollection add: #('rename inst var...') -> #saveAsIcon! !
 
 !RenameMethod methodsFor: 'applying' stamp: 'HAW 5/31/2017 16:50:58'!
 apply
@@ -3722,6 +3737,11 @@ warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplement
 
 	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name, '.'! !
 
+!RenameMethod class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:10:45'!
+addMiscellaneousIconsTo: aCollection
+
+	aCollection add: #('rename method') -> #saveAsIcon! !
+
 !RenameTemporary methodsFor: 'applying' stamp: 'HAW 6/25/2017 21:53:31'!
 apply
 	
@@ -3838,6 +3858,11 @@ warn: aNewVariable willHideInstanceVariableDefinedIn: aClass
 warningMessageFor: aNewVariable willHideInstanceVariableDefinedIn: aClass
 
 	^aNewVariable, ' will hide instance variable defined in ', aClass name! !
+
+!RenameTemporary class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:40:00'!
+addMiscellaneousIconsTo: aCollection
+
+	aCollection add: #('rename temporary') -> #saveAsIcon! !
 
 !RefactoringApplier methodsFor: 'refactoring - applying' stamp: 'HAW 6/5/2017 18:06:39'!
 applyRefactoring
@@ -4985,85 +5010,6 @@ openSubProtocolForClass: aClass
 	label _ 'Sub-protocol of: ', aClass name.
 
 	^self open: aPBrowser label: label! !
-
-!Theme methodsFor: '*Refactoring' stamp: 'HAW 3/31/2018 20:05:05'!
-miscellaneousIcons
-
-	"Everything else."
-
-	^ {
-		#('restore display (r)' 'set display depth...' 'move windows onscreen' 'Utilities saveDisplay.') -> #displayIcon.
-		#('changes...' 'dual change sorter' 'change sets with this method' 'find a change sorter' 'recent changes in file' 'Undo / Redo history' 'code file contents' 'package file contents') -> #changesIcon.
-		#('Install New Updates' 'update' 'turn on auto-update (a)' 'update list (u)' 'install code' 'fileIn entire file' 'install package') -> #updateIcon.
-		#('find again (g)' 'full stack (k)') -> #systemIcon.
-		#('print it (p)' 'check change set for slips') -> #printIcon.
-		#('accept (s)' 'make changes go to me (m)') -> #acceptIcon.
-		#('cancel (l)' 'turn off auto-update (a)'  'stop StackSizeWatcher') -> #cancelIcon.
-		#('debug...' 'Debug it (D)' 'toggle break on entry') -> #debugIcon.
-		#('close' 'close all debuggers' 'close top window') -> #closeIcon.
-		#('collapse' 'hide taskbar' 'collapse all windows') -> #collapseIcon.
-		#('expand / contract' 'show taskbar' 'restore all windows') -> #expandIcon.
-		#('menu') -> #windowMenuIcon.
-		#('browse all' 'browser' 'browse it (b)' 'MessageTally UI and browse' 'browse recent submissions' 'browse full (b)' 'find changed browsers...' 'browse (b)' 'browse my changes') -> #editFindReplaceIcon.
-		#('workspace' 'workspace with contents') -> #terminalIcon.
-		#('styled text editor' 'text editor'  'basic text editor'  'unicode editor' 'edit this list' 'edit postscript...' 'add postscript...') -> #textEditorIcon.
-		#('file list' 'find a fileList' 'compress file') -> #systemFileManagerIcon.
-		#('transcript' 'find a transcript' 'Transcript clear.' 'log to transcript') -> #printerIcon.
-		#('process browser' 'vm statistics' 'MessageTally all Processes') -> #systemMonitorIcon.
-		#('emergency evaluator' 'conflicts with other change sets' 'check for slips' 'conflicts with change set opposite' 'conflicts with category opposite') -> #emblemImportantIcon.
-		#('change sorter') -> #halfRefreshIcon.
-		#('SUnit Test Runner' 'Accept & Run Test in Class (t)' 'Accept & Run Test in Category (y)' 'Run tests (t)' 'Run tests' 'Run test (t)' 'Accept & Debug Test (r)' 'Debug test (r)') -> #weatherFewCloudsIcon.
-		#('Font Sizes...' 'system fonts...' 'set font... (k)') -> #preferencesDesktopFontIcon.
-		#('full screen on') -> #viewFullscreenIcon.
-		#('full screen off') -> #exitFullscreenIcon.
-		#('set desktop color...') -> #wallpaperIcon.
-		#('preferences...' 'All preferences...' 'what to show...' 'view as hex') -> #preferencesIcon.
-		#('Editor keyboard shortcuts') -> #keyboardShortcutsIcon.
-		#('world menu help') -> #globeIcon.		"currently unused, but a neat icon"
-		#('useful expressions' 'class comments with it' 'check for uncommented methods' 'check for uncommented classes') -> #chatIcon.
-		#('set code author...' 'check for other authors' 'check for any other authors') -> #usersIcon.
-		#('space left') -> #removableMediaIcon.
-		#('start drawing all again' 'window color...') -> #graphicsIcon.
-		#('start stepping again') -> #mediaPlaybackStartIcon.
-		#('file out current change set' 'fileOut' 'fileOut (o)' 'File out and remove (o)' 'File out and keep (k)') -> #fileOutIcon.
-		#('recently logged changes...' 'versions (v)' 'recent classes... (r)' 'trim history' 'Profile it') -> #clockIcon.
-		#('senders of it (n)' 'senders of... (n)' 'local senders of...' 'senders (n)') -> #mailForwardIcon.
-		#('implementors of it (m)' 'implementors of... (m)' 'implementors of sent messages') -> #developmentIcon.
-		#('references to it (N)') -> #addressBookIcon.
-		#('class var refs...' 'class refs (N)' 'class variables' 'class vars' 'local implementors of...' 'subclass template') -> #classIcon.
-		#('inst var refs...' 'inst var defs...' 'sample instance') -> #instanceIcon.
-		#('Use Selection for Find (j)' 'rename class ...' 'rename...' 'change title...' 'rename inst var...' 'rename method') -> #saveAsIcon.
-		#('smalltalk options' 'method source with it' 'browse method (O)' 'check for uncategorized methods') -> #scriptIcon.
-		#('method strings with it (E)' 'Toggle WordWrap') -> #genericTextIcon.
-		#('browse hierarchy (h)' 'move to top' 'promote to top of list') -> #goTopIcon.
-		#('move up' 'make next-to-topmost') -> #goUpIcon.
-		#('move to bottom' 'send to back' 'send top window to back') -> #goBottomIcon.
-		#('inheritance (i)' 'move down') -> #goDownIcon.
-		#('browse protocol (p)' 'spawn sub-protocol') -> #spreadsheetIcon.
-		#('spawn full protocol') -> #speadsheetTemplateIcon.
-		#('alphabetize') -> #fontXGenericIcon.
-		#('Installed Packages' 'browse' 'show category (C)' 'categorize all uncategorized' 'select change set...' 'view affected class categories') -> #packageIcon.
-		#('remove from current change set' 'remove empty categories' 'subtract other side (-)' 'remove from this browser') -> #listRemoveIcon.
-		#('add to current change set' 'add all meths to current chgs' 'add preamble (p)' 'More...' 'add inst var...') -> #listAddIcon.
-		#('toggle diffing (D)' 'toggle selections') -> #switchIcon.
-		#('reorganize' 'create inst var accessors' 'ChangeSorter reorderChangeSets.' 'reorder all change sets' 'by name' 'by size' 'by date') -> #sendReceiveIcon.
-		#('unsent methods' 'unreferenced class vars' 'unreferenced inst vars' 'Undeclared inspect.' 'Undeclared removeUnreferencedKeys; inspect.' 'ChangeSorter removeEmptyUnnamedChangeSets.' 'check for unsent messages' ) -> #junkIcon.
-		#('find changed windows...') -> #newWindowIcon.
-		#('make undraggable') -> #pushPinIcon.
-		#('Utilities saveScreenshot.') -> #stillCameraIcon.
-		#('add new directory') -> #newFolderIcon.
-		#('select all' 'deselect all') -> #selectAllIcon.
-		#('sort by date') -> #dateIcon.
-		#('justified') -> #formatJustifyFillIcon.
-		#('centered') -> #formatJustifyCenterIcon.
-		#('set alignment...' 'leftFlush') -> #formatJustifyLeftIcon.
-		#('rightFlush') -> #formatJustifyRightIcon.
-		#('signal Semaphore (S)') -> #haloHelpIcon.
-		#('Change Paragraph Style...' 'Change Character Style...' 'Remove Character Style' 'Replace all uses of Paragraph Style...' 'Replace all uses of Character Style...' 'Set Default Font...') -> #fontXGenericIcon.
-		#('Clear Font') -> #newIcon.
-		#('code file browser' 'package file browser') -> #findIcon.
-		#('remove inst var...' 'remove (x)') -> #deleteIcon.
-	}! !
 
 !TestCase methodsFor: '*Refactoring' stamp: 'HAW 5/28/2017 22:01:33'!
 should: aBlockToFail raise: anExceptionHandlingCondition withMessageText: anExpectedErrorMessageCreator

@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3333] on 28 May 2018 at 8:38:01 am'!
-'Description Adapt menus to new implementation'!
-!provides: 'Refactoring' 1 33!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3333] on 13 June 2018 at 2:55:53 pm'!
+'Description Rename temporary menu option was lost'!
+!provides: 'Refactoring' 1 34!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -4801,6 +4801,131 @@ hasUnacceptedEdits: aBoolean
 
 	^morph hasUnacceptedEdits: aBoolean ! !
 
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 6/13/2018 14:45:17'!
+getMenu
+	
+	^(MenuMorph new defaultTarget: self)
+		addTitle: self class name;
+		addStayUpIcons;
+		addItemsFromDictionaries: `{
+			{
+				#label 			-> 		'Help...'.
+				#selector 		-> 		#openHelp.
+				#icon 			-> 		#helpIcon
+			} asDictionary.
+			nil.
+			{
+				#label 			-> 		'Do it (d)'.
+				#selector 		-> 		#doIt.
+				#icon 			-> 		#doItIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Print it (p)'.
+				#selector 		-> 		#printIt.
+				#icon 			-> 		#printIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Inspect it (i)'.
+				#selector 		-> 		#inspectIt.
+				#icon 			-> 		#inspectIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Explore it (I)'.
+				#selector 		-> 		#exploreIt.
+				#icon 			-> 		#exploreIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Debug it (D)'.	
+				#selector 		-> 		#debugIt.
+				#icon 			-> 		#debugIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Profile it'.	
+				#selector 		-> 		#profileIt.
+				#icon 			-> 		#clockIcon
+			} asDictionary.
+			nil.
+			{
+				#label 			-> 		'Explain'.
+				#selector 		-> 		#explain.
+				#icon 			-> 		#helpIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Browse it (b)'.
+				#selector 		-> 		#browseIt.
+				#icon 			-> 		#editFindReplaceIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Senders of it (n)'.
+				#selector 		-> 		#sendersOfIt.
+				#icon 			-> 		#mailForwardIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Implementors of it (m)'.
+				#selector 		-> 		#implementorsOfIt.
+				#icon 			-> 		#developmentIcon
+			} asDictionary.
+			{
+				#label 			-> 		'References to it (N)'.
+				#selector 		-> 		#referencesToIt.
+				#icon 			-> 		#addressBookIcon
+			} asDictionary.
+			nil.
+			{
+				#label 			-> 		'Rename temporary'.
+				#selector 		-> 		#renameTemporary.
+				#icon 			-> 		#saveAsIcon
+			} asDictionary.
+			nil.
+			{
+				#label 			-> 		'Method Strings with it (E)'.
+				#selector 		-> 		#methodStringsContainingit.
+				#icon 			-> 		#genericTextIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Method Source with it'.
+				#selector 		-> 		#methodSourceContainingIt.
+				#icon 			-> 		#scriptIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Class Comments with it'.
+				#selector 		-> 		#classCommentsContainingIt.
+				#icon 			-> 		#chatIcon
+			} asDictionary.
+			nil.
+			{
+				#label 			-> 		'Accept (s)'.
+				#selector 		-> 		#acceptContents.
+				#icon 			-> 		#acceptIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Cancel (l)'.
+				#selector 		-> 		#cancelEdits.
+				#icon 			-> 		#cancelIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Accept & Run Test in Class (t)'.
+				#selector 		-> 		#acceptAndTest.
+				#icon 			-> 		#weatherFewCloudsIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Accept & Run Test in Category (y)'.
+				#selector 		-> 		#acceptAndTestAll.
+				#icon 			-> 		#weatherFewCloudsIcon
+			} asDictionary.
+			{
+				#label 			-> 		'Accept & Debug Test (r)'.
+				#selector 		-> 		#acceptAndDebugTest.
+				#icon 			-> 		#weatherFewCloudsIcon
+			} asDictionary.
+			nil.
+			{
+				#label 			-> 		'More...'.
+				#selector 		-> 		#openMenu2.
+				#icon 			-> 		#listAddIcon
+			} asDictionary.
+		}`! !
+
 !SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 10/4/2017 17:29:01'!
 renameTemporary
 	
@@ -4810,66 +4935,6 @@ renameTemporary
 			do: [:anError | ^self inform: (RenameTemporaryApplier errorMessageForCanNotParseMethod: anError) ].
 		applier value ].
 ! !
-
-!SmalltalkEditor class methodsFor: '*Refactoring' stamp: 'HAW 6/26/2017 11:01:29'!
-initializeMenu
-	"Initialize the mouseButton2 (right button) pop-up menu and corresponding messages."
-	"
-	Editor initialize
-	"
-
-	menu _ SelectionMenu fromArray: {
-		{'Help...'.										#openHelp}.
-		#-.
-		{'Do it (d)'.									#doIt}.
-		{'Print it (p)'.									#printIt}.
-		{'Inspect it (i)'.								#inspectIt}.
-		{'Explore it (I)'.								#exploreIt}.
-		{'Debug it (D)'.								#debugIt}.
-		{'Profile it'.									#profileIt}.
-		#-.
-		{'Explain'.										#explain}.
-		{'Browse it (b)'.								#browseIt}.
-		{'Senders of it (n)'.							#sendersOfIt}.
-		{'Implementors of it (m)'.					#implementorsOfIt}.
-		{'References to it (N)'.						#referencesToIt}.
-		#-.
-		{'Rename temporary'.						#renameTemporary}.
-		#-.
-		{'Method Strings with it (E)'.				#methodStringsContainingit}.
-		{'Method Source with it'.					#methodSourceContainingIt}.
-		{'Class Comments with it'.					#classCommentsContainingIt}.
-		#-.
-		{'Accept (s)'.									#acceptContents}.
-		{'Cancel (l)'.									#cancelEdits}.
-		{'Accept & Run Test in Class (t)'.			#acceptAndTest}.
-		{'Accept & Run Test in Category (y)'.		#acceptAndTestAll}.
-		{'Accept & Debug Test (r)'.					#acceptAndDebugTest}.
-		#-.
-		{'More...'.										#getMenu2}.
-	}.
-	menu2 _ SelectionMenu fromArray: {
-		{'Find...(f)'.									#find}.
-		{'Find Again (g)'.								#findAgain}.
-		{'Use Selection for Find (j)'.				#setSearchString}.
-		#-.
-		{'Undo - multiple (z)'.						#undo}.
-		{'Redo - multiple (Z)'.						#redo}.
-		{'Undo / Redo history'.						#offerUndoHistory}.
-		#-.
-		{'Copy (c)'.									#copySelection}.
-		{'Cut (x)'.										#cut}.
-		{'Paste (v)'.									#paste}.
-		{'Paste without Format'.						#pasteString}.
-		{'Paste...'.									#pasteRecent}.
-		#-.
-		{'Toggle WordWrap'.						#wrapOnOff}.
-		{'Set Font... (k)'.								#offerFontMenu}.
-		{'Clear Font'.									#clearFont}.
-		{'Set Default Font...'.						#offerDefaultFontMenu}.
-		#-.
-		{'More...'.										#getMenu}.
-	}! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/11/2017 19:16:33'!
 addInstVar
@@ -5285,4 +5350,3 @@ should: aBlockToFail raise: anExceptionHandlingCondition withMessageText: anExpe
 		should: aBlockToFail 
 		raise: anExceptionHandlingCondition 
 		withExceptionDo: [ :anException | self assert: anExpectedErrorMessageCreator value equals: anException messageText ]! !
-SmalltalkEditor initializeMenu!

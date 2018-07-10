@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3333] on 13 June 2018 at 2:55:53 pm'!
-'Description Rename temporary menu option was lost'!
-!provides: 'Refactoring' 1 34!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3361] on 10 July 2018 at 7:19:35 pm'!
+'Description editor menu'!
+!provides: 'Refactoring' 1 36!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -332,6 +332,16 @@ RefactoringApplier subclass: #RenameTemporaryApplier
 	category: 'Refactoring'!
 !classDefinition: 'RenameTemporaryApplier class' category: #Refactoring!
 RenameTemporaryApplier class
+	instanceVariableNames: ''!
+
+!classDefinition: #RefactoringMenues category: #Refactoring!
+Object subclass: #RefactoringMenues
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RefactoringMenues class' category: #Refactoring!
+RefactoringMenues class
 	instanceVariableNames: ''!
 
 
@@ -4456,6 +4466,105 @@ on: aSmalltalkEditor
 	
 	^self new initializeOn: aSmalltalkEditor ! !
 
+!RefactoringMenues class methodsFor: 'editor menus' stamp: 'HAW 7/10/2018 19:18:45'!
+smalltalkEditorMenuOptions
+
+	^`{
+		{
+				#itemGroup 	-> 		35.
+				#itemOrder 		-> 		10.
+				#label 			-> 		'Rename temporary'.
+				#selector 		-> 		#renameTemporary.
+				#icon 			-> 		#saveAsIcon
+		} asDictionary 
+	}`! !
+
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 7/7/2018 19:25:26'!
+classListMenuOptions
+
+	^ `{
+			{
+				#itemGroup 	-> 		5.
+				#itemOrder 		-> 		10.
+				#label 			-> 		'refactorings...'.
+				#selector 		-> 		#openClassRefactoringMenu.
+				#icon 			-> 		#listAddIcon
+			} asDictionary.
+		}`.
+	! !
+
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 7/7/2018 19:43:52'!
+classRefactoringMenuOptions
+
+	^ `{
+			{
+				#itemGroup 	-> 		10.
+				#itemOrder 		-> 		10.
+				#label 			-> 		'rename class ...'.
+				#object 			-> 		#model.
+				#selector 		-> 		#renameClass.
+				#icon 			-> 		#saveAsIcon
+			} asDictionary.
+"			{
+				#itemGroup 	-> 		10.
+				#itemOrder 		-> 		20.
+				#label 			-> 		'safe remove class (x)'.
+				#object 			-> 		#model.
+				#selector 		-> 		#safeRemoveClass.
+				#icon 			-> 		#deleteIcon
+			} asDictionary."
+			{
+				#itemGroup 	-> 		20.
+				#itemOrder 		-> 		10.
+				#label 			-> 		'add inst var...'.
+				#selector 		-> 		#addInstVar.
+				#icon 			-> 		#listAddIcon
+			} asDictionary.
+			{
+				#itemGroup 	-> 		20.
+				#itemOrder 		-> 		20.
+				#label 			-> 		'rename inst var...'.
+				#selector 		-> 		#renameInstVar.
+				#icon 			-> 		#saveAsIcon
+			} asDictionary.
+			{
+				#itemGroup 	-> 		20.
+				#itemOrder 		-> 		30.
+				#label 			-> 		'remove inst var...'.
+				#selector 		-> 		#removeInstVar.
+				#icon 			-> 		#deleteIcon
+			} asDictionary.
+	}`.
+	! !
+
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 7/7/2018 19:38:01'!
+messageListMenuOptions
+
+	^ `{
+			{
+				#itemGroup 	-> 		5.
+				#itemOrder 		-> 		10.
+				#label 			-> 		'refactorings...'.
+				#selector 		-> 		#openMessageRefactoringMenu.
+				#icon 			-> 		#listAddIcon
+			} asDictionary.
+		}`.
+	! !
+
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 7/7/2018 19:40:24'!
+messsageRefactoringMenuOptions
+
+	^ `{
+			{
+				#itemGroup 	-> 		10.
+				#itemOrder 		-> 		10.
+				#label 			-> 		'rename'.
+				#selector 		-> 		#renameMethod.
+				#icon 			-> 		#saveAsIcon
+			} asDictionary.
+	}`.
+	! !
+
 !Browser methodsFor: '*Refactoring' stamp: 'HAW 6/25/2017 21:05:20'!
 isEditingMethod
 	
@@ -4801,131 +4910,6 @@ hasUnacceptedEdits: aBoolean
 
 	^morph hasUnacceptedEdits: aBoolean ! !
 
-!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 6/13/2018 14:45:17'!
-getMenu
-	
-	^(MenuMorph new defaultTarget: self)
-		addTitle: self class name;
-		addStayUpIcons;
-		addItemsFromDictionaries: `{
-			{
-				#label 			-> 		'Help...'.
-				#selector 		-> 		#openHelp.
-				#icon 			-> 		#helpIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'Do it (d)'.
-				#selector 		-> 		#doIt.
-				#icon 			-> 		#doItIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Print it (p)'.
-				#selector 		-> 		#printIt.
-				#icon 			-> 		#printIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Inspect it (i)'.
-				#selector 		-> 		#inspectIt.
-				#icon 			-> 		#inspectIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Explore it (I)'.
-				#selector 		-> 		#exploreIt.
-				#icon 			-> 		#exploreIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Debug it (D)'.	
-				#selector 		-> 		#debugIt.
-				#icon 			-> 		#debugIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Profile it'.	
-				#selector 		-> 		#profileIt.
-				#icon 			-> 		#clockIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'Explain'.
-				#selector 		-> 		#explain.
-				#icon 			-> 		#helpIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Browse it (b)'.
-				#selector 		-> 		#browseIt.
-				#icon 			-> 		#editFindReplaceIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Senders of it (n)'.
-				#selector 		-> 		#sendersOfIt.
-				#icon 			-> 		#mailForwardIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Implementors of it (m)'.
-				#selector 		-> 		#implementorsOfIt.
-				#icon 			-> 		#developmentIcon
-			} asDictionary.
-			{
-				#label 			-> 		'References to it (N)'.
-				#selector 		-> 		#referencesToIt.
-				#icon 			-> 		#addressBookIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'Rename temporary'.
-				#selector 		-> 		#renameTemporary.
-				#icon 			-> 		#saveAsIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'Method Strings with it (E)'.
-				#selector 		-> 		#methodStringsContainingit.
-				#icon 			-> 		#genericTextIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Method Source with it'.
-				#selector 		-> 		#methodSourceContainingIt.
-				#icon 			-> 		#scriptIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Class Comments with it'.
-				#selector 		-> 		#classCommentsContainingIt.
-				#icon 			-> 		#chatIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'Accept (s)'.
-				#selector 		-> 		#acceptContents.
-				#icon 			-> 		#acceptIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Cancel (l)'.
-				#selector 		-> 		#cancelEdits.
-				#icon 			-> 		#cancelIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Accept & Run Test in Class (t)'.
-				#selector 		-> 		#acceptAndTest.
-				#icon 			-> 		#weatherFewCloudsIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Accept & Run Test in Category (y)'.
-				#selector 		-> 		#acceptAndTestAll.
-				#icon 			-> 		#weatherFewCloudsIcon
-			} asDictionary.
-			{
-				#label 			-> 		'Accept & Debug Test (r)'.
-				#selector 		-> 		#acceptAndDebugTest.
-				#icon 			-> 		#weatherFewCloudsIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'More...'.
-				#selector 		-> 		#openMenu2.
-				#icon 			-> 		#listAddIcon
-			} asDictionary.
-		}`! !
-
 !SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 10/4/2017 17:29:01'!
 renameTemporary
 	
@@ -4942,266 +4926,25 @@ addInstVar
 	model selectedClassOrMetaClass ifNotNil: [ :aClass |
 		(AddInstanceVariableApplier on: self for: aClass) value ].! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'RNG 5/27/2018 21:36:20'!
-classListMenu
-	"Set up the menu to apply to the receiver's class list, honoring the #shifted boolean"
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 7/7/2018 19:30:42'!
+classRefactoringMenu
 
-	| aMenu |
-	aMenu _ MenuMorph new defaultTarget: self.
-	aMenu addTitle: 'Class List'.
-	aMenu
-		addItemsFromDictionaries: `{
-			{
-				#label 			-> 		'browse full (b)'.
-				#selector 		-> 		#browseMethodFull.
-				#icon 			-> 		#editFindReplaceIcon
-			} asDictionary.
-			{
-				#label 			-> 		'browse hierarchy (h)'.
-				#selector 		-> 		#browseHierarchy.
-				#icon 			-> 		#goTopIcon
-			} asDictionary.
-			{
-				#label 			-> 		'browse protocol (p)'.
-				#selector 		-> 		#browseFullProtocol.
-				#icon 			-> 		#spreadsheetIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'fileOut'.
-				#object 			-> 		#model.
-				#selector 		-> 		#fileOutClass.
-				#icon 			-> 		#fileOutIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'show hierarchy'.
-				#object 			-> 		#model.
-				#selector 		-> 		#hierarchy.
-				#icon 			-> 		#findIcon
-			} asDictionary.
-			{
-				#label 			-> 		'show definition'.
-				#object 			-> 		#model.
-				#selector 		-> 		#editClass.
-				#icon 			-> 		#findIcon
-			} asDictionary.
-			{
-				#label 			-> 		'show comment'.
-				#object 			-> 		#model.
-				#selector 		-> 		#editComment.
-				#icon 			-> 		#findIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'add inst var...'.
-				#selector 		-> 		#addInstVar.
-				#icon 			-> 		#listAddIcon
-			} asDictionary.
-			{
-				#label 			-> 		'rename inst var...'.
-				#selector 		-> 		#renameInstVar.
-				#icon 			-> 		#saveAsIcon
-			} asDictionary.
-			{
-				#label 			-> 		'remove inst var...'.
-				#selector 		-> 		#removeInstVar.
-				#icon 			-> 		#deleteIcon
-			} asDictionary.
-			{
-				#label 			-> 		'inst var refs...'.
-				#selector 		-> 		#browseInstVarRefs.
-				#icon 			-> 		#instanceIcon
-			} asDictionary.
-			{
-				#label 			-> 		'inst var defs...'.
-				#selector 		-> 		#browseInstVarDefs.
-				#icon 			-> 		#instanceIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'class var refs...'.
-				#selector 		-> 		#browseClassVarRefs.
-				#icon 			-> 		#classIcon
-			} asDictionary.
-			{
-				#label 			-> 		'class vars'.
-				#selector 		-> 		#browseClassVariables.
-				#icon 			-> 		#classIcon
-			} asDictionary.
-			{
-				#label 			-> 		'class refs (N)'.
-				#selector 		-> 		#browseClassRefs.
-				#icon 			-> 		#classIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'rename class ...'.
-				#object 			-> 		#model.
-				#selector 		-> 		#renameClass.
-				#icon 			-> 		#saveAsIcon
-			} asDictionary.
-			{
-				#label 			-> 		'copy class...'.
-				#object 			-> 		#model.
-				#selector 		-> 		#copyClass.
-				#icon 			-> 		#copyIcon
-			} asDictionary.
-			{
-				#label 			-> 		'remove class (x)'.
-				#object 			-> 		#model.
-				#selector 		-> 		#removeClass.
-				#icon 			-> 		#deleteIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'Run tests (t)'.
-				#object 			-> 		#model.
-				#selector 		-> 		#runClassTests.
-				#icon 			-> 		#weatherFewCloudsIcon
-			} asDictionary.
-			{
-				#label 			-> 		'more...'.
-				#selector 		-> 		#offerClassListMenu2.
-				#icon 			-> 		#listAddIcon
-			} asDictionary.
-		}`.
-	^ aMenu! !
+	^DynamicMenuBuilder buildTitled: 'Refactorings' targeting: self collectingMenuOptionsWith: #classRefactoringMenuOptions.! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'RNG 5/27/2018 21:38:08'!
-messageListMenu
-	"Answer the message-list menu"
-	"Changed by emm to include menu-item for breakpoints"
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 7/7/2018 19:38:51'!
+messageRefactoringMenu
 
-	| aMenu |
-	aMenu _ MenuMorph new defaultTarget: self.
-	aMenu addTitle: 'Message List'.
-	aMenu
-		addItemsFromDictionaries: `{
-			{
-				#label 			-> 		'what to show...'.
-				#selector 		-> 		#offerWhatToShowMenu.
-				#icon 			-> 		#preferencesIcon
-			} asDictionary.
-			{
-				#label 			-> 		'toggle break on entry'.
-				#object 			-> 		#model.
-				#selector 		-> 		#toggleBreakOnEntry.
-				#icon 			-> 		#debugIcon
-			} asDictionary.
-            	nil.
-			{
-				#label 			-> 		'browse full (b)'.
-				#selector 		-> 		#browseMethodFull.
-				#icon 			-> 		#editFindReplaceIcon
-			} asDictionary.
-			{
-				#label 			-> 		'browse hierarchy (h)'.
-				#selector 		-> 		#browseHierarchy.
-				#icon 			-> 		#goTopIcon
-			} asDictionary.
-			{
-				#label 			-> 		'browse method (O)'.
-				#selector 		-> 		#openSingleMessageBrowser.
-				#icon 			-> 		#scriptIcon
-			} asDictionary.
-			{
-				#label 			-> 		'browse protocol (p)'.
-				#selector 		-> 		#browseFullProtocol.
-				#icon 			-> 		#spreadsheetIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'fileOut'.
-				#object 			-> 		#model.
-				#selector 		-> 		#fileOutMessage.
-				#icon 			-> 		#fileOutIcon
-			} asDictionary.
-			{
-				#label 			-> 		'explore CompiledMethod'.
-				#object 			-> 		#model.
-				#selector 		-> 		#exploreCompiledMethod.
-				#icon 			-> 		#exploreIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'senders of... (n)'.
-				#selector 		-> 		#browseSendersOfMessages.
-				#icon 			-> 		#mailForwardIcon
-			} asDictionary.
-			{
-				#label 			-> 		'implementors of... (m)'.
-				#selector 		-> 		#browseMessages.
-				#icon 			-> 		#developmentIcon
-			} asDictionary.
-			{
-				#label 			-> 		'inheritance (i)'.
-				#selector 		-> 		#methodHierarchy.
-				#icon 			-> 		#goDownIcon
-			} asDictionary.
-			{
-				#label 			-> 		'versions (v)'.
-				#selector 		-> 		#browseVersions.
-				#icon 			-> 		#clockIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'inst var refs...'.
-				#selector 		-> 		#browseInstVarRefs.
-				#icon 			-> 		#instanceIcon
-			} asDictionary.
-			{
-				#label 			-> 		'inst var defs...'.
-				#selector 		-> 		#browseInstVarDefs.
-				#icon 			-> 		#instanceIcon
-			} asDictionary.
-			{
-				#label 			-> 		'class var refs...'.
-				#selector 		-> 		#browseClassVarRefs.
-				#icon 			-> 		#classIcon
-			} asDictionary.
-			{
-				#label 			-> 		'class variables'.
-				#selector 		-> 		#browseClassVariables.
-				#icon 			-> 		#classIcon
-			} asDictionary.
-			{
-				#label 			-> 		'class refs (N)'.
-				#selector 		-> 		#browseClassRefs.
-				#icon 			-> 		#classIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'rename method'.
-				#selector 		-> 		#renameMethod.
-				#icon 			-> 		#saveAsIcon
-			} asDictionary.
-			{
-				#label 			-> 		'remove method (x)'.
-				#object 			-> 		#model.
-				#selector 		-> 		#removeMessage.
-				#icon 			-> 		#deleteIcon
-			} asDictionary.
-			{
-				#label 			-> 		'run test (t)'.
-				#object 			-> 		#model.
-				#selector 		-> 		#runMethodTest.
-				#icon 			-> 		#weatherFewCloudsIcon
-			} asDictionary.
-			{
-				#label 			-> 		'debug test (r)'.
-				#object 			-> 		#model.
-				#selector 		-> 		#debugMethodTest.
-				#icon 			-> 		#weatherFewCloudsIcon
-			} asDictionary.
-			nil.
-			{
-				#label 			-> 		'more...'.
-				#selector 		-> 		#openMessageListMenu2.
-				#icon 			-> 		#listAddIcon
-			} asDictionary.
-		}`.
-	^ aMenu! !
+	^DynamicMenuBuilder buildTitled: 'Refactorings' targeting: self collectingMenuOptionsWith: #messsageRefactoringMenuOptions.! !
+
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 7/7/2018 19:31:07'!
+openClassRefactoringMenu
+
+	^self classRefactoringMenu popUpInWorld! !
+
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 7/7/2018 19:38:26'!
+openMessageRefactoringMenu
+
+	^self messageRefactoringMenu popUpInWorld! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/17/2017 19:53:15'!
 removeInstVar

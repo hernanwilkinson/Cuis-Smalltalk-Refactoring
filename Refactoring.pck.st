@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3361] on 10 July 2018 at 7:19:35 pm'!
-'Description editor menu'!
-!provides: 'Refactoring' 1 36!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3361] on 1 August 2018 at 8:37:02 pm'!
+'Description Icon change'!
+!provides: 'Refactoring' 1 38!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -12,6 +12,16 @@ Error subclass: #RefactoringError
 	category: 'Refactoring'!
 !classDefinition: 'RefactoringError class' category: #Refactoring!
 RefactoringError class
+	instanceVariableNames: ''!
+
+!classDefinition: #CanNotRemoveDueToReferencesError category: #Refactoring!
+RefactoringError subclass: #CanNotRemoveDueToReferencesError
+	instanceVariableNames: 'references referencee'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'CanNotRemoveDueToReferencesError class' category: #Refactoring!
+CanNotRemoveDueToReferencesError class
 	instanceVariableNames: ''!
 
 !classDefinition: #RefactoringWarning category: #Refactoring!
@@ -184,6 +194,16 @@ RefactoringTest subclass: #RenameTemporaryTest
 RenameTemporaryTest class
 	instanceVariableNames: ''!
 
+!classDefinition: #SafelyRemoveClassTest category: #Refactoring!
+RefactoringTest subclass: #SafelyRemoveClassTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'SafelyRemoveClassTest class' category: #Refactoring!
+SafelyRemoveClassTest class
+	instanceVariableNames: ''!
+
 !classDefinition: #Refactoring category: #Refactoring!
 Object subclass: #Refactoring
 	instanceVariableNames: ''
@@ -264,6 +284,16 @@ Refactoring subclass: #RenameTemporary
 RenameTemporary class
 	instanceVariableNames: ''!
 
+!classDefinition: #SafelyRemoveClass category: #Refactoring!
+Refactoring subclass: #SafelyRemoveClass
+	instanceVariableNames: 'classToRemove'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'SafelyRemoveClass class' category: #Refactoring!
+SafelyRemoveClass class
+	instanceVariableNames: ''!
+
 !classDefinition: #RefactoringApplier category: #Refactoring!
 Object subclass: #RefactoringApplier
 	instanceVariableNames: 'requestExitBlock refactoring changes'
@@ -334,6 +364,16 @@ RefactoringApplier subclass: #RenameTemporaryApplier
 RenameTemporaryApplier class
 	instanceVariableNames: ''!
 
+!classDefinition: #SafelyRemoveClassApplier category: #Refactoring!
+RefactoringApplier subclass: #SafelyRemoveClassApplier
+	instanceVariableNames: 'classToRemove'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'SafelyRemoveClassApplier class' category: #Refactoring!
+SafelyRemoveClassApplier class
+	instanceVariableNames: ''!
+
 !classDefinition: #RefactoringMenues category: #Refactoring!
 Object subclass: #RefactoringMenues
 	instanceVariableNames: ''
@@ -344,6 +384,40 @@ Object subclass: #RefactoringMenues
 RefactoringMenues class
 	instanceVariableNames: ''!
 
+
+!CanNotRemoveDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 7/11/2018 16:56:20'!
+anyReference
+	
+	^references anyOne ! !
+
+!CanNotRemoveDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:32:33'!
+initialize: aMessageText references: aCollectionOfReferences to: aReferencee
+
+	self messageText: aMessageText.
+	references := aCollectionOfReferences.
+	referencee := aReferencee ! !
+
+!CanNotRemoveDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 7/11/2018 16:54:54'!
+numberOfReferences
+	
+	^references size! !
+
+!CanNotRemoveDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:32:46'!
+referencee
+
+	^referencee ! !
+
+!CanNotRemoveDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:26:49'!
+references
+
+	^references copy! !
+
+!CanNotRemoveDueToReferencesError class methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:32:15'!
+signal: aMessageText references: references to: aReferencee
+
+	self new 
+		initialize: aMessageText references: references to: aReferencee;
+		signal! !
 
 !ExtractToTemporaryRewriter methodsFor: 'initialization' stamp: 'HAW 10/18/2017 18:21:40'!
 initializeOf: anExtractToTemporary on: aParseNodeToReplaceFinder 
@@ -963,6 +1037,11 @@ tearDown
 		self assertAllClassCategoriesAreExpectedToBeRemoved.
 		SystemOrganization removeSystemCategories: classCategories.
 		Browser allInstancesDo: [:aBrowser | aBrowser changed: #systemCategoryList ]]! !
+
+!RefactoringTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:36:54'!
+canNotRemoveDueToReferencesRefactoringError
+	
+	^ Refactoring canNotRemoveDueToReferencesErrorClass - MessageNotUnderstood.! !
 
 !AddInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 6/6/2017 09:59:58'!
 allClassCategoriesOfTestData
@@ -2604,10 +2683,184 @@ test10NewVariableNameCanNotBeDefinedAsBlockArgument
 		assertCreation: [RenameTemporary from: oldVariable to: newVariable in: methodNode ]
 		failsWith: [RenameTemporary  errorMessageForNewTemporaryVariable: newVariable isAlreadyDefinedIn: methodNode ]! !
 
+!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/1/2018 16:43:08'!
+test02ClassesWithNoReferencesAndNoSubclassesAreSafetelyRemoved
+
+	| classToRemove safeRemove | 
+	
+	classToRemove := self createClassNamed: self classToRemoveName.
+	safeRemove := SafelyRemoveClass of: classToRemove.
+	safeRemove apply.
+	
+	self assert: classToRemove isObsolete ! !
+
+!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/1/2018 16:43:11'!
+test03RemovingTheMetaclassRemovesTheClass
+
+	| classToRemove safeRemove | 
+	
+	classToRemove := self createClassNamed: self classToRemoveName.
+	safeRemove := SafelyRemoveClass of: classToRemove class.
+	safeRemove apply.
+	
+	self assert: classToRemove isObsolete ! !
+
+!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/1/2018 16:43:17'!
+test04CanNotRemoveClassWihtReferencesOutsideHierarchy
+
+	| classToRemove classReferencing methodNameReferencingClass | 
+	
+	classToRemove := self createClassNamed: self classToRemoveName.
+	classReferencing := self createClassNamed: #ClassReferencingClassToRemove.
+	methodNameReferencingClass := #m1.
+	classReferencing compile: methodNameReferencingClass asString, ' ^', classToRemove name asString.
+	
+	self
+		should: [ SafelyRemoveClass of: classToRemove ]
+		raise: self canNotRemoveDueToReferencesRefactoringError 
+		withExceptionDo: [ :anError | | reference |
+			self 
+				assert: (SafelyRemoveClass errorMessageForCanNotRemove: classToRemove dueToReferencesToAll: (Array with: classToRemove))
+				equals: anError messageText.
+			self assert: 1 equals: anError numberOfReferences.
+			reference := anError anyReference.
+			self assert: classReferencing name equals: reference classSymbol.
+			self assert: methodNameReferencingClass equals: reference methodSymbol ]! !
+
+!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/1/2018 16:43:21'!
+test05CanRemoveClassWithReferencesFromItself
+
+	| classToRemove methodNameReferencingClass remove | 
+	
+	classToRemove := self createClassNamed: self classToRemoveName.
+	methodNameReferencingClass := #m1.
+	classToRemove compile: methodNameReferencingClass asString, ' ^', classToRemove name asString.
+	
+	remove := SafelyRemoveClass of: classToRemove.
+	remove apply.
+	
+	self assert: classToRemove isObsolete ! !
+
+!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/1/2018 16:43:27'!
+test06WarnIfClassToRemoveHasSubclasses
+
+	| classToRemove classToRemoveSubclass | 
+	
+	classToRemove := self createClassNamed: self classToRemoveName.
+	classToRemoveSubclass := self createClassNamed: 'ClassToRemoveSubclass' asSymbol subclassOf: classToRemove.
+	
+	self 
+		assertCreation: [ SafelyRemoveClass of: classToRemove ]
+		warnsWith: [ SafelyRemoveClass warningMessageFor: classToRemove hasSubclasses: (Array with: classToRemoveSubclass) ]! !
+
+!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/1/2018 16:43:33'!
+test07CanNotRemoveClassWhenSubclassesHaveReferencesOutsideTheHierarchy
+
+	| classToRemove classToRemoveSubclass classReferencing methodNameReferencingClass | 
+	
+	classToRemove := self createClassNamed: self classToRemoveName.
+	classToRemoveSubclass := self createClassNamed: 'ClassToRemoveSubclass' asSymbol subclassOf: classToRemove.
+	classReferencing := self createClassNamed: #ClassReferencingClassToRemoveSubclass.
+	methodNameReferencingClass := #m1.
+	classReferencing compile: methodNameReferencingClass asString, ' ^', classToRemoveSubclass name asString.
+	
+	self
+		should: [ SafelyRemoveClass of: classToRemove ]
+		raise: self canNotRemoveDueToReferencesRefactoringError 
+		withExceptionDo: [ :anError | | reference |
+			self 
+				assert: (SafelyRemoveClass errorMessageForCanNotRemove: classToRemove dueToReferencesToAll: (Array with: classToRemoveSubclass))
+				equals: anError messageText.
+			self assert: 1 equals: anError numberOfReferences.
+			reference := anError anyReference.
+			self assert: classReferencing name equals: reference classSymbol.
+			self assert: methodNameReferencingClass equals: reference methodSymbol ]	
+! !
+
+!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/1/2018 16:47:12'!
+test08HierarchyIsRemovedIfSubclassesWarningIsResumed
+
+	| classToRemove classToRemoveSubclass | 
+	
+	classToRemove := self createClassNamed: self classToRemoveName.
+	classToRemoveSubclass := self createClassNamed: 'ClassToRemoveSubclass' asSymbol subclassOf: classToRemove.
+	
+	self safelyRemoveHierarchyOf: classToRemove.
+	
+	self assert: classToRemove isObsolete.
+	self assert: classToRemoveSubclass isObsolete
+		
+	
+		! !
+
+!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/1/2018 16:47:17'!
+test09CanRemoveIfReferencesToSubclassesAreInTheHierarchy
+
+	| classToRemove classToRemoveSubclass | 
+	
+	classToRemove := self createClassNamed: self classToRemoveName.
+	classToRemoveSubclass := self createClassNamed: 'ClassToRemoveSubclass' asSymbol subclassOf: classToRemove.
+	classToRemove compile: 'm1 ^', classToRemoveSubclass name asString.
+	classToRemoveSubclass compile: 'm2 ^', classToRemove name asString.
+	
+	self safelyRemoveHierarchyOf: classToRemove.
+	
+	self assert: classToRemove isObsolete.	
+	self assert: classToRemoveSubclass isObsolete.! !
+
+!SafelyRemoveClassTest methodsFor: 'test support' stamp: 'HAW 8/1/2018 15:48:56'!
+assertSubclassesReturnsACopy
+
+	"This is a precondition for the remove to work properly with subclasses of the class to remove. 
+	I do not put it in the refactoring to avoid innecesary checks and because tests verify preconditions. 
+	It is not a seprate test because I do not want senders of this precondition to run if it fails - Hernan"
+	self deny: self class superclass subclasses == self class superclass subclasses! !
+
+!SafelyRemoveClassTest methodsFor: 'test support' stamp: 'HAW 8/1/2018 16:47:22'!
+safelyRemoveHierarchyOf: classToRemove
+		
+	| remove |
+	
+	"see comment of #assertSubclassesReturnsACopy - Hernan"
+	self assertSubclassesReturnsACopy.
+	
+	[ remove := SafelyRemoveClass of: classToRemove ]
+		on: self refactoringWarning 
+		do: [ :aWarning | 
+			self assert: (SafelyRemoveClass warningMessageFor: classToRemove hasSubclasses: classToRemove allSubclasses) equals: aWarning messageText.
+			aWarning resume ].
+		
+	remove apply.! !
+
+!SafelyRemoveClassTest methodsFor: 'class factory' stamp: 'HAW 7/10/2018 19:54:11'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
+!SafelyRemoveClassTest methodsFor: 'class factory' stamp: 'HAW 7/11/2018 16:56:05'!
+classToRemoveName
+
+	"I can not use the symbol directly because it would be a reference - Hernan"
+	^ 'ClassToRemove' asSymbol.
+	! !
+
 !Refactoring methodsFor: 'applying' stamp: 'HAW 5/24/2017 21:08:11'!
 apply
 
 	self subclassResponsibility ! !
+
+!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 8/1/2018 17:46:45'!
+canNotRemoveDueToReferencesError: aMessageText references: references to: referencee 
+	
+	^self canNotRemoveDueToReferencesErrorClass
+		signal: aMessageText 
+		references: references 
+		to: referencee ! !
+
+!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 8/1/2018 17:36:40'!
+canNotRemoveDueToReferencesErrorClass
+	
+	^CanNotRemoveDueToReferencesError! !
 
 !Refactoring class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:07'!
 refactoringError: aMessage
@@ -2985,35 +3238,35 @@ assert: aClass defines: anInstanceVariable
 
 	(aClass definesInstanceVariableNamed: anInstanceVariable) ifFalse: [ self signalInstanceVariable: anInstanceVariable notDefinedIn: aClass ].! !
 
-!RemoveInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/17/2017 19:38:33'!
+!RemoveInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 8/1/2018 19:36:10'!
 assert: aVaraible isNotReferencedInHierarchyOf: aClassToRefactor
 
 	| references |
 	
 	references := OrderedCollection new.
 	aClassToRefactor withAllSubclassesDo: [ :aClass | 
-		(aClass whichSelectorsAccess: aVaraible) do: [ :aSelector | references add: aClass >> aSelector ]].
+		(aClass whichSelectorsAccess: aVaraible) do: [ :aSelector | references add: (MethodReference class: aClass selector: aSelector) ]].
 	
 	references notEmpty ifTrue: [ self signalInstanceVariable: aVaraible isReferencedInAll: references ]! !
 
-!RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/17/2017 19:30:35'!
+!RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 8/1/2018 19:38:57'!
 errorMessageForInstanceVariable: aVariable isReferencedInAll: methods
 
-	^String streamContents: [ :stream |
-		stream 
-			nextPutAll: aVariable;
-			nextPutAll: ' is referenced in '.
-		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
+	^aVariable, ' can not be removed because it has references'.
+		! !
 
 !RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/12/2017 19:12:41'!
 errorMessageForInstanceVariable: aName notDefinedIn: aClass
 
 	^ 'Instance variable ''' , aName , ''' is not defined in ' , aClass name.! !
 
-!RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/17/2017 19:39:25'!
+!RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 8/1/2018 18:43:47'!
 signalInstanceVariable: aVariable isReferencedInAll: methods
 
-	self refactoringError: (self errorMessageForInstanceVariable: aVariable isReferencedInAll: methods)! !
+	self 
+		canNotRemoveDueToReferencesError: (self errorMessageForInstanceVariable: aVariable isReferencedInAll: methods)
+		 references: methods
+		 to: aVariable! !
 
 !RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/12/2017 19:12:12'!
 signalInstanceVariable: aName notDefinedIn: aClass
@@ -3742,10 +3995,10 @@ warnImplementionOf: aNewSelector in: aClass willOverrideImplementationIn: aSuper
 	
 	self refactoringWarning: (self warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass).! !
 
-!RenameMethod class methodsFor: 'warnings' stamp: 'HAW 5/31/2017 20:41:39'!
+!RenameMethod class methodsFor: 'warnings' stamp: 'HAW 8/1/2018 18:15:01'!
 warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass
 
-	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name, '.'! !
+	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
 
 !RenameMethod class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:10:45'!
 addMiscellaneousIconsTo: aCollection
@@ -3874,6 +4127,116 @@ addMiscellaneousIconsTo: aCollection
 
 	aCollection add: #('rename temporary') -> #saveAsIcon! !
 
+!SafelyRemoveClass methodsFor: 'applying' stamp: 'HAW 8/1/2018 16:42:17'!
+apply
+	
+	self removeWithAllSubclasses: classToRemove.
+	! !
+
+!SafelyRemoveClass methodsFor: 'applying - private' stamp: 'HAW 8/1/2018 16:42:17'!
+removeWithAllSubclasses: aClassToRemove
+
+	"I have to do 'subclasses do:' and not 'subclassesDo:' because removing a class modifies parent's subclasses collection.
+	#subclasses returns a copy of superclass' subclasses collection -Hernan"
+	aClassToRemove subclasses do: [ :aSubclassToRemove | self removeWithAllSubclasses: aSubclassToRemove ].
+	aClassToRemove removeFromSystem.
+	! !
+
+!SafelyRemoveClass methodsFor: 'initialization' stamp: 'HAW 8/1/2018 16:42:17'!
+initializeOf: aClassToSafetelyRemove 
+	
+	classToRemove := aClassToSafetelyRemove ! !
+
+!SafelyRemoveClass class methodsFor: 'instance creation' stamp: 'HAW 8/1/2018 16:42:17'!
+of: aClassToSafelyRemove
+
+	| theNonMetaclassToRemove |
+	
+	theNonMetaclassToRemove := aClassToSafelyRemove theNonMetaClass.	
+	self assertNoReferencesTo: theNonMetaclassToRemove.	
+	self warnIfHasSubclasses: theNonMetaclassToRemove.
+	
+	^self new initializeOf: theNonMetaclassToRemove ! !
+
+!SafelyRemoveClass class methodsFor: 'pre-conditions' stamp: 'HAW 8/1/2018 16:42:17'!
+assertNoReferencesTo: aClassToSafelyRemove
+
+	| references withAllSubclasses withAllSubclassesNames referenced |
+	
+	withAllSubclasses := aClassToSafelyRemove withAllSubclasses.
+	withAllSubclassesNames := withAllSubclasses collect: [:aClass | aClass name ].
+	references :=OrderedCollection new.
+	referenced := OrderedCollection new.
+	
+	withAllSubclasses do: [ :aClass | | allReferences referencesOutsideHierarchy |
+		allReferences := aClass allCallsOn.
+		referencesOutsideHierarchy := allReferences reject: [ :aReference | withAllSubclassesNames includes: aReference classSymbol ].
+		referencesOutsideHierarchy notEmpty ifTrue: [
+			referenced add: aClass.
+			references addAll: referencesOutsideHierarchy ]].
+		
+	references notEmpty ifTrue: [ self signalCanNotRemove: aClassToSafelyRemove dueToReferences: references toAll: referenced ]! !
+
+!SafelyRemoveClass class methodsFor: 'pre-conditions' stamp: 'HAW 8/1/2018 16:42:17'!
+warnIfHasSubclasses: aClassToSafelyRemove
+
+	| allSubclasses |
+	
+	allSubclasses := aClassToSafelyRemove allSubclasses.
+	allSubclasses isEmpty ifFalse: [ self warn: aClassToSafelyRemove hasSubclasses: allSubclasses ]! !
+
+!SafelyRemoveClass class methodsFor: 'exceptions' stamp: 'HAW 8/1/2018 18:10:36'!
+errorMessageForCanNotRemove: aClassToSafelyRemove dueToReferencesToAll: referenced
+
+	^String streamContents: [ :stream |
+		stream 
+			nextPutAll: aClassToSafelyRemove name asString;
+			nextPutAll: ' can not be removed '.
+	
+		referenced size = 1 
+			ifTrue: [ (referenced includes: aClassToSafelyRemove) 
+				ifTrue: [ stream nextPutAll: 'because it has references' ]
+				ifFalse: [ stream 
+					nextPutAll: 'because it subclass, ';
+					nextPutAll: referenced anyOne name asString;
+					nextPutAll: ', has references' ]]
+			ifFalse: [ (referenced includes: aClassToSafelyRemove)
+				ifTrue: [ stream 
+					nextPutAll: 'due to references to: ';
+					nextPutAll: referenced asCommaStringAnd ]
+				ifFalse: [ stream
+					nextPutAll: 'due to references to its subclasses: ';
+					nextPutAll: referenced asCommaStringAnd ]]]! !
+
+!SafelyRemoveClass class methodsFor: 'exceptions' stamp: 'HAW 8/1/2018 17:45:52'!
+signalCanNotRemove: aClassToSafelyRemove dueToReferences: references toAll: allReferenced
+
+	self 
+		canNotRemoveDueToReferencesError: (self errorMessageForCanNotRemove: aClassToSafelyRemove dueToReferencesToAll: allReferenced)
+		references: references 
+		to: aClassToSafelyRemove 
+	! !
+
+!SafelyRemoveClass class methodsFor: 'warnings' stamp: 'HAW 8/1/2018 16:42:17'!
+warn: aClassToSafelyRemove hasSubclasses: allSubclasses
+
+	self refactoringWarning: (self warningMessageFor: aClassToSafelyRemove hasSubclasses: allSubclasses)! !
+
+!SafelyRemoveClass class methodsFor: 'warnings' stamp: 'HAW 8/1/2018 18:24:31'!
+warningMessageFor: aClassToSafelyRemove hasSubclasses: allSubclasses
+
+	^String streamContents: [ :stream |
+		stream nextPutAll: aClassToSafelyRemove name asString.
+		allSubclasses size = 1
+			ifTrue: [ stream nextPutAll: ' has a subclass' ]
+			ifFalse: [ stream 
+					nextPutAll: ' has ';
+					print:  allSubclasses size;
+					nextPutAll: ' subclasses' ].
+		stream nextPutAll: ' that will be removed'].
+		
+	! !
+
 !RefactoringApplier methodsFor: 'refactoring - applying' stamp: 'HAW 6/5/2017 18:06:39'!
 applyRefactoring
 
@@ -3906,25 +4269,56 @@ requestRefactoringParametersHandlingRefactoringExceptions
 	self valueHandlingRefactoringExceptions: [ self requestRefactoringParameters ]
 	! !
 
+!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/1/2018 17:34:02'!
+browseReferencesOn: aCanNotRemoveDueToReferencesError
+	
+	Smalltalk 
+		browseMessageList: aCanNotRemoveDueToReferencesError references 
+		name: (self referencesBrowserTitleOn: aCanNotRemoveDueToReferencesError)
+		autoSelect: true
+! !
+
+!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/1/2018 20:21:46'!
+handleCanNotRemoveDueToReferencesError: aCanNotRemoveDueToReferencesError
+	
+	| options answer question |
+	
+	options := 
+'Browse references
+Cancel'.
+
+	question := PopUpMenu labels: options icons: #(mailForwardIcon cancelIcon).
+	answer := question startUpWithCaption: aCanNotRemoveDueToReferencesError messageText.
+	
+	answer = 1 ifTrue: [ self browseReferencesOn: aCanNotRemoveDueToReferencesError ].
+	self endRequest.! !
+
 !RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 6/5/2017 18:47:40'!
 handleRefactoringError: aRefactoringError 
 
 	self inform: aRefactoringError messageText.
 	self endRequest ! !
 
-!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 6/5/2017 18:47:32'!
+!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/1/2018 18:15:21'!
 handleRefactoringWarning: aRefactoringWarning
 	
-	(self confirm: aRefactoringWarning messageText, ' Continue?')
+	(self confirm: aRefactoringWarning messageText, '. Continue?')
 		ifTrue: [ aRefactoringWarning resume ]
 		ifFalse: [ self endRequest]! !
 
-!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 6/5/2017 18:04:52'!
+!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/1/2018 17:34:22'!
+referencesBrowserTitleOn: aCanNotRemoveDueToReferencesError
+
+	^'References to ', aCanNotRemoveDueToReferencesError referencee asString! !
+
+!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/1/2018 17:39:01'!
 valueHandlingRefactoringExceptions: aBlock
 
-	^[aBlock
+	^[[aBlock
 		on: Refactoring refactoringWarningClass 
 		do: [ :aRefactoringWarning | self handleRefactoringWarning: aRefactoringWarning ]]
+		on: Refactoring canNotRemoveDueToReferencesErrorClass
+		do: [ :aCanNotRemoveDueToReferencesError | self handleCanNotRemoveDueToReferencesError: aCanNotRemoveDueToReferencesError ]]
 		on: Refactoring refactoringErrorClass 
 		do: [ :aRefactoringError | self handleRefactoringError: aRefactoringError ]
 	! !
@@ -4466,6 +4860,38 @@ on: aSmalltalkEditor
 	
 	^self new initializeOn: aSmalltalkEditor ! !
 
+!SafelyRemoveClassApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/1/2018 16:54:40'!
+confirmationMessageText
+	
+	^'Are you sure you want to remove ', classToRemove name asString, '?'! !
+
+!SafelyRemoveClassApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/1/2018 16:52:57'!
+requestRefactoringParameters
+
+	(self confirm: self confirmationMessageText) ifFalse: [ self endRequest ].
+
+	! !
+
+!SafelyRemoveClassApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/1/2018 16:54:33'!
+createRefactoring
+		
+	^SafelyRemoveClass of: classToRemove ! !
+
+!SafelyRemoveClassApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/1/2018 16:53:48'!
+showChanges
+
+	! !
+
+!SafelyRemoveClassApplier methodsFor: 'initialization' stamp: 'HAW 8/1/2018 16:54:14'!
+initializeOf: aClassToRemove 
+	
+	classToRemove := aClassToRemove ! !
+
+!SafelyRemoveClassApplier class methodsFor: 'instance creation' stamp: 'HAW 8/1/2018 16:55:53'!
+of: aClassToRemove
+	
+	^self new initializeOf: aClassToRemove ! !
+
 !RefactoringMenues class methodsFor: 'editor menus' stamp: 'HAW 7/10/2018 19:18:45'!
 smalltalkEditorMenuOptions
 
@@ -4493,7 +4919,7 @@ classListMenuOptions
 		}`.
 	! !
 
-!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 7/7/2018 19:43:52'!
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 8/1/2018 16:58:43'!
 classRefactoringMenuOptions
 
 	^ `{
@@ -4505,14 +4931,14 @@ classRefactoringMenuOptions
 				#selector 		-> 		#renameClass.
 				#icon 			-> 		#saveAsIcon
 			} asDictionary.
-"			{
+			{
 				#itemGroup 	-> 		10.
 				#itemOrder 		-> 		20.
-				#label 			-> 		'safe remove class (x)'.
+				#label 			-> 		'safely remove class (x)'.
 				#object 			-> 		#model.
-				#selector 		-> 		#safeRemoveClass.
+				#selector 		-> 		#safelyRemoveClass.
 				#icon 			-> 		#deleteIcon
-			} asDictionary."
+			} asDictionary.
 			{
 				#itemGroup 	-> 		20.
 				#itemOrder 		-> 		10.
@@ -4571,11 +4997,22 @@ isEditingMethod
 	^editSelection = #editMessage or: [ editSelection = #newMessage ]
 ! !
 
+!Browser methodsFor: '*Refactoring' stamp: 'HAW 8/1/2018 17:55:36'!
+removeClass
+	
+	self safelyRemoveClass ! !
+
 !Browser methodsFor: '*Refactoring' stamp: 'HAW 6/6/2017 09:47:13'!
 renameClass
 
 	self selectedClassOrMetaClass ifNotNil: [ :aBehavior |
 		(RenameClassApplier on: self for: aBehavior theNonMetaClass) value ].! !
+
+!Browser methodsFor: '*Refactoring' stamp: 'HAW 8/1/2018 17:05:36'!
+safelyRemoveClass
+
+	self selectedClassOrMetaClass ifNotNil: [ :aBehavior |
+		(SafelyRemoveClassApplier of: aBehavior theNonMetaClass) value ].! !
 
 !MessageSet methodsFor: '*Refactoring' stamp: 'HAW 5/31/2017 15:33:51'!
 addMethodReference: aMethodReferenceToAdd ifIncluded: aBlockClosure 

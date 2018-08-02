@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3361] on 1 August 2018 at 8:37:02 pm'!
-'Description Icon change'!
-!provides: 'Refactoring' 1 38!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3389] on 2 August 2018 at 4:23:32 pm'!
+'Description RemoveAllUnreferencedInstanceVariables implemented'!
+!provides: 'Refactoring' 1 39!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -144,6 +144,16 @@ RefactoringTest subclass: #ExtractToTemporaryTest
 ExtractToTemporaryTest class
 	instanceVariableNames: ''!
 
+!classDefinition: #RemoveAllUnreferencedInstanceVariablesTest category: #Refactoring!
+RefactoringTest subclass: #RemoveAllUnreferencedInstanceVariablesTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RemoveAllUnreferencedInstanceVariablesTest class' category: #Refactoring!
+RemoveAllUnreferencedInstanceVariablesTest class
+	instanceVariableNames: ''!
+
 !classDefinition: #RemoveInstanceVariableTest category: #Refactoring!
 RefactoringTest subclass: #RemoveInstanceVariableTest
 	instanceVariableNames: ''
@@ -234,6 +244,16 @@ Refactoring subclass: #ExtractToTemporary
 ExtractToTemporary class
 	instanceVariableNames: ''!
 
+!classDefinition: #RemoveAllUnreferencedInstanceVariables category: #Refactoring!
+Refactoring subclass: #RemoveAllUnreferencedInstanceVariables
+	instanceVariableNames: 'classToRefactor'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RemoveAllUnreferencedInstanceVariables class' category: #Refactoring!
+RemoveAllUnreferencedInstanceVariables class
+	instanceVariableNames: ''!
+
 !classDefinition: #RemoveInstanceVariable category: #Refactoring!
 Refactoring subclass: #RemoveInstanceVariable
 	instanceVariableNames: 'variableToRemove classToRefactor'
@@ -312,6 +332,16 @@ RefactoringApplier subclass: #AddInstanceVariableApplier
 	category: 'Refactoring'!
 !classDefinition: 'AddInstanceVariableApplier class' category: #Refactoring!
 AddInstanceVariableApplier class
+	instanceVariableNames: ''!
+
+!classDefinition: #RemoveAllUnreferencedInstanceVariablesApplier category: #Refactoring!
+RefactoringApplier subclass: #RemoveAllUnreferencedInstanceVariablesApplier
+	instanceVariableNames: 'classToRefactor browser variableToRemove'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RemoveAllUnreferencedInstanceVariablesApplier class' category: #Refactoring!
+RemoveAllUnreferencedInstanceVariablesApplier class
 	instanceVariableNames: ''!
 
 !classDefinition: #RemoveInstanceVariableApplier category: #Refactoring!
@@ -1588,6 +1618,76 @@ test19
 		arguments: [ :collaborator | collaborator = extract newTemporary ]).
 	self assert: newMethodNodeStatements third isReturnSelf ! !
 
+!RemoveAllUnreferencedInstanceVariablesTest methodsFor: 'tests' stamp: 'HAW 8/2/2018 16:15:11'!
+test01NoVariableIsRemovedWhenClassHasNoInstanceVariable
+
+	| classToRefactor refactoring removedInstanceVariables |
+	
+	classToRefactor := self createClassNamed: #ClassWithoutInstVar.
+	
+	refactoring := RemoveAllUnreferencedInstanceVariables from: classToRefactor.
+	removedInstanceVariables := refactoring apply.
+	
+	self assert: removedInstanceVariables isEmpty! !
+
+!RemoveAllUnreferencedInstanceVariablesTest methodsFor: 'tests' stamp: 'HAW 8/2/2018 16:15:14'!
+test02UnreferencedVariablesAreRemoved
+
+	| classToRefactor refactoring removedInstanceVariables unreferencedVariable |
+	
+	unreferencedVariable := 'a'.
+	classToRefactor := self createClassNamed: #ClassWithInstVar instanceVariableNames: unreferencedVariable.
+	
+	refactoring := RemoveAllUnreferencedInstanceVariables from: classToRefactor.
+	removedInstanceVariables := refactoring apply.
+	
+	self assert: 1 equals: removedInstanceVariables size.
+	self assert: (removedInstanceVariables includes: unreferencedVariable)
+	! !
+
+!RemoveAllUnreferencedInstanceVariablesTest methodsFor: 'tests' stamp: 'HAW 8/2/2018 16:15:18'!
+test03VariablesWithReferencesAreNotRemoved
+
+	| classToRefactor refactoring removedInstanceVariables unreferencedVariableName referencedVariableName |
+	
+	referencedVariableName := 'a'.
+	unreferencedVariableName := 'b'.
+	classToRefactor := self createClassNamed: #ClassWithInstVar instanceVariableNames: referencedVariableName, ' ', unreferencedVariableName.
+	classToRefactor compile: 'm1 ^', referencedVariableName.
+	
+	refactoring := RemoveAllUnreferencedInstanceVariables from: classToRefactor.
+	removedInstanceVariables := refactoring apply.
+	
+	self assert: 1 equals: removedInstanceVariables size.
+	self assert: (removedInstanceVariables includes: unreferencedVariableName).
+	
+	
+! !
+
+!RemoveAllUnreferencedInstanceVariablesTest methodsFor: 'tests' stamp: 'HAW 8/2/2018 16:22:44'!
+test04VariablesWithReferencesInSubclassesAreNotRemoved
+
+	| classToRefactor refactoring removedInstanceVariables unreferencedVariableName referencedVariableName classToRefactorSubclass |
+	
+	referencedVariableName := 'a'.
+	unreferencedVariableName := 'b'.
+	classToRefactor := self createClassNamed: #ClassWithInstVar instanceVariableNames: referencedVariableName, ' ', unreferencedVariableName.
+	classToRefactorSubclass := self createClassNamed: #ClassWithReferenceInstVar subclassOf: classToRefactor.
+	classToRefactorSubclass compile: 'm1 ^', referencedVariableName.
+	
+	refactoring := RemoveAllUnreferencedInstanceVariables from: classToRefactor.
+	removedInstanceVariables := refactoring apply.
+	
+	self assert: 1 equals: removedInstanceVariables size.
+	self assert: (removedInstanceVariables includes: unreferencedVariableName).
+	
+! !
+
+!RemoveAllUnreferencedInstanceVariablesTest methodsFor: 'class factory' stamp: 'HAW 8/2/2018 11:04:09'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
 !RemoveInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 6/12/2017 19:07:22'!
 allClassCategoriesOfTestData
 
@@ -1608,13 +1708,13 @@ test01CanNotRemoveAnInstanceVariableNotDefinedInClass
 	
 	! !
 
-!RemoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 19:31:54'!
+!RemoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 8/2/2018 15:24:17'!
 test02CanNotRemoveInstanceVariableWithReferences
 
 	| variableToRemove classToRefactor selector |
 	
 	variableToRemove := 'a'.
-	classToRefactor := self createClassNamed: #ClassWithoutInstVar instanceVariableNames: variableToRemove.
+	classToRefactor := self createClassNamed: #ClassWithInstVar instanceVariableNames: variableToRemove.
 	selector := #m1.
 	classToRefactor compile: selector,' ^', variableToRemove.
 	
@@ -1625,13 +1725,13 @@ test02CanNotRemoveInstanceVariableWithReferences
 	
 	! !
 
-!RemoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 19:43:34'!
+!RemoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 8/2/2018 15:24:28'!
 test03WhenAppliedRemovesInstanceVariable
 
 	| variableToRemove classToRefactor remove |
 	
 	variableToRemove := 'a'.
-	classToRefactor := self createClassNamed: #ClassWithoutInstVar instanceVariableNames: variableToRemove.
+	classToRefactor := self createClassNamed: #ClassWithInstVar instanceVariableNames: variableToRemove.
 	
 	remove := RemoveInstanceVariable named: variableToRemove from: classToRefactor.
 	remove apply.
@@ -3222,6 +3322,26 @@ warningMessageFor: aNewVariable willHideInstanceVariableDefinedIn: aClass
 
 	^aNewVariable, ' will hide instance variable defined in ', aClass name! !
 
+!RemoveAllUnreferencedInstanceVariables methodsFor: 'initialization' stamp: 'HAW 8/2/2018 16:14:57'!
+initializeFrom: aClassToRefactor
+
+	classToRefactor := aClassToRefactor ! !
+
+!RemoveAllUnreferencedInstanceVariables methodsFor: 'applying' stamp: 'HAW 8/2/2018 16:05:05'!
+apply
+	
+	| variableNamesToRemove |
+	
+	variableNamesToRemove := classToRefactor unreferencedInstanceVariables.
+	variableNamesToRemove do: [ :aVariableName | classToRefactor removeInstVarName: aVariableName ].
+	
+	^variableNamesToRemove! !
+
+!RemoveAllUnreferencedInstanceVariables class methodsFor: 'instance creation' stamp: 'HAW 8/2/2018 16:14:45'!
+from: aClassToRefactor
+
+	^self new initializeFrom: aClassToRefactor ! !
+
 !RemoveInstanceVariable methodsFor: 'applying' stamp: 'HAW 6/17/2017 19:46:45'!
 apply
 	
@@ -4402,6 +4522,47 @@ on: aBrowserWindow for: aClassToRefactor
 	^self new initializeOn: aBrowserWindow for: aClassToRefactor 
 ! !
 
+!RemoveAllUnreferencedInstanceVariablesApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/2/2018 16:11:13'!
+requestRefactoringParameters
+
+	! !
+
+!RemoveAllUnreferencedInstanceVariablesApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/2/2018 16:15:05'!
+createRefactoring
+		
+	^RemoveAllUnreferencedInstanceVariables from: classToRefactor ! !
+
+!RemoveAllUnreferencedInstanceVariablesApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/2/2018 16:10:44'!
+informChangesToBrowser
+		
+	browser model acceptedContentsChanged! !
+
+!RemoveAllUnreferencedInstanceVariablesApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/2/2018 16:20:16'!
+showChanges
+
+	| removedInstanceVariablesMessage |
+	
+	self informChangesToBrowser.
+	removedInstanceVariablesMessage := changes isEmpty 
+		ifTrue: [ 'No instance variable was removed' ]
+		ifFalse: [ changes size = 1
+			ifTrue: [ changes first, ' was removed' ]
+			ifFalse: [ changes asCommaStringAnd, ' were removed' ]].
+			
+	self inform: removedInstanceVariablesMessage! !
+
+!RemoveAllUnreferencedInstanceVariablesApplier methodsFor: 'initialization' stamp: 'HAW 8/2/2018 16:10:44'!
+initializeOn: aBrowserWindow for: aClassToRefactor 
+	
+	browser := aBrowserWindow.
+	classToRefactor := aClassToRefactor ! !
+
+!RemoveAllUnreferencedInstanceVariablesApplier class methodsFor: 'instance creation' stamp: 'HAW 8/2/2018 16:10:44'!
+on: aBrowserWindow for: aClassToRefactor
+	
+	^self new initializeOn: aBrowserWindow for: aClassToRefactor 
+! !
+
 !RemoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/30/2017 18:22:28'!
 chooseInstanceVariable
 
@@ -4919,7 +5080,7 @@ classListMenuOptions
 		}`.
 	! !
 
-!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 8/1/2018 16:58:43'!
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 8/2/2018 16:21:06'!
 classRefactoringMenuOptions
 
 	^ `{
@@ -4958,6 +5119,13 @@ classRefactoringMenuOptions
 				#itemOrder 		-> 		30.
 				#label 			-> 		'remove inst var...'.
 				#selector 		-> 		#removeInstVar.
+				#icon 			-> 		#deleteIcon
+			} asDictionary.
+			{
+				#itemGroup 	-> 		20.
+				#itemOrder 		-> 		40.
+				#label 			-> 		'remove all unreferenced inst var...'.
+				#selector 		-> 		#removeAllUnreferencedInstVar.
 				#icon 			-> 		#deleteIcon
 			} asDictionary.
 	}`.
@@ -5382,6 +5550,12 @@ openClassRefactoringMenu
 openMessageRefactoringMenu
 
 	^self messageRefactoringMenu popUpInWorld! !
+
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 8/2/2018 16:21:42'!
+removeAllUnreferencedInstVar
+	
+	model selectedClassOrMetaClass ifNotNil: [ :aClass |
+		(RemoveAllUnreferencedInstanceVariablesApplier on: self for: aClass) value ].! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/17/2017 19:53:15'!
 removeInstVar

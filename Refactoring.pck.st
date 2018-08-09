@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3389] on 2 August 2018 at 4:23:32 pm'!
-'Description RemoveAllUnreferencedInstanceVariables implemented'!
-!provides: 'Refactoring' 1 39!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3389] on 9 August 2018 at 2:53:03 pm'!
+'Description Fixed RenameClass not to rename references to Class Variables'!
+!provides: 'Refactoring' 1 40!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -266,7 +266,7 @@ RemoveInstanceVariable class
 
 !classDefinition: #RenameClass category: #Refactoring!
 Refactoring subclass: #RenameClass
-	instanceVariableNames: 'classToRename newClassName system undeclared rewriter classToRenameOriginalName'
+	instanceVariableNames: 'classToRename newClassName system undeclared classToRenameOriginalName rewriter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -559,10 +559,11 @@ of: anExtractToTemporary
 	
 	^self new initializeOf: anExtractToTemporary ! !
 
-!RenameClassRewriter methodsFor: 'initialization' stamp: 'HAW 6/4/2017 18:10:45'!
+!RenameClassRewriter methodsFor: 'initialization' stamp: 'HAW 8/9/2018 14:39:34'!
 initializeFor: aRenameClass 
 	
-	refactoring := aRenameClass ! !
+	refactoring := aRenameClass.
+	! !
 
 !RenameClassRewriter methodsFor: 'visiting' stamp: 'HAW 6/4/2017 18:38:46'!
 visitLiteralNode: aLiteralNode
@@ -574,10 +575,10 @@ visitLiteralVariableNode: aLiteralVariableNode
 
 	(refactoring shouldRename: aLiteralVariableNode name asSymbol) ifTrue: [ aLiteralVariableNode name: refactoring newClassName ]! !
 
-!RenameClassRewriter class methodsFor: 'instance creation' stamp: 'HAW 6/4/2017 18:10:11'!
+!RenameClassRewriter class methodsFor: 'instance creation' stamp: 'HAW 8/9/2018 14:39:21'!
 for: aRenameClass 
 	
-	^self new initializeFor: aRenameClass ! !
+	^self new initializeFor: aRenameClass! !
 
 !RenameInstanceVariableRewriter methodsFor: 'initialization' stamp: 'HAW 5/24/2017 22:01:31'!
 initializeFor: aRenameInstanceVariable 
@@ -910,11 +911,11 @@ classCategoryOfTestData
 	
 	^'__Refactoring-TestData__'! !
 
-!RefactoringTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 22:48:23'!
+!RefactoringTest methodsFor: 'class factory' stamp: 'HAW 8/9/2018 14:14:21'!
 createClassNamed: aName 
 
 	^self 
-		createClassNamed: aName
+		createClassNamed: aName asSymbol "Just in case it is a string... - Hernan"
 		subclassOf: Object 
 		instanceVariableNames: '' 
 		classVariableNames: ''
@@ -1924,6 +1925,76 @@ test14NewClassNameCanNotHaveSpaces
 	self 
 		assertCreation: [ RenameClass from: classToRefactor to: 'With spaces' asSymbol ]
 		failsWith: [ RenameClass newClassNameCanNotHaveSpacesErrorMessage]! !
+
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/9/2018 14:44:13'!
+test15ItDoesNotRenameReferencesToClassVariableWithSameName
+
+	| classWithClassVariable oldClassName classToRefactor newClassName rename renamedReferences |
+
+	oldClassName :=  'OldClassTest15' asSymbol.
+	newClassName := 'NewClassTest15' asSymbol.
+	"First I create a class var with the same name as the class to rename and a reference to it - Hernan"
+	classWithClassVariable := self createClassNamed: 'ClassReferencingClassVar' asSymbol.
+	classWithClassVariable addClassVarName: oldClassName.
+	classWithClassVariable compile: 'm1 ^', oldClassName.
+
+	classToRefactor := self createClassNamed: oldClassName.
+
+	rename := RenameClass from: classToRefactor to: newClassName.
+	renamedReferences := rename apply.
+	
+	self assert: renamedReferences isEmpty.
+	
+	
+	! !
+
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/9/2018 14:45:20'!
+test16ItDoesNotRenameReferencesToClassVariableWithSameNameDefinedInAnySuperclass
+
+	| classWithClassVariable oldClassName classToRefactor newClassName rename renamedReferences superClassOfClassWithClassVarReference |
+
+	oldClassName :=  'OldClassTest16' asSymbol.
+	newClassName := 'NewClassTest16' asSymbol.
+
+	superClassOfClassWithClassVarReference := self createClassNamed: 'ClassReferencingClassVarSuperclass' asSymbol.
+	superClassOfClassWithClassVarReference addClassVarName: oldClassName.
+	
+	classWithClassVariable := self createClassNamed: 'ClassReferencingClassVar' asSymbol subclassOf: superClassOfClassWithClassVarReference.
+	classWithClassVariable compile: 'm1 ^', oldClassName.
+
+	classToRefactor := self createClassNamed: oldClassName.
+
+	rename := RenameClass from: classToRefactor to: newClassName.
+	renamedReferences := rename apply.
+	
+	self assert: renamedReferences isEmpty.
+	
+	
+	! !
+
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/9/2018 14:46:34'!
+test17ItDoesNotRenameReferencesToClassVariableWithSameNameAsNewClassDefinedInAnySuperclass
+
+	| classWithClassVariable oldClassName classToRefactor newClassName rename renamedReferences superClassOfClassWithClassVarReference |
+
+	oldClassName :=  'OldClassTest17' asSymbol.
+	newClassName := 'NewClassTest17' asSymbol.
+
+	superClassOfClassWithClassVarReference := self createClassNamed: 'ClassReferencingClassVarSuperclass' asSymbol.
+	superClassOfClassWithClassVarReference addClassVarName: newClassName.
+	
+	classWithClassVariable := self createClassNamed: 'ClassReferencingClassVar' asSymbol subclassOf: superClassOfClassWithClassVarReference.
+	classWithClassVariable compile: 'm1 ^', newClassName.
+
+	classToRefactor := self createClassNamed: oldClassName.
+
+	rename := RenameClass from: classToRefactor to: newClassName.
+	renamedReferences := rename apply.
+	
+	self assert: renamedReferences isEmpty.
+	
+	
+	! !
 
 !RenameInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:10:47'!
 allClassCategoriesOfTestData
@@ -3441,6 +3512,26 @@ referencesToOldClassName
 	
 	^system allCallsOn: classToRenameOriginalName! !
 
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 14:50:34'!
+references: aMethodReference classVarNamed: aName
+
+	^aMethodReference actualClass definesClassVariableNamedInHierarchy: aName ! !
+
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 14:50:52'!
+referencesNewClassName: aMethodReference
+
+	^self references: aMethodReference classVarNamed: newClassName ! !
+
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 14:51:07'!
+referencesOldClassName: aMethodReference
+
+	^self references: aMethodReference classVarNamed: classToRenameOriginalName! !
+
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 14:49:43'!
+rejectReferencesToClassVariablesFrom: references
+	
+	^references reject: [ :aMethodReference | (self referencesOldClassName: aMethodReference) or: [ self referencesNewClassName: aMethodReference ] ].! !
+
 !RenameClass methodsFor: 'applying - private' stamp: 'HAW 6/4/2017 18:08:27'!
 renameReference: aMethodReference 
 	
@@ -3452,12 +3543,13 @@ renameReference: aMethodReference
 	
 	aMethodReference actualClass compile: newSource ! !
 
-!RenameClass methodsFor: 'applying - private' stamp: 'HAW 6/4/2017 18:24:40'!
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 14:35:20'!
 renameReferences
 	
 	| references |
 	
 	references := (self referencesToOldClass asSet, self referencesToOldClassName asSet) asOrderedCollection.
+	references := self rejectReferencesToClassVariablesFrom: references.
 	references do: [ :aReference | self renameReference: aReference ].
 	
 	^references! !
@@ -5290,6 +5382,11 @@ withSubclassesThatDefineInstanceVariable: aName do: foundBlock ifNone: noneBlock
 	^definingSubclasses isEmpty 
 		ifTrue: noneBlock 
 		ifFalse: [ foundBlock value: definingSubclasses ]! !
+
+!Class methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 14:41:03'!
+definesClassVariableNamedInHierarchy: aClassVariableName
+
+	^self allClassVarNames includes: aClassVariableName ! !
 
 !Class methodsFor: '*Refactoring' stamp: 'HAW 6/4/2017 17:35:03'!
 rename: aString 

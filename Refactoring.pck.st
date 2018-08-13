@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3411] on 13 August 2018 at 11:59:23 am'!
-'Description Mergue with DenotativeObject and CuisUniversity'!
-!provides: 'Refactoring' 1 43!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3411] on 13 August 2018 at 12:41:55 pm'!
+'Description Change to avoid saving changes when running/debugging tests'!
+!provides: 'Refactoring' 1 45!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -959,6 +959,11 @@ shouldFail: aBlock
 	
 	self should: aBlock raise: Exception ! !
 
+!RefactoringTest methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 12:17:19'!
+canNotRemoveDueToReferencesRefactoringError
+	
+	^ Refactoring canNotRemoveDueToReferencesErrorClass - MessageNotUnderstood.! !
+
 !RefactoringTest methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:26'!
 refactoringError
 
@@ -988,10 +993,20 @@ tearDown
 		SystemOrganization removeSystemCategories: classCategories.
 		Browser allInstancesDo: [:aBrowser | aBrowser changed: #systemCategoryList ]]! !
 
-!RefactoringTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:36:54'!
-canNotRemoveDueToReferencesRefactoringError
-	
-	^ Refactoring canNotRemoveDueToReferencesErrorClass - MessageNotUnderstood.! !
+!RefactoringTest methodsFor: 'Running' stamp: 'HAW 8/13/2018 12:34:08'!
+runAndTearDownCase
+
+	^ SystemChangeNotifier uniqueInstance doSilently: [ super runAndTearDownCase ]! !
+
+!RefactoringTest methodsFor: 'Running' stamp: 'HAW 8/13/2018 12:34:11'!
+runCase
+
+	^ SystemChangeNotifier uniqueInstance doSilently: [ super runCase ]! !
+
+!RefactoringTest methodsFor: 'Running' stamp: 'HAW 8/13/2018 12:34:15'!
+runCaseAsFailure
+
+	^ SystemChangeNotifier uniqueInstance doSilently: [ super runCaseAsFailure ]! !
 
 !AddInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 6/6/2017 09:59:58'!
 allClassCategoriesOfTestData
@@ -1081,10 +1096,10 @@ test07NewVariableNameCanNotBeDefinedInAnySubclass
 	
 		! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:39:23'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 12:33:14'!
 test08AddCreatesNewInstanceVariable
 
-	| classToRefactor add |
+	| classToRefactor add | 
 	
 	newVariable := 'a'.
 	classToRefactor := self createClassNamed: self classToRefactorName.

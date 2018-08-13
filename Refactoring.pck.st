@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3411] on 13 August 2018 at 12:41:55 pm'!
-'Description Change to avoid saving changes when running/debugging tests'!
-!provides: 'Refactoring' 1 45!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3411] on 13 August 2018 at 3:41:50 pm'!
+'Description Now rafactorings keep method''s source code format'!
+!provides: 'Refactoring' 1 46!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -3487,6 +3487,44 @@ referencesToOldClassName
 	
 	^system allCallsOn: classToRenameOriginalName! !
 
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 15:27:46'!
+newSourceCodeOf: aCompiledMethod 
+	
+	| newSource |
+	
+	newSource := aCompiledMethod sourceCode copyReplacing: (self rangesToReplaceOf: aCompiledMethod) with: newClassName.
+
+	^newSource! !
+
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 15:21:16'!
+rangesForLiteralOf: methodNode
+	
+	| literalRanges |
+	
+	literalRanges := methodNode rangesForLiteralNode: classToRenameOriginalName ifAbsent: [ #() ].
+	literalRanges := literalRanges collect: [ :aRange | aRange first + 1 to: aRange last ].
+	
+	^literalRanges ! !
+
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 15:20:59'!
+rangesForLiteralVariableOf: methodNode
+	
+	^methodNode rangesForLiteralVariableNode: classToRenameOriginalName ifAbsent: [ #() ]
+	! !
+
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 15:20:40'!
+rangesToReplaceOf: aCompiledMethod 
+	
+	| methodNode ranges |
+	
+	methodNode := aCompiledMethod methodNode.
+	ranges := SortedCollection sortBlock: [ :leftRange :rightRange | leftRange first < rightRange first ].
+	
+	ranges addAll: (self rangesForLiteralVariableOf: methodNode).
+	ranges addAll: (self rangesForLiteralOf: methodNode).
+	
+	^ranges ! !
+
 !RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 14:50:34'!
 references: aMethodReference classVarNamed: aName
 
@@ -3507,44 +3545,24 @@ rejectReferencesToClassVariablesFrom: references
 	
 	^references reject: [ :aMethodReference | (self referencesOldClassName: aMethodReference) or: [ self referencesNewClassName: aMethodReference ] ].! !
 
-!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 23:16:26'!
-renameReference: aMethodReference 
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 15:18:43'!
+renameReference: aReferencingMethod 
 	
-	| methodNode currentSourceCode newSource ranges |
+	| newSource |
 	
-	methodNode := aMethodReference compiledMethod methodNode.
-	ranges := SortedCollection sortBlock: [ :leftRange :rightRange | leftRange first < rightRange first ].
-	ranges addAll: (methodNode rangesForLiteralVariableNode: classToRenameOriginalName ifAbsent: [ #() ]).
-	ranges addAll: ((methodNode rangesForLiteralNode: classToRenameOriginalName ifAbsent: [ #() ]) collect: [ :aRange | aRange first + 1 to: aRange last ]).	
-	currentSourceCode := aMethodReference sourceCode.
+	newSource := self newSourceCodeOf: aReferencingMethod.
+	aReferencingMethod methodClass compile: newSource ! !
 
-	newSource := String streamContents: [ :newSourceStream | | from |
-		from := 1.
-		ranges do: [ :aRange | | to |
-			to := aRange first - 1.
-			newSourceStream  
-				nextPutAll: (currentSourceCode copyFrom: from to: to);
-				nextPutAll: newClassName.
-			from := aRange last + 1 ].
-		newSourceStream nextPutAll: (currentSourceCode copyFrom: from to: currentSourceCode size). ].
-	
-	aMethodReference actualClass compile: newSource ! !
-
-!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 14:35:20'!
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 15:17:56'!
 renameReferences
 	
 	| references |
 	
 	references := (self referencesToOldClass asSet, self referencesToOldClassName asSet) asOrderedCollection.
 	references := self rejectReferencesToClassVariablesFrom: references.
-	references do: [ :aReference | self renameReference: aReference ].
+	references do: [ :aReference | self renameReference: aReference compiledMethod ].
 	
 	^references! !
-
-!RenameClass methodsFor: 'testing' stamp: 'HAW 6/4/2017 18:35:46'!
-shouldRename: aSymbol 
-	
-	^classToRenameOriginalName = aSymbol ! !
 
 !RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 6/2/2017 11:46:33'!
 assert: aNewClassName doesNotExistIn: aSystem
@@ -3710,6 +3728,17 @@ copyOldInstanceVariableToNewOne
 	
 ! !
 
+!RenameInstanceVariable methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 15:28:01'!
+newSourceOf: aCompiledMethod 
+	
+	| newSource ranges |
+	
+	ranges := aCompiledMethod methodNode rangesForInstanceVariable: oldVariable ifAbsent: [ #() ].
+	newSource := aCompiledMethod sourceCode copyReplacing: ranges with: self newVariable.
+	
+	^newSource
+	! !
+
 !RenameInstanceVariable methodsFor: 'applying - private' stamp: 'HAW 6/11/2017 19:07:20'!
 removeOldInstanceVariable
 
@@ -3730,26 +3759,10 @@ renameReferencesToOldVariableInClass: aClass
 	referencingMethodNames do: [ :referencingMethodName | self renameReferencesToOldVariableInMethod: (aClass compiledMethodAt: referencingMethodName) ]
 	! !
 
-!RenameInstanceVariable methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 23:16:57'!
+!RenameInstanceVariable methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 14:53:56'!
 renameReferencesToOldVariableInMethod: aCompiledMethod 
 	
-	| methodNode newSource ranges currentSourceCode |
-	
-	methodNode := aCompiledMethod methodNode.
-	ranges := methodNode rangesForInstanceVariable: oldVariable ifAbsent: [ #() ].
-	
-	currentSourceCode := aCompiledMethod sourceCode.
-	newSource := String streamContents: [ :newSourceStream | | from |
-		from := 1.
-		ranges do: [ :aRange | | to |
-			to := aRange first-1.
-			newSourceStream  
-				nextPutAll: (currentSourceCode copyFrom: from to: to);
-				nextPutAll: self newVariable.
-			from := aRange last + 1 ].
-		newSourceStream nextPutAll: (currentSourceCode copyFrom: from to: currentSourceCode size). ].
-	
-	aCompiledMethod methodClass compile: newSource.
+	aCompiledMethod methodClass compile: (self newSourceOf: aCompiledMethod).
 	renamedReferences add: aCompiledMethod methodReference ! !
 
 !RenameInstanceVariable methodsFor: 'applying' stamp: 'HAW 6/5/2017 16:53:57'!
@@ -3780,11 +3793,6 @@ initializeFrom: anOldvariable addingWith: anAddInstanceVariable
 	oldVariable := anOldvariable.
 	addInstanceVariable := anAddInstanceVariable.
 ! !
-
-!RenameInstanceVariable methodsFor: 'testing' stamp: 'HAW 5/24/2017 21:58:30'!
-shouldRename: aName
-
-	^ oldVariable = aName.! !
 
 !RenameInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 5/24/2017 21:49:18'!
 assert: aClass defines: anInstanceVariable
@@ -3827,79 +3835,111 @@ apply
 	^changes
 		! !
 
-!RenameMethod methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 23:17:05'!
+!RenameMethod methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:39:28'!
+addToSendersIfOldSelectorIsSentIn: newImplementor
+	
+	(newImplementor refersToLiteral: oldSelector) ifTrue: [ senders add: newImplementor ]. 
+	! !
+
+!RenameMethod methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:34:13'!
+compileNewImplementorOf: anImplementor
+		
+	| implementorClassification |
+	
+	implementorClassification := anImplementor methodClass organization categoryOfElement: oldSelector.
+	anImplementor methodClass 
+		compile: (self implementorNewSourceCodeOf: anImplementor) 
+		classifyUnder: implementorClassification.
+! !
+
+!RenameMethod methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:39:40'!
 createNewImplementorOf: anImplementor
 
-	| implementorMethodNode newSource implementorClassification newImplementor currentSourceCode from |
+	| newImplementor |
 
-	implementorClassification := anImplementor methodClass organization categoryOfElement: oldSelector.
-	implementorMethodNode := anImplementor methodNode.
-	
-	currentSourceCode := anImplementor sourceCode.
-	newSource := String streamContents: [ :newSourceStream |
-		from := 1.
-		implementorMethodNode selectorKeywordsRanges withIndexDo: [ :aKeywordRange :index | | to |
-			to := aKeywordRange first-1.
-			newSourceStream  
-				nextPutAll: (currentSourceCode copyFrom: from to: to);
-				nextPutAll: (newSelectorKeywords at: index).
-			from := aKeywordRange last + 1 ].
-		newSourceStream nextPutAll: (currentSourceCode copyFrom: from to: currentSourceCode size). ].
-	
-	anImplementor methodClass compile: newSource classifyUnder: implementorClassification.
+	self compileNewImplementorOf: anImplementor.
 	newImplementor := anImplementor methodClass compiledMethodAt: newSelector.
-	(anImplementor refersToLiteral: oldSelector) ifTrue: [ senders add: newImplementor ]. 
+	self addToSendersIfOldSelectorIsSentIn: newImplementor.
 	
-	changes add: newImplementor methodReference ! !
+	changes add: newImplementor methodReference 
+	
+	! !
 
-!RenameMethod methodsFor: 'applying - private' stamp: 'HAW 5/25/2017 21:07:05'!
+!RenameMethod methodsFor: 'create new implementors - private' stamp: 'HAW 5/25/2017 21:07:05'!
 createNewImplementors
 	
 	implementors do: [:anImplementor | self createNewImplementorOf: anImplementor ]
 	! !
 
-!RenameMethod methodsFor: 'applying - private' stamp: 'HAW 5/31/2017 16:49:41'!
+!RenameMethod methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 15:32:48'!
+implementorNewSourceCodeOf: anImplementor
+
+	|  newSource rangesToNewKeywords |
+	
+	rangesToNewKeywords := OrderedCollection new.
+	anImplementor methodNode selectorKeywordsRanges withIndexDo: [ :aKeywordRange :index | 
+		rangesToNewKeywords add: aKeywordRange -> (newSelectorKeywords at: index) ].
+		
+	newSource := anImplementor sourceCode copyReplacing: rangesToNewKeywords.	
+	^newSource! !
+
+!RenameMethod methodsFor: 'remove old implementors - private' stamp: 'HAW 5/31/2017 16:49:41'!
 removeOldImplementor: anImplementor 
 
 	anImplementor methodClass removeSelector: anImplementor selector.
 	changes add: anImplementor methodReference! !
 
-!RenameMethod methodsFor: 'applying - private' stamp: 'HAW 5/31/2017 16:46:48'!
+!RenameMethod methodsFor: 'remove old implementors - private' stamp: 'HAW 5/31/2017 16:46:48'!
 removeOldImplementors
 	
 	implementors do: [:anImplementor | self removeOldImplementor: anImplementor ]! !
 
-!RenameMethod methodsFor: 'applying - private' stamp: 'HAW 5/25/2017 20:21:50'!
+!RenameMethod methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:19:47'!
+addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
+	
+	| oldSelectorKeywordsRanges |
+	
+	oldSelectorKeywordsRanges := aMethodNode messageSendSelectorKeywordRangesOf: oldSelector ifAbsent: [ #() ].
+	oldSelectorKeywordsRanges do: [ :aMessageSendSelectorRanges | 
+		aMessageSendSelectorRanges withIndexDo: [ :aRange :index | rangesToKeywords add: aRange -> (newSelectorKeywords at: index) ]].
+	! !
+
+!RenameMethod methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:13:41'!
+addRangesForLiteralOf: methodNode to: rangesToKeywords
+	
+	| oldSelectorLiteralRanges |
+	
+	oldSelectorLiteralRanges := methodNode rangesForLiteralNode: oldSelector ifAbsent: [ #() ].
+	oldSelectorLiteralRanges do: [ :oldSelectorLiteralRange | 
+		rangesToKeywords add: (oldSelectorLiteralRange first + 1 to: oldSelectorLiteralRange last) -> newSelector ].
+	
+! !
+
+!RenameMethod methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:19:57'!
+rangesToKeywordsOf: aMethod
+	
+	| methodNode rangesToKeywords |
+	
+	methodNode := aMethod methodNode.
+	rangesToKeywords := SortedCollection sortBlock: [ :left :right | left key first < right key first ].
+	
+	self addMessageSendSelectorKeywordRangesOf: methodNode to: rangesToKeywords.
+	self addRangesForLiteralOf: methodNode to: rangesToKeywords.
+	
+	^rangesToKeywords	! !
+
+!RenameMethod methodsFor: 'rename senders - private' stamp: 'HAW 5/25/2017 20:21:50'!
 renameSenders
 	
 	senders do: [ :aSender | self renameSendersIn: aSender ].
 	! !
 
-!RenameMethod methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 23:17:12'!
+!RenameMethod methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 15:32:48'!
 renameSendersIn: aMethod
 
-	| methodNode currentSourceCode newSource rangesToKeyword oldSelectorKeywordsRanges from oldSelectorLiteralRanges |
+	| newSource |
 	
-	methodNode := aMethod methodNode.
-	rangesToKeyword := SortedCollection sortBlock: [ :left :right | left key first < right key first ].
-	
-	oldSelectorKeywordsRanges := methodNode messageSendSelectorKeywordRangesOf: oldSelector ifAbsent: [ #() ].
-	oldSelectorKeywordsRanges do: [ :aMessageSendSelectorRanges | 
-		aMessageSendSelectorRanges withIndexDo: [ :aRange :index | rangesToKeyword add: aRange -> (newSelectorKeywords at: index) ]].
-	oldSelectorLiteralRanges := methodNode rangesForLiteralNode: oldSelector ifAbsent: [ #() ].
-	oldSelectorLiteralRanges do: [ :oldSelectorLiteralRange | rangesToKeyword add: (oldSelectorLiteralRange first + 1 to: oldSelectorLiteralRange last) -> newSelector ].
-	
-	currentSourceCode := aMethod sourceCode.
-	newSource := String streamContents: [ :newSourceStream |
-		from := 1.
-		rangesToKeyword do: [ :aRangeToKeyword | | to |
-			to := aRangeToKeyword key first-1.
-			newSourceStream  
-				nextPutAll: (currentSourceCode copyFrom: from to: to);
-				nextPutAll: aRangeToKeyword value.
-			from := aRangeToKeyword key last + 1 ].
-		newSourceStream nextPutAll: (currentSourceCode copyFrom: from to: currentSourceCode size). ].
-
+	newSource := aMethod sourceCode copyReplacing: (self rangesToKeywordsOf: aMethod).
 	aMethod methodClass compile: newSource.
 	
 	changes add: (MethodReference class: aMethod methodClass selector: aMethod selector)! !
@@ -3930,11 +3970,6 @@ initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplem
 newSelector
 	
 	^newSelector ! !
-
-!RenameMethod methodsFor: 'testing' stamp: 'HAW 5/24/2017 19:59:13'!
-shouldRename: aSelector
-
-	^oldSelector = aSelector ! !
 
 !RenameMethod class methodsFor: 'implementors and senders' stamp: 'HAW 8/31/2017 16:00:13'!
 addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aPotentialClassToRefactor
@@ -4241,24 +4276,15 @@ addMiscellaneousIconsTo: aCollection
 
 	aCollection add: #('rename method') -> #saveAsIcon! !
 
-!RenameTemporary methodsFor: 'applying' stamp: 'HAW 8/9/2018 23:17:22'!
+!RenameTemporary methodsFor: 'applying' stamp: 'HAW 8/13/2018 15:28:15'!
 apply
 	
-	| newSource ranges currentSourceCode |
+	| newSource ranges |
 	
 	ranges := methodNode rangesForTemporaryVariable: oldVariable ifAbsent: [ #() ].
-	currentSourceCode := methodNode sourceText.
-	newSource := String streamContents: [ :newSourceStream | | from |
-		from := 1.
-		ranges do: [ :aRange | | to |
-			to := aRange first-1.
-			newSourceStream  
-				nextPutAll: (currentSourceCode copyFrom: from to: to);
-				nextPutAll: newVariable.
-			from := aRange last + 1 ].
-		newSourceStream nextPutAll: (currentSourceCode copyFrom: from to: currentSourceCode size). ].
+	newSource := methodNode sourceText copyReplacing: ranges with: newVariable.
 	
-	^newSource! !
+	^ newSource! !
 
 !RenameTemporary methodsFor: 'applying' stamp: 'HAW 8/9/2018 19:34:51'!
 methodNodeAfterApply
@@ -5529,6 +5555,54 @@ asStringOn: aStream delimiter: delimString last: lastDelimString
 		aStream nextPutAll: elem asString]
 	separatedBy: [
 		aStream nextPutAll: (n = sz ifTrue: [lastDelimString] ifFalse: [delimString])]! !
+
+!String methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 15:33:59'!
+copyReplacing: rangesToNewStrings
+
+	^self class streamContents: [ :replacementStream | self copyReplacing: rangesToNewStrings into: replacementStream  ].
+! !
+
+!String methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 15:35:42'!
+copyReplacing: rangesToNewStrings into: replacementStream
+
+	| lastFrom |
+	
+	lastFrom := rangesToNewStrings 
+		inject: 1
+		into: [ :from :aRangeToNewString | 
+			self newFromAfterAppending: aRangeToNewString value into: replacementStream keepingFrom: from range: aRangeToNewString key ].
+						
+	replacementStream nextPutAll: (self copyFrom: lastFrom to: self size). 
+! !
+
+!String methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 15:36:20'!
+copyReplacing: ranges with: newString
+
+	"Ranges must be in order, with first ranges first. If not, result is unexpected - Hernan"
+	
+	^ self class streamContents: [ :replacementStream | self copyReplacing: ranges with: newString into: replacementStream ]
+		! !
+
+!String methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 15:35:58'!
+copyReplacing: ranges with: newString into: replacementStream 
+
+	| lastFrom |
+	
+	lastFrom := ranges 
+		inject: 1
+		into: [ :from :aRange | 
+			self newFromAfterAppending: newString into: replacementStream keepingFrom: from range: aRange ].
+	
+	replacementStream nextPutAll: (self copyFrom: lastFrom to: self size).! !
+
+!String methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 15:36:39'!
+newFromAfterAppending: aNewString into: replacementStream keepingFrom: from range: aRange
+
+	replacementStream  
+		nextPutAll: (self copyFrom: from to: aRange first - 1);
+		nextPutAll: aNewString.
+	
+	^ aRange last + 1! !
 
 !CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 5/31/2017 15:48:26'!
 classAndSelector

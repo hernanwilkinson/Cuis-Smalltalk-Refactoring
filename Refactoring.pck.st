@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3389] on 9 August 2018 at 2:53:03 pm'!
-'Description Fixed RenameClass not to rename references to Class Variables'!
-!provides: 'Refactoring' 1 40!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3411] on 13 August 2018 at 11:59:23 am'!
+'Description Mergue with DenotativeObject and CuisUniversity'!
+!provides: 'Refactoring' 1 43!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -52,36 +52,6 @@ ParseNodeVisitor subclass: #ParseNodeToReplaceFinder
 	category: 'Refactoring'!
 !classDefinition: 'ParseNodeToReplaceFinder class' category: #Refactoring!
 ParseNodeToReplaceFinder class
-	instanceVariableNames: ''!
-
-!classDefinition: #RenameClassRewriter category: #Refactoring!
-ParseNodeVisitor subclass: #RenameClassRewriter
-	instanceVariableNames: 'refactoring'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'RenameClassRewriter class' category: #Refactoring!
-RenameClassRewriter class
-	instanceVariableNames: ''!
-
-!classDefinition: #RenameInstanceVariableRewriter category: #Refactoring!
-ParseNodeVisitor subclass: #RenameInstanceVariableRewriter
-	instanceVariableNames: 'refactoring'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'RenameInstanceVariableRewriter class' category: #Refactoring!
-RenameInstanceVariableRewriter class
-	instanceVariableNames: ''!
-
-!classDefinition: #RenameMethodRewriter category: #Refactoring!
-ParseNodeVisitor subclass: #RenameMethodRewriter
-	instanceVariableNames: 'refactoring'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'RenameMethodRewriter class' category: #Refactoring!
-RenameMethodRewriter class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameMethodMessageSetWindow category: #Refactoring!
@@ -266,7 +236,7 @@ RemoveInstanceVariable class
 
 !classDefinition: #RenameClass category: #Refactoring!
 Refactoring subclass: #RenameClass
-	instanceVariableNames: 'classToRename newClassName system undeclared classToRenameOriginalName rewriter'
+	instanceVariableNames: 'classToRename newClassName system undeclared classToRenameOriginalName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -286,7 +256,7 @@ RenameInstanceVariable class
 
 !classDefinition: #RenameMethod category: #Refactoring!
 Refactoring subclass: #RenameMethod
-	instanceVariableNames: 'oldSelector newSelector implementors senders rewriter changes'
+	instanceVariableNames: 'oldSelector newSelector implementors senders changes newSelectorKeywords'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -558,62 +528,6 @@ visitMessageNode: aMessageNode
 of: anExtractToTemporary
 	
 	^self new initializeOf: anExtractToTemporary ! !
-
-!RenameClassRewriter methodsFor: 'initialization' stamp: 'HAW 8/9/2018 14:39:34'!
-initializeFor: aRenameClass 
-	
-	refactoring := aRenameClass.
-	! !
-
-!RenameClassRewriter methodsFor: 'visiting' stamp: 'HAW 6/4/2017 18:38:46'!
-visitLiteralNode: aLiteralNode
-
-	(refactoring shouldRename: aLiteralNode key) ifTrue: [ aLiteralNode key: refactoring newClassName ]! !
-
-!RenameClassRewriter methodsFor: 'visiting' stamp: 'HAW 6/4/2017 18:36:42'!
-visitLiteralVariableNode: aLiteralVariableNode
-
-	(refactoring shouldRename: aLiteralVariableNode name asSymbol) ifTrue: [ aLiteralVariableNode name: refactoring newClassName ]! !
-
-!RenameClassRewriter class methodsFor: 'instance creation' stamp: 'HAW 8/9/2018 14:39:21'!
-for: aRenameClass 
-	
-	^self new initializeFor: aRenameClass! !
-
-!RenameInstanceVariableRewriter methodsFor: 'initialization' stamp: 'HAW 5/24/2017 22:01:31'!
-initializeFor: aRenameInstanceVariable 
-	
-	refactoring := aRenameInstanceVariable ! !
-
-!RenameInstanceVariableRewriter methodsFor: 'visiting' stamp: 'HAW 6/4/2017 19:26:47'!
-visitInstanceVariableNode: anInstanceVariableNode
-
-	(refactoring shouldRename: anInstanceVariableNode name) ifTrue: [ anInstanceVariableNode name: refactoring newVariable]! !
-
-!RenameInstanceVariableRewriter class methodsFor: 'as yet unclassified' stamp: 'HAW 5/22/2017 22:10:39'!
-for: aRenameInstanceVariable 
-	
-	^self new initializeFor: aRenameInstanceVariable ! !
-
-!RenameMethodRewriter methodsFor: 'initialization' stamp: 'HAW 5/24/2017 22:03:42'!
-initializeOf: aRenameMethod
-
-	refactoring := aRenameMethod.! !
-
-!RenameMethodRewriter methodsFor: 'visiting' stamp: 'HAW 6/4/2017 19:27:58'!
-visitLiteralNode: aLiteralNode
-
-	(refactoring shouldRename: aLiteralNode key) ifTrue: [ aLiteralNode key: refactoring newSelector ]! !
-
-!RenameMethodRewriter methodsFor: 'visiting' stamp: 'HAW 6/4/2017 19:28:52'!
-visitSelectorNode: aSelectorNode
-
-	(refactoring shouldRename: aSelectorNode key) ifTrue: [ aSelectorNode key: refactoring newSelector ]! !
-
-!RenameMethodRewriter class methodsFor: 'instance creation' stamp: 'HAW 5/24/2017 19:36:19'!
-of: aRenameMethod 
-	
-	^self new initializeOf: aRenameMethod ! !
 
 !RenameMethodMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:26:05'!
 add
@@ -1039,6 +953,11 @@ assertNoTestDataClassCategoryExist
 denyExistsClassCategory: aClassCategory
 		
 	self deny: (SystemOrganization hasCategory: aClassCategory) description: 'Can not run test because class category ', aClassCategory, ' already exists'! !
+
+!RefactoringTest methodsFor: 'assertions' stamp: 'HAW 8/9/2018 16:26:02'!
+shouldFail: aBlock
+	
+	self should: aBlock raise: Exception ! !
 
 !RefactoringTest methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:26'!
 refactoringError
@@ -1882,7 +1801,7 @@ test10OtherLiteralReferencesAreNotRenamed
 	self assert: (referencingMethod hasLiteralThorough: #Object).
 ! !
 
-!RenameClassTest methodsFor: 'tests' stamp: 'HAW 6/4/2017 18:44:47'!
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/9/2018 16:30:56'!
 test11OldClassDirectAndLiteralReferencesAreRenameAtOnce
 
 	| oldClassName newClassName classToRefactor selector rename renamedReferences |
@@ -1898,7 +1817,8 @@ test11OldClassDirectAndLiteralReferencesAreRenameAtOnce
 	
 	self assert: 1 equals: renamedReferences size.
 	self assert: selector equals: renamedReferences anyOne selector.
-	self assert: newClassName equals: renamedReferences anyOne classSymbol ! !
+	self assert: newClassName equals: renamedReferences anyOne classSymbol.
+	self assert: ((classToRefactor sourceCodeAt: selector) includesSubString: '#', newClassName)! !
 
 !RenameClassTest methodsFor: 'tests' stamp: 'HAW 4/4/2018 19:56:09'!
 test12CanNotRenameAMetaclass
@@ -1995,6 +1915,46 @@ test17ItDoesNotRenameReferencesToClassVariableWithSameNameAsNewClassDefinedInAny
 	
 	
 	! !
+
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/9/2018 16:21:35'!
+test18WorksCorrectlyWhenSourceCodeEndsWithClassToRename
+
+	| oldClassName newClassName classToRefactor selector rename referencingMethod |
+	
+	oldClassName := 'OldClassTest18' asSymbol.
+	newClassName := 'NewClassTest18' asSymbol.
+	classToRefactor := self createClassNamed: oldClassName.
+	selector := #m1.
+	classToRefactor compile: selector, ' ^', oldClassName asString.
+	
+	rename := RenameClass from: classToRefactor to: newClassName in: Smalltalk undeclared: Undeclared.
+	rename apply.
+	
+	referencingMethod := (Smalltalk classNamed: newClassName) compiledMethodAt: selector.
+	self assert: (referencingMethod hasLiteralThorough: newClassName).
+	self deny: (referencingMethod hasLiteralThorough: oldClassName)! !
+
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/9/2018 16:24:09'!
+test19RenamesClassWhenMethodReferencesClassAndDoesNothing
+
+	| oldClassName newClassName classToRefactor selector rename referencingMethod |
+	
+	"Currently the rename class is not handling this case becuase message #allCallsOn: does not return a method
+	that references a class but does nothing becuase it is optimize to return self... it is a really wierd case so I decided
+	no to solve it by now - Hernan"
+	self shouldFail: [
+		oldClassName := 'OldClassTest18' asSymbol.
+		newClassName := 'NewClassTest18' asSymbol.
+		classToRefactor := self createClassNamed: oldClassName.
+		selector := #m1.
+		classToRefactor compile: selector, ' ', oldClassName asString.
+	
+		rename := RenameClass from: classToRefactor to: newClassName in: Smalltalk undeclared: Undeclared.
+		rename apply.
+	
+		referencingMethod := (Smalltalk classNamed: newClassName) compiledMethodAt: selector.
+		self assert: (referencingMethod hasLiteralThorough: newClassName).
+		self deny: (referencingMethod hasLiteralThorough: oldClassName)] ! !
 
 !RenameInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:10:47'!
 allClassCategoriesOfTestData
@@ -2698,10 +2658,10 @@ methodNodeOf: aSourceCode
 
 	^self methodNodeOf: aSourceCode in: self class! !
 
-!RenameTemporaryTest methodsFor: 'class factory' stamp: 'HAW 7/3/2017 18:53:20'!
+!RenameTemporaryTest methodsFor: 'class factory' stamp: 'HAW 8/9/2018 23:23:12'!
 methodNodeOf: aSourceCode in: aClass
 
-	^Parser parse: aSourceCode class: aClass! !
+	^aClass methodNodeFor: aSourceCode ! !
 
 !RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 10/4/2017 17:04:33'!
 test01VariableToRenameHasToBeDefined
@@ -2790,7 +2750,7 @@ test06WarnsIfNewTemporaryIsEqualToInstanceVariableInAnySuperclass
 		assertCreation: [ RenameTemporary from: oldVariable to: newVariable in: methodNode ]
 		warnsWith: [ RenameTemporary warningMessageFor: newVariable willHideInstanceVariableDefinedIn: superclassToRefactor ]! !
 
-!RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 6/25/2017 21:55:39'!
+!RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 8/9/2018 19:28:36'!
 test07RenameCreatesNewTemporaryVariableAndDeletesOldOne
 
 	| methodNode oldVariable newVariable rename newMethodNode |
@@ -2801,12 +2761,12 @@ test07RenameCreatesNewTemporaryVariableAndDeletesOldOne
 	methodNode := self methodNodeOf: 'm1 | ', oldVariable, ' | '.
 	
 	rename := RenameTemporary from: oldVariable to: newVariable in: methodNode.
-	newMethodNode := rename apply.
+	newMethodNode := rename methodNodeAfterApply.
 	
 	self deny: (newMethodNode hasArgumentOrTemporary: oldVariable).
 	self assert: (newMethodNode hasArgumentOrTemporary: newVariable)! !
 
-!RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 6/25/2017 21:55:44'!
+!RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 8/9/2018 19:28:42'!
 test08RenameChangesReferencesFromOldVariableToNewVariable
 
 	| methodNode oldVariable newVariable rename newMethodNode assigmentNode |
@@ -2817,13 +2777,13 @@ test08RenameChangesReferencesFromOldVariableToNewVariable
 	methodNode := self methodNodeOf: 'm1 | ', oldVariable, ' | ', oldVariable, ' := 1 + ', oldVariable.
 	
 	rename := RenameTemporary from: oldVariable to: newVariable in: methodNode.
-	newMethodNode := rename apply.
+	newMethodNode := rename methodNodeAfterApply.
 	
 	assigmentNode := newMethodNode block statements first.
 	self assert: newVariable equals: assigmentNode variable name.
 	self assert: newVariable equals: assigmentNode value arguments first name.! !
 
-!RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 6/25/2017 21:55:49'!
+!RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 8/9/2018 19:28:47'!
 test09RenamesArguments
 
 	| methodNode oldVariable newVariable rename newMethodNode |
@@ -2834,7 +2794,7 @@ test09RenamesArguments
 	methodNode := self methodNodeOf: 'm1: ', oldVariable, ' ^', oldVariable.
 	
 	rename := RenameTemporary from: oldVariable to: newVariable in: methodNode.
-	newMethodNode := rename apply.
+	newMethodNode := rename methodNodeAfterApply.
 	
 	self deny: (newMethodNode hasArgumentOrTemporary: oldVariable).
 	self assert: (newMethodNode hasArgumentOrTemporary: newVariable).
@@ -3486,7 +3446,7 @@ apply
 	
 	! !
 
-!RenameClass methodsFor: 'initialization' stamp: 'HAW 6/4/2017 18:26:15'!
+!RenameClass methodsFor: 'initialization' stamp: 'HAW 8/9/2018 15:40:00'!
 initializeFrom: aClass to: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
 
 	classToRename := aClass.
@@ -3495,7 +3455,7 @@ initializeFrom: aClass to: aNewClassName in: aSystem undeclared: anUndeclaredDic
 	system := aSystem.
 	undeclared := anUndeclaredDictionary.
 	
-	rewriter := RenameClassRewriter for: self! !
+	! !
 
 !RenameClass methodsFor: 'accessing' stamp: 'HAW 6/4/2017 18:16:33'!
 newClassName
@@ -3532,14 +3492,26 @@ rejectReferencesToClassVariablesFrom: references
 	
 	^references reject: [ :aMethodReference | (self referencesOldClassName: aMethodReference) or: [ self referencesNewClassName: aMethodReference ] ].! !
 
-!RenameClass methodsFor: 'applying - private' stamp: 'HAW 6/4/2017 18:08:27'!
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 23:16:26'!
 renameReference: aMethodReference 
 	
-	| methodNode newSource |
+	| methodNode currentSourceCode newSource ranges |
 	
 	methodNode := aMethodReference compiledMethod methodNode.
-	methodNode accept: rewriter.
-	newSource := methodNode generateSource.
+	ranges := SortedCollection sortBlock: [ :leftRange :rightRange | leftRange first < rightRange first ].
+	ranges addAll: (methodNode rangesForLiteralVariableNode: classToRenameOriginalName ifAbsent: [ #() ]).
+	ranges addAll: ((methodNode rangesForLiteralNode: classToRenameOriginalName ifAbsent: [ #() ]) collect: [ :aRange | aRange first + 1 to: aRange last ]).	
+	currentSourceCode := aMethodReference sourceCode.
+
+	newSource := String streamContents: [ :newSourceStream | | from |
+		from := 1.
+		ranges do: [ :aRange | | to |
+			to := aRange first - 1.
+			newSourceStream  
+				nextPutAll: (currentSourceCode copyFrom: from to: to);
+				nextPutAll: newClassName.
+			from := aRange last + 1 ].
+		newSourceStream nextPutAll: (currentSourceCode copyFrom: from to: currentSourceCode size). ].
 	
 	aMethodReference actualClass compile: newSource ! !
 
@@ -3743,14 +3715,24 @@ renameReferencesToOldVariableInClass: aClass
 	referencingMethodNames do: [ :referencingMethodName | self renameReferencesToOldVariableInMethod: (aClass compiledMethodAt: referencingMethodName) ]
 	! !
 
-!RenameInstanceVariable methodsFor: 'applying - private' stamp: 'HAW 6/5/2017 16:53:40'!
+!RenameInstanceVariable methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 23:16:57'!
 renameReferencesToOldVariableInMethod: aCompiledMethod 
 	
-	| methodNode newSource |
+	| methodNode newSource ranges currentSourceCode |
 	
 	methodNode := aCompiledMethod methodNode.
-	methodNode accept: rewriter.
-	newSource := methodNode generateSource.
+	ranges := methodNode rangesForInstanceVariable: oldVariable ifAbsent: [ #() ].
+	
+	currentSourceCode := aCompiledMethod sourceCode.
+	newSource := String streamContents: [ :newSourceStream | | from |
+		from := 1.
+		ranges do: [ :aRange | | to |
+			to := aRange first-1.
+			newSourceStream  
+				nextPutAll: (currentSourceCode copyFrom: from to: to);
+				nextPutAll: self newVariable.
+			from := aRange last + 1 ].
+		newSourceStream nextPutAll: (currentSourceCode copyFrom: from to: currentSourceCode size). ].
 	
 	aCompiledMethod methodClass compile: newSource.
 	renamedReferences add: aCompiledMethod methodReference ! !
@@ -3777,12 +3759,12 @@ newVariable
 
 	^ addInstanceVariable newVariable! !
 
-!RenameInstanceVariable methodsFor: 'initialization' stamp: 'HAW 6/11/2017 19:05:50'!
+!RenameInstanceVariable methodsFor: 'initialization' stamp: 'HAW 8/9/2018 17:20:55'!
 initializeFrom: anOldvariable addingWith: anAddInstanceVariable 
 
 	oldVariable := anOldvariable.
 	addInstanceVariable := anAddInstanceVariable.
-	rewriter := RenameInstanceVariableRewriter for: self! !
+! !
 
 !RenameInstanceVariable methodsFor: 'testing' stamp: 'HAW 5/24/2017 21:58:30'!
 shouldRename: aName
@@ -3830,15 +3812,25 @@ apply
 	^changes
 		! !
 
-!RenameMethod methodsFor: 'applying - private' stamp: 'HAW 5/31/2017 16:45:15'!
+!RenameMethod methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 23:17:05'!
 createNewImplementorOf: anImplementor
 
-	| implementorMethodNode newSource implementorClassification newImplementor |
+	| implementorMethodNode newSource implementorClassification newImplementor currentSourceCode from |
 
 	implementorClassification := anImplementor methodClass organization categoryOfElement: oldSelector.
 	implementorMethodNode := anImplementor methodNode.
-	implementorMethodNode selector: newSelector.
-	newSource := implementorMethodNode generateSource.
+	
+	currentSourceCode := anImplementor sourceCode.
+	newSource := String streamContents: [ :newSourceStream |
+		from := 1.
+		implementorMethodNode selectorKeywordsRanges withIndexDo: [ :aKeywordRange :index | | to |
+			to := aKeywordRange first-1.
+			newSourceStream  
+				nextPutAll: (currentSourceCode copyFrom: from to: to);
+				nextPutAll: (newSelectorKeywords at: index).
+			from := aKeywordRange last + 1 ].
+		newSourceStream nextPutAll: (currentSourceCode copyFrom: from to: currentSourceCode size). ].
+	
 	anImplementor methodClass compile: newSource classifyUnder: implementorClassification.
 	newImplementor := anImplementor methodClass compiledMethodAt: newSelector.
 	(anImplementor refersToLiteral: oldSelector) ifTrue: [ senders add: newImplementor ]. 
@@ -3868,14 +3860,31 @@ renameSenders
 	senders do: [ :aSender | self renameSendersIn: aSender ].
 	! !
 
-!RenameMethod methodsFor: 'applying - private' stamp: 'HAW 5/31/2017 16:46:18'!
+!RenameMethod methodsFor: 'applying - private' stamp: 'HAW 8/9/2018 23:17:12'!
 renameSendersIn: aMethod
 
-	| methodNode newSource |
+	| methodNode currentSourceCode newSource rangesToKeyword oldSelectorKeywordsRanges from oldSelectorLiteralRanges |
 	
 	methodNode := aMethod methodNode.
-	methodNode accept: rewriter.
-	newSource := methodNode generateSource.
+	rangesToKeyword := SortedCollection sortBlock: [ :left :right | left key first < right key first ].
+	
+	oldSelectorKeywordsRanges := methodNode messageSendSelectorKeywordRangesOf: oldSelector ifAbsent: [ #() ].
+	oldSelectorKeywordsRanges do: [ :aMessageSendSelectorRanges | 
+		aMessageSendSelectorRanges withIndexDo: [ :aRange :index | rangesToKeyword add: aRange -> (newSelectorKeywords at: index) ]].
+	oldSelectorLiteralRanges := methodNode rangesForLiteralNode: oldSelector ifAbsent: [ #() ].
+	oldSelectorLiteralRanges do: [ :oldSelectorLiteralRange | rangesToKeyword add: (oldSelectorLiteralRange first + 1 to: oldSelectorLiteralRange last) -> newSelector ].
+	
+	currentSourceCode := aMethod sourceCode.
+	newSource := String streamContents: [ :newSourceStream |
+		from := 1.
+		rangesToKeyword do: [ :aRangeToKeyword | | to |
+			to := aRangeToKeyword key first-1.
+			newSourceStream  
+				nextPutAll: (currentSourceCode copyFrom: from to: to);
+				nextPutAll: aRangeToKeyword value.
+			from := aRangeToKeyword key last + 1 ].
+		newSourceStream nextPutAll: (currentSourceCode copyFrom: from to: currentSourceCode size). ].
+
 	aMethod methodClass compile: newSource.
 	
 	changes add: (MethodReference class: aMethod methodClass selector: aMethod selector)! !
@@ -3890,7 +3899,7 @@ sendersSize
 	
 	^senders size! !
 
-!RenameMethod methodsFor: 'initialization' stamp: 'HAW 5/31/2017 16:47:29'!
+!RenameMethod methodsFor: 'initialization' stamp: 'HAW 8/9/2018 23:00:34'!
 initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
 	
 	oldSelector := anOldSelector.
@@ -3899,7 +3908,7 @@ initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplem
 	"I have to make a copy of senders because it can change with recursive implementors - Hernan"
 	senders := aCollectionOfSenders asOrderedCollection.
 	
-	rewriter := RenameMethodRewriter of: self.
+	newSelectorKeywords := newSelector keywords.	
 	changes := Set new.! !
 
 !RenameMethod methodsFor: 'selectors' stamp: 'HAW 5/24/2017 19:43:23'!
@@ -4217,15 +4226,31 @@ addMiscellaneousIconsTo: aCollection
 
 	aCollection add: #('rename method') -> #saveAsIcon! !
 
-!RenameTemporary methodsFor: 'applying' stamp: 'HAW 6/25/2017 21:53:31'!
+!RenameTemporary methodsFor: 'applying' stamp: 'HAW 8/9/2018 23:17:22'!
 apply
 	
-	| temporaryDefinition |
+	| newSource ranges currentSourceCode |
 	
-	temporaryDefinition :=methodNode tempNodes detect: [:aTemporaryNode | aTemporaryNode name = oldVariable ].
-	temporaryDefinition nameAndKey: newVariable.
+	ranges := methodNode rangesForTemporaryVariable: oldVariable ifAbsent: [ #() ].
+	currentSourceCode := methodNode sourceText.
+	newSource := String streamContents: [ :newSourceStream | | from |
+		from := 1.
+		ranges do: [ :aRange | | to |
+			to := aRange first-1.
+			newSourceStream  
+				nextPutAll: (currentSourceCode copyFrom: from to: to);
+				nextPutAll: newVariable.
+			from := aRange last + 1 ].
+		newSourceStream nextPutAll: (currentSourceCode copyFrom: from to: currentSourceCode size). ].
 	
-	^methodNode ! !
+	^newSource! !
+
+!RenameTemporary methodsFor: 'applying' stamp: 'HAW 8/9/2018 19:34:51'!
+methodNodeAfterApply
+	
+	^methodNode methodClass methodNodeFor: self apply.
+	
+	! !
 
 !RenameTemporary methodsFor: 'initialization' stamp: 'HAW 6/25/2017 21:53:31'!
 initializeFrom: anOldVariable to: aNewVariable in: aMethodNode 
@@ -5081,18 +5106,18 @@ createRefactoring
 	^RenameTemporary from: oldVariable to: newVariable in: methodNode 
 	! !
 
-!RenameTemporaryApplier methodsFor: 'initialization' stamp: 'HAW 7/7/2017 09:41:06'!
+!RenameTemporaryApplier methodsFor: 'initialization' stamp: 'HAW 8/9/2018 19:39:37'!
 initializeOn: aSmalltalkEditor
 
 	smalltalkEditor := aSmalltalkEditor.
 	classToRefactor := smalltalkEditor codeProvider selectedClassOrMetaClass.
-	methodNode := Parser parse: smalltalkEditor actualContents string class: classToRefactor.
-! !
+	methodNode := classToRefactor methodNodeFor: smalltalkEditor actualContents string.
+	! !
 
-!RenameTemporaryApplier methodsFor: 'refactoring - changes' stamp: 'HAW 6/25/2017 21:49:46'!
+!RenameTemporaryApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/9/2018 19:43:41'!
 showChanges
 
-	smalltalkEditor actualContents: changes generateSource.
+	smalltalkEditor actualContents: changes.
 	smalltalkEditor hasUnacceptedEdits ifFalse: [
 		smalltalkEditor 
 			hasUnacceptedEdits: true;
@@ -5311,6 +5336,21 @@ indexOfInstanceVariable: aName
 
 	^self allInstVarNames indexOf: aName! !
 
+!Behavior methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 19:32:09'!
+methodNodeFor: aSourceCode
+
+	|  parser methodNode |
+
+	parser := self parserClass new
+		encoderClass: EncoderForV3PlusClosures;
+		yourself.
+		
+	methodNode := parser parse: aSourceCode class: self.
+	methodNode sourceText: aSourceCode.
+	
+	^methodNode
+			! !
+
 !Behavior methodsFor: '*Refactoring' stamp: 'HAW 5/25/2017 21:53:10'!
 methodsSelect: aCondition
 
@@ -5512,6 +5552,12 @@ readsInstanceVariable: aName
 
 	^self readsField: (self methodClass indexOfInstanceVariable: aName) ! !
 
+!CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 11:32:37'!
+sourceCode
+
+	"This method is implemented because getSource is not so intuitive - Hernan"
+	^self getSource! !
+
 !CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 5/22/2017 22:28:34'!
 writesInstanceVariable: aName
 
@@ -5557,6 +5603,16 @@ generateSource
 	
 	^String streamContents: [ :stream | self printOn: stream ]! !
 
+!ParseNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 19:21:06'!
+isInstanceVariableNode
+
+	^false! !
+
+!ParseNode methodsFor: '*Refactoring' stamp: 'HAW 8/11/2018 19:23:06'!
+isMessageNamed: aSelector
+
+	^false! !
+
 !ParseNode methodsFor: '*Refactoring' stamp: 'HAW 10/19/2017 05:54:57'!
 isReturn
 
@@ -5572,6 +5628,21 @@ nameAndKey: aName
 
 	name := key := aName ! !
 
+!InstanceVariableNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 19:21:39'!
+isInstanceVariableNode
+
+	^true! !
+
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/11/2018 19:23:15'!
+isMessageNamed: aSelector
+
+	^aSelector == selector key! !
+
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 21:46:47'!
+keywordRanges
+
+	^keywordRanges! !
+
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 6/25/2017 19:03:53'!
 classAndSelector
 	
@@ -5581,6 +5652,40 @@ classAndSelector
 hasArgumentOrTemporary: aVariable
 
 	^self tempNames includes: aVariable ! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 21:49:21'!
+messageSendSelectorKeywordRangesOf: aSelector ifAbsent: aBlock
+
+	^encoder messageSendSelectorKeywordRangesOf: aSelector ifAbsent: aBlock
+! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 19:23:38'!
+rangesForInstanceVariable: aName ifAbsent: aBlock
+
+	^encoder rangesForInstanceVariable: aName ifAbsent: aBlock
+! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 20:59:26'!
+rangesForLiteralNode: aName ifAbsent: aBlock
+
+	^encoder rangesForLiteralNode: aName ifAbsent: aBlock
+! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 20:51:36'!
+rangesForLiteralVariableNode: aName ifAbsent: aBlock
+
+	^encoder rangesForLiteralVariableNode: aName ifAbsent: aBlock! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 19:41:54'!
+rangesForTemporaryVariable: aName ifAbsent: aBlock
+
+	^encoder rangesForTemporaryVariable: aName ifAbsent: aBlock
+! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 22:58:21'!
+selectorKeywordsRanges
+
+	^selectorKeywordsRanges! !
 
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 6/25/2017 19:20:47'!
 tempNodes

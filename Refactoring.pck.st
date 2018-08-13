@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3411] on 13 August 2018 at 3:41:50 pm'!
-'Description Now rafactorings keep method''s source code format'!
-!provides: 'Refactoring' 1 46!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3411] on 13 August 2018 at 7:00:20 pm'!
+'Description InsertSuperclass refactor'!
+!provides: 'Refactoring' 1 47!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -114,6 +114,16 @@ RefactoringTest subclass: #ExtractToTemporaryTest
 ExtractToTemporaryTest class
 	instanceVariableNames: ''!
 
+!classDefinition: #InsertSuperclassTest category: #Refactoring!
+RefactoringTest subclass: #InsertSuperclassTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'InsertSuperclassTest class' category: #Refactoring!
+InsertSuperclassTest class
+	instanceVariableNames: ''!
+
 !classDefinition: #RemoveAllUnreferencedInstanceVariablesTest category: #Refactoring!
 RefactoringTest subclass: #RemoveAllUnreferencedInstanceVariablesTest
 	instanceVariableNames: ''
@@ -184,6 +194,16 @@ RefactoringTest subclass: #SafelyRemoveClassTest
 SafelyRemoveClassTest class
 	instanceVariableNames: ''!
 
+!classDefinition: #NewClassPrecondition category: #Refactoring!
+Object subclass: #NewClassPrecondition
+	instanceVariableNames: 'newClassName system undeclared'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'NewClassPrecondition class' category: #Refactoring!
+NewClassPrecondition class
+	instanceVariableNames: ''!
+
 !classDefinition: #Refactoring category: #Refactoring!
 Object subclass: #Refactoring
 	instanceVariableNames: ''
@@ -212,6 +232,16 @@ Refactoring subclass: #ExtractToTemporary
 	category: 'Refactoring'!
 !classDefinition: 'ExtractToTemporary class' category: #Refactoring!
 ExtractToTemporary class
+	instanceVariableNames: ''!
+
+!classDefinition: #InsertSuperclass category: #Refactoring!
+Refactoring subclass: #InsertSuperclass
+	instanceVariableNames: 'classToRefactor superclassName'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'InsertSuperclass class' category: #Refactoring!
+InsertSuperclass class
 	instanceVariableNames: ''!
 
 !classDefinition: #RemoveAllUnreferencedInstanceVariables category: #Refactoring!
@@ -302,6 +332,16 @@ RefactoringApplier subclass: #AddInstanceVariableApplier
 	category: 'Refactoring'!
 !classDefinition: 'AddInstanceVariableApplier class' category: #Refactoring!
 AddInstanceVariableApplier class
+	instanceVariableNames: ''!
+
+!classDefinition: #InsertSuperclassApplier category: #Refactoring!
+RefactoringApplier subclass: #InsertSuperclassApplier
+	instanceVariableNames: 'browser newSuperclassName classToRefactor'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'InsertSuperclassApplier class' category: #Refactoring!
+InsertSuperclassApplier class
 	instanceVariableNames: ''!
 
 !classDefinition: #RemoveAllUnreferencedInstanceVariablesApplier category: #Refactoring!
@@ -959,11 +999,6 @@ shouldFail: aBlock
 	
 	self should: aBlock raise: Exception ! !
 
-!RefactoringTest methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 12:17:19'!
-canNotRemoveDueToReferencesRefactoringError
-	
-	^ Refactoring canNotRemoveDueToReferencesErrorClass - MessageNotUnderstood.! !
-
 !RefactoringTest methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:26'!
 refactoringError
 
@@ -993,20 +1028,15 @@ tearDown
 		SystemOrganization removeSystemCategories: classCategories.
 		Browser allInstancesDo: [:aBrowser | aBrowser changed: #systemCategoryList ]]! !
 
-!RefactoringTest methodsFor: 'Running' stamp: 'HAW 8/13/2018 12:34:08'!
-runAndTearDownCase
-
-	^ SystemChangeNotifier uniqueInstance doSilently: [ super runAndTearDownCase ]! !
+!RefactoringTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/13/2018 12:17:19'!
+canNotRemoveDueToReferencesRefactoringError
+	
+	^ Refactoring canNotRemoveDueToReferencesErrorClass - MessageNotUnderstood.! !
 
 !RefactoringTest methodsFor: 'Running' stamp: 'HAW 8/13/2018 12:34:11'!
 runCase
 
 	^ SystemChangeNotifier uniqueInstance doSilently: [ super runCase ]! !
-
-!RefactoringTest methodsFor: 'Running' stamp: 'HAW 8/13/2018 12:34:15'!
-runCaseAsFailure
-
-	^ SystemChangeNotifier uniqueInstance doSilently: [ super runCaseAsFailure ]! !
 
 !AddInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 6/6/2017 09:59:58'!
 allClassCategoriesOfTestData
@@ -1553,6 +1583,134 @@ test19
 		arguments: [ :collaborator | collaborator = extract newTemporary ]).
 	self assert: newMethodNodeStatements third isReturnSelf ! !
 
+!InsertSuperclassTest methodsFor: 'class factory' stamp: 'FJG 8/5/2018 01:50:50'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
+!InsertSuperclassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:01:00'!
+test01ChangesTheSuperclassOfTheClassToRefactor
+
+	| classToRefactor refactoring oldSuperclass newSuperclass |
+	
+	classToRefactor := self createClassNamed: #ClassToAddSuperclass.
+	oldSuperclass := classToRefactor superclass.
+	
+	refactoring := InsertSuperclass to: classToRefactor named: #AddedSuperclass.
+	newSuperclass := refactoring apply.
+	
+	self assert: newSuperclass equals: classToRefactor superclass.
+	self assert: (newSuperclass subclasses includes: classToRefactor).
+	self assert: oldSuperclass equals: newSuperclass superclass.! !
+
+!InsertSuperclassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:29:50'!
+test02ClassToRefactorStructureIsMaintained
+
+	| classToRefactor refactoring instanceVariables category classVariables poolDictionaries |
+	
+	instanceVariables := 'instVar1 instVar2'.
+	classVariables := 'ClassVar1 ClassVar2'.
+	poolDictionaries := 'SharedAAA'.
+	category :=  self classCategoryOfTestData.
+	
+	[ Smalltalk at: poolDictionaries asSymbol put: Dictionary new.
+	classToRefactor := self 
+		createClassNamed: #ClassToAddSuperclass
+		subclassOf: Object
+		instanceVariableNames: instanceVariables
+		classVariableNames: classVariables
+		poolDictionaries: poolDictionaries
+		category: category.
+	
+	refactoring := InsertSuperclass to: classToRefactor named: #AddedSuperclass.
+	refactoring apply.
+	
+	self assert: instanceVariables equals: classToRefactor instanceVariablesString.
+	self assert: classVariables equals: classToRefactor classVariablesString.
+	self assert: poolDictionaries equals: classToRefactor sharedPoolsString.
+	self assert: category equals: classToRefactor category ] ensure: [ Smalltalk removeKey: poolDictionaries asSymbol ].! !
+
+!InsertSuperclassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:17:48'!
+test03NewSuperclassCategoryIsTheSameAsClassToRefactorCategory
+
+	| classToRefactor refactoring classToRefactorCategory newSuperclass |
+
+	classToRefactorCategory := self classCategoryOfTestData.
+	classToRefactor := self createClassNamed: #ClassToAddSuperclass category: classToRefactorCategory.
+	
+	refactoring := InsertSuperclass to: classToRefactor named: #AddedSuperclass.
+	newSuperclass := refactoring apply.
+	
+	self assert: classToRefactorCategory equals: newSuperclass category.! !
+
+!InsertSuperclassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:19:28'!
+test04NewSuperclassHasNoVariables
+
+	| classToRefactor refactoring classToRefactorCategory newSuperclass |
+
+	classToRefactorCategory := self classCategoryOfTestData.
+	classToRefactor := self createClassNamed: #ClassToAddSuperclass category: classToRefactorCategory.
+	
+	refactoring := InsertSuperclass to: classToRefactor named: #AddedSuperclass.
+	newSuperclass := refactoring apply.
+	
+	self assert: newSuperclass instVarNames isEmpty.
+	self assert: newSuperclass classVarNames isEmpty.
+	self assert: newSuperclass sharedPools isEmpty.! !
+
+!InsertSuperclassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:21:16'!
+test05NewSuperclassShouldNotExist
+
+	| classToRefactor existingClass existingClassName |
+	
+	classToRefactor := self createClassNamed: #ClassToAddSuperclass.
+	existingClassName := #AlreadyExistingClass.
+	existingClass := self createClassNamed: existingClassName.
+	
+	self
+		assertCreation: [ InsertSuperclass to: classToRefactor named: existingClassName ]
+		failsWith: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: existingClass name ].! !
+
+!InsertSuperclassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:22:13'!
+test06NewSuperclassNameHasToBeASymbol
+
+	self 
+		assertCreation: [ InsertSuperclass to: self class named: 'aString' ]
+		failsWith: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
+
+!InsertSuperclassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:22:17'!
+test07NewSuperclassNameHasToStartWithUppercaseLetter
+	
+	self
+		assertCreation: [ InsertSuperclass to: self class named: #_A ]
+		failsWith: [ NewClassPrecondition newNameMustStartWithUppercaseLetterErrorMessage ].! !
+
+!InsertSuperclassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:22:31'!
+test08WhenAppliedToMetaclassWorksAsWithClass
+
+	| classToRefactor refactoring newSuperclass |
+	
+	classToRefactor := self createClassNamed: #ClassToAddSuperclass.
+	
+	refactoring := InsertSuperclass to: classToRefactor class named: #AddedSuperclass.
+	newSuperclass := refactoring apply.
+	
+	self assert: newSuperclass equals: classToRefactor superclass.! !
+
+!InsertSuperclassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:22:56'!
+test09NewSuperclassNameCanNotBeEmpty
+
+	self 
+		assertCreation: [ InsertSuperclass to: self class named: '' asSymbol ]
+		failsWith: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage ].! !
+
+!InsertSuperclassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:23:12'!
+test10NewSuperclassNameCanNotHaveSpaces
+	
+	self
+		assertCreation: [ InsertSuperclass to: self class named: 'With spaces' asSymbol ]
+		failsWith: [ NewClassPrecondition newClassNameCanNotHaveSpacesErrorMessage ].! !
+
 !RemoveAllUnreferencedInstanceVariablesTest methodsFor: 'tests' stamp: 'HAW 8/2/2018 16:15:11'!
 test01NoVariableIsRemovedWhenClassHasNoInstanceVariable
 
@@ -1687,21 +1845,21 @@ test01NewClassNameHasToBeDifferentToOldOne
 		assertCreation: [ RenameClass from: self class to: self class name ]
 		failsWith: [ RenameClass newNameEqualsOldNameErrorMessage]! !
 
-!RenameClassTest methodsFor: 'tests' stamp: 'HAW 6/2/2017 10:50:26'!
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:36:20'!
 test02NewClassNameHasToBeASymbol
 
 	self 
 		assertCreation: [ RenameClass from: self class to: 'aString' ]
-		failsWith: [ RenameClass newNameMustBeSymbolErrorMessage]! !
+		failsWith: [ NewClassPrecondition newNameMustBeSymbolErrorMessage]! !
 
-!RenameClassTest methodsFor: 'tests' stamp: 'HAW 6/2/2017 11:37:16'!
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:36:37'!
 test03NewClassNameHasToStartWithUppercaseLetter
 
 	self 
 		assertCreation: [ RenameClass from: self class to: #_A ]
-		failsWith: [ RenameClass newNameMustStartWithUppercaseLetterErrorMessage]! !
+		failsWith: [ NewClassPrecondition newNameMustStartWithUppercaseLetterErrorMessage]! !
 
-!RenameClassTest methodsFor: 'tests' stamp: 'HAW 6/2/2017 11:47:55'!
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:33:08'!
 test04NewClassShouldNotExist
 
 	| newClassName |
@@ -1710,9 +1868,9 @@ test04NewClassShouldNotExist
 	
 	self 
 		assertCreation: [ RenameClass from: self class to: newClassName in: Smalltalk ]
-		failsWith: [ RenameClass errorMessageForAlreadyExistClassNamed: newClassName ]! !
+		failsWith: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: newClassName ]! !
 
-!RenameClassTest methodsFor: 'tests' stamp: 'HAW 6/2/2017 11:54:36'!
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:33:35'!
 test05NewClassShouldNotBeUndeclare
 
 	| newClassName undeclared |
@@ -1723,7 +1881,7 @@ test05NewClassShouldNotBeUndeclare
 	
 	self 
 		assertCreation: [ RenameClass from: self class to: newClassName in: Smalltalk undeclared: undeclared ]
-		failsWith: [ RenameClass errorMessageForNewClassIsUndeclared: newClassName ]! !
+		failsWith: [ NewClassPrecondition errorMessageForNewClassIsUndeclared: newClassName ]! !
 
 !RenameClassTest methodsFor: 'tests' stamp: 'HAW 6/4/2017 19:12:10'!
 test06OldClassIsRenamedToNewClass
@@ -1842,14 +2000,14 @@ test12CanNotRenameAMetaclass
 		assertCreation: [ RenameClass from: self class class to: #Object ]
 		failsWith: [ RenameClass classToRenameCanNotBeMetaclassErrorMessage]! !
 
-!RenameClassTest methodsFor: 'tests' stamp: 'HAW 6/4/2017 19:07:53'!
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:35:38'!
 test13NewClassNameHasToBeASymbol
 
 	self 
 		assertCreation: [ RenameClass from: self class to: '' asSymbol ]
-		failsWith: [ RenameClass newClassNameCanNotBeEmptyErrorMessage]! !
+		failsWith: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage]! !
 
-!RenameClassTest methodsFor: 'tests' stamp: 'HAW 4/4/2018 19:59:34'!
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:35:56'!
 test14NewClassNameCanNotHaveSpaces
 
 	| oldClassName classToRefactor |
@@ -1859,7 +2017,7 @@ test14NewClassNameCanNotHaveSpaces
 
 	self 
 		assertCreation: [ RenameClass from: classToRefactor to: 'With spaces' asSymbol ]
-		failsWith: [ RenameClass newClassNameCanNotHaveSpacesErrorMessage]! !
+		failsWith: [ NewClassPrecondition newClassNameCanNotHaveSpacesErrorMessage]! !
 
 !RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/9/2018 14:44:13'!
 test15ItDoesNotRenameReferencesToClassVariableWithSameName
@@ -2954,6 +3112,11 @@ test09CanRemoveIfReferencesToSubclassesAreInTheHierarchy
 	self assert: classToRemove isObsolete.	
 	self assert: classToRemoveSubclass isObsolete.! !
 
+!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 17:28:00'!
+test10
+
+	self assert: true! !
+
 !SafelyRemoveClassTest methodsFor: 'test support' stamp: 'HAW 8/1/2018 15:48:56'!
 assertSubclassesReturnsACopy
 
@@ -2989,6 +3152,131 @@ classToRemoveName
 	"I can not use the symbol directly because it would be a reference - Hernan"
 	^ 'ClassToRemove' asSymbol.
 	! !
+
+!NewClassPrecondition methodsFor: 'evaluating' stamp: 'HAW 8/13/2018 16:02:17'!
+value
+
+	self assertNewClassNameIsNotEmpty.
+	self assertNewClassNameSymbol.
+	self assertNewClassNameStartsWithUppercaseLetter.
+	self assertNewClassNameHasNoSpaces.
+	self assertNewClassNameDoesNotExistInSystem.
+	self assertNewClassNameIsNotUndeclaredInUndeclared.
+
+! !
+
+!NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'HAW 8/13/2018 16:10:43'!
+assertNewClassNameDoesNotExistInSystem
+
+	(system classNamed: newClassName) ifNotNil: [ self class signalAlreadyExistClassNamed: newClassName ]! !
+
+!NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'HAW 8/13/2018 16:10:47'!
+assertNewClassNameHasNoSpaces
+
+	(newClassName includes: Character space) ifTrue: [ self class signalNewClassNameCanNotHaveSpaces ]! !
+
+!NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'HAW 8/13/2018 17:32:07'!
+assertNewClassNameIsNotEmpty
+
+	newClassName withBlanksTrimmed isEmpty ifTrue: [ self class signalNewClassNameCanNotBeEmpty]! !
+
+!NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'HAW 8/13/2018 16:10:56'!
+assertNewClassNameIsNotUndeclaredInUndeclared
+
+	(undeclared includesKey: newClassName) ifTrue: [ self class signalNewClassIsUndeclared: newClassName ]! !
+
+!NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'HAW 8/13/2018 16:11:00'!
+assertNewClassNameStartsWithUppercaseLetter
+
+	newClassName first isUppercase ifFalse: [ self class signalNewNameMustStartWithUppercaseLetter]! !
+
+!NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'HAW 8/13/2018 16:11:05'!
+assertNewClassNameSymbol
+
+	newClassName isSymbol ifFalse: [ self class signalNewNameMustBeSymbol]! !
+
+!NewClassPrecondition methodsFor: 'initialization' stamp: 'HAW 8/13/2018 16:00:19'!
+initializeFor: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
+
+	newClassName := aNewClassName.
+	system := aSystem.
+	undeclared := anUndeclaredDictionary ! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+errorMessageForAlreadyExistClassNamed: aNewClassName
+
+	^aNewClassName, ' already exist'! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+errorMessageForNewClassIsUndeclared: aNewClassName
+
+	^aNewClassName, ' is undeclared'! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+newClassNameCanNotBeEmptyErrorMessage
+	
+	^'New class name can not be empty'! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+newClassNameCanNotHaveSpacesErrorMessage
+	
+	^'New class name can not have spaces'! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+newNameMustBeSymbolErrorMessage
+	
+	^'New class name must be a symbol'! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+newNameMustStartWithUppercaseLetterErrorMessage
+
+	^'New class name must start with an uppercase letter'! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 16:12:51'!
+refactoringError: aMessage
+
+	Refactoring refactoringError: aMessage ! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+signalAlreadyExistClassNamed: aNewClassName
+
+	self refactoringError: (self errorMessageForAlreadyExistClassNamed: aNewClassName).! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+signalNewClassIsUndeclared: aNewClassName
+
+	self refactoringError: (self errorMessageForNewClassIsUndeclared: aNewClassName).! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+signalNewClassNameCanNotBeEmpty
+	
+	self refactoringError: self newClassNameCanNotBeEmptyErrorMessage! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+signalNewClassNameCanNotHaveSpaces
+	
+	self refactoringError: self newClassNameCanNotHaveSpacesErrorMessage ! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+signalNewNameMustBeSymbol
+
+	self refactoringError: self newNameMustBeSymbolErrorMessage.! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+signalNewNameMustStartWithUppercaseLetter
+
+	self refactoringError: self newNameMustStartWithUppercaseLetterErrorMessage.! !
+
+!NewClassPrecondition class methodsFor: 'instance creation' stamp: 'HAW 8/13/2018 17:31:51'!
+for: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
+
+	^self new initializeFor: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
+! !
+
+!NewClassPrecondition class methodsFor: 'evaluation' stamp: 'HAW 8/13/2018 17:37:20'!
+valueFor: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
+
+	^(self for: aNewClassName in: aSystem undeclared: anUndeclaredDictionary) value! !
 
 !Refactoring methodsFor: 'applying' stamp: 'HAW 5/24/2017 21:08:11'!
 apply
@@ -3368,6 +3656,52 @@ warningMessageFor: aNewVariable willHideInstanceVariableDefinedIn: aClass
 
 	^aNewVariable, ' will hide instance variable defined in ', aClass name! !
 
+!InsertSuperclass methodsFor: 'applying' stamp: 'HAW 8/13/2018 18:31:33'!
+apply
+
+	| newSuperclass |
+	
+	newSuperclass := self createSuperclass.
+	self changeSuperclassOf: classToRefactor to: newSuperclass.
+
+	^newSuperclass ! !
+
+!InsertSuperclass methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 18:31:43'!
+changeSuperclassOf: classToRefactor to: newSuperclass
+	
+	newSuperclass subclass: classToRefactor name
+		instanceVariableNames: classToRefactor instanceVariablesString 
+		classVariableNames: classToRefactor classVariablesString 
+		poolDictionaries: classToRefactor sharedPoolsString
+		category: classToRefactor category.! !
+
+!InsertSuperclass methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 18:31:06'!
+createSuperclass
+	
+	^classToRefactor superclass subclass: superclassName
+		instanceVariableNames: ''
+		classVariableNames: ''
+		poolDictionaries: ''
+		category: classToRefactor category.! !
+
+!InsertSuperclass methodsFor: 'initialization' stamp: 'HAW 8/13/2018 17:36:34'!
+initializeTo: aClass named: aSuperclassName 
+
+	classToRefactor := aClass.
+	superclassName := aSuperclassName.! !
+
+!InsertSuperclass class methodsFor: 'instance creation' stamp: 'HAW 8/13/2018 17:34:37'!
+to: aClass named: aSuperclassName
+	
+	^self to: aClass named: aSuperclassName in: Smalltalk undeclared: Undeclared! !
+
+!InsertSuperclass class methodsFor: 'instance creation' stamp: 'HAW 8/13/2018 17:41:04'!
+to: aClass named: aSuperclassName in: aSystem undeclared: anUndeclared
+
+	NewClassPrecondition valueFor: aSuperclassName in: aSystem undeclared: anUndeclared.
+	
+	^self new initializeTo: aClass theNonMetaClass named: aSuperclassName ! !
+
 !RemoveAllUnreferencedInstanceVariables methodsFor: 'initialization' stamp: 'HAW 8/2/2018 16:14:57'!
 initializeFrom: aClassToRefactor
 
@@ -3564,125 +3898,40 @@ renameReferences
 	
 	^references! !
 
-!RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 6/2/2017 11:46:33'!
-assert: aNewClassName doesNotExistIn: aSystem
-	
-	(aSystem classNamed: aNewClassName) ifNotNil: [ self signalAlreadyExistClassNamed: aNewClassName ]! !
-
 !RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 6/1/2017 19:06:21'!
 assert: aClass isNotNamed: aNewName
 
 	aClass name = aNewName ifTrue: [ self signalNewNameEqualsOldName]! !
-
-!RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 6/2/2017 11:57:47'!
-assert: aNewClassName isNotUndeclaredIn: anUndeclaredDictionary
-
-	(anUndeclaredDictionary includesKey: aNewClassName) ifTrue: [ self signalNewClassIsUndeclared: aNewClassName ]! !
-
-!RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 4/4/2018 20:28:11'!
-assertHasNoSpaces: aNewClassName
-
-	(aNewClassName includes: Character space) ifTrue: [ self signalNewClassNameCanNotHaveSpaces ]! !
-
-!RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 6/4/2017 19:08:53'!
-assertIsNotEmpty: aNewName
-
-	aNewName isEmpty ifTrue: [ self signalNewClassNameCanNotBeEmpty]! !
 
 !RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 6/4/2017 18:49:54'!
 assertIsNotMeta: aBehavior
 
 	aBehavior isMeta ifTrue: [ self signalClassToRenameCanNotBeMetaclass]! !
 
-!RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 6/2/2017 11:34:59'!
-assertIsSymbol: aNewClassName
+!RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 8/13/2018 18:45:26'!
+newClassPreconditionClass
 
-	aNewClassName isSymbol ifFalse: [ self signalNewNameMustBeSymbol]! !
-
-!RenameClass class methodsFor: 'pre-conditions' stamp: 'HAW 6/2/2017 11:38:55'!
-assertStartsWithUppercaseLetter: aNewClassName
-
-	aNewClassName first isUppercase ifFalse: [ self signalNewNameMustStartWithUppercaseLetter]! !
+	^NewClassPrecondition ! !
 
 !RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/4/2017 18:50:36'!
 classToRenameCanNotBeMetaclassErrorMessage
 	
 	^'Class to rename can not be a metaclass'! !
 
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:48:29'!
-errorMessageForAlreadyExistClassNamed: aNewClassName
-
-	^aNewClassName, ' already exist'! !
-
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:58:55'!
-errorMessageForNewClassIsUndeclared: aNewClassName
-
-	^aNewClassName, ' is undeclared'! !
-
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/4/2017 19:09:29'!
-newClassNameCanNotBeEmptyErrorMessage
-	
-	^'New class name can not be empty'! !
-
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 4/4/2018 20:03:42'!
-newClassNameCanNotHaveSpacesErrorMessage
-	
-	^'New class name can not have spaces'! !
-
 !RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/1/2017 19:07:08'!
 newNameEqualsOldNameErrorMessage
 	
 	^'New class name equals old one'! !
-
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:36:01'!
-newNameMustBeSymbolErrorMessage
-	
-	^'New class name must be a symbol'! !
-
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/2/2017 11:39:53'!
-newNameMustStartWithUppercaseLetterErrorMessage
-
-	^'New class name must start with an uppercase letter'! !
-
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:53:46'!
-signalAlreadyExistClassNamed: aNewClassName
-
-	self refactoringError: (self errorMessageForAlreadyExistClassNamed: aNewClassName).! !
 
 !RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/4/2017 18:50:56'!
 signalClassToRenameCanNotBeMetaclass
 	
 	self refactoringError: self classToRenameCanNotBeMetaclassErrorMessage! !
 
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:53:49'!
-signalNewClassIsUndeclared: aNewClassName
-
-	self refactoringError: (self errorMessageForNewClassIsUndeclared: aNewClassName).! !
-
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/4/2017 19:09:13'!
-signalNewClassNameCanNotBeEmpty
-	
-	self refactoringError: self newClassNameCanNotBeEmptyErrorMessage! !
-
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 4/4/2018 20:09:25'!
-signalNewClassNameCanNotHaveSpaces
-	
-	self refactoringError: self newClassNameCanNotHaveSpacesErrorMessage ! !
-
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:53:53'!
+!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 18:39:00'!
 signalNewNameEqualsOldName
 
 	self refactoringError: self newNameEqualsOldNameErrorMessage.! !
-
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:53:57'!
-signalNewNameMustBeSymbol
-
-	self refactoringError: self newNameMustBeSymbolErrorMessage.! !
-
-!RenameClass class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:04'!
-signalNewNameMustStartWithUppercaseLetter
-
-	self refactoringError: self newNameMustStartWithUppercaseLetterErrorMessage.! !
 
 !RenameClass class methodsFor: 'instance creation' stamp: 'HAW 6/2/2017 11:43:48'!
 from: aClass to: aNewClassName
@@ -3697,17 +3946,12 @@ from: aClass to: aNewClassName in: aSystem
 	
 	! !
 
-!RenameClass class methodsFor: 'instance creation' stamp: 'HAW 4/4/2018 20:09:47'!
+!RenameClass class methodsFor: 'instance creation' stamp: 'HAW 8/13/2018 18:45:15'!
 from: aClass to: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
 
 	self assertIsNotMeta: aClass.
 	self assert: aClass isNotNamed: aNewClassName.
-	self assertIsNotEmpty: aNewClassName withBlanksTrimmed.
-	self assertIsSymbol: aNewClassName.
-	self assertStartsWithUppercaseLetter: aNewClassName.
-	self assertHasNoSpaces: aNewClassName.
-	self assert: aNewClassName doesNotExistIn: aSystem.
-	self assert: aNewClassName isNotUndeclaredIn: anUndeclaredDictionary.
+	self newClassPreconditionClass valueFor: aNewClassName in: aSystem undeclared: anUndeclaredDictionary.
 	
 	^self new initializeFrom: aClass to: aNewClassName in: aSystem undeclared: anUndeclaredDictionary 
 ! !
@@ -4680,6 +4924,38 @@ on: aBrowserWindow for: aClassToRefactor
 	^self new initializeOn: aBrowserWindow for: aClassToRefactor 
 ! !
 
+!InsertSuperclassApplier methodsFor: 'initialization' stamp: 'FJG 8/5/2018 22:31:03'!
+initializeOn: aBrowser for: aClass
+	browser _ aBrowser.
+	classToRefactor _ aClass.! !
+
+!InsertSuperclassApplier methodsFor: 'refactoring - parameters request' stamp: 'FJG 8/5/2018 22:31:31'!
+askNewSuperclassName
+	newSuperclassName _ self
+		request: 'Enter new superclass name:'.
+	newSuperclassName _ newSuperclassName withBlanksTrimmed asSymbol.! !
+
+!InsertSuperclassApplier methodsFor: 'refactoring - parameters request' stamp: 'FJG 8/5/2018 22:29:07'!
+requestRefactoringParameters
+
+	self askNewSuperclassName! !
+
+!InsertSuperclassApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/13/2018 15:55:10'!
+createRefactoring
+
+	^InsertSuperclass to: classToRefactor named: newSuperclassName! !
+
+!InsertSuperclassApplier methodsFor: 'refactoring - changes' stamp: 'FJG 8/5/2018 22:33:49'!
+showChanges
+	
+	browser changed: #classList.
+! !
+
+!InsertSuperclassApplier class methodsFor: 'instance creation' stamp: 'FJG 8/5/2018 22:27:02'!
+on: aBrowser for: aClass
+
+	^self new initializeOn: aBrowser for: aClass! !
+
 !RemoveAllUnreferencedInstanceVariablesApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/2/2018 16:11:13'!
 requestRefactoringParameters
 
@@ -5238,7 +5514,7 @@ classListMenuOptions
 		}`.
 	! !
 
-!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 8/2/2018 16:21:06'!
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 8/13/2018 15:52:08'!
 classRefactoringMenuOptions
 
 	^ `{
@@ -5253,6 +5529,14 @@ classRefactoringMenuOptions
 			{
 				#itemGroup 	-> 		10.
 				#itemOrder 		-> 		20.
+				#label 			-> 		'insert superclass ...'.
+				#object 			-> 		#model.
+				#selector 		-> 		#introduceSuperclass.
+				#icon 			-> 		#saveAsIcon
+			} asDictionary.
+			{
+				#itemGroup 	-> 		10.
+				#itemOrder 		-> 		30.
 				#label 			-> 		'safely remove class (x)'.
 				#object 			-> 		#model.
 				#selector 		-> 		#safelyRemoveClass.
@@ -5316,6 +5600,12 @@ messsageRefactoringMenuOptions
 			} asDictionary.
 	}`.
 	! !
+
+!Browser methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 15:50:42'!
+introduceSuperclass
+
+	self selectedClassOrMetaClass ifNotNil: [ :aBehavior |
+		(InsertSuperclassApplier on: self for: aBehavior theNonMetaClass) value ].! !
 
 !Browser methodsFor: '*Refactoring' stamp: 'HAW 6/25/2017 21:05:20'!
 isEditingMethod

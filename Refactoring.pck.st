@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3411] on 13 August 2018 at 7:00:20 pm'!
-'Description InsertSuperclass refactor'!
-!provides: 'Refactoring' 1 47!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3411] on 14 August 2018 at 11:18:42 am'!
+'Description Tests for rename block arguments and temporaries'!
+!provides: 'Refactoring' 1 48!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2986,6 +2986,46 @@ test10NewVariableNameCanNotBeDefinedAsBlockArgument
 	self 
 		assertCreation: [RenameTemporary from: oldVariable to: newVariable in: methodNode ]
 		failsWith: [RenameTemporary  errorMessageForNewTemporaryVariable: newVariable isAlreadyDefinedIn: methodNode ]! !
+
+!RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 8/14/2018 11:16:28'!
+test11RenamesBlockArguments
+
+	| methodNode oldVariable newVariable rename newMethodNode |
+	
+	oldVariable := 'old'.
+	newVariable := 'new'.
+	
+	methodNode := self methodNodeOf: 'm1 [:', oldVariable, '| ^', oldVariable, ']'.
+	
+	rename := RenameTemporary from: oldVariable to: newVariable in: methodNode.
+	newMethodNode := rename methodNodeAfterApply.
+	
+	self deny: (newMethodNode hasArgumentOrTemporary: oldVariable).
+	self assert: (newMethodNode hasArgumentOrTemporary: newVariable).
+	"asserts it renamed block argument - Hernan"
+	self assert: newVariable equals: newMethodNode block statements first arguments first name.
+	"asserts it renamed reference to block argument - Hernan"
+	self assert: newVariable equals: newMethodNode block statements first block statements first expr name! !
+
+!RenameTemporaryTest methodsFor: 'tests' stamp: 'HAW 8/14/2018 11:18:03'!
+test12RenamesBlockTemporaries
+
+	| methodNode oldVariable newVariable rename newMethodNode |
+	
+	oldVariable := 'old'.
+	newVariable := 'new'.
+	
+	methodNode := self methodNodeOf: 'm1 [ |', oldVariable, '| ^', oldVariable, ']'.
+	
+	rename := RenameTemporary from: oldVariable to: newVariable in: methodNode.
+	newMethodNode := rename methodNodeAfterApply.
+	
+	self deny: (newMethodNode hasArgumentOrTemporary: oldVariable).
+	self assert: (newMethodNode hasArgumentOrTemporary: newVariable).
+	"asserts it renamed block temporary - Hernan"
+	self assert: newVariable equals: newMethodNode block statements first temporaries first name.
+	"asserts it renamed reference to block temporary - Hernan"
+	self assert: newVariable equals: newMethodNode block statements first block statements first expr name! !
 
 !SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/1/2018 16:43:08'!
 test02ClassesWithNoReferencesAndNoSubclassesAreSafetelyRemoved

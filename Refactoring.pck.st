@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3411] on 14 August 2018 at 11:18:42 am'!
-'Description Tests for rename block arguments and temporaries'!
-!provides: 'Refactoring' 1 48!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3421] on 15 August 2018 at 12:12:05 pm'!
+'Description Renamed RenameMethodxxx with RenameSelectorxxx'!
+!provides: 'Refactoring' 1 49!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -54,34 +54,34 @@ ParseNodeVisitor subclass: #ParseNodeToReplaceFinder
 ParseNodeToReplaceFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #RenameMethodMessageSetWindow category: #Refactoring!
-MessageSetWindow subclass: #RenameMethodMessageSetWindow
+!classDefinition: #RenameSelectorMessageSetWindow category: #Refactoring!
+MessageSetWindow subclass: #RenameSelectorMessageSetWindow
 	instanceVariableNames: 'request'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RenameMethodMessageSetWindow class' category: #Refactoring!
-RenameMethodMessageSetWindow class
+!classDefinition: 'RenameSelectorMessageSetWindow class' category: #Refactoring!
+RenameSelectorMessageSetWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #RenameMethodImplementorsWindow category: #Refactoring!
-RenameMethodMessageSetWindow subclass: #RenameMethodImplementorsWindow
+!classDefinition: #RenameSelectorImplementorsWindow category: #Refactoring!
+RenameSelectorMessageSetWindow subclass: #RenameSelectorImplementorsWindow
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RenameMethodImplementorsWindow class' category: #Refactoring!
-RenameMethodImplementorsWindow class
+!classDefinition: 'RenameSelectorImplementorsWindow class' category: #Refactoring!
+RenameSelectorImplementorsWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #RenameMethodSendersWindow category: #Refactoring!
-RenameMethodMessageSetWindow subclass: #RenameMethodSendersWindow
+!classDefinition: #RenameSelectorSendersWindow category: #Refactoring!
+RenameSelectorMessageSetWindow subclass: #RenameSelectorSendersWindow
 	instanceVariableNames: 'changedMethods'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RenameMethodSendersWindow class' category: #Refactoring!
-RenameMethodSendersWindow class
+!classDefinition: 'RenameSelectorSendersWindow class' category: #Refactoring!
+RenameSelectorSendersWindow class
 	instanceVariableNames: ''!
 
 !classDefinition: #RefactoringTest category: #Refactoring!
@@ -164,14 +164,14 @@ RefactoringTest subclass: #RenameInstanceVariableTest
 RenameInstanceVariableTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #RenameMethodTest category: #Refactoring!
-RefactoringTest subclass: #RenameMethodTest
+!classDefinition: #RenameSelectorTest category: #Refactoring!
+RefactoringTest subclass: #RenameSelectorTest
 	instanceVariableNames: 'oldSelector newSelector senderOfOldSelector classToRefactor'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RenameMethodTest class' category: #Refactoring!
-RenameMethodTest class
+!classDefinition: 'RenameSelectorTest class' category: #Refactoring!
+RenameSelectorTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameTemporaryTest category: #Refactoring!
@@ -284,14 +284,14 @@ Refactoring subclass: #RenameInstanceVariable
 RenameInstanceVariable class
 	instanceVariableNames: ''!
 
-!classDefinition: #RenameMethod category: #Refactoring!
-Refactoring subclass: #RenameMethod
+!classDefinition: #RenameSelector category: #Refactoring!
+Refactoring subclass: #RenameSelector
 	instanceVariableNames: 'oldSelector newSelector implementors senders changes newSelectorKeywords'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RenameMethod class' category: #Refactoring!
-RenameMethod class
+!classDefinition: 'RenameSelector class' category: #Refactoring!
+RenameSelector class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameTemporary category: #Refactoring!
@@ -384,14 +384,14 @@ RefactoringApplier subclass: #RenameInstanceVariableApplier
 RenameInstanceVariableApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #RenameMethodApplier category: #Refactoring!
-RefactoringApplier subclass: #RenameMethodApplier
+!classDefinition: #RenameSelectorApplier category: #Refactoring!
+RefactoringApplier subclass: #RenameSelectorApplier
 	instanceVariableNames: 'oldSelector newSelector scopeChoice implementors senders implementingClass browser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RenameMethodApplier class' category: #Refactoring!
-RenameMethodApplier class
+!classDefinition: 'RenameSelectorApplier class' category: #Refactoring!
+RenameSelectorApplier class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameTemporaryApplier category: #Refactoring!
@@ -569,17 +569,17 @@ of: anExtractToTemporary
 	
 	^self new initializeOf: anExtractToTemporary ! !
 
-!RenameMethodMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:26:05'!
+!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:26:05'!
 add
 
 	self subclassResponsibility ! !
 
-!RenameMethodMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:36:12'!
+!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:36:12'!
 addToList: aMethod
 
 	model addMethodReference: aMethod methodReference ifIncluded: [ self inform: 'Method already in list' ]! !
 
-!RenameMethodMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:44:01'!
+!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:44:01'!
 do: aBlock withEnteredClassLabeled: aLabel
 		
 	| className |
@@ -587,17 +587,17 @@ do: aBlock withEnteredClassLabeled: aLabel
 	className := FillInTheBlankMorph request: aLabel onCancel: [ ^self ].
 	^self withClassNamed: className do: aBlock! !
 
-!RenameMethodMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 18:17:19'!
+!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 18:17:19'!
 inform: aClass doesNotImplement: aSelector
 
  	self inform: aClass name, ' does not implement #', aSelector ! !
 
-!RenameMethodMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:07:19'!
+!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:07:19'!
 remove
 	
 	model removeMessageFromBrowserKeepingLabel! !
 
-!RenameMethodMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:38:48'!
+!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:38:48'!
 withClassNamed: aName do: aBlock
 
 	(Smalltalk classNamed: aName asSymbol)
@@ -605,18 +605,18 @@ withClassNamed: aName do: aBlock
 		ifNil: [ self inform: 'Class ', aName, ' does not exist' ].
 ! !
 
-!RenameMethodMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:22:39'!
+!RenameSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:22:39'!
 addButton: button to: row color: buttonColor
 
 	button color: buttonColor.
 	row addMorph: button proportionalWidth: 10! !
 
-!RenameMethodMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:18:46'!
+!RenameSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:18:46'!
 addButtonsTo: row color: buttonColor
 	
 	self subclassResponsibility ! !
 
-!RenameMethodMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:26:55'!
+!RenameSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:26:55'!
 buildLowerPanes
 
 	| codeAndButtons  |
@@ -629,7 +629,7 @@ buildLowerPanes
 	
 	^codeAndButtons ! !
 
-!RenameMethodMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:27:25'!
+!RenameSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:27:25'!
 buttonsRow
 
 	| buttonColor row |
@@ -645,12 +645,12 @@ buttonsRow
 	
 	! !
 
-!RenameMethodMessageSetWindow methodsFor: 'compile methods' stamp: 'HAW 5/31/2017 17:08:14'!
+!RenameSelectorMessageSetWindow methodsFor: 'compile methods' stamp: 'HAW 5/31/2017 17:08:14'!
 compiledMethodsFrom: methodReferences
 
 	^ methodReferences collect: [:aMethodReference | aMethodReference compiledMethod ]! !
 
-!RenameMethodMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:21:11'!
+!RenameSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:21:11'!
 createAddButton
 	
 	^PluggableButtonMorph 
@@ -660,7 +660,7 @@ createAddButton
 		label: 'Add'.
 ! !
 
-!RenameMethodMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:21:19'!
+!RenameSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:21:19'!
 createCancelButton
 	
 	^PluggableButtonMorph 
@@ -670,7 +670,7 @@ createCancelButton
 		label: 'Cancel'.
 ! !
 
-!RenameMethodMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:16:37'!
+!RenameSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:16:37'!
 createRemoveButton
 	
 	^PluggableButtonMorph 
@@ -680,47 +680,47 @@ createRemoveButton
 		label: 'Remove'.
 ! !
 
-!RenameMethodMessageSetWindow methodsFor: 'initialization' stamp: 'HAW 6/5/2017 17:32:02'!
-initializeFrom: aRenameMethodRequest
+!RenameSelectorMessageSetWindow methodsFor: 'initialization' stamp: 'HAW 8/15/2018 12:02:37'!
+initializeFrom: aRenameSelectorRequest
 
-	request := aRenameMethodRequest ! !
+	request := aRenameSelectorRequest ! !
 
-!RenameMethodMessageSetWindow methodsFor: 'testing' stamp: 'HAW 6/5/2017 17:40:16'!
+!RenameSelectorMessageSetWindow methodsFor: 'testing' stamp: 'HAW 6/5/2017 17:40:16'!
 isMessageSelected
 
 	^model isNil ifTrue: [ false ] ifFalse: [ model selection notNil ]! !
 
-!RenameMethodMessageSetWindow methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:44'!
+!RenameSelectorMessageSetWindow methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:44'!
 oldSelector
 	
 	^request oldSelector ! !
 
-!RenameMethodMessageSetWindow class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 16:59:25'!
+!RenameSelectorMessageSetWindow class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 16:59:25'!
 methodReferencesOf: methods
 
 	^methods asOrderedCollection collect: [:aCompiledMethod | aCompiledMethod methodReference ].
 ! !
 
-!RenameMethodMessageSetWindow class methodsFor: 'instance creation' stamp: 'HAW 6/5/2017 17:50:12'!
-openFrom: aRenameMethodRequest methods: methods label: aLabel
+!RenameSelectorMessageSetWindow class methodsFor: 'instance creation' stamp: 'HAW 8/15/2018 12:02:53'!
+openFrom: aRenameSelectorRequest methods: methods label: aLabel
 
 	| window |
 	
-	window := self openMessageList: (self methodReferencesOf: methods) label: aLabel autoSelect: aRenameMethodRequest oldSelector.
-	window initializeFrom: aRenameMethodRequest.
+	window := self openMessageList: (self methodReferencesOf: methods) label: aLabel autoSelect: aRenameSelectorRequest oldSelector.
+	window initializeFrom: aRenameSelectorRequest.
 	
 	^window 
 
 ! !
 
-!RenameMethodImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:33:16'!
+!RenameSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:33:16'!
 add
 		
 	self 
 		do: [ :classOfImplementorToAdd | self addImplementorIn: classOfImplementorToAdd ]
 		withEnteredClassLabeled:  'Class that implements ', self oldSelector ! !
 
-!RenameMethodImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:33:26'!
+!RenameSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:33:26'!
 addImplementorIn: classOfImplementorToAdd 
 
 	| implementorToAdd |
@@ -731,15 +731,15 @@ addImplementorIn: classOfImplementorToAdd
 		
 	self addToList: implementorToAdd! !
 
-!RenameMethodImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:34:39'!
+!RenameSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 8/15/2018 11:55:15'!
 continue
 
 	request implementors: (self compiledMethodsFrom: model messageList).
 	self delete.	
 	
-	RenameMethodSendersWindow openFrom: request ! !
+	RenameSelectorSendersWindow openFrom: request ! !
 
-!RenameMethodImplementorsWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:20:27'!
+!RenameSelectorImplementorsWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:20:27'!
 addButtonsTo: row color: buttonColor
 
 	self addButton: self createRemoveButton to: row color: buttonColor.
@@ -748,7 +748,7 @@ addButtonsTo: row color: buttonColor
 	self addButton: self createCancelButton to: row color: buttonColor.
 ! !
 
-!RenameMethodImplementorsWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:22:05'!
+!RenameSelectorImplementorsWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:22:05'!
 createContinueButton
 	
 	^PluggableButtonMorph 
@@ -759,16 +759,16 @@ createContinueButton
 
 ! !
 
-!RenameMethodImplementorsWindow class methodsFor: 'instance creation' stamp: 'HAW 6/5/2017 17:50:57'!
-openFrom: aRenameMethodRequest
+!RenameSelectorImplementorsWindow class methodsFor: 'instance creation' stamp: 'HAW 8/15/2018 12:02:26'!
+openFrom: aRenameSelectorRequest
 
 	^self 
-		openFrom: aRenameMethodRequest 
-		methods: aRenameMethodRequest implementors 
-		label: 'Implementors of #', aRenameMethodRequest oldSelector, ' to Rename'  
+		openFrom: aRenameSelectorRequest 
+		methods: aRenameSelectorRequest implementors 
+		label: 'Implementors of #', aRenameSelectorRequest oldSelector, ' to Rename'  
 ! !
 
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:36:00'!
+!RenameSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:36:00'!
 add
 	
 	self 
@@ -776,7 +776,7 @@ add
 		withEnteredClassLabeled: 'Class that sends #', self oldSelector
 		! !
 
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:35:00'!
+!RenameSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:35:00'!
 askAndAddSenderOf: classOfSenderToAdd 
 		
 	| senderSelector senderToAdd |
@@ -790,21 +790,21 @@ askAndAddSenderOf: classOfSenderToAdd
 	
 	self addToList: senderToAdd ! !
 
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:53:15'!
+!RenameSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 8/15/2018 11:54:38'!
 backToImplementors
 	
 	self changeRequestSenders.
 	self delete.
 	
-	RenameMethodImplementorsWindow openFrom: request! !
+	RenameSelectorImplementorsWindow openFrom: request! !
 
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:53:24'!
+!RenameSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:53:24'!
 changeRequestSenders
 	
 	request senders: (self compiledMethodsFrom: model messageList).
 	! !
 
-!RenameMethodSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 18:19:08'!
+!RenameSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 18:19:08'!
 rename
 	
 	self changeRequestSenders.
@@ -813,7 +813,7 @@ rename
 	request wizardEnded.
 	! !
 
-!RenameMethodSendersWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:24:40'!
+!RenameSelectorSendersWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:24:40'!
 addButtonsTo: row color: buttonColor
 	
 	self addButton: self createRemoveButton to: row color: buttonColor.
@@ -823,7 +823,7 @@ addButtonsTo: row color: buttonColor
 	self addButton: self createCancelButton to: row color: buttonColor.
 ! !
 
-!RenameMethodSendersWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:25:20'!
+!RenameSelectorSendersWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:25:20'!
 createBackToImplementorsButton
 
 	^PluggableButtonMorph 
@@ -833,7 +833,7 @@ createBackToImplementorsButton
 		label: 'Back to Implementors'.
 ! !
 
-!RenameMethodSendersWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:25:43'!
+!RenameSelectorSendersWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:25:43'!
 createRenameButton
 
 	^PluggableButtonMorph 
@@ -843,13 +843,13 @@ createRenameButton
 		label: 'Rename!!'.
 ! !
 
-!RenameMethodSendersWindow class methodsFor: 'instance creation' stamp: 'HAW 6/5/2017 17:51:19'!
-openFrom: aRenameMethodRequest
+!RenameSelectorSendersWindow class methodsFor: 'instance creation' stamp: 'HAW 8/15/2018 12:03:05'!
+openFrom: aRenameSelectorRequest
 
 	^self 
-		openFrom: aRenameMethodRequest 
-		methods: aRenameMethodRequest senders 
-		label: 'Senders of #', aRenameMethodRequest oldSelector, ' to Rename' ! !
+		openFrom: aRenameSelectorRequest 
+		methods: aRenameSelectorRequest senders 
+		label: 'Senders of #', aRenameSelectorRequest oldSelector, ' to Rename' ! !
 
 !RefactoringTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:12:24'!
 allClassCategoriesOfTestData
@@ -2407,7 +2407,7 @@ test19WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (subclass>>selector)) ].
 	! !
 
-!RenameMethodTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:26:45'!
+!RenameSelectorTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:26:45'!
 allClassCategoriesOfTestData
 
 	^Array 
@@ -2415,28 +2415,28 @@ allClassCategoriesOfTestData
 		with: self anotherClassCategoryOfTestData 
 		with: self classCategoryOfTestDataToAvoid ! !
 
-!RenameMethodTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 22:51:08'!
+!RenameSelectorTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 22:51:08'!
 anotherClassCategoryOfTestData
 
 	^self classCategoryOfTestData,'3'! !
 
-!RenameMethodTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 22:53:56'!
+!RenameSelectorTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 22:53:56'!
 classCategoryOfTestDataToAvoid
 
 	^self classCategoryOfTestData,'toAvoid'! !
 
-!RenameMethodTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 22:08:58'!
+!RenameSelectorTest methodsFor: 'class factory' stamp: 'HAW 8/15/2018 12:03:16'!
 classToRefactorName
 
-	^#ClassToRenameMethod! !
+	^#ClassToRenameSelector! !
 
-!RenameMethodTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 22:48:43'!
+!RenameSelectorTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 22:48:43'!
 createClassToRefactor
 
 	classToRefactor := self createClassWithImplementorAndSenderNamed: self classToRefactorName subclassOf: Object categorizedAd: self classCategoryOfTestData.
 ! !
 
-!RenameMethodTest methodsFor: 'class factory' stamp: 'HAW 5/25/2017 23:14:02'!
+!RenameSelectorTest methodsFor: 'class factory' stamp: 'HAW 5/25/2017 23:14:02'!
 createClassWithImplementorAndSenderInMetaTooNamed: aName subclassOf: aSuperclass categorizedAd: aCategory
 
 	| newClass |
@@ -2448,7 +2448,7 @@ createClassWithImplementorAndSenderInMetaTooNamed: aName subclassOf: aSuperclass
 	^newClass
 ! !
 
-!RenameMethodTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 21:49:40'!
+!RenameSelectorTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 21:49:40'!
 createClassWithImplementorAndSenderNamed: aName subclassOf: aSuperclass categorizedAd: aCategory
 
 	| newClass |
@@ -2460,7 +2460,7 @@ createClassWithImplementorAndSenderNamed: aName subclassOf: aSuperclass categori
 	^newClass
 ! !
 
-!RenameMethodTest methodsFor: 'assertions' stamp: 'HAW 5/25/2017 23:37:07'!
+!RenameSelectorTest methodsFor: 'assertions' stamp: 'HAW 5/25/2017 23:37:07'!
 assertWasNotRenamedInClass: aClass 
 
 	| senderMethod |
@@ -2469,7 +2469,7 @@ assertWasNotRenamedInClass: aClass
 	self deny: (senderMethod sendsSelector: newSelector).
 	self assert: (senderMethod sendsSelector: oldSelector)! !
 
-!RenameMethodTest methodsFor: 'assertions' stamp: 'HAW 5/25/2017 23:20:57'!
+!RenameSelectorTest methodsFor: 'assertions' stamp: 'HAW 5/25/2017 23:20:57'!
 assertWasRenamedInClassAndMeta: classToRefactor
 	
 	| senderMethod |
@@ -2487,7 +2487,7 @@ assertWasRenamedInClassAndMeta: classToRefactor
 	self assert: (senderMethod sendsSelector: newSelector).
 ! !
 
-!RenameMethodTest methodsFor: 'setup' stamp: 'HAW 5/28/2017 21:46:55'!
+!RenameSelectorTest methodsFor: 'setup' stamp: 'HAW 5/28/2017 21:46:55'!
 setUp
 
 	super setUp.
@@ -2496,35 +2496,35 @@ setUp
 	newSelector := 'newXyz__' asSymbol.
 	senderOfOldSelector := 'm1__' asSymbol.! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 21:59:11'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 12:03:44'!
 test01MessageWithNoSendersCreatesNewMethodAndRemovesOldOne
 	
 	| rename |
 	
-	classToRefactor := self createClassNamed: #ClassToRenameMethod.
+	classToRefactor := self createClassNamed: self classToRefactorName..
 	classToRefactor compile: oldSelector asString.
 	
-	rename := RenameMethod from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: #().
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: #().
 	rename apply.
 	self deny: (classToRefactor includesSelector: oldSelector).
 	self assert: (classToRefactor includesSelector: newSelector) 
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 21:59:38'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test02SendersOfMessageAreRenamed
 	
 	| rename senderMethod |
 	
 	self createClassToRefactor.
 	
-	rename := RenameMethod from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>senderOfOldSelector).
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>senderOfOldSelector).
 	rename apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: senderOfOldSelector.
 	self deny: (senderMethod sendsSelector: oldSelector).
 	self assert: (senderMethod sendsSelector: newSelector)! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:00:54'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test03OtherMessagesSendsAreNotRenamed
 
 	|  rename senderMethod selectorToKeep |
@@ -2533,7 +2533,7 @@ test03OtherMessagesSendsAreNotRenamed
 	self createClassToRefactor.
 	classToRefactor compile: senderOfOldSelector asString , ' self ' , oldSelector asString , '. self ' , selectorToKeep asString.
 	
-	rename := RenameMethod from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>senderOfOldSelector).
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>senderOfOldSelector).
 	rename apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: senderOfOldSelector.
@@ -2542,31 +2542,31 @@ test03OtherMessagesSendsAreNotRenamed
 	self assert: (senderMethod sendsSelector: selectorToKeep) 
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:03:27'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test04OldSelectorCanNotBeEmpty
 
 	self 
-		assertCreation: [ RenameMethod from: '' asSymbol to: newSelector implementors: #() senders: #() ]
-		failsWith: [ RenameMethod oldSelectorCanNotBeEmptyErrorMessage ]
+		assertCreation: [ RenameSelector from: '' asSymbol to: newSelector implementors: #() senders: #() ]
+		failsWith: [ RenameSelector oldSelectorCanNotBeEmptyErrorMessage ]
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:04:05'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test05NewSelectorCanNotBeEmpty
 
 	self 
-		assertCreation: [ RenameMethod from: oldSelector to: '' asSymbol implementors: #() senders: #() ]
-		failsWith: [ RenameMethod newSelectorCanNotBeEmptyErrorMessage ]
+		assertCreation: [ RenameSelector from: oldSelector to: '' asSymbol implementors: #() senders: #() ]
+		failsWith: [ RenameSelector newSelectorCanNotBeEmptyErrorMessage ]
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:04:21'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test06ThereMustBeImplementorsToRename
 
 	self 
-		assertCreation: [ RenameMethod from: oldSelector to: newSelector implementors: #() senders: #() ]
-		failsWith: [ RenameMethod implementorsCanNotBeEmptyErrorMessage ]
+		assertCreation: [ RenameSelector from: oldSelector to: newSelector implementors: #() senders: #() ]
+		failsWith: [ RenameSelector implementorsCanNotBeEmptyErrorMessage ]
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:04:48'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test07AllImplementorsMustHaveOldSelectorAsName
 
 	| invalidImplementors |
@@ -2574,11 +2574,11 @@ test07AllImplementorsMustHaveOldSelectorAsName
 	invalidImplementors := Array with: Object>>#printString.
 	
 	self 
-		assertCreation: [ RenameMethod from: oldSelector to: newSelector implementors: invalidImplementors senders: #() ]
-		failsWith: [ RenameMethod errorMessageForInvalidImplementors: invalidImplementors ]
+		assertCreation: [ RenameSelector from: oldSelector to: newSelector implementors: invalidImplementors senders: #() ]
+		failsWith: [ RenameSelector errorMessageForInvalidImplementors: invalidImplementors ]
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:05:04'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test08AllSendersShouldSendOldSelector
 
 	| implementors invalidSenders |
@@ -2588,33 +2588,33 @@ test08AllSendersShouldSendOldSelector
 	invalidSenders := Array with: Object>>#size.
 	
 	self 
-		assertCreation: [ RenameMethod from: oldSelector to: newSelector implementors: implementors senders: invalidSenders ]
-		failsWith: [ RenameMethod errorMessageForInvalidSenders: invalidSenders of: oldSelector ]
+		assertCreation: [ RenameSelector from: oldSelector to: newSelector implementors: implementors senders: invalidSenders ]
+		failsWith: [ RenameSelector errorMessageForInvalidSenders: invalidSenders of: oldSelector ]
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:05:20'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test09NewSelectorMustBeOfSameTypeAsOldSelector
 
 	oldSelector := #size.
 	newSelector := #+.
 	
 	self 
-		assertCreation: [ RenameMethod from: oldSelector to: newSelector implementors: #() senders: #() ]
-		failsWith: [ RenameMethod errorMessageForNewSelector: newSelector isNotOfSameTypeAs: oldSelector ]
+		assertCreation: [ RenameSelector from: oldSelector to: newSelector implementors: #() senders: #() ]
+		failsWith: [ RenameSelector errorMessageForNewSelector: newSelector isNotOfSameTypeAs: oldSelector ]
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:05:38'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test10NewSelectorMustHaveSameNumberOfArgumentsAsOldSelector
 
 	oldSelector := #printOn:.
 	newSelector := #do:separatedBy:.
 	
 	self 
-		assertCreation: [ RenameMethod from: oldSelector to: newSelector implementors: #() senders: #() ]
-		failsWith: [ RenameMethod errorMessageForNewSelector: newSelector doesNotHaveSameNumberOfArgumentsAs: oldSelector ]
+		assertCreation: [ RenameSelector from: oldSelector to: newSelector implementors: #() senders: #() ]
+		failsWith: [ RenameSelector errorMessageForNewSelector: newSelector doesNotHaveSameNumberOfArgumentsAs: oldSelector ]
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:06:13'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test11NewImplementorsKeepMethodCategory
 	
 	| rename oldSelectorCategory |
@@ -2623,13 +2623,13 @@ test11NewImplementorsKeepMethodCategory
 	self createClassToRefactor.
 	classToRefactor organization classify: oldSelector under: oldSelectorCategory.
 		
-	rename := RenameMethod from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>senderOfOldSelector).
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>senderOfOldSelector).
 	rename apply.
 	
 	self assert: oldSelectorCategory equals: (classToRefactor organization categoryOfElement: newSelector)
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:06:43'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test12RenamesRecursiveMethodsWhenNotInSenders
 
 	| rename senderMethod |
@@ -2637,7 +2637,7 @@ test12RenamesRecursiveMethodsWhenNotInSenders
 	self createClassToRefactor.
 	classToRefactor compile: oldSelector asString , ' self ' , oldSelector asString.
 		
-	rename := RenameMethod from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: #().
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: #().
 	rename apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: newSelector.
@@ -2645,7 +2645,7 @@ test12RenamesRecursiveMethodsWhenNotInSenders
 	self assert: (senderMethod sendsSelector: newSelector)
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:07:15'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test13RenamesRecursiveMethodsWhenInSenders
 
 	| rename senderMethod implementorsAndSenders |
@@ -2654,7 +2654,7 @@ test13RenamesRecursiveMethodsWhenInSenders
 	classToRefactor compile: oldSelector asString , ' self ' , oldSelector asString.
 	implementorsAndSenders := Array with: classToRefactor>>oldSelector.
 	
-	rename := RenameMethod from: oldSelector to: newSelector implementors: implementorsAndSenders senders: implementorsAndSenders.
+	rename := RenameSelector from: oldSelector to: newSelector implementors: implementorsAndSenders senders: implementorsAndSenders.
 	rename apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: newSelector.
@@ -2662,7 +2662,7 @@ test13RenamesRecursiveMethodsWhenInSenders
 	self assert: (senderMethod sendsSelector: newSelector)
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:07:45'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test14RenamesSymbolsEqualToOldSelector
 
 	| rename senderMethod referencerToOldSelector |
@@ -2672,7 +2672,7 @@ test14RenamesSymbolsEqualToOldSelector
 	classToRefactor compile: oldSelector asString.
 	classToRefactor compile: referencerToOldSelector asString , ' #' , oldSelector asString, ' size'.
 
-	rename := RenameMethod from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>referencerToOldSelector).
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>referencerToOldSelector).
 	rename apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: referencerToOldSelector.
@@ -2680,35 +2680,35 @@ test14RenamesSymbolsEqualToOldSelector
 	self assert: (senderMethod refersToLiteral: newSelector) 
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:48:51'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 12:03:55'!
 test15ScopeToRenameCanBeClassOnly
 	
 	| rename anotherClassSendingMessage |
 	
 	classToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: self classToRefactorName subclassOf: Object categorizedAd: self classCategoryOfTestData.
 	
-	anotherClassSendingMessage := self createClassNamed: #ClassToAvoidRenameMethod.
+	anotherClassSendingMessage := self createClassNamed: #ClassToAvoidRenameSelector.
 	anotherClassSendingMessage compile: senderOfOldSelector asString , ' self ' , oldSelector asString.
 
-	rename := RenameMethod from: oldSelector to: newSelector in: classToRefactor.
+	rename := RenameSelector from: oldSelector to: newSelector in: classToRefactor.
 	rename apply.
 	
 	self assertWasRenamedInClassAndMeta: classToRefactor.
 	self assertWasNotRenamedInClass: anotherClassSendingMessage ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:49:00'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 12:04:14'!
 test16ScopeToRenameCanBeHierarchyOnly
 	
 	| rename anotherClassSendingMessage superclassToRefactor subclassToRefactor |
 	
-	superclassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #SuperclassToRenameMethod subclassOf: Object categorizedAd: self classCategoryOfTestData.
+	superclassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #SuperclassToRenameSelector subclassOf: Object categorizedAd: self classCategoryOfTestData.
 	classToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: self classToRefactorName subclassOf: superclassToRefactor categorizedAd: self classCategoryOfTestData.
-	subclassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #SubclassToRenameMethod subclassOf: classToRefactor categorizedAd: self classCategoryOfTestData.
+	subclassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #SubclassToRenameSelector subclassOf: classToRefactor categorizedAd: self classCategoryOfTestData.
 
-	anotherClassSendingMessage := self createClassNamed: #ClassToAvoidRenameMethod.
+	anotherClassSendingMessage := self createClassNamed: #ClassToAvoidRenameSelector.
 	anotherClassSendingMessage compile: senderOfOldSelector asString , ' self ' , oldSelector asString.
 
-	rename := RenameMethod from: oldSelector to: newSelector inHierarchyOf: classToRefactor.
+	rename := RenameSelector from: oldSelector to: newSelector inHierarchyOf: classToRefactor.
 	rename apply.
 	
 	self assertWasRenamedInClassAndMeta: superclassToRefactor.
@@ -2716,18 +2716,18 @@ test16ScopeToRenameCanBeHierarchyOnly
 	self assertWasRenamedInClassAndMeta: subclassToRefactor.
 	self assertWasNotRenamedInClass: anotherClassSendingMessage ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:53:35'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 12:04:25'!
 test17ScopeToRenameCanBeCategoryOnly
 	
 	| rename anotherClassSendingMessage  anotherClassToRefactor |
 	
 	classToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: self classToRefactorName subclassOf: Object categorizedAd: self classCategoryOfTestData.
-	anotherClassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #AnotherclassToRenameMethod subclassOf: Object categorizedAd: self classCategoryOfTestData.
+	anotherClassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #AnotherclassToRenameSelector subclassOf: Object categorizedAd: self classCategoryOfTestData.
 	
-	anotherClassSendingMessage := self createClassNamed: #ClassToAvoidRenameMethod category: self classCategoryOfTestDataToAvoid.
+	anotherClassSendingMessage := self createClassNamed: #ClassToAvoidRenameSelector category: self classCategoryOfTestDataToAvoid.
 	anotherClassSendingMessage compile: senderOfOldSelector asString , ' self ' , oldSelector asString.
 
-	rename := RenameMethod from: oldSelector to: newSelector inCategoryOf: classToRefactor organizedBy: SystemOrganization.
+	rename := RenameSelector from: oldSelector to: newSelector inCategoryOf: classToRefactor organizedBy: SystemOrganization.
 	rename apply.
 
 	self assertWasRenamedInClassAndMeta: classToRefactor.
@@ -2735,22 +2735,22 @@ test17ScopeToRenameCanBeCategoryOnly
 	self assertWasNotRenamedInClass: anotherClassSendingMessage
 		! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:53:40'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 12:04:47'!
 test18ScopeToRenameCanBeCategoriesAndHierarchyOnly
 	
 	| rename anotherClassSendingMessage superclassToRefactor subclassToRefactor anotherClassToRefactor classInOtherCategoryToRefactor |
 	
-	superclassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #SuperclassToRenameMethod subclassOf: Object categorizedAd: self anotherClassCategoryOfTestData.
+	superclassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #SuperclassToRenameSelector subclassOf: Object categorizedAd: self anotherClassCategoryOfTestData.
 	classToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: self classToRefactorName subclassOf: superclassToRefactor categorizedAd: self classCategoryOfTestData.
-	subclassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #SubclassToRenameMethod subclassOf: classToRefactor categorizedAd: self classCategoryOfTestData.
-	anotherClassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #AnotheclassToRenameMethod subclassOf: Object categorizedAd: self classCategoryOfTestData.
+	subclassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #SubclassToRenameSelector subclassOf: classToRefactor categorizedAd: self classCategoryOfTestData.
+	anotherClassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #AnotheclassToRenameSelector subclassOf: Object categorizedAd: self classCategoryOfTestData.
 	classInOtherCategoryToRefactor := self 
-		createClassWithImplementorAndSenderInMetaTooNamed: #OtherCatClassToRenameMethod subclassOf: Object categorizedAd: self anotherClassCategoryOfTestData.
+		createClassWithImplementorAndSenderInMetaTooNamed: #OtherCatClassToRenameSelector subclassOf: Object categorizedAd: self anotherClassCategoryOfTestData.
 	
-	anotherClassSendingMessage := self createClassNamed: #ClassToAvoidRenameMethod category: self classCategoryOfTestDataToAvoid.
+	anotherClassSendingMessage := self createClassNamed: #ClassToAvoidRenameSelector category: self classCategoryOfTestDataToAvoid.
 	anotherClassSendingMessage compile: senderOfOldSelector asString , ' self ' , oldSelector asString.
 
-	rename := RenameMethod from: oldSelector to: newSelector inCategoriesAndHierarchyOf: classToRefactor organizedBy: SystemOrganization.
+	rename := RenameSelector from: oldSelector to: newSelector inCategoriesAndHierarchyOf: classToRefactor organizedBy: SystemOrganization.
 	rename apply.
 
 	self assertWasRenamedInClassAndMeta: superclassToRefactor.
@@ -2760,15 +2760,15 @@ test18ScopeToRenameCanBeCategoriesAndHierarchyOnly
 	self assertWasRenamedInClassAndMeta: classInOtherCategoryToRefactor.
 	self assertWasNotRenamedInClass: anotherClassSendingMessage ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 22:50:21'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 12:10:33'!
 test19ScopeToRenameCanBeTheCompleteSystem
 	
 	| rename anotherClassToRefactor |
 	
 	classToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: self classToRefactorName subclassOf: Object categorizedAd: self classCategoryOfTestData.
-	anotherClassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #AnotherclassToRenameMethod subclassOf: Object categorizedAd: self classCategoryOfTestData.
+	anotherClassToRefactor := self createClassWithImplementorAndSenderInMetaTooNamed: #AnotherclassToRenameSelector subclassOf: Object categorizedAd: self classCategoryOfTestData.
 
-	rename := RenameMethod from: oldSelector to: newSelector inSystem: Smalltalk.
+	rename := RenameSelector from: oldSelector to: newSelector inSystem: Smalltalk.
 	"This is just to be sure that no more than the expected methods will be renamed because I'm using Smalltalk as system.
 	I could mock Smalltalk but I want to have a real test using Smalltalk, not a mock, that it is why I have these assertions here - Hernan"
 	self assert: 4 equals: rename implementorsSize.
@@ -2780,15 +2780,15 @@ test19ScopeToRenameCanBeTheCompleteSystem
 	self assertWasRenamedInClassAndMeta: anotherClassToRefactor  
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/30/2017 15:36:57'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test20CanNotRenameToItSelf
 
 	self 
-		assertCreation: [ RenameMethod from: oldSelector to: oldSelector asSymbol implementors: #() senders: #() ]
-		failsWith: [ RenameMethod newSelectorEqualToOldSelectorErrorMessage ]
+		assertCreation: [ RenameSelector from: oldSelector to: oldSelector asSymbol implementors: #() senders: #() ]
+		failsWith: [ RenameSelector newSelectorEqualToOldSelectorErrorMessage ]
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 5/31/2017 19:32:29'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test21NewSelectorCanNotBeImplementedOnAnyClassImplementingOldSelector
 
 	| implementors |
@@ -2798,11 +2798,11 @@ test21NewSelectorCanNotBeImplementedOnAnyClassImplementingOldSelector
 	implementors := Array with: Object>>oldSelector.
 	
 	self 
-		assertCreation: [ RenameMethod from: oldSelector to: newSelector implementors: implementors senders: #() ]
-		failsWith: [ RenameMethod errorMessageForNewSelector: newSelector implementedInAll: (Array with: Object) ]
+		assertCreation: [ RenameSelector from: oldSelector to: newSelector implementors: implementors senders: #() ]
+		failsWith: [ RenameSelector errorMessageForNewSelector: newSelector implementedInAll: (Array with: Object) ]
 ! !
 
-!RenameMethodTest methodsFor: 'tests' stamp: 'HAW 6/1/2017 14:31:16'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
 test22WarnsWhenOverridesSuperclassImplementation
 
 	| implementors |
@@ -2812,8 +2812,8 @@ test22WarnsWhenOverridesSuperclassImplementation
 	implementors := Array with: Number>>oldSelector.
 	
 	self 
-		assertCreation: [ RenameMethod from: oldSelector to: newSelector implementors: implementors senders: #() ]
-		warnsWith: [ RenameMethod warningMessageForImplementationOf: newSelector in: Number willOverrideImplementationIn: Object ]
+		assertCreation: [ RenameSelector from: oldSelector to: newSelector implementors: implementors senders: #() ]
+		warnsWith: [ RenameSelector warningMessageForImplementationOf: newSelector in: Number willOverrideImplementationIn: Object ]
 ! !
 
 !RenameTemporaryTest methodsFor: 'class factory' stamp: 'HAW 6/25/2017 21:53:44'!
@@ -4108,7 +4108,7 @@ addMiscellaneousIconsTo: aCollection
 
 	aCollection add: #('rename inst var...') -> #saveAsIcon! !
 
-!RenameMethod methodsFor: 'applying' stamp: 'HAW 5/31/2017 16:50:58'!
+!RenameSelector methodsFor: 'applying' stamp: 'HAW 5/31/2017 16:50:58'!
 apply
 
 	self 
@@ -4119,13 +4119,13 @@ apply
 	^changes
 		! !
 
-!RenameMethod methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:39:28'!
+!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:39:28'!
 addToSendersIfOldSelectorIsSentIn: newImplementor
 	
 	(newImplementor refersToLiteral: oldSelector) ifTrue: [ senders add: newImplementor ]. 
 	! !
 
-!RenameMethod methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:34:13'!
+!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:34:13'!
 compileNewImplementorOf: anImplementor
 		
 	| implementorClassification |
@@ -4136,7 +4136,7 @@ compileNewImplementorOf: anImplementor
 		classifyUnder: implementorClassification.
 ! !
 
-!RenameMethod methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:39:40'!
+!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:39:40'!
 createNewImplementorOf: anImplementor
 
 	| newImplementor |
@@ -4149,13 +4149,13 @@ createNewImplementorOf: anImplementor
 	
 	! !
 
-!RenameMethod methodsFor: 'create new implementors - private' stamp: 'HAW 5/25/2017 21:07:05'!
+!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 5/25/2017 21:07:05'!
 createNewImplementors
 	
 	implementors do: [:anImplementor | self createNewImplementorOf: anImplementor ]
 	! !
 
-!RenameMethod methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 15:32:48'!
+!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 15:32:48'!
 implementorNewSourceCodeOf: anImplementor
 
 	|  newSource rangesToNewKeywords |
@@ -4167,18 +4167,18 @@ implementorNewSourceCodeOf: anImplementor
 	newSource := anImplementor sourceCode copyReplacing: rangesToNewKeywords.	
 	^newSource! !
 
-!RenameMethod methodsFor: 'remove old implementors - private' stamp: 'HAW 5/31/2017 16:49:41'!
+!RenameSelector methodsFor: 'remove old implementors - private' stamp: 'HAW 5/31/2017 16:49:41'!
 removeOldImplementor: anImplementor 
 
 	anImplementor methodClass removeSelector: anImplementor selector.
 	changes add: anImplementor methodReference! !
 
-!RenameMethod methodsFor: 'remove old implementors - private' stamp: 'HAW 5/31/2017 16:46:48'!
+!RenameSelector methodsFor: 'remove old implementors - private' stamp: 'HAW 5/31/2017 16:46:48'!
 removeOldImplementors
 	
 	implementors do: [:anImplementor | self removeOldImplementor: anImplementor ]! !
 
-!RenameMethod methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:19:47'!
+!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:19:47'!
 addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
 	
 	| oldSelectorKeywordsRanges |
@@ -4188,7 +4188,7 @@ addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
 		aMessageSendSelectorRanges withIndexDo: [ :aRange :index | rangesToKeywords add: aRange -> (newSelectorKeywords at: index) ]].
 	! !
 
-!RenameMethod methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:13:41'!
+!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:13:41'!
 addRangesForLiteralOf: methodNode to: rangesToKeywords
 	
 	| oldSelectorLiteralRanges |
@@ -4199,7 +4199,7 @@ addRangesForLiteralOf: methodNode to: rangesToKeywords
 	
 ! !
 
-!RenameMethod methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:19:57'!
+!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:19:57'!
 rangesToKeywordsOf: aMethod
 	
 	| methodNode rangesToKeywords |
@@ -4212,13 +4212,13 @@ rangesToKeywordsOf: aMethod
 	
 	^rangesToKeywords	! !
 
-!RenameMethod methodsFor: 'rename senders - private' stamp: 'HAW 5/25/2017 20:21:50'!
+!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 5/25/2017 20:21:50'!
 renameSenders
 	
 	senders do: [ :aSender | self renameSendersIn: aSender ].
 	! !
 
-!RenameMethod methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 15:32:48'!
+!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 15:32:48'!
 renameSendersIn: aMethod
 
 	| newSource |
@@ -4228,17 +4228,17 @@ renameSendersIn: aMethod
 	
 	changes add: (MethodReference class: aMethod methodClass selector: aMethod selector)! !
 
-!RenameMethod methodsFor: 'implementors/senders' stamp: 'HAW 5/28/2017 22:42:25'!
+!RenameSelector methodsFor: 'implementors/senders' stamp: 'HAW 5/28/2017 22:42:25'!
 implementorsSize
 	
 	^implementors size! !
 
-!RenameMethod methodsFor: 'implementors/senders' stamp: 'HAW 5/28/2017 22:42:32'!
+!RenameSelector methodsFor: 'implementors/senders' stamp: 'HAW 5/28/2017 22:42:32'!
 sendersSize
 	
 	^senders size! !
 
-!RenameMethod methodsFor: 'initialization' stamp: 'HAW 8/9/2018 23:00:34'!
+!RenameSelector methodsFor: 'initialization' stamp: 'HAW 8/9/2018 23:00:34'!
 initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
 	
 	oldSelector := anOldSelector.
@@ -4250,12 +4250,12 @@ initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplem
 	newSelectorKeywords := newSelector keywords.	
 	changes := Set new.! !
 
-!RenameMethod methodsFor: 'selectors' stamp: 'HAW 5/24/2017 19:43:23'!
+!RenameSelector methodsFor: 'selectors' stamp: 'HAW 5/24/2017 19:43:23'!
 newSelector
 	
 	^newSelector ! !
 
-!RenameMethod class methodsFor: 'implementors and senders' stamp: 'HAW 8/31/2017 16:00:13'!
+!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 8/31/2017 16:00:13'!
 addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aPotentialClassToRefactor
 	
 	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor theNonMetaClass.
@@ -4263,7 +4263,7 @@ addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClass
 
 ! !
 
-!RenameMethod class methodsFor: 'implementors and senders' stamp: 'HAW 5/30/2017 17:45:37'!
+!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/30/2017 17:45:37'!
 addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategoriesAndHierarchyOf: aClass organizedBy: anOrganization
 
 	| categories |
@@ -4274,7 +4274,7 @@ addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCatego
 	categories do: [:aCategory | self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategory: aCategory organizedBy: anOrganization ].
 ! !
 
-!RenameMethod class methodsFor: 'implementors and senders' stamp: 'HAW 5/26/2017 00:05:53'!
+!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/26/2017 00:05:53'!
 addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategory: aCategory organizedBy: anOrganization
 
 	| classesInCategory |
@@ -4283,14 +4283,14 @@ addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCatego
 	classesInCategory do: [ :aPotentialClassToRefactor | self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aPotentialClassToRefactor ].
 ! !
 
-!RenameMethod class methodsFor: 'implementors and senders' stamp: 'HAW 5/25/2017 23:55:00'!
+!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/25/2017 23:55:00'!
 addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass
 
 	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass doingPerClass: [ :aClassInHierarchy | ]
 		
 	! !
 
-!RenameMethod class methodsFor: 'implementors and senders' stamp: 'HAW 5/26/2017 00:06:10'!
+!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/26/2017 00:06:10'!
 addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass doingPerClass: aBlock
 
 	aClass theNonMetaClass withAllSubAndSuperclassesDo: [ :aPotentialClassToRefactor |
@@ -4299,14 +4299,14 @@ addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierar
 			aBlock value: aPotentialClassToRefactor ]]
 	! !
 
-!RenameMethod class methodsFor: 'implementors and senders' stamp: 'HAW 5/30/2017 17:47:50'!
+!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/30/2017 17:47:50'!
 addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inSystem: aSystem
 
 	aSystem allBehaviorsDo: [ :aPotentialClassToRefactor | 
 		self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor ].
 ! !
 
-!RenameMethod class methodsFor: 'implementors and senders' stamp: 'HAW 5/26/2017 00:07:16'!
+!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/26/2017 00:07:16'!
 addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor
 	
 	| potentialImplementor |
@@ -4317,22 +4317,22 @@ addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPot
 	senders addAll: (aPotentialClassToRefactor methodsSelect: [ :aPotentialSender | aPotentialSender refersToLiteral: anOldSelector ]).
 ! !
 
-!RenameMethod class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 20:02:05'!
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 20:02:05'!
 assert: aNewSelector hasTheSameNumberOfArgumentsAs: anOldSelector
 
 	aNewSelector numArgs ~= anOldSelector numArgs ifTrue: [ self signalNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector ]! !
 
-!RenameMethod class methodsFor: 'pre-conditions' stamp: 'HAW 5/26/2017 00:41:25'!
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/26/2017 00:41:25'!
 assert: aNewSelector isNotEqualTo: anOldSelector
 
 	 aNewSelector = anOldSelector ifTrue: [ self signalNewSelectorEqualToOldSelector]! !
 
-!RenameMethod class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 19:56:04'!
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 19:56:04'!
 assert: aNewSelector isOfSameTypeAs: anOldSelector
 
 	aNewSelector precedence ~= anOldSelector precedence ifTrue: [ self signalNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector ]! !
 
-!RenameMethod class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 19:22:42'!
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 19:22:42'!
 assertAllImplementors: implementors haveSame: aSelector
 
 	| invalidImplementors |
@@ -4340,7 +4340,7 @@ assertAllImplementors: implementors haveSame: aSelector
 	invalidImplementors := implementors reject: [ :anImplementor | anImplementor selector = aSelector ].
 	invalidImplementors notEmpty ifTrue: [ self signalInvalidImplementors: invalidImplementors ].! !
 
-!RenameMethod class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 21:34:26'!
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 21:34:26'!
 assertAllSenders: senders send: aSelector
 
 	| invalidSenders |
@@ -4348,12 +4348,12 @@ assertAllSenders: senders send: aSelector
 	invalidSenders := senders reject: [ :aSender | aSender refersToLiteral: aSelector ].
 	invalidSenders notEmpty ifTrue: [ self signalInvalidSenders: invalidSenders of: aSelector ]! !
 
-!RenameMethod class methodsFor: 'pre-conditions' stamp: 'HAW 6/3/2017 11:54:48'!
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 6/3/2017 11:54:48'!
 assertIsNotEmpty: aCollection signalMessageText: errorMessageText
 
 	aCollection isEmpty ifTrue: [ self refactoringError: errorMessageText ].! !
 
-!RenameMethod class methodsFor: 'pre-conditions' stamp: 'HAW 5/26/2017 00:44:37'!
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/26/2017 00:44:37'!
 assertIsValidToRenameFrom: anOldSelector to: aNewSelector
 	
 	self assertIsNotEmpty: anOldSelector signalMessageText: self oldSelectorCanNotBeEmptyErrorMessage.
@@ -4363,7 +4363,7 @@ assertIsValidToRenameFrom: anOldSelector to: aNewSelector
 	self assert: aNewSelector hasTheSameNumberOfArgumentsAs: anOldSelector.
 	! !
 
-!RenameMethod class methodsFor: 'pre-conditions' stamp: 'HAW 5/31/2017 19:38:12'!
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/31/2017 19:38:12'!
 assertNoImplementorClassIn: implementorsCollection implements: aNewSelector
 
 	| classesImplementingNewSelector |
@@ -4374,7 +4374,7 @@ assertNoImplementorClassIn: implementorsCollection implements: aNewSelector
 		
 	classesImplementingNewSelector notEmpty ifTrue: [ self signalNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector ]! !
 
-!RenameMethod class methodsFor: 'pre-conditions' stamp: 'HAW 5/31/2017 20:56:22'!
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/31/2017 20:56:22'!
 warnIfImplementionsOf: aNewSelector overridesImplementationInSuperclassesOf: implementorsCollection
 
 	implementorsCollection do: [:anImplementor |
@@ -4383,7 +4383,7 @@ warnIfImplementionsOf: aNewSelector overridesImplementationInSuperclassesOf: imp
 			do: [ :aSuperclass | self warnImplementionOf: aNewSelector in: anImplementor methodClass willOverrideImplementationIn: aSuperclass ]
 			ifNone: []]! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:47:33'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:47:33'!
 errorMessageForInvalidImplementors: aCollectionOfInvalidImplementors
 
 	^String streamContents: [ :stream |
@@ -4392,7 +4392,7 @@ errorMessageForInvalidImplementors: aCollectionOfInvalidImplementors
 		 	nextPutAll: ' do not have same the same selector to rename: '.
 		aCollectionOfInvalidImplementors asCommaStringAndPritingWith: [:anImplementor | anImplementor printClassAndSelectorOn: stream ] ] ! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:47:09'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:47:09'!
 errorMessageForInvalidSenders: aCollectionOfInvalidSenders of: anOldSelector
 
 	^String streamContents: [ :stream |
@@ -4402,72 +4402,72 @@ errorMessageForInvalidSenders: aCollectionOfInvalidSenders of: anOldSelector
 			nextPutAll: ' is not send by: '.
 		aCollectionOfInvalidSenders asCommaStringAndPritingWith: [:aSender | aSender printClassAndSelectorOn: stream ] ] ! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:59:44'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:59:44'!
 errorMessageForNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector
 
 	^'New selector #', aNewSelector, ' does not have the same number of arguments as #', anOldSelector ! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/31/2017 19:41:36'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/31/2017 19:41:36'!
 errorMessageForNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector
 
 	^'Can not rename because #', aNewSelector, ' is implemented in: ', classesImplementingNewSelector asCommaStringAnd ! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:54:05'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:54:05'!
 errorMessageForNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector
 
 	^'New selector #', aNewSelector, ' is not of same type as #', anOldSelector ! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:51:46'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:51:46'!
 implementorsCanNotBeEmptyErrorMessage
 	
 	^'There are no methods to rename'! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:49:15'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:49:15'!
 newSelectorCanNotBeEmptyErrorMessage
 	
 	^'New selector can not be empty'! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/26/2017 00:40:01'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/26/2017 00:40:01'!
 newSelectorEqualToOldSelectorErrorMessage
 	
 	^'There is nothing to rename when new selector is equals to old selector'! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:49:07'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:49:07'!
 oldSelectorCanNotBeEmptyErrorMessage
 	
 	^'Old selector can not be empty'! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:52'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:52'!
 signalInvalidImplementors: invalidImplementors
 
 	self refactoringError: (self errorMessageForInvalidImplementors: invalidImplementors).! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:07'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:07'!
 signalInvalidSenders: invalidSender of: aSelector
 
 	self refactoringError: (self errorMessageForInvalidSenders: invalidSender of: aSelector).! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:23'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:23'!
 signalNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector
 	
 	self refactoringError: (self errorMessageForNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector).! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:38'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:38'!
 signalNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector
 	
 	self refactoringError: (self errorMessageForNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector).! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:54'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:54'!
 signalNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector
 
 	self refactoringError: (self errorMessageForNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector).! !
 
-!RenameMethod class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:58'!
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:58'!
 signalNewSelectorEqualToOldSelector
 
 	self refactoringError: self newSelectorEqualToOldSelectorErrorMessage.! !
 
-!RenameMethod class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 19:58:50'!
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 19:58:50'!
 from: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
 
 	self assertIsValidToRenameFrom: anOldSelector to: aNewSelector.
@@ -4481,7 +4481,7 @@ from: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors sen
 	^self new initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
 	! !
 
-!RenameMethod class methodsFor: 'instance creation' stamp: 'HAW 5/26/2017 00:04:36'!
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/26/2017 00:04:36'!
 from: anOldSelector to: aNewSelector in: aClassToRefactor
 
 	| implementors senders |
@@ -4493,7 +4493,7 @@ from: anOldSelector to: aNewSelector in: aClassToRefactor
 	
 	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders ! !
 
-!RenameMethod class methodsFor: 'instance creation' stamp: 'HAW 5/30/2017 17:45:16'!
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/30/2017 17:45:16'!
 from: anOldSelector to: aNewSelector inCategoriesAndHierarchyOf: aClass organizedBy: anOrganization
 
 	| implementors senders |
@@ -4506,7 +4506,7 @@ from: anOldSelector to: aNewSelector inCategoriesAndHierarchyOf: aClass organize
 	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders 
 ! !
 
-!RenameMethod class methodsFor: 'instance creation' stamp: 'HAW 5/25/2017 23:59:19'!
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/25/2017 23:59:19'!
 from: anOldSelector to: aNewSelector inCategoryOf: aClass organizedBy: anOrganization
 
 	| implementors senders |
@@ -4519,7 +4519,7 @@ from: anOldSelector to: aNewSelector inCategoryOf: aClass organizedBy: anOrganiz
 	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders 
 ! !
 
-!RenameMethod class methodsFor: 'instance creation' stamp: 'HAW 5/25/2017 23:53:57'!
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/25/2017 23:53:57'!
 from: anOldSelector to: aNewSelector inHierarchyOf: aClass 
 	
 	| implementors senders |
@@ -4532,7 +4532,7 @@ from: anOldSelector to: aNewSelector inHierarchyOf: aClass
 	
 	! !
 
-!RenameMethod class methodsFor: 'instance creation' stamp: 'HAW 5/30/2017 17:47:27'!
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/30/2017 17:47:27'!
 from: anOldSelector to: aNewSelector inSystem: aSystem
 
 	| implementors senders |
@@ -4545,17 +4545,17 @@ from: anOldSelector to: aNewSelector inSystem: aSystem
 	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders 
 	! !
 
-!RenameMethod class methodsFor: 'warnings' stamp: 'HAW 6/3/2017 12:01:34'!
+!RenameSelector class methodsFor: 'warnings' stamp: 'HAW 6/3/2017 12:01:34'!
 warnImplementionOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass
 	
 	self refactoringWarning: (self warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass).! !
 
-!RenameMethod class methodsFor: 'warnings' stamp: 'HAW 8/1/2018 18:15:01'!
+!RenameSelector class methodsFor: 'warnings' stamp: 'HAW 8/1/2018 18:15:01'!
 warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass
 
 	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
 
-!RenameMethod class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:10:45'!
+!RenameSelector class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:10:45'!
 addMiscellaneousIconsTo: aCollection
 
 	aCollection add: #('rename method') -> #saveAsIcon! !
@@ -5205,7 +5205,7 @@ on: aBrowserWindow for: aClassToRefactor
 	^self new initializeOn: aBrowserWindow for: aClassToRefactor 
 ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 17:02:06'!
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 17:02:06'!
 askNewSelector
 
 	| enteredString |
@@ -5215,7 +5215,7 @@ askNewSelector
 		
 ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:37:25'!
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:37:25'!
 askScope
 
 	| scopeMenu |
@@ -5225,13 +5225,13 @@ askScope
 	scopeChoice = 0 ifTrue: [ self endRequest ].
 	! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:05'!
-assertCanRenameMethod
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:59:05'!
+assertCanRenameSelector
 		
-	self renameMethodClass assertIsValidToRenameFrom: oldSelector to: newSelector.
+	self renameSelectorClass assertIsValidToRenameFrom: oldSelector to: newSelector.
 	! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 15:01:25'!
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 15:01:25'!
 calculateImplementorsAndSenders
 		
 	implementors := IdentitySet new.
@@ -5247,132 +5247,132 @@ calculateImplementorsAndSenders
 		
 		! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:14'!
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:58:43'!
 implementorsAndSendersForClass
 
-	^self renameMethodClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders forClassAndMetaOf: implementingClass! !
+	^self renameSelectorClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders forClassAndMetaOf: implementingClass! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:18'!
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:58:43'!
 implementorsAndSendersForHierarchy 
 		
-	^self renameMethodClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inHierarchyOf: implementingClass! !
+	^self renameSelectorClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inHierarchyOf: implementingClass! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:22'!
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:58:43'!
 implementorsAndSendersInCategory 
 
-	^self renameMethodClass 
+	^self renameSelectorClass 
 		addImplementorsOf: oldSelector 
 		to: implementors 
 		andSendersTo: senders 
 		inCategory: implementingClass category 
 		organizedBy: SystemOrganization! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:28'!
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:58:43'!
 implementorsAndSendersInCategoryAndHierarchy 
 
-	^self renameMethodClass 
+	^self renameSelectorClass 
 		addImplementorsOf: oldSelector 
 		to: implementors 
 		andSendersTo: senders 
 		inCategoriesAndHierarchyOf: implementingClass 
 		organizedBy: SystemOrganization ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:35:32'!
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:58:43'!
 implementorsAndSendersInSystem
 		
-	^self renameMethodClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ! !
+	^self renameSelectorClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 19:05:21'!
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:59:05'!
 requestRefactoringParameters
 
 	self
 		askNewSelector;
-		assertCanRenameMethod;
+		assertCanRenameSelector;
 		askScope
 		! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:37:37'!
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:37:37'!
 scopeOptionLabels
 	
 	^{'In Class'. 'In Hierarchy'. 'In Category'. 'In Hierarchy and its Categories'. 'In System'}.! !
 
-!RenameMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 17:28:23'!
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:54:38'!
 startWizard
 		
-	RenameMethodImplementorsWindow openFrom: self! !
+	RenameSelectorImplementorsWindow openFrom: self! !
 
-!RenameMethodApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:46:58'!
-browser: aRenameMethodSendersWindow 
+!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 8/15/2018 12:02:15'!
+browser: aRenameSelectorSendersWindow 
 	
-	browser := aRenameMethodSendersWindow ! !
+	browser := aRenameSelectorSendersWindow ! !
 
-!RenameMethodApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:07'!
+!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:07'!
 implementors
 	
 	^implementors ! !
 
-!RenameMethodApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:39:17'!
+!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:39:17'!
 implementors: implementorsCollection
 
 	implementors := implementorsCollection ! !
 
-!RenameMethodApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:21'!
+!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:21'!
 oldSelector
 	
 	^oldSelector ! !
 
-!RenameMethodApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:40:32'!
+!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:40:32'!
 senders
 	
 	^senders ! !
 
-!RenameMethodApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:41:12'!
+!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:41:12'!
 senders: sendersCollection
  
 	senders := sendersCollection ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:22:32'!
+!RenameSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:22:32'!
 closeBrowser
 	
 	browser delete.
 	! !
 
-!RenameMethodApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:16:24'!
+!RenameSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:16:24'!
 messageSetWindowClass
 		
 	^MessageSetWindow 
 	! !
 
-!RenameMethodApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:23:00'!
+!RenameSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:23:00'!
 showChanges
 		
 	self 
 		closeBrowser;
 		showChangesInMessageSetWindow! !
 
-!RenameMethodApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:23:11'!
+!RenameSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:23:11'!
 showChangesInMessageSetWindow
 
 	self messageSetWindowClass openMessageList: changes asSortedCollection label: 'Rename method changes' ! !
 
-!RenameMethodApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/31/2017 15:35:10'!
+!RenameSelectorApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/15/2018 11:58:43'!
 createRefactoring
 	
-	^self renameMethodClass from: oldSelector to: newSelector implementors: implementors senders: senders.
+	^self renameSelectorClass from: oldSelector to: newSelector implementors: implementors senders: senders.
 	! !
 
-!RenameMethodApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/31/2017 15:35:59'!
-renameMethodClass
+!RenameSelectorApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/15/2018 11:58:43'!
+renameSelectorClass
 
-	^RenameMethod ! !
+	^RenameSelector ! !
 
-!RenameMethodApplier methodsFor: 'initialization' stamp: 'HAW 5/31/2017 19:24:05'!
+!RenameSelectorApplier methodsFor: 'initialization' stamp: 'HAW 5/31/2017 19:24:05'!
 initializeFor: aSelector in: aClass
 	
 	oldSelector := aSelector.
 	implementingClass := aClass! !
 
-!RenameMethodApplier methodsFor: 'evaluation' stamp: 'HAW 6/5/2017 19:06:02'!
+!RenameSelectorApplier methodsFor: 'evaluation' stamp: 'HAW 6/5/2017 19:06:02'!
 value
 
 	requestExitBlock := [ ^self ].
@@ -5383,7 +5383,7 @@ value
 		startWizard
 		! !
 
-!RenameMethodApplier methodsFor: 'evaluation' stamp: 'HAW 6/5/2017 18:16:43'!
+!RenameSelectorApplier methodsFor: 'evaluation' stamp: 'HAW 6/5/2017 18:16:43'!
 wizardEnded
 
 	requestExitBlock := [ ^self ].
@@ -5395,7 +5395,7 @@ wizardEnded
 	
 			! !
 
-!RenameMethodApplier class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 19:23:37'!
+!RenameSelectorApplier class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 19:23:37'!
 for: aSelector in: aClass 
 	
 	^self new initializeFor: aSelector in: aClass
@@ -5627,7 +5627,7 @@ messageListMenuOptions
 		}`.
 	! !
 
-!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 7/7/2018 19:40:24'!
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 8/15/2018 11:57:58'!
 messsageRefactoringMenuOptions
 
 	^ `{
@@ -5635,7 +5635,7 @@ messsageRefactoringMenuOptions
 				#itemGroup 	-> 		10.
 				#itemOrder 		-> 		10.
 				#label 			-> 		'rename'.
-				#selector 		-> 		#renameMethod.
+				#selector 		-> 		#renameSelector.
 				#icon 			-> 		#saveAsIcon
 			} asDictionary.
 	}`.
@@ -6190,11 +6190,11 @@ renameInstVar
 	model selectedClassOrMetaClass ifNotNil: [ :aClass |
 		(RenameInstanceVariableApplier on: self for: aClass) value ].! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/6/2017 09:47:55'!
-renameMethod
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 8/15/2018 11:54:11'!
+renameSelector
 	
 	model selectedMessageName ifNotNil: [ :oldSelector |
-		(RenameMethodApplier for: oldSelector in: model selectedClassOrMetaClass) value ].! !
+		(RenameSelectorApplier for: oldSelector in: model selectedClassOrMetaClass) value ].! !
 
 !MessageSetWindow class methodsFor: '*Refactoring' stamp: 'HAW 5/31/2017 15:16:51'!
 openFullProtocolForClass: aClass 

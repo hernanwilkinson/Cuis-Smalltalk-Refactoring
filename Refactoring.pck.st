@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3421] on 15 August 2018 at 12:12:05 pm'!
-'Description Renamed RenameMethodxxx with RenameSelectorxxx'!
-!provides: 'Refactoring' 1 49!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3418] on 17 August 2018 at 5:57:18 pm'!
+'Description AddParameter first implementation'!
+!provides: 'Refactoring' 1 50!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -14,14 +14,14 @@ Error subclass: #RefactoringError
 RefactoringError class
 	instanceVariableNames: ''!
 
-!classDefinition: #CanNotRemoveDueToReferencesError category: #Refactoring!
-RefactoringError subclass: #CanNotRemoveDueToReferencesError
+!classDefinition: #CanNotRefactorDueToReferencesError category: #Refactoring!
+RefactoringError subclass: #CanNotRefactorDueToReferencesError
 	instanceVariableNames: 'references referencee'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'CanNotRemoveDueToReferencesError class' category: #Refactoring!
-CanNotRemoveDueToReferencesError class
+!classDefinition: 'CanNotRefactorDueToReferencesError class' category: #Refactoring!
+CanNotRefactorDueToReferencesError class
 	instanceVariableNames: ''!
 
 !classDefinition: #RefactoringWarning category: #Refactoring!
@@ -102,6 +102,16 @@ RefactoringTest subclass: #AddInstanceVariableTest
 	category: 'Refactoring'!
 !classDefinition: 'AddInstanceVariableTest class' category: #Refactoring!
 AddInstanceVariableTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #AddParameterTest category: #Refactoring!
+RefactoringTest subclass: #AddParameterTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'AddParameterTest class' category: #Refactoring!
+AddParameterTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #ExtractToTemporaryTest category: #Refactoring!
@@ -222,6 +232,16 @@ Refactoring subclass: #AddInstanceVariable
 	category: 'Refactoring'!
 !classDefinition: 'AddInstanceVariable class' category: #Refactoring!
 AddInstanceVariable class
+	instanceVariableNames: ''!
+
+!classDefinition: #AddParameter category: #Refactoring!
+Refactoring subclass: #AddParameter
+	instanceVariableNames: 'oldSelector newSelector implementors changes newParameter newParameterValue implementorTrailingString senderTrailingString senders'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'AddParameter class' category: #Refactoring!
+AddParameter class
 	instanceVariableNames: ''!
 
 !classDefinition: #ExtractToTemporary category: #Refactoring!
@@ -425,34 +445,34 @@ RefactoringMenues class
 	instanceVariableNames: ''!
 
 
-!CanNotRemoveDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 7/11/2018 16:56:20'!
+!CanNotRefactorDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 7/11/2018 16:56:20'!
 anyReference
 	
 	^references anyOne ! !
 
-!CanNotRemoveDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:32:33'!
+!CanNotRefactorDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:32:33'!
 initialize: aMessageText references: aCollectionOfReferences to: aReferencee
 
 	self messageText: aMessageText.
 	references := aCollectionOfReferences.
 	referencee := aReferencee ! !
 
-!CanNotRemoveDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 7/11/2018 16:54:54'!
+!CanNotRefactorDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 7/11/2018 16:54:54'!
 numberOfReferences
 	
 	^references size! !
 
-!CanNotRemoveDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:32:46'!
+!CanNotRefactorDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:32:46'!
 referencee
 
 	^referencee ! !
 
-!CanNotRemoveDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:26:49'!
+!CanNotRefactorDueToReferencesError methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:26:49'!
 references
 
 	^references copy! !
 
-!CanNotRemoveDueToReferencesError class methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:32:15'!
+!CanNotRefactorDueToReferencesError class methodsFor: 'as yet unclassified' stamp: 'HAW 8/1/2018 17:32:15'!
 signal: aMessageText references: references to: aReferencee
 
 	self new 
@@ -1028,10 +1048,10 @@ tearDown
 		SystemOrganization removeSystemCategories: classCategories.
 		Browser allInstancesDo: [:aBrowser | aBrowser changed: #systemCategoryList ]]! !
 
-!RefactoringTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/13/2018 12:17:19'!
-canNotRemoveDueToReferencesRefactoringError
+!RefactoringTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:38:44'!
+canNotRefactorDueToReferencesRefactoringError
 	
-	^ Refactoring canNotRemoveDueToReferencesErrorClass - MessageNotUnderstood.! !
+	^ Refactoring canNotRefactorDueToReferencesErrorClass - MessageNotUnderstood.! !
 
 !RefactoringTest methodsFor: 'Running' stamp: 'HAW 8/13/2018 12:34:11'!
 runCase
@@ -1217,6 +1237,405 @@ test13WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (subclass>>selector)) ].
 	
 	! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 11:55:40'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 16:45:58'!
+classToRefactorName
+	
+	^#ClassToAddParameter! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 17:08:32'!
+test01AddingParameterToUnaryMessageAddsColonAndParameter
+
+	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod |
+	
+	oldSelector := 'm1' asSymbol.
+	newSelector := (oldSelector, ':') asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '1'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString.
+	classToRefactor compile: senderSelector asString, ' self ', oldSelector asString.
+	
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue toUnarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	self deny: (classToRefactor includesSelector: oldSelector).
+	self assert: (classToRefactor includesSelector: newSelector).
+	
+	newImplementorMethodNode :=  (classToRefactor>>newSelector) methodNode.
+	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self deny: (senderMethod sendsSelector: oldSelector).
+	self assert: (senderMethod sendsSelector: newSelector).
+	
+	self assert: newParameterValue equals: (senderMethod methodNode block statements first arguments first literalValue) printString
+
+
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 17:08:14'!
+test02AddingParameterToBinaryMessageAddsNewKeywordAndParameter
+
+	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword |
+	
+	oldSelector := 'm1:' asSymbol.
+	newSelectorAddedKeyword := 'm2:' asSymbol.
+	newSelector := (oldSelector,newSelectorAddedKeyword) asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '2'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: (oldSelector asString, ' oldParam').
+	classToRefactor compile: senderSelector asString, ' self ', oldSelector asString, ' 1'.
+	
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	self deny: (classToRefactor includesSelector: oldSelector).
+	self assert: (classToRefactor includesSelector: newSelector).
+	
+	newImplementorMethodNode :=  (classToRefactor>>newSelector) methodNode.
+	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self deny: (senderMethod sendsSelector: oldSelector).
+	self assert: (senderMethod sendsSelector: newSelector).
+	
+	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue)
+
+
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:22:27'!
+test03AddingParameterToBinaryMessageMultipleSendsInSameMethodSameLiteral
+
+	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
+	
+	oldSelector := 'm1:' asSymbol.
+	newSelectorAddedKeyword := 'm2:' asSymbol.
+	newSelector := (oldSelector,newSelectorAddedKeyword) asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '2'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: (oldSelector asString, ' oldParam').
+	collaboration :=  ' self ', oldSelector asString, ' 1.'.
+	classToRefactor compile: senderSelector asString, collaboration, collaboration.
+	
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	self deny: (classToRefactor includesSelector: oldSelector).
+	self assert: (classToRefactor includesSelector: newSelector).
+	
+	newImplementorMethodNode :=  (classToRefactor>>newSelector) methodNode.
+	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self deny: (senderMethod sendsSelector: oldSelector).
+	self assert: (senderMethod sendsSelector: newSelector).
+	
+	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue)
+
+
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:41:48'!
+test04AddingParameterToBinaryMessageWithMessageSendAsLastFormalParameter
+
+	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
+	
+	oldSelector := 'm1:' asSymbol.
+	newSelectorAddedKeyword := 'm2:' asSymbol.
+	newSelector := (oldSelector,newSelectorAddedKeyword) asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '2'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: (oldSelector asString, ' oldParam').
+	collaboration :=  ' self ', oldSelector asString, ' self size.'.
+	classToRefactor compile: senderSelector asString, collaboration.
+	
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	self deny: (classToRefactor includesSelector: oldSelector).
+	self assert: (classToRefactor includesSelector: newSelector).
+	
+	newImplementorMethodNode :=  (classToRefactor>>newSelector) methodNode.
+	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self deny: (senderMethod sendsSelector: oldSelector).
+	self assert: (senderMethod sendsSelector: newSelector).
+	
+	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue)
+
+
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:44:09'!
+test05AddingParameterToBinaryMessageWithBinaryMessageSendAsLastFormalParameter
+
+	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
+	
+	oldSelector := 'm1:' asSymbol.
+	newSelectorAddedKeyword := 'm2:' asSymbol.
+	newSelector := (oldSelector,newSelectorAddedKeyword) asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '2'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: (oldSelector asString, ' oldParam').
+	collaboration :=  ' self ', oldSelector asString, ' self size + 4.'.
+	classToRefactor compile: senderSelector asString, collaboration.
+	
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	self deny: (classToRefactor includesSelector: oldSelector).
+	self assert: (classToRefactor includesSelector: newSelector).
+	
+	newImplementorMethodNode :=  (classToRefactor>>newSelector) methodNode.
+	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self deny: (senderMethod sendsSelector: oldSelector).
+	self assert: (senderMethod sendsSelector: newSelector).
+	
+	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue)
+
+
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:43:21'!
+test06AddingParameterToBinaryMessageWithKeywordMessageSendAsLastFormalParameter
+
+	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
+	
+	oldSelector := 'm1:' asSymbol.
+	newSelectorAddedKeyword := 'm2:' asSymbol.
+	newSelector := (oldSelector,newSelectorAddedKeyword) asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '2'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: (oldSelector asString, ' oldParam').
+	collaboration :=  ' self ', oldSelector asString, ' (self at: 1 put: 2).'.
+	classToRefactor compile: senderSelector asString, collaboration.
+	
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	self deny: (classToRefactor includesSelector: oldSelector).
+	self assert: (classToRefactor includesSelector: newSelector).
+	
+	newImplementorMethodNode :=  (classToRefactor>>newSelector) methodNode.
+	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self deny: (senderMethod sendsSelector: oldSelector).
+	self assert: (senderMethod sendsSelector: newSelector).
+	
+	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue)
+
+
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:53:57'!
+test07AddingParameterToUnaryMessageChangesReferencesToSelector
+
+	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod |
+	
+	oldSelector := 'm1' asSymbol.
+	newSelector := (oldSelector, ':') asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '1'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString.
+	classToRefactor compile: senderSelector asString, ' #', oldSelector asString, ' size'.
+	
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue toUnarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	self deny: (classToRefactor includesSelector: oldSelector).
+	self assert: (classToRefactor includesSelector: newSelector).
+	
+	newImplementorMethodNode :=  (classToRefactor>>newSelector) methodNode.
+	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self assert: 0 equals: (senderMethod indexOfLiteral: oldSelector).
+	self assert: 1 equals: (senderMethod indexOfLiteral: newSelector).
+	
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:55:48'!
+test08AddingParameterToBinaryMessageChangesReferencesToSelector
+
+	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
+	
+	oldSelector := 'm1:' asSymbol.
+	newSelectorAddedKeyword := 'm2:' asSymbol.
+	newSelector := (oldSelector,newSelectorAddedKeyword) asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '2'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: (oldSelector asString, ' oldParam').
+	collaboration :=  ' #', oldSelector asString, ' size.'.
+	classToRefactor compile: senderSelector asString, collaboration.
+	
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	self deny: (classToRefactor includesSelector: oldSelector).
+	self assert: (classToRefactor includesSelector: newSelector).
+	
+	newImplementorMethodNode :=  (classToRefactor>>newSelector) methodNode.
+	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self assert: 0 equals: (senderMethod indexOfLiteral: oldSelector).
+	self assert: 1 equals: (senderMethod indexOfLiteral: newSelector).
+	
+
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:24:53'!
+test09FailsIfNewParameterValueCanNotBeCompiled
+
+	self 
+		assertCreation: [ AddParameter 
+			named: 'newParam' initializedWith: '+' toUnarySelector: thisContext selector 
+			implementors: {thisContext method} senders: {} ]
+		 failsWith: [ AddParameter newParameterValueDoesNotCompileErrorMessage ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:25:16'!
+test10FailsIfNewParameterValueIsEmpty
+
+	self 
+		assertCreation: [ AddParameter 
+			named: 'newParam' initializedWith: ' ' toUnarySelector: thisContext selector
+			implementors: {thisContext method} senders: {} ]
+		 failsWith: [ AddParameter newParameterValueCanNotBeEmptyErrorMessage ]
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:57:23'!
+test11NewParameterNameCanNotBeEmpty
+
+	| newParameter |
+	
+	newParameter := ' '.
+	self 
+		assertCreation: [ AddParameter 
+			named: newParameter initializedWith: '1' toUnarySelector: thisContext selector 
+			implementors: {thisContext method} senders: {} ]
+		 failsWith: [ AddParameter errorMessageForInvalidParameterName: newParameter withBlanksTrimmed ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:34:07'!
+test12NewParameterNameCanNotStartWithNumber
+
+	| newParameter |
+	
+	newParameter := '1x'.
+	self 
+		assertCreation: [ AddParameter 
+			named: newParameter initializedWith: '1' toUnarySelector: thisContext selector 
+			implementors: {thisContext method} senders: {} ]
+		 failsWith: [ AddParameter errorMessageForInvalidParameterName: newParameter  ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:34:28'!
+test13NewParameterNameCanNotContainSpaces
+
+	| newParameter |
+	
+	newParameter := 'an Integer'.
+	self 
+		assertCreation: [ AddParameter 
+			named: newParameter initializedWith: '1' toUnarySelector: thisContext selector 
+			implementors: {thisContext method} senders: {} ]
+		 failsWith: [ AddParameter errorMessageForInvalidParameterName: newParameter  ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 15:14:45'!
+test14NewParameterCanNotBeDefinedAsInstanceVariableInAnyImplementor
+
+	| classToRefactor oldSelector newParameter  |
+	
+	oldSelector := 'm1' asSymbol.
+	newParameter := 'newParam'.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName instanceVariableNames: newParameter.
+	classToRefactor compile: oldSelector asString.
+	
+	self 
+		assertCreation: [ AddParameter 
+			named: newParameter initializedWith: '1' toUnarySelector: oldSelector 
+			implementors: {classToRefactor>>oldSelector} senders: {} ]
+		 failsWith: [ AddParameter errorMessageForNewParameter: newParameter definedAsInstanceVariableIn: {classToRefactor} ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:22:53'!
+test15NewParameterCanNotBeDefinedAsParameterInAnyImplementor
+
+	| classToRefactor oldSelector newParameter implementors |
+	
+	oldSelector := 'm1:' asSymbol.
+	newParameter := 'newParam'.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString, newParameter.
+	implementors := {classToRefactor>>oldSelector}.
+	
+	self 
+		assertCreation: [ AddParameter 
+			named: newParameter initializedWith: '1' using: 'm2:' asSymbol toBinarySelector: oldSelector 
+			implementors: implementors senders: {} ]
+		 failsWith: [ AddParameter newParameterDefinedAsLocalErrorMessageFor: newParameter ]
+	
+! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -3049,8 +3468,8 @@ test03RemovingTheMetaclassRemovesTheClass
 	
 	self assert: classToRemove isObsolete ! !
 
-!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/1/2018 16:43:17'!
-test04CanNotRemoveClassWihtReferencesOutsideHierarchy
+!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/17/2018 16:40:06'!
+test04CanNotRemoveClassWithReferencesOutsideHierarchy
 
 	| classToRemove classReferencing methodNameReferencingClass | 
 	
@@ -3061,7 +3480,7 @@ test04CanNotRemoveClassWihtReferencesOutsideHierarchy
 	
 	self
 		should: [ SafelyRemoveClass of: classToRemove ]
-		raise: self canNotRemoveDueToReferencesRefactoringError 
+		raise: self canNotRefactorDueToReferencesRefactoringError 
 		withExceptionDo: [ :anError | | reference |
 			self 
 				assert: (SafelyRemoveClass errorMessageForCanNotRemove: classToRemove dueToReferencesToAll: (Array with: classToRemove))
@@ -3097,7 +3516,7 @@ test06WarnIfClassToRemoveHasSubclasses
 		assertCreation: [ SafelyRemoveClass of: classToRemove ]
 		warnsWith: [ SafelyRemoveClass warningMessageFor: classToRemove hasSubclasses: (Array with: classToRemoveSubclass) ]! !
 
-!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/1/2018 16:43:33'!
+!SafelyRemoveClassTest methodsFor: 'tests' stamp: 'HAW 8/17/2018 16:38:44'!
 test07CanNotRemoveClassWhenSubclassesHaveReferencesOutsideTheHierarchy
 
 	| classToRemove classToRemoveSubclass classReferencing methodNameReferencingClass | 
@@ -3110,7 +3529,7 @@ test07CanNotRemoveClassWhenSubclassesHaveReferencesOutsideTheHierarchy
 	
 	self
 		should: [ SafelyRemoveClass of: classToRemove ]
-		raise: self canNotRemoveDueToReferencesRefactoringError 
+		raise: self canNotRefactorDueToReferencesRefactoringError 
 		withExceptionDo: [ :anError | | reference |
 			self 
 				assert: (SafelyRemoveClass errorMessageForCanNotRemove: classToRemove dueToReferencesToAll: (Array with: classToRemoveSubclass))
@@ -3323,18 +3742,18 @@ apply
 
 	self subclassResponsibility ! !
 
-!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 8/1/2018 17:46:45'!
-canNotRemoveDueToReferencesError: aMessageText references: references to: referencee 
+!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 16:34:16'!
+canNotRefactorDueToReferencesError: aMessageText references: references to: referencee 
 	
-	^self canNotRemoveDueToReferencesErrorClass
+	^self canNotRefactorDueToReferencesErrorClass
 		signal: aMessageText 
 		references: references 
 		to: referencee ! !
 
-!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 8/1/2018 17:36:40'!
-canNotRemoveDueToReferencesErrorClass
+!Refactoring class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 16:32:42'!
+canNotRefactorDueToReferencesErrorClass
 	
-	^CanNotRemoveDueToReferencesError! !
+	^CanNotRefactorDueToReferencesError! !
 
 !Refactoring class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:07'!
 refactoringError: aMessage
@@ -3469,10 +3888,299 @@ warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
 			nextPutAll: ' will be hidden at '.
 		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
-!AddInstanceVariable class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:13:00'!
-addMiscellaneousIconsTo: aCollectorCollection
+!AddParameter methodsFor: 'applying' stamp: 'HAW 8/16/2018 14:39:41'!
+apply
+	
+	self 
+		createNewImplementors;
+		renameSenders;
+		removeOldImplementors.
+		
+	^changes
+! !
 
-	aCollectorCollection add: #('add inst var...') -> #listAddIcon! !
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 17:45:14'!
+addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
+	
+	| oldSelectorLastPositions |
+	
+	oldSelectorLastPositions := aMethodNode messageSendLasPositionsOf: oldSelector ifAbsent: [ #() ].
+	oldSelectorLastPositions do: [ :aPosition | rangesToKeywords add: ((aPosition+1) to: aPosition) -> senderTrailingString ]
+	! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:49:09'!
+addRangesForLiteralOf: methodNode to: rangesToKeywords
+	
+	| oldSelectorLiteralRanges |
+	
+	oldSelectorLiteralRanges := methodNode rangesForLiteralNode: oldSelector ifAbsent: [ #() ].
+	oldSelectorLiteralRanges do: [ :oldSelectorLiteralRange | 
+		rangesToKeywords add: (oldSelectorLiteralRange first + 1 to: oldSelectorLiteralRange last) -> newSelector ].
+	
+! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:51:02'!
+addToSendersIfOldSelectorIsSentIn: newImplementor
+	
+	(newImplementor refersToLiteral: oldSelector) ifTrue: [ senders add: newImplementor ]. 
+	! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 12:07:02'!
+compileNewImplementorOf: anImplementor
+		
+	| implementorClassification |
+	
+	implementorClassification := anImplementor methodClass organization categoryOfElement: oldSelector.
+	anImplementor methodClass 
+		compile: (self implementorNewSourceCodeOf: anImplementor) 
+		classifyUnder: implementorClassification.
+! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 12:05:07'!
+createNewImplementorOf: anImplementor
+
+	| newImplementor |
+
+	self compileNewImplementorOf: anImplementor.
+	newImplementor := anImplementor methodClass compiledMethodAt: newSelector.
+	self addToSendersIfOldSelectorIsSentIn: newImplementor.
+	
+	changes add: newImplementor methodReference 
+	
+	! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 12:04:29'!
+createNewImplementors
+	
+	implementors do: [:anImplementor | self createNewImplementorOf: anImplementor ]
+	! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 17:10:32'!
+implementorNewSourceCodeOf: anImplementor
+
+	|  newSource originalSource selectorLastPosition |
+	
+	selectorLastPosition := anImplementor methodNode selectorLastPosition.
+	originalSource := anImplementor sourceCode.
+	newSource := String streamContents: [ :newSourceStream |
+		newSourceStream 
+			nextPutAll: (originalSource copyFrom: 1 to: selectorLastPosition);
+			nextPutAll: implementorTrailingString;
+			nextPutAll: (originalSource copyFrom: selectorLastPosition + 1 to: originalSource size) ].
+		
+	^newSource! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 19:49:29'!
+initializedNamed: aNewParameter initializedWith: aNewParameterValue to: anOldSelector implementing: aNewSelector  
+	addingToImplementors: anImplementorTrailingString addingToSenders: aSenderTrailingString
+	implementors: implementorsCollection senders: sendersCollection
+
+	newParameter := aNewParameter.
+	newParameterValue := aNewParameterValue.
+	oldSelector := anOldSelector.
+	newSelector := aNewSelector.
+	implementorTrailingString := anImplementorTrailingString.
+	senderTrailingString := aSenderTrailingString.
+	implementors := implementorsCollection.
+	senders := sendersCollection.
+	
+	changes := Set new.! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 14:41:49'!
+rangesToKeywordsOf: aMethod
+	
+	| methodNode rangesToKeywords |
+	
+	methodNode := aMethod methodNode.
+	rangesToKeywords := SortedCollection sortBlock: [ :left :right | left key first < right key first ].
+	
+	self addMessageSendSelectorKeywordRangesOf: methodNode to: rangesToKeywords.
+	self addRangesForLiteralOf: methodNode to: rangesToKeywords.
+	
+	^rangesToKeywords	! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 12:15:12'!
+removeOldImplementor: anImplementor 
+
+	anImplementor methodClass removeSelector: anImplementor selector.
+	changes add: anImplementor methodReference! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 12:14:38'!
+removeOldImplementors
+	
+	implementors do: [:anImplementor | self removeOldImplementor: anImplementor ]! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:51:02'!
+renameSenders
+	
+	senders do: [ :aSender | self renameSendersIn: aSender ].
+	! !
+
+!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 19:32:05'!
+renameSendersIn: aMethod
+
+	| newSource |
+	
+	newSource := aMethod sourceCode copyReplacing: (self rangesToKeywordsOf: aMethod).
+	aMethod methodClass compile: newSource.
+	
+	changes add: (MethodReference class: aMethod methodClass selector: aMethod selector)! !
+
+!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 8/16/2018 17:13:49'!
+named: aNewParameter initializedWith: aNewParameterValue toUnarySelector: anOldSelector  
+	implementors: implementorsCollection senders: sendersCollection
+
+	^self 
+		named: aNewParameter initializedWith: aNewParameterValue to: anOldSelector implementing: (anOldSelector, ':') asSymbol
+		addingToImplementors: ': ', aNewParameter addingToSenders: ': ', aNewParameterValue
+		implementors: implementorsCollection senders: sendersCollection
+! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:30:40'!
+assertIsValidParameterName: aName
+
+	| scannedNames |
+
+	scannedNames _ Scanner new scanFieldNames: aName.
+	scannedNames size = 1 ifFalse: [ self signalInvalidParameterName: aName ].
+	scannedNames first = aName ifFalse: [ self signalInvalidParameterName: aName ].
+! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:59:29'!
+assertNewParameter: aNewParameter isNotDefinedAsInstanceVariableInAny: implementors
+
+	| classesDefiningInsVars |
+	
+	classesDefiningInsVars := self classesDefiningInstanceVariable: aNewParameter inAny: implementors.
+	classesDefiningInsVars notEmpty ifTrue: [ self signalNewParameter: aNewParameter definedAsInstanceVariableIn: classesDefiningInsVars ]! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:59:47'!
+assertNewParameter: aNewParameter isNotDefinedAsLocalInAny: implementors
+
+	| implementorsDefiningNewParameterAsLocal |
+	
+	implementorsDefiningNewParameterAsLocal := implementors select: [ :implementor | implementor methodNode hasLocalNamed: aNewParameter ].
+	implementorsDefiningNewParameterAsLocal notEmpty ifTrue: [ 
+		self signalNewParameter: aNewParameter isDefinedAsLocalIn: implementorsDefiningNewParameterAsLocal ]! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:59:05'!
+assertNewParameterValueCompiles: aNewParameterValue
+
+	[ Parser new parse: aNewParameterValue readStream class: self noPattern: true notifying: nil ifFail: [nil] ]
+		on: SyntaxErrorNotification 
+		do: [ :error | self signalNewParameterValueDoesNotCompile ].
+
+! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:21:40'!
+assertNewParameterValueIsNotEmpty: aNewParameterValue
+
+	aNewParameterValue withBlanksTrimmed isEmpty ifTrue: [ self signalNewParameterValueCanNotBeEmpty]! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 15:05:29'!
+classesDefiningInstanceVariable: aName inAny: implementors
+ 
+	^ implementors 
+		inject: Set new
+		into: [ :classesDefiningInstVar :implementor | 
+			(implementor methodClass whichClassDefinesInstanceVariable: aName ifNone: [ nil ]) ifNotNil: [ :classDefiningInstVar |
+				classesDefiningInstVar add: classDefiningInstVar ].
+			classesDefiningInstVar ]
+! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:31:35'!
+errorMessageForInvalidParameterName: aName
+
+	^ '''' , aName , ''' is not a valid parameter name'.! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 15:18:46'!
+errorMessageForNewParameter: aNewParameter definedAsInstanceVariableIn: definingClasses
+
+	^ String streamContents: [ :messageStream |
+		messageStream 
+			nextPutAll: definingClasses asCommaStringAnd;
+			space;
+			nextPutAll: (definingClasses size = 1 ifTrue: [ 'defines' ] ifFalse: [ 'define' ]);
+			space;
+			nextPutAll: aNewParameter;
+			nextPutAll: ' as instance variable' ]! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 17:00:33'!
+named: aNewParameter initializedWith: aNewParameterValue to: anOldSelector implementing: aNewSelector
+	addingToImplementors: implementorTrailingString addingToSenders: senderTrailingString
+	implementors: implementorsCollection senders: sendersCollection
+
+	| trimmedNewParameter trimmedNewParameterValue |
+	
+	trimmedNewParameter := aNewParameter withBlanksTrimmed.
+	trimmedNewParameterValue := aNewParameterValue withBlanksTrimmed.
+	
+	self assertIsValidParameterName: trimmedNewParameter.
+	self assertNewParameter: trimmedNewParameter isNotDefinedAsInstanceVariableInAny: implementorsCollection.
+	self assertNewParameter: trimmedNewParameter isNotDefinedAsLocalInAny: implementorsCollection.
+	self assertNewParameterValueIsNotEmpty: trimmedNewParameterValue.
+	self assertNewParameterValueCompiles: trimmedNewParameterValue.
+
+	^ self new initializedNamed: trimmedNewParameter initializedWith: trimmedNewParameterValue to: anOldSelector implementing: aNewSelector
+		addingToImplementors: implementorTrailingString addingToSenders: senderTrailingString
+		implementors: implementorsCollection senders: sendersCollection
+! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:00:27'!
+named: aNewParameter initializedWith: aNewParameterValue using: aNewKeyword toBinarySelector: anOldSelector  
+	implementors: implementorsCollection senders: sendersCollection
+
+	^self 
+		named: aNewParameter initializedWith: aNewParameterValue to: anOldSelector implementing: (anOldSelector,aNewKeyword) asSymbol
+		addingToImplementors: ' ',aNewKeyword, ' ', aNewParameter addingToSenders: ' ', aNewKeyword, ' ', aNewParameterValue
+		implementors: implementorsCollection senders: sendersCollection
+! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:21:31'!
+newParameterDefinedAsLocalErrorMessageFor: aNewParameter
+
+	^ aNewParameter, ' is already defined as parameter or temporary'! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:22:31'!
+newParameterValueCanNotBeEmptyErrorMessage
+	
+	^'New parameter value can not be empty'! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:24:53'!
+newParameterValueDoesNotCompileErrorMessage
+	
+	^'New parameter value code does not compile'! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:31:15'!
+signalInvalidParameterName: aName
+
+	self refactoringError: (self errorMessageForInvalidParameterName: aName)
+
+! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 15:11:03'!
+signalNewParameter: aNewParameter definedAsInstanceVariableIn: definingClasses
+
+	self refactoringError: (self errorMessageForNewParameter: aNewParameter definedAsInstanceVariableIn: definingClasses)! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:34:16'!
+signalNewParameter: aNewParameter isDefinedAsLocalIn: implementors
+
+	self 
+		canNotRefactorDueToReferencesError: (self newParameterDefinedAsLocalErrorMessageFor: aNewParameter)
+		references: (implementors collect: [ :implementor | MethodReference method: implementor ])
+		to: aNewParameter 
+	 ! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:22:07'!
+signalNewParameterValueCanNotBeEmpty
+	
+	self refactoringError: self newParameterValueCanNotBeEmptyErrorMessage! !
+
+!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:24:53'!
+signalNewParameterValueDoesNotCompile
+	
+	self refactoringError: self newParameterValueDoesNotCompileErrorMessage! !
 
 !ExtractToTemporary methodsFor: 'applying' stamp: 'HAW 10/18/2017 18:39:22'!
 apply
@@ -3800,11 +4508,11 @@ errorMessageForInstanceVariable: aName notDefinedIn: aClass
 
 	^ 'Instance variable ''' , aName , ''' is not defined in ' , aClass name.! !
 
-!RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 8/1/2018 18:43:47'!
+!RemoveInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 16:34:16'!
 signalInstanceVariable: aVariable isReferencedInAll: methods
 
 	self 
-		canNotRemoveDueToReferencesError: (self errorMessageForInstanceVariable: aVariable isReferencedInAll: methods)
+		canNotRefactorDueToReferencesError: (self errorMessageForInstanceVariable: aVariable isReferencedInAll: methods)
 		 references: methods
 		 to: aVariable! !
 
@@ -3821,11 +4529,6 @@ named: aVariable from: aClassToRefactor
 	
 	^self new initializeNamed: aVariable from: aClassToRefactor 
 ! !
-
-!RemoveInstanceVariable class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:16:15'!
-addMiscellaneousIconsTo: aCollectorCollection
-	
-	aCollectorCollection add: #('remove inst var...') -> #deleteIcon! !
 
 !RenameClass methodsFor: 'applying' stamp: 'HAW 6/4/2017 18:09:21'!
 apply
@@ -4102,11 +4805,6 @@ from: anOldvariable to: aNewVariable in: aClassToRefactor
 	addInstanceVariable := AddInstanceVariable named: aNewVariable to: aClassToRefactor.
 	
 	^self new initializeFrom: anOldvariable addingWith: addInstanceVariable ! !
-
-!RenameInstanceVariable class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:11:41'!
-addMiscellaneousIconsTo: aCollection
-
-	aCollection add: #('rename inst var...') -> #saveAsIcon! !
 
 !RenameSelector methodsFor: 'applying' stamp: 'HAW 5/31/2017 16:50:58'!
 apply
@@ -4555,11 +5253,6 @@ warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplement
 
 	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
 
-!RenameSelector class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:10:45'!
-addMiscellaneousIconsTo: aCollection
-
-	aCollection add: #('rename method') -> #saveAsIcon! !
-
 !RenameTemporary methodsFor: 'applying' stamp: 'HAW 8/13/2018 15:28:15'!
 apply
 	
@@ -4684,11 +5377,6 @@ warningMessageFor: aNewVariable willHideInstanceVariableDefinedIn: aClass
 
 	^aNewVariable, ' will hide instance variable defined in ', aClass name! !
 
-!RenameTemporary class methodsFor: 'icons by menu' stamp: 'HAW 4/15/2018 12:40:00'!
-addMiscellaneousIconsTo: aCollection
-
-	aCollection add: #('rename temporary') -> #saveAsIcon! !
-
 !SafelyRemoveClass methodsFor: 'applying' stamp: 'HAW 8/1/2018 16:42:17'!
 apply
 	
@@ -4770,11 +5458,11 @@ errorMessageForCanNotRemove: aClassToSafelyRemove dueToReferencesToAll: referenc
 					nextPutAll: 'due to references to its subclasses: ';
 					nextPutAll: referenced asCommaStringAnd ]]]! !
 
-!SafelyRemoveClass class methodsFor: 'exceptions' stamp: 'HAW 8/1/2018 17:45:52'!
+!SafelyRemoveClass class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 16:34:16'!
 signalCanNotRemove: aClassToSafelyRemove dueToReferences: references toAll: allReferenced
 
 	self 
-		canNotRemoveDueToReferencesError: (self errorMessageForCanNotRemove: aClassToSafelyRemove dueToReferencesToAll: allReferenced)
+		canNotRefactorDueToReferencesError: (self errorMessageForCanNotRemove: aClassToSafelyRemove dueToReferencesToAll: allReferenced)
 		references: references 
 		to: aClassToSafelyRemove 
 	! !
@@ -4831,17 +5519,17 @@ requestRefactoringParametersHandlingRefactoringExceptions
 	self valueHandlingRefactoringExceptions: [ self requestRefactoringParameters ]
 	! !
 
-!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/1/2018 17:34:02'!
-browseReferencesOn: aCanNotRemoveDueToReferencesError
+!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/17/2018 16:37:38'!
+browseReferencesOn: aCanNotRefactorDueToReferencesError
 	
 	Smalltalk 
-		browseMessageList: aCanNotRemoveDueToReferencesError references 
-		name: (self referencesBrowserTitleOn: aCanNotRemoveDueToReferencesError)
+		browseMessageList: aCanNotRefactorDueToReferencesError references 
+		name: (self referencesBrowserTitleOn: aCanNotRefactorDueToReferencesError)
 		autoSelect: true
 ! !
 
-!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/1/2018 20:21:46'!
-handleCanNotRemoveDueToReferencesError: aCanNotRemoveDueToReferencesError
+!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/17/2018 16:37:55'!
+handleCanNotRefactorDueToReferencesError: aCanNotRefactorDueToReferencesError
 	
 	| options answer question |
 	
@@ -4850,9 +5538,9 @@ handleCanNotRemoveDueToReferencesError: aCanNotRemoveDueToReferencesError
 Cancel'.
 
 	question := PopUpMenu labels: options icons: #(mailForwardIcon cancelIcon).
-	answer := question startUpWithCaption: aCanNotRemoveDueToReferencesError messageText.
+	answer := question startUpWithCaption: aCanNotRefactorDueToReferencesError messageText.
 	
-	answer = 1 ifTrue: [ self browseReferencesOn: aCanNotRemoveDueToReferencesError ].
+	answer = 1 ifTrue: [ self browseReferencesOn: aCanNotRefactorDueToReferencesError ].
 	self endRequest.! !
 
 !RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 6/5/2017 18:47:40'!
@@ -4868,19 +5556,19 @@ handleRefactoringWarning: aRefactoringWarning
 		ifTrue: [ aRefactoringWarning resume ]
 		ifFalse: [ self endRequest]! !
 
-!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/1/2018 17:34:22'!
-referencesBrowserTitleOn: aCanNotRemoveDueToReferencesError
+!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/17/2018 16:38:07'!
+referencesBrowserTitleOn: aCanNotRefactorDueToReferencesError
 
-	^'References to ', aCanNotRemoveDueToReferencesError referencee asString! !
+	^'References to ', aCanNotRefactorDueToReferencesError referencee asString! !
 
-!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/1/2018 17:39:01'!
+!RefactoringApplier methodsFor: 'exception handling' stamp: 'HAW 8/17/2018 16:35:47'!
 valueHandlingRefactoringExceptions: aBlock
 
 	^[[aBlock
 		on: Refactoring refactoringWarningClass 
 		do: [ :aRefactoringWarning | self handleRefactoringWarning: aRefactoringWarning ]]
-		on: Refactoring canNotRemoveDueToReferencesErrorClass
-		do: [ :aCanNotRemoveDueToReferencesError | self handleCanNotRemoveDueToReferencesError: aCanNotRemoveDueToReferencesError ]]
+		on: Refactoring canNotRefactorDueToReferencesErrorClass
+		do: [ :aCanNotRefactorDueToReferencesError | self handleCanNotRefactorDueToReferencesError: aCanNotRefactorDueToReferencesError ]]
 		on: Refactoring refactoringErrorClass 
 		do: [ :aRefactoringError | self handleRefactoringError: aRefactoringError ]
 	! !
@@ -5554,7 +6242,7 @@ classListMenuOptions
 		}`.
 	! !
 
-!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 8/13/2018 15:52:08'!
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 8/17/2018 17:50:40'!
 classRefactoringMenuOptions
 
 	^ `{
@@ -5571,7 +6259,7 @@ classRefactoringMenuOptions
 				#itemOrder 		-> 		20.
 				#label 			-> 		'insert superclass ...'.
 				#object 			-> 		#model.
-				#selector 		-> 		#introduceSuperclass.
+				#selector 		-> 		#insertSuperclass.
 				#icon 			-> 		#saveAsIcon
 			} asDictionary.
 			{
@@ -5641,8 +6329,8 @@ messsageRefactoringMenuOptions
 	}`.
 	! !
 
-!Browser methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 15:50:42'!
-introduceSuperclass
+!Browser methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:50:40'!
+insertSuperclass
 
 	self selectedClassOrMetaClass ifNotNil: [ :aBehavior |
 		(InsertSuperclassApplier on: self for: aBehavior theNonMetaClass) value ].! !
@@ -5697,6 +6385,11 @@ whichClassDefinesInstanceVariable: aVariable ifNone: aNoneBlock
 	
 	^aNoneBlock value! !
 
+!Behavior methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 16:32:11'!
+definesClassVariableNamedInHierarchy: aClassVariableName
+
+	^self allClassVarNames includes: aClassVariableName ! !
+
 !Behavior methodsFor: '*Refactoring' stamp: 'HAW 5/22/2017 18:51:30'!
 definesInstanceVariableNamed: anInstanceVariableName
 
@@ -5706,21 +6399,6 @@ definesInstanceVariableNamed: anInstanceVariableName
 indexOfInstanceVariable: aName
 
 	^self allInstVarNames indexOf: aName! !
-
-!Behavior methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 19:32:09'!
-methodNodeFor: aSourceCode
-
-	|  parser methodNode |
-
-	parser := self parserClass new
-		encoderClass: EncoderForV3PlusClosures;
-		yourself.
-		
-	methodNode := parser parse: aSourceCode class: self.
-	methodNode sourceText: aSourceCode.
-	
-	^methodNode
-			! !
 
 !Behavior methodsFor: '*Refactoring' stamp: 'HAW 5/25/2017 21:53:10'!
 methodsSelect: aCondition
@@ -5793,11 +6471,6 @@ withSubclassesThatDefineInstanceVariable: aName do: foundBlock ifNone: noneBlock
 	^definingSubclasses isEmpty 
 		ifTrue: noneBlock 
 		ifFalse: [ foundBlock value: definingSubclasses ]! !
-
-!Class methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 14:41:03'!
-definesClassVariableNamedInHierarchy: aClassVariableName
-
-	^self allClassVarNames includes: aClassVariableName ! !
 
 !Class methodsFor: '*Refactoring' stamp: 'HAW 6/4/2017 17:35:03'!
 rename: aString 
@@ -5886,13 +6559,28 @@ asStringOn: aStream delimiter: delimString last: lastDelimString
 	separatedBy: [
 		aStream nextPutAll: (n = sz ifTrue: [lastDelimString] ifFalse: [delimString])]! !
 
+!SequenceableCollection methodsFor: '*Refactoring' stamp: 'HAW 8/16/2018 12:38:04'!
+with: otherCollection do: twoArgBlock separatedBy: separatorBlock
+
+	| beforeFirst | 
+	
+	beforeFirst := true.
+	self with: otherCollection do: [ :selfElement :otherCollectionElement |
+		beforeFirst
+			ifTrue: [beforeFirst := false]
+			ifFalse: [separatorBlock value].
+		twoArgBlock value: selfElement value: otherCollectionElement ].
+		
+	
+! !
+
 !String methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 15:33:59'!
 copyReplacing: rangesToNewStrings
 
 	^self class streamContents: [ :replacementStream | self copyReplacing: rangesToNewStrings into: replacementStream  ].
 ! !
 
-!String methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 15:35:42'!
+!String methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:23:04'!
 copyReplacing: rangesToNewStrings into: replacementStream
 
 	| lastFrom |
@@ -5900,7 +6588,7 @@ copyReplacing: rangesToNewStrings into: replacementStream
 	lastFrom := rangesToNewStrings 
 		inject: 1
 		into: [ :from :aRangeToNewString | 
-			self newFromAfterAppending: aRangeToNewString value into: replacementStream keepingFrom: from range: aRangeToNewString key ].
+			self newFromAfterAppending: aRangeToNewString value into: replacementStream keepingFrom: from skipping: aRangeToNewString key ].
 						
 	replacementStream nextPutAll: (self copyFrom: lastFrom to: self size). 
 ! !
@@ -5913,7 +6601,7 @@ copyReplacing: ranges with: newString
 	^ self class streamContents: [ :replacementStream | self copyReplacing: ranges with: newString into: replacementStream ]
 		! !
 
-!String methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 15:35:58'!
+!String methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:23:04'!
 copyReplacing: ranges with: newString into: replacementStream 
 
 	| lastFrom |
@@ -5921,12 +6609,12 @@ copyReplacing: ranges with: newString into: replacementStream
 	lastFrom := ranges 
 		inject: 1
 		into: [ :from :aRange | 
-			self newFromAfterAppending: newString into: replacementStream keepingFrom: from range: aRange ].
+			self newFromAfterAppending: newString into: replacementStream keepingFrom: from skipping: aRange ].
 	
 	replacementStream nextPutAll: (self copyFrom: lastFrom to: self size).! !
 
-!String methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 15:36:39'!
-newFromAfterAppending: aNewString into: replacementStream keepingFrom: from range: aRange
+!String methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:23:04'!
+newFromAfterAppending: aNewString into: replacementStream keepingFrom: from skipping: aRange
 
 	replacementStream  
 		nextPutAll: (self copyFrom: from to: aRange first - 1);
@@ -6037,6 +6725,25 @@ isReturn
 
 	^false! !
 
+!Encoder methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:30:20'!
+messageSendLasPositionsOf: aSelector ifAbsent: aBlock
+	
+	| positions sortedPositions |
+	
+	positions := sourceRanges keys 
+		select: [ :aParseNode | aParseNode isMessageNamed: aSelector ] 
+		thenCollect: [ :aMessageSendNode | aMessageSendNode selectorLastPositionInSourceCodeEncodedWith: self ].
+		
+	positions isEmpty ifTrue: [ ^aBlock value ].
+	sortedPositions := positions asSortedCollection.
+	
+	^sortedPositions ! !
+
+!EncoderForV3PlusClosures methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 16:07:52'!
+hasLocalNamed: aName
+
+	^ scopeTable includesKey: aName ! !
+
 !LeafNode methodsFor: '*Refactoring' stamp: 'HAW 6/4/2017 18:30:35'!
 key: aKey
 
@@ -6062,6 +6769,40 @@ keywordRanges
 
 	^keywordRanges! !
 
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:35:47'!
+lastKeywordLastPositionInSourceCode
+	
+	^ keywordRanges last last.
+! !
+
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:46:28'!
+lastParameterLastPositionInSourceCodeEncodedWith: anEncoder 
+
+	| lastParameterRanges  |
+	
+	lastParameterRanges := anEncoder sourceRangeFor: arguments last.
+	
+	^ lastParameterRanges isInterval
+		ifTrue: [ lastParameterRanges last ]
+		ifFalse: [ self lastParameterLastPositionInSourceCodeFrom: lastParameterRanges ]! !
+
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:45:51'!
+lastParameterLastPositionInSourceCodeFrom: lastParameterRanges
+
+	| lastArgumentRangeForSelf lastKeywordLastPosition |
+	
+	lastKeywordLastPosition := self lastKeywordLastPositionInSourceCode.
+	lastArgumentRangeForSelf := lastParameterRanges detect: [ :aRange | aRange first >= lastKeywordLastPosition ].
+	
+	^ lastArgumentRangeForSelf last ! !
+
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:36:48'!
+selectorLastPositionInSourceCodeEncodedWith: anEncoder
+	
+	^originalSelector isUnary 
+		ifTrue: [ self lastKeywordLastPositionInSourceCode ]
+		ifFalse: [ self lastParameterLastPositionInSourceCodeEncodedWith: anEncoder ]! !
+
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 6/25/2017 19:03:53'!
 classAndSelector
 	
@@ -6071,6 +6812,17 @@ classAndSelector
 hasArgumentOrTemporary: aVariable
 
 	^self tempNames includes: aVariable ! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 16:06:56'!
+hasLocalNamed: aName
+
+	^ encoder hasLocalNamed: aName ! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/16/2018 17:37:41'!
+messageSendLasPositionsOf: aSelector ifAbsent: aBlock 
+	
+	^encoder messageSendLasPositionsOf: aSelector ifAbsent: aBlock
+! !
 
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 21:49:21'!
 messageSendSelectorKeywordRangesOf: aSelector ifAbsent: aBlock
@@ -6105,6 +6857,13 @@ rangesForTemporaryVariable: aName ifAbsent: aBlock
 selectorKeywordsRanges
 
 	^selectorKeywordsRanges! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/16/2018 18:04:39'!
+selectorLastPosition
+	
+	^self selector isUnary 
+		ifTrue: [ selectorKeywordsRanges last last ]
+		ifFalse: [ (encoder sourceRangeFor: arguments last) first last ]! !
 
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 6/25/2017 19:20:47'!
 tempNodes

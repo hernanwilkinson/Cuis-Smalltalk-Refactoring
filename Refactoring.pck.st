@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3418] on 17 August 2018 at 5:57:18 pm'!
-'Description AddParameter first implementation'!
-!provides: 'Refactoring' 1 50!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3418] on 18 August 2018 at 5:33:11 pm'!
+'Description AddParameter finished implementation. PushUpMethod quick implementation'!
+!provides: 'Refactoring' 1 51!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -54,34 +54,34 @@ ParseNodeVisitor subclass: #ParseNodeToReplaceFinder
 ParseNodeToReplaceFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #RenameSelectorMessageSetWindow category: #Refactoring!
-MessageSetWindow subclass: #RenameSelectorMessageSetWindow
+!classDefinition: #ChangeSelectorMessageSetWindow category: #Refactoring!
+MessageSetWindow subclass: #ChangeSelectorMessageSetWindow
 	instanceVariableNames: 'request'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RenameSelectorMessageSetWindow class' category: #Refactoring!
-RenameSelectorMessageSetWindow class
+!classDefinition: 'ChangeSelectorMessageSetWindow class' category: #Refactoring!
+ChangeSelectorMessageSetWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #RenameSelectorImplementorsWindow category: #Refactoring!
-RenameSelectorMessageSetWindow subclass: #RenameSelectorImplementorsWindow
+!classDefinition: #ChangeSelectorImplementorsWindow category: #Refactoring!
+ChangeSelectorMessageSetWindow subclass: #ChangeSelectorImplementorsWindow
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RenameSelectorImplementorsWindow class' category: #Refactoring!
-RenameSelectorImplementorsWindow class
+!classDefinition: 'ChangeSelectorImplementorsWindow class' category: #Refactoring!
+ChangeSelectorImplementorsWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #RenameSelectorSendersWindow category: #Refactoring!
-RenameSelectorMessageSetWindow subclass: #RenameSelectorSendersWindow
+!classDefinition: #ChangeSelectorSendersWindow category: #Refactoring!
+ChangeSelectorMessageSetWindow subclass: #ChangeSelectorSendersWindow
 	instanceVariableNames: 'changedMethods'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RenameSelectorSendersWindow class' category: #Refactoring!
-RenameSelectorSendersWindow class
+!classDefinition: 'ChangeSelectorSendersWindow class' category: #Refactoring!
+ChangeSelectorSendersWindow class
 	instanceVariableNames: ''!
 
 !classDefinition: #RefactoringTest category: #Refactoring!
@@ -234,14 +234,34 @@ Refactoring subclass: #AddInstanceVariable
 AddInstanceVariable class
 	instanceVariableNames: ''!
 
+!classDefinition: #ChangeSelector category: #Refactoring!
+Refactoring subclass: #ChangeSelector
+	instanceVariableNames: 'oldSelector newSelector implementors senders changes'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ChangeSelector class' category: #Refactoring!
+ChangeSelector class
+	instanceVariableNames: ''!
+
 !classDefinition: #AddParameter category: #Refactoring!
-Refactoring subclass: #AddParameter
-	instanceVariableNames: 'oldSelector newSelector implementors changes newParameter newParameterValue implementorTrailingString senderTrailingString senders'
+ChangeSelector subclass: #AddParameter
+	instanceVariableNames: 'newParameter newParameterValue implementorTrailingString senderTrailingString'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
 !classDefinition: 'AddParameter class' category: #Refactoring!
 AddParameter class
+	instanceVariableNames: ''!
+
+!classDefinition: #RenameSelector category: #Refactoring!
+ChangeSelector subclass: #RenameSelector
+	instanceVariableNames: 'newSelectorKeywords'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RenameSelector class' category: #Refactoring!
+RenameSelector class
 	instanceVariableNames: ''!
 
 !classDefinition: #ExtractToTemporary category: #Refactoring!
@@ -262,6 +282,16 @@ Refactoring subclass: #InsertSuperclass
 	category: 'Refactoring'!
 !classDefinition: 'InsertSuperclass class' category: #Refactoring!
 InsertSuperclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #PushUpMethod category: #Refactoring!
+Refactoring subclass: #PushUpMethod
+	instanceVariableNames: 'method'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'PushUpMethod class' category: #Refactoring!
+PushUpMethod class
 	instanceVariableNames: ''!
 
 !classDefinition: #RemoveAllUnreferencedInstanceVariables category: #Refactoring!
@@ -304,16 +334,6 @@ Refactoring subclass: #RenameInstanceVariable
 RenameInstanceVariable class
 	instanceVariableNames: ''!
 
-!classDefinition: #RenameSelector category: #Refactoring!
-Refactoring subclass: #RenameSelector
-	instanceVariableNames: 'oldSelector newSelector implementors senders changes newSelectorKeywords'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'RenameSelector class' category: #Refactoring!
-RenameSelector class
-	instanceVariableNames: ''!
-
 !classDefinition: #RenameTemporary category: #Refactoring!
 Refactoring subclass: #RenameTemporary
 	instanceVariableNames: 'oldVariable newVariable methodNode'
@@ -352,6 +372,36 @@ RefactoringApplier subclass: #AddInstanceVariableApplier
 	category: 'Refactoring'!
 !classDefinition: 'AddInstanceVariableApplier class' category: #Refactoring!
 AddInstanceVariableApplier class
+	instanceVariableNames: ''!
+
+!classDefinition: #ChangeSelectorApplier category: #Refactoring!
+RefactoringApplier subclass: #ChangeSelectorApplier
+	instanceVariableNames: 'oldSelector newSelector scopeChoice implementors senders implementingClass browser'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ChangeSelectorApplier class' category: #Refactoring!
+ChangeSelectorApplier class
+	instanceVariableNames: ''!
+
+!classDefinition: #AddParameterApplier category: #Refactoring!
+ChangeSelectorApplier subclass: #AddParameterApplier
+	instanceVariableNames: 'newParameter newParameterValue newKeyword'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'AddParameterApplier class' category: #Refactoring!
+AddParameterApplier class
+	instanceVariableNames: ''!
+
+!classDefinition: #RenameSelectorApplier category: #Refactoring!
+ChangeSelectorApplier subclass: #RenameSelectorApplier
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RenameSelectorApplier class' category: #Refactoring!
+RenameSelectorApplier class
 	instanceVariableNames: ''!
 
 !classDefinition: #InsertSuperclassApplier category: #Refactoring!
@@ -402,16 +452,6 @@ RefactoringApplier subclass: #RenameInstanceVariableApplier
 	category: 'Refactoring'!
 !classDefinition: 'RenameInstanceVariableApplier class' category: #Refactoring!
 RenameInstanceVariableApplier class
-	instanceVariableNames: ''!
-
-!classDefinition: #RenameSelectorApplier category: #Refactoring!
-RefactoringApplier subclass: #RenameSelectorApplier
-	instanceVariableNames: 'oldSelector newSelector scopeChoice implementors senders implementingClass browser'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'RenameSelectorApplier class' category: #Refactoring!
-RenameSelectorApplier class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameTemporaryApplier category: #Refactoring!
@@ -589,17 +629,17 @@ of: anExtractToTemporary
 	
 	^self new initializeOf: anExtractToTemporary ! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:26:05'!
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:26:05'!
 add
 
 	self subclassResponsibility ! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:36:12'!
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:36:12'!
 addToList: aMethod
 
 	model addMethodReference: aMethod methodReference ifIncluded: [ self inform: 'Method already in list' ]! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:44:01'!
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:44:01'!
 do: aBlock withEnteredClassLabeled: aLabel
 		
 	| className |
@@ -607,17 +647,17 @@ do: aBlock withEnteredClassLabeled: aLabel
 	className := FillInTheBlankMorph request: aLabel onCancel: [ ^self ].
 	^self withClassNamed: className do: aBlock! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 18:17:19'!
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 18:17:19'!
 inform: aClass doesNotImplement: aSelector
 
  	self inform: aClass name, ' does not implement #', aSelector ! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:07:19'!
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:07:19'!
 remove
 	
 	model removeMessageFromBrowserKeepingLabel! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:38:48'!
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:38:48'!
 withClassNamed: aName do: aBlock
 
 	(Smalltalk classNamed: aName asSymbol)
@@ -625,18 +665,18 @@ withClassNamed: aName do: aBlock
 		ifNil: [ self inform: 'Class ', aName, ' does not exist' ].
 ! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:22:39'!
+!ChangeSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:22:39'!
 addButton: button to: row color: buttonColor
 
 	button color: buttonColor.
 	row addMorph: button proportionalWidth: 10! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:18:46'!
+!ChangeSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:18:46'!
 addButtonsTo: row color: buttonColor
 	
 	self subclassResponsibility ! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:26:55'!
+!ChangeSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:26:55'!
 buildLowerPanes
 
 	| codeAndButtons  |
@@ -649,7 +689,7 @@ buildLowerPanes
 	
 	^codeAndButtons ! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:27:25'!
+!ChangeSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:27:25'!
 buttonsRow
 
 	| buttonColor row |
@@ -665,12 +705,12 @@ buttonsRow
 	
 	! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'compile methods' stamp: 'HAW 5/31/2017 17:08:14'!
+!ChangeSelectorMessageSetWindow methodsFor: 'compile methods' stamp: 'HAW 5/31/2017 17:08:14'!
 compiledMethodsFrom: methodReferences
 
 	^ methodReferences collect: [:aMethodReference | aMethodReference compiledMethod ]! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:21:11'!
+!ChangeSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:21:11'!
 createAddButton
 	
 	^PluggableButtonMorph 
@@ -680,7 +720,7 @@ createAddButton
 		label: 'Add'.
 ! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:21:19'!
+!ChangeSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:21:19'!
 createCancelButton
 	
 	^PluggableButtonMorph 
@@ -690,7 +730,7 @@ createCancelButton
 		label: 'Cancel'.
 ! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:16:37'!
+!ChangeSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:16:37'!
 createRemoveButton
 	
 	^PluggableButtonMorph 
@@ -700,47 +740,47 @@ createRemoveButton
 		label: 'Remove'.
 ! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'initialization' stamp: 'HAW 8/15/2018 12:02:37'!
-initializeFrom: aRenameSelectorRequest
+!ChangeSelectorMessageSetWindow methodsFor: 'initialization' stamp: 'HAW 8/18/2018 17:22:59'!
+initializeFrom: aChangeSelectorRequest
 
-	request := aRenameSelectorRequest ! !
+	request := aChangeSelectorRequest ! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'testing' stamp: 'HAW 6/5/2017 17:40:16'!
+!ChangeSelectorMessageSetWindow methodsFor: 'testing' stamp: 'HAW 6/5/2017 17:40:16'!
 isMessageSelected
 
 	^model isNil ifTrue: [ false ] ifFalse: [ model selection notNil ]! !
 
-!RenameSelectorMessageSetWindow methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:44'!
+!ChangeSelectorMessageSetWindow methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:44'!
 oldSelector
 	
 	^request oldSelector ! !
 
-!RenameSelectorMessageSetWindow class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 16:59:25'!
+!ChangeSelectorMessageSetWindow class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 16:59:25'!
 methodReferencesOf: methods
 
 	^methods asOrderedCollection collect: [:aCompiledMethod | aCompiledMethod methodReference ].
 ! !
 
-!RenameSelectorMessageSetWindow class methodsFor: 'instance creation' stamp: 'HAW 8/15/2018 12:02:53'!
-openFrom: aRenameSelectorRequest methods: methods label: aLabel
+!ChangeSelectorMessageSetWindow class methodsFor: 'instance creation' stamp: 'HAW 8/18/2018 17:27:26'!
+openFrom: aChangeSelectorRequest methods: methods label: aLabel
 
 	| window |
 	
-	window := self openMessageList: (self methodReferencesOf: methods) label: aLabel autoSelect: aRenameSelectorRequest oldSelector.
-	window initializeFrom: aRenameSelectorRequest.
+	window := self openMessageList: (self methodReferencesOf: methods) label: aLabel autoSelect: aChangeSelectorRequest oldSelector.
+	window initializeFrom: aChangeSelectorRequest.
 	
 	^window 
 
 ! !
 
-!RenameSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:33:16'!
+!ChangeSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:33:16'!
 add
 		
 	self 
 		do: [ :classOfImplementorToAdd | self addImplementorIn: classOfImplementorToAdd ]
 		withEnteredClassLabeled:  'Class that implements ', self oldSelector ! !
 
-!RenameSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:33:26'!
+!ChangeSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:33:26'!
 addImplementorIn: classOfImplementorToAdd 
 
 	| implementorToAdd |
@@ -751,15 +791,15 @@ addImplementorIn: classOfImplementorToAdd
 		
 	self addToList: implementorToAdd! !
 
-!RenameSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 8/15/2018 11:55:15'!
+!ChangeSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 8/18/2018 17:22:20'!
 continue
 
 	request implementors: (self compiledMethodsFrom: model messageList).
 	self delete.	
 	
-	RenameSelectorSendersWindow openFrom: request ! !
+	ChangeSelectorSendersWindow openFrom: request ! !
 
-!RenameSelectorImplementorsWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:20:27'!
+!ChangeSelectorImplementorsWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:20:27'!
 addButtonsTo: row color: buttonColor
 
 	self addButton: self createRemoveButton to: row color: buttonColor.
@@ -768,7 +808,7 @@ addButtonsTo: row color: buttonColor
 	self addButton: self createCancelButton to: row color: buttonColor.
 ! !
 
-!RenameSelectorImplementorsWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:22:05'!
+!ChangeSelectorImplementorsWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:22:05'!
 createContinueButton
 	
 	^PluggableButtonMorph 
@@ -779,16 +819,16 @@ createContinueButton
 
 ! !
 
-!RenameSelectorImplementorsWindow class methodsFor: 'instance creation' stamp: 'HAW 8/15/2018 12:02:26'!
-openFrom: aRenameSelectorRequest
+!ChangeSelectorImplementorsWindow class methodsFor: 'instance creation' stamp: 'HAW 8/18/2018 17:26:33'!
+openFrom: aChangeSelectorRequest
 
 	^self 
-		openFrom: aRenameSelectorRequest 
-		methods: aRenameSelectorRequest implementors 
-		label: 'Implementors of #', aRenameSelectorRequest oldSelector, ' to Rename'  
+		openFrom: aChangeSelectorRequest 
+		methods: aChangeSelectorRequest implementors 
+		label: 'Implementors of #', aChangeSelectorRequest oldSelector, ' to Refactor'  
 ! !
 
-!RenameSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:36:00'!
+!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:36:00'!
 add
 	
 	self 
@@ -796,7 +836,7 @@ add
 		withEnteredClassLabeled: 'Class that sends #', self oldSelector
 		! !
 
-!RenameSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:35:00'!
+!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:35:00'!
 askAndAddSenderOf: classOfSenderToAdd 
 		
 	| senderSelector senderToAdd |
@@ -810,22 +850,22 @@ askAndAddSenderOf: classOfSenderToAdd
 	
 	self addToList: senderToAdd ! !
 
-!RenameSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 8/15/2018 11:54:38'!
+!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 8/18/2018 17:21:58'!
 backToImplementors
 	
 	self changeRequestSenders.
 	self delete.
 	
-	RenameSelectorImplementorsWindow openFrom: request! !
+	ChangeSelectorImplementorsWindow openFrom: request! !
 
-!RenameSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:53:24'!
+!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:53:24'!
 changeRequestSenders
 	
 	request senders: (self compiledMethodsFrom: model messageList).
 	! !
 
-!RenameSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 18:19:08'!
-rename
+!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 8/18/2018 17:25:48'!
+refactor
 	
 	self changeRequestSenders.
 	request browser: self. 
@@ -833,17 +873,17 @@ rename
 	request wizardEnded.
 	! !
 
-!RenameSelectorSendersWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:24:40'!
+!ChangeSelectorSendersWindow methodsFor: 'GUI building' stamp: 'HAW 8/18/2018 17:24:56'!
 addButtonsTo: row color: buttonColor
 	
 	self addButton: self createRemoveButton to: row color: buttonColor.
 	self addButton: self createAddButton to: row color: buttonColor.
 	self addButton: self createBackToImplementorsButton to: row color: buttonColor.
-	self addButton: self createRenameButton to: row color: buttonColor.
+	self addButton: self createRefactorButton to: row color: buttonColor.
 	self addButton: self createCancelButton to: row color: buttonColor.
 ! !
 
-!RenameSelectorSendersWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:25:20'!
+!ChangeSelectorSendersWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:25:20'!
 createBackToImplementorsButton
 
 	^PluggableButtonMorph 
@@ -853,23 +893,23 @@ createBackToImplementorsButton
 		label: 'Back to Implementors'.
 ! !
 
-!RenameSelectorSendersWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:25:43'!
-createRenameButton
+!ChangeSelectorSendersWindow methodsFor: 'button creation' stamp: 'HAW 8/18/2018 17:25:48'!
+createRefactorButton
 
 	^PluggableButtonMorph 
 		model: self
 		stateGetter: nil
-		action: #rename
-		label: 'Rename!!'.
+		action: #refactor
+		label: 'Refactor!!'.
 ! !
 
-!RenameSelectorSendersWindow class methodsFor: 'instance creation' stamp: 'HAW 8/15/2018 12:03:05'!
-openFrom: aRenameSelectorRequest
+!ChangeSelectorSendersWindow class methodsFor: 'instance creation' stamp: 'HAW 8/18/2018 17:26:18'!
+openFrom: aChangeSelectorRequest
 
 	^self 
-		openFrom: aRenameSelectorRequest 
-		methods: aRenameSelectorRequest senders 
-		label: 'Senders of #', aRenameSelectorRequest oldSelector, ' to Rename' ! !
+		openFrom: aChangeSelectorRequest 
+		methods: aChangeSelectorRequest senders 
+		label: 'Senders of #', aChangeSelectorRequest oldSelector, ' to Refactor' ! !
 
 !RefactoringTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:12:24'!
 allClassCategoriesOfTestData
@@ -1283,7 +1323,7 @@ test01AddingParameterToUnaryMessageAddsColonAndParameter
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 17:08:14'!
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
 test02AddingParameterToBinaryMessageAddsNewKeywordAndParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword |
@@ -1300,7 +1340,7 @@ test02AddingParameterToBinaryMessageAddsNewKeywordAndParameter
 	classToRefactor compile: senderSelector asString, ' self ', oldSelector asString, ' 1'.
 	
 	refactoring := AddParameter 
-		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toKeywordSelector: oldSelector  
 		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
 	refactoring apply.
 	
@@ -1319,7 +1359,7 @@ test02AddingParameterToBinaryMessageAddsNewKeywordAndParameter
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:22:27'!
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
 test03AddingParameterToBinaryMessageMultipleSendsInSameMethodSameLiteral
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1337,7 +1377,7 @@ test03AddingParameterToBinaryMessageMultipleSendsInSameMethodSameLiteral
 	classToRefactor compile: senderSelector asString, collaboration, collaboration.
 	
 	refactoring := AddParameter 
-		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toKeywordSelector: oldSelector  
 		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
 	refactoring apply.
 	
@@ -1356,7 +1396,7 @@ test03AddingParameterToBinaryMessageMultipleSendsInSameMethodSameLiteral
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:41:48'!
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
 test04AddingParameterToBinaryMessageWithMessageSendAsLastFormalParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1374,7 +1414,7 @@ test04AddingParameterToBinaryMessageWithMessageSendAsLastFormalParameter
 	classToRefactor compile: senderSelector asString, collaboration.
 	
 	refactoring := AddParameter 
-		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toKeywordSelector: oldSelector  
 		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
 	refactoring apply.
 	
@@ -1393,7 +1433,7 @@ test04AddingParameterToBinaryMessageWithMessageSendAsLastFormalParameter
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:44:09'!
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
 test05AddingParameterToBinaryMessageWithBinaryMessageSendAsLastFormalParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1411,7 +1451,7 @@ test05AddingParameterToBinaryMessageWithBinaryMessageSendAsLastFormalParameter
 	classToRefactor compile: senderSelector asString, collaboration.
 	
 	refactoring := AddParameter 
-		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toKeywordSelector: oldSelector  
 		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
 	refactoring apply.
 	
@@ -1430,7 +1470,7 @@ test05AddingParameterToBinaryMessageWithBinaryMessageSendAsLastFormalParameter
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:43:21'!
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
 test06AddingParameterToBinaryMessageWithKeywordMessageSendAsLastFormalParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1448,7 +1488,7 @@ test06AddingParameterToBinaryMessageWithKeywordMessageSendAsLastFormalParameter
 	classToRefactor compile: senderSelector asString, collaboration.
 	
 	refactoring := AddParameter 
-		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toKeywordSelector: oldSelector  
 		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
 	refactoring apply.
 	
@@ -1500,7 +1540,7 @@ test07AddingParameterToUnaryMessageChangesReferencesToSelector
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:55:48'!
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
 test08AddingParameterToBinaryMessageChangesReferencesToSelector
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1518,7 +1558,7 @@ test08AddingParameterToBinaryMessageChangesReferencesToSelector
 	classToRefactor compile: senderSelector asString, collaboration.
 	
 	refactoring := AddParameter 
-		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toBinarySelector: oldSelector  
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toKeywordSelector: oldSelector  
 		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
 	refactoring apply.
 	
@@ -1617,7 +1657,7 @@ test14NewParameterCanNotBeDefinedAsInstanceVariableInAnyImplementor
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:22:53'!
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
 test15NewParameterCanNotBeDefinedAsParameterInAnyImplementor
 
 	| classToRefactor oldSelector newParameter implementors |
@@ -1631,9 +1671,105 @@ test15NewParameterCanNotBeDefinedAsParameterInAnyImplementor
 	
 	self 
 		assertCreation: [ AddParameter 
-			named: newParameter initializedWith: '1' using: 'm2:' asSymbol toBinarySelector: oldSelector 
+			named: newParameter initializedWith: '1' using: 'm2:' asSymbol toKeywordSelector: oldSelector 
 			implementors: implementors senders: {} ]
 		 failsWith: [ AddParameter newParameterDefinedAsLocalErrorMessageFor: newParameter ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:21:52'!
+test16WhenCreatedForUnarySelectorMustBeUnary
+
+	self 
+		assertCreation: [ AddParameter 
+			named: 'newParam' initializedWith: '1' toUnarySelector: 'm1:' asSymbol 
+			implementors: {thisContext method} senders: {} ]
+		 failsWith: [ AddParameter selectorMustBeUnaryErrorMessage ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
+test17WhenCreatedForBinarySelectorMustBeBinary
+
+	self 
+		assertCreation: [ AddParameter 
+			named: 'newParam' initializedWith: '1' using: 'm1:' asSymbol toKeywordSelector: thisContext selector
+			implementors: {thisContext method} senders: {} ]
+		 failsWith: [ AddParameter selectorMustBeKeywordErrorMessage ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:33:19'!
+test18CanNotAddParameterToBinaryKeyword
+
+	self 
+		assertCreation: [ AddParameter 
+			named: 'newParam'  initializedWith: '1' to: '+' asSymbol implementing: 'm1:' asSymbol
+			addingToImplementors: '' addingToSenders: ''
+			implementors: {} senders: {} ]
+		 failsWith: [ AddParameter selectorCanNotBeBinaryErrorMessage ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 15:48:13'!
+test19AllImplementorsMustImplementOldSelector
+
+	| implementors |
+	
+	implementors := {thisContext method}.
+	self 
+		assertCreation: [ AddParameter 
+			named: 'newParam' initializedWith: '1' toUnarySelector: (thisContext selector, 'x') asSymbol
+			implementors: implementors senders: {} ]
+		 failsWith: [ AddParameter errorMessageForInvalidImplementors: implementors ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 15:53:37'!
+test20AllSendersShouldSendOldSelector
+
+	| oldSelector invalidSenders |
+	
+	oldSelector := thisContext selector.
+	invalidSenders := {thisContext method}.
+	self 
+		assertCreation: [ AddParameter 
+			named: 'newParam' initializedWith: '1' toUnarySelector: oldSelector
+			implementors: {thisContext method} senders: invalidSenders ]
+		 failsWith: [ AddParameter errorMessageForInvalidSenders: invalidSenders of: oldSelector ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 16:24:22'!
+test21NewKeywordToAddToOldSelectorCanNotBeUnary
+
+	self 
+		assertCreation: [ AddParameter 
+			named: 'newParam' initializedWith: '1' using: 'm1' asSymbol toKeywordSelector: 'm1:' asSymbol
+			implementors: {} senders: {} ]
+		 failsWith: [ AddParameter notValidKeywordForNewParameterErrorMessage ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 16:26:55'!
+test22NewKeywordToAddToOldSelectorCanNotBeBinary
+
+	self 
+		assertCreation: [ AddParameter 
+			named: 'newParam' initializedWith: '1' using: '+' asSymbol toKeywordSelector: 'm1:' asSymbol
+			implementors: {} senders: {} ]
+		 failsWith: [ AddParameter notValidKeywordForNewParameterErrorMessage ]
+	
+! !
+
+!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 16:27:58'!
+test23NewKeywordToAddToOldSelectorCanNotBeKeywordWithMoreThanOneParameter
+
+	self 
+		assertCreation: [ AddParameter 
+			named: 'newParam' initializedWith: '1' using: 'm1:m2:' asSymbol toKeywordSelector: 'm1:' asSymbol
+			implementors: {} senders: {} ]
+		 failsWith: [ AddParameter notValidKeywordForNewParameterErrorMessage ]
 	
 ! !
 
@@ -2985,8 +3121,8 @@ test06ThereMustBeImplementorsToRename
 		failsWith: [ RenameSelector implementorsCanNotBeEmptyErrorMessage ]
 ! !
 
-!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
-test07AllImplementorsMustHaveOldSelectorAsName
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 15:48:43'!
+test07AllImplementorsMustImplementOldSelector
 
 	| invalidImplementors |
 	
@@ -3888,7 +4024,7 @@ warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
 			nextPutAll: ' will be hidden at '.
 		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
-!AddParameter methodsFor: 'applying' stamp: 'HAW 8/16/2018 14:39:41'!
+!ChangeSelector methodsFor: 'applying' stamp: 'HAW 8/18/2018 11:59:02'!
 apply
 	
 	self 
@@ -3899,33 +4035,24 @@ apply
 	^changes
 ! !
 
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 17:45:14'!
-addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
-	
-	| oldSelectorLastPositions |
-	
-	oldSelectorLastPositions := aMethodNode messageSendLasPositionsOf: oldSelector ifAbsent: [ #() ].
-	oldSelectorLastPositions do: [ :aPosition | rangesToKeywords add: ((aPosition+1) to: aPosition) -> senderTrailingString ]
-	! !
+!ChangeSelector methodsFor: 'remove old implementors - private' stamp: 'HAW 8/18/2018 12:02:34'!
+removeOldImplementor: anImplementor 
 
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:49:09'!
-addRangesForLiteralOf: methodNode to: rangesToKeywords
-	
-	| oldSelectorLiteralRanges |
-	
-	oldSelectorLiteralRanges := methodNode rangesForLiteralNode: oldSelector ifAbsent: [ #() ].
-	oldSelectorLiteralRanges do: [ :oldSelectorLiteralRange | 
-		rangesToKeywords add: (oldSelectorLiteralRange first + 1 to: oldSelectorLiteralRange last) -> newSelector ].
-	
-! !
+	anImplementor methodClass removeSelector: anImplementor selector.
+	changes add: anImplementor methodReference! !
 
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:51:02'!
+!ChangeSelector methodsFor: 'remove old implementors - private' stamp: 'HAW 8/18/2018 12:01:49'!
+removeOldImplementors
+	
+	implementors do: [:anImplementor | self removeOldImplementor: anImplementor ]! !
+
+!ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/18/2018 12:02:03'!
 addToSendersIfOldSelectorIsSentIn: newImplementor
 	
 	(newImplementor refersToLiteral: oldSelector) ifTrue: [ senders add: newImplementor ]. 
 	! !
 
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 12:07:02'!
+!ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/18/2018 12:02:16'!
 compileNewImplementorOf: anImplementor
 		
 	| implementorClassification |
@@ -3936,7 +4063,7 @@ compileNewImplementorOf: anImplementor
 		classifyUnder: implementorClassification.
 ! !
 
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 12:05:07'!
+!ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/18/2018 12:02:25'!
 createNewImplementorOf: anImplementor
 
 	| newImplementor |
@@ -3949,28 +4076,180 @@ createNewImplementorOf: anImplementor
 	
 	! !
 
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 12:04:29'!
+!ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/18/2018 12:02:52'!
 createNewImplementors
 	
 	implementors do: [:anImplementor | self createNewImplementorOf: anImplementor ]
 	! !
 
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 17:10:32'!
+!ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/18/2018 12:06:01'!
 implementorNewSourceCodeOf: anImplementor
 
-	|  newSource originalSource selectorLastPosition |
-	
-	selectorLastPosition := anImplementor methodNode selectorLastPosition.
-	originalSource := anImplementor sourceCode.
-	newSource := String streamContents: [ :newSourceStream |
-		newSourceStream 
-			nextPutAll: (originalSource copyFrom: 1 to: selectorLastPosition);
-			nextPutAll: implementorTrailingString;
-			nextPutAll: (originalSource copyFrom: selectorLastPosition + 1 to: originalSource size) ].
-		
-	^newSource! !
+	self subclassResponsibility ! !
 
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 19:49:29'!
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/18/2018 12:05:39'!
+addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
+
+	self subclassResponsibility ! !
+
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/18/2018 12:03:00'!
+addRangesForLiteralOf: methodNode to: rangesToKeywords
+	
+	| oldSelectorLiteralRanges |
+	
+	oldSelectorLiteralRanges := methodNode rangesForLiteralNode: oldSelector ifAbsent: [ #() ].
+	oldSelectorLiteralRanges do: [ :oldSelectorLiteralRange | 
+		rangesToKeywords add: (oldSelectorLiteralRange first + 1 to: oldSelectorLiteralRange last) -> newSelector ].
+	
+! !
+
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/18/2018 12:03:09'!
+rangesToKeywordsOf: aMethod
+	
+	| methodNode rangesToKeywords |
+	
+	methodNode := aMethod methodNode.
+	rangesToKeywords := SortedCollection sortBlock: [ :left :right | left key first < right key first ].
+	
+	self addMessageSendSelectorKeywordRangesOf: methodNode to: rangesToKeywords.
+	self addRangesForLiteralOf: methodNode to: rangesToKeywords.
+	
+	^rangesToKeywords	! !
+
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/18/2018 12:03:19'!
+renameSenders
+	
+	senders do: [ :aSender | self renameSendersIn: aSender ].
+	! !
+
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/18/2018 12:02:43'!
+renameSendersIn: aMethod
+
+	| newSource |
+	
+	newSource := aMethod sourceCode copyReplacing: (self rangesToKeywordsOf: aMethod).
+	aMethod methodClass compile: newSource.
+	
+	changes add: (MethodReference class: aMethod methodClass selector: aMethod selector)! !
+
+!ChangeSelector methodsFor: 'implementors/senders' stamp: 'HAW 8/18/2018 12:04:37'!
+implementorsSize
+	
+	^implementors size! !
+
+!ChangeSelector methodsFor: 'implementors/senders' stamp: 'HAW 8/18/2018 12:03:31'!
+sendersSize
+	
+	^senders size! !
+
+!ChangeSelector class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 12:39:40'!
+assertAllImplementors: implementors haveSame: aSelector
+
+	| invalidImplementors |
+	
+	invalidImplementors := implementors reject: [ :anImplementor | anImplementor selector = aSelector ].
+	invalidImplementors notEmpty ifTrue: [ self signalInvalidImplementors: invalidImplementors ].! !
+
+!ChangeSelector class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 15:50:04'!
+assertAllSenders: senders send: aSelector
+
+	| invalidSenders |
+	
+	invalidSenders := senders reject: [ :aSender | aSender refersToLiteral: aSelector ].
+	invalidSenders notEmpty ifTrue: [ self signalInvalidSenders: invalidSenders of: aSelector ]! !
+
+!ChangeSelector class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:44:12'!
+errorMessageForInvalidImplementors: aCollectionOfInvalidImplementors
+
+	^String streamContents: [ :stream |
+		stream 
+			nextPutAll: (aCollectionOfInvalidImplementors size = 1 ifTrue: [ 'This method' ] ifFalse: [ 'These methods']);
+		 	nextPutAll: ' do not have same the same selector to rename: '.
+		aCollectionOfInvalidImplementors asCommaStringAndPritingWith: [:anImplementor | anImplementor printClassAndSelectorOn: stream ] ] ! !
+
+!ChangeSelector class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 15:49:52'!
+errorMessageForInvalidSenders: aCollectionOfInvalidSenders of: anOldSelector
+
+	^String streamContents: [ :stream |
+		stream 
+			nextPutAll: 'Message #';
+			nextPutAll: anOldSelector;
+			nextPutAll: ' is not send by: '.
+		aCollectionOfInvalidSenders asCommaStringAndPritingWith: [:aSender | aSender printClassAndSelectorOn: stream ] ] ! !
+
+!ChangeSelector class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:43:59'!
+signalInvalidImplementors: invalidImplementors
+
+	self refactoringError: (self errorMessageForInvalidImplementors: invalidImplementors).! !
+
+!ChangeSelector class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 15:49:58'!
+signalInvalidSenders: invalidSender of: aSelector
+
+	self refactoringError: (self errorMessageForInvalidSenders: invalidSender of: aSelector).! !
+
+!ChangeSelector class methodsFor: 'implementors and senders' stamp: 'HAW 8/18/2018 17:19:35'!
+addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aPotentialClassToRefactor
+	
+	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor theNonMetaClass.
+	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor theMetaClass.
+
+! !
+
+!ChangeSelector class methodsFor: 'implementors and senders' stamp: 'HAW 8/18/2018 17:19:39'!
+addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategoriesAndHierarchyOf: aClass organizedBy: anOrganization
+
+	| categories |
+	
+	categories := Set new.
+
+	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass doingPerClass: [:aClassInHierarchy | categories add: aClassInHierarchy category ].
+	categories do: [:aCategory | self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategory: aCategory organizedBy: anOrganization ].
+! !
+
+!ChangeSelector class methodsFor: 'implementors and senders' stamp: 'HAW 8/18/2018 17:19:42'!
+addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategory: aCategory organizedBy: anOrganization
+
+	| classesInCategory |
+	
+	classesInCategory := anOrganization classesAt: aCategory.
+	classesInCategory do: [ :aPotentialClassToRefactor | self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aPotentialClassToRefactor ].
+! !
+
+!ChangeSelector class methodsFor: 'implementors and senders' stamp: 'HAW 8/18/2018 17:19:45'!
+addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass
+
+	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass doingPerClass: [ :aClassInHierarchy | ]
+		
+	! !
+
+!ChangeSelector class methodsFor: 'implementors and senders' stamp: 'HAW 8/18/2018 17:19:49'!
+addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass doingPerClass: aBlock
+
+	aClass theNonMetaClass withAllSubAndSuperclassesDo: [ :aPotentialClassToRefactor |
+		aPotentialClassToRefactor isMeta ifFalse: [ 
+			self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aPotentialClassToRefactor.
+			aBlock value: aPotentialClassToRefactor ]]
+	! !
+
+!ChangeSelector class methodsFor: 'implementors and senders' stamp: 'HAW 8/18/2018 17:19:52'!
+addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inSystem: aSystem
+
+	aSystem allBehaviorsDo: [ :aPotentialClassToRefactor | 
+		self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor ].
+! !
+
+!ChangeSelector class methodsFor: 'implementors and senders' stamp: 'HAW 8/18/2018 17:19:56'!
+addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor
+	
+	| potentialImplementor |
+	
+	potentialImplementor := aPotentialClassToRefactor compiledMethodAt: anOldSelector ifAbsent: [ nil ].
+	potentialImplementor ifNotNil: [ implementors add: potentialImplementor ].
+	
+	senders addAll: (aPotentialClassToRefactor methodsSelect: [ :aPotentialSender | aPotentialSender refersToLiteral: anOldSelector ]).
+! !
+
+!AddParameter methodsFor: 'initialization' stamp: 'HAW 8/16/2018 19:49:29'!
 initializedNamed: aNewParameter initializedWith: aNewParameterValue to: anOldSelector implementing: aNewSelector  
 	addingToImplementors: anImplementorTrailingString addingToSenders: aSenderTrailingString
 	implementors: implementorsCollection senders: sendersCollection
@@ -3986,57 +4265,158 @@ initializedNamed: aNewParameter initializedWith: aNewParameterValue to: anOldSel
 	
 	changes := Set new.! !
 
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 14:41:49'!
-rangesToKeywordsOf: aMethod
+!AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 8/16/2018 17:45:14'!
+addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
 	
-	| methodNode rangesToKeywords |
+	| oldSelectorLastPositions |
 	
-	methodNode := aMethod methodNode.
-	rangesToKeywords := SortedCollection sortBlock: [ :left :right | left key first < right key first ].
-	
-	self addMessageSendSelectorKeywordRangesOf: methodNode to: rangesToKeywords.
-	self addRangesForLiteralOf: methodNode to: rangesToKeywords.
-	
-	^rangesToKeywords	! !
-
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 12:15:12'!
-removeOldImplementor: anImplementor 
-
-	anImplementor methodClass removeSelector: anImplementor selector.
-	changes add: anImplementor methodReference! !
-
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 12:14:38'!
-removeOldImplementors
-	
-	implementors do: [:anImplementor | self removeOldImplementor: anImplementor ]! !
-
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:51:02'!
-renameSenders
-	
-	senders do: [ :aSender | self renameSendersIn: aSender ].
+	oldSelectorLastPositions := aMethodNode messageSendLasPositionsOf: oldSelector ifAbsent: [ #() ].
+	oldSelectorLastPositions do: [ :aPosition | rangesToKeywords add: ((aPosition+1) to: aPosition) -> senderTrailingString ]
 	! !
 
-!AddParameter methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 19:32:05'!
-renameSendersIn: aMethod
+!AddParameter methodsFor: 'create new implementors - private' stamp: 'HAW 8/16/2018 17:10:32'!
+implementorNewSourceCodeOf: anImplementor
 
-	| newSource |
+	|  newSource originalSource selectorLastPosition |
 	
-	newSource := aMethod sourceCode copyReplacing: (self rangesToKeywordsOf: aMethod).
-	aMethod methodClass compile: newSource.
+	selectorLastPosition := anImplementor methodNode selectorLastPosition.
+	originalSource := anImplementor sourceCode.
+	newSource := String streamContents: [ :newSourceStream |
+		newSourceStream 
+			nextPutAll: (originalSource copyFrom: 1 to: selectorLastPosition);
+			nextPutAll: implementorTrailingString;
+			nextPutAll: (originalSource copyFrom: selectorLastPosition + 1 to: originalSource size) ].
+		
+	^newSource! !
+
+!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 8/18/2018 12:22:18'!
+named: aNewParameter 
+	initializedWith: aNewParameterValue 
+	toUnarySelector: anOldSelector  
+	implementors: implementorsCollection 
+	senders: sendersCollection
+
+	self assertIsUnary: anOldSelector.
 	
-	changes add: (MethodReference class: aMethod methodClass selector: aMethod selector)! !
-
-!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 8/16/2018 17:13:49'!
-named: aNewParameter initializedWith: aNewParameterValue toUnarySelector: anOldSelector  
-	implementors: implementorsCollection senders: sendersCollection
-
 	^self 
-		named: aNewParameter initializedWith: aNewParameterValue to: anOldSelector implementing: (anOldSelector, ':') asSymbol
-		addingToImplementors: ': ', aNewParameter addingToSenders: ': ', aNewParameterValue
-		implementors: implementorsCollection senders: sendersCollection
+		named: aNewParameter 
+		initializedWith: aNewParameterValue 
+		to: anOldSelector 
+		implementing: (self newSelectorFromUnary: anOldSelector)
+		addingToImplementors: (self unaryImplementorTrailingFor: aNewParameter)
+		addingToSenders: (self unarySenderTrailingFor: aNewParameterValue)
+		implementors: implementorsCollection 
+		senders: sendersCollection
 ! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:30:40'!
+!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 8/18/2018 16:24:41'!
+named: aNewParameter 
+	initializedWith: aNewParameterValue 
+	using: aNewKeyword 
+	toKeywordSelector: anOldSelector  
+	implementors: implementorsCollection 
+	senders: sendersCollection
+
+	self assertIsKeyword: anOldSelector.
+	self assertIsValidKeywordForNewParameter: aNewKeyword.
+	
+	^self 
+		named: aNewParameter 
+		initializedWith: aNewParameterValue 
+		to: anOldSelector 
+		implementing: (self newSelectorFromKeyword: anOldSelector adding: aNewKeyword) 
+		addingToImplementors: (self keywordImplementorTrailingFor: aNewKeyword and: aNewParameter) 
+		addingToSenders: (self keywordSenderTrailingFor: aNewKeyword and: aNewParameterValue)
+		implementors: implementorsCollection 
+		senders: sendersCollection
+! !
+
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 12:28:30'!
+keywordImplementorTrailingFor: aNewKeyword and: aNewParameter
+
+	^' ',aNewKeyword, ' ', aNewParameter! !
+
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 12:28:49'!
+keywordSenderTrailingFor: aNewKeyword and: aNewParameterValue
+
+	^' ', aNewKeyword, ' ', aNewParameterValue! !
+
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 16:02:12'!
+named: aNewParameter 
+	initializedWith: aNewParameterValue 
+	to: anOldSelector 
+	implementing: aNewSelector
+	addingToImplementors: implementorTrailingString 
+	addingToSenders: senderTrailingString
+	implementors: implementorsCollection 
+	senders: sendersCollection
+
+	| trimmedNewParameter trimmedNewParameterValue |
+	
+	trimmedNewParameter := aNewParameter withBlanksTrimmed.
+	trimmedNewParameterValue := aNewParameterValue withBlanksTrimmed.
+	
+	self assertCanAddParameterTo: anOldSelector.
+	self assertIsValidParameterName: trimmedNewParameter.
+	self assertNewParameter: trimmedNewParameter isNotDefinedAsInstanceVariableInAny: implementorsCollection.
+	self assertNewParameter: trimmedNewParameter isNotDefinedAsLocalInAny: implementorsCollection.
+	self assertNewParameterValueIsNotEmpty: trimmedNewParameterValue.
+	self assertNewParameterValueCompiles: trimmedNewParameterValue.
+	self assertAllImplementors: implementorsCollection haveSame: anOldSelector.
+	self assertAllSenders: sendersCollection send: anOldSelector.
+	
+	^ self new 
+		initializedNamed: trimmedNewParameter 
+		initializedWith: trimmedNewParameterValue 
+		to: anOldSelector 
+		implementing: aNewSelector
+		addingToImplementors: implementorTrailingString 
+		addingToSenders: senderTrailingString
+		implementors: implementorsCollection 
+		senders: sendersCollection
+! !
+
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 12:17:35'!
+newSelectorFromKeyword: anOldSelector adding: aNewKeyword
+
+	^(anOldSelector,aNewKeyword) asSymbol! !
+
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 12:14:00'!
+newSelectorFromUnary: anOldSelector
+
+	^(anOldSelector, ':') asSymbol! !
+
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 12:15:49'!
+unaryImplementorTrailingFor: aNewParameter
+
+	^ ': ', aNewParameter! !
+
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 12:16:32'!
+unarySenderTrailingFor: aNewParameterValue
+
+	^ ': ', aNewParameterValue! !
+
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 16:02:12'!
+assertCanAddParameterTo: aSelector
+
+	aSelector isInfix ifTrue: [ self signalSelectorCanNotBeBinary]! !
+
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 12:29:54'!
+assertIsKeyword: aSelector
+
+	aSelector isKeyword ifFalse: [ self signalSelectorMustBeKeyword]! !
+
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 12:23:04'!
+assertIsUnary: aSelector
+
+	aSelector isUnary ifFalse: [ self signalSelectorMustBeUnary]! !
+
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 16:30:01'!
+assertIsValidKeywordForNewParameter: aNewKeyword
+
+	(aNewKeyword isKeyword and: [aNewKeyword numArgs = 1 ]) ifFalse: [ self signalNotValidKeywordForNewParameter]! !
+
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/17/2018 12:30:40'!
 assertIsValidParameterName: aName
 
 	| scannedNames |
@@ -4046,7 +4426,7 @@ assertIsValidParameterName: aName
 	scannedNames first = aName ifFalse: [ self signalInvalidParameterName: aName ].
 ! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:59:29'!
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/17/2018 16:59:29'!
 assertNewParameter: aNewParameter isNotDefinedAsInstanceVariableInAny: implementors
 
 	| classesDefiningInsVars |
@@ -4054,7 +4434,7 @@ assertNewParameter: aNewParameter isNotDefinedAsInstanceVariableInAny: implement
 	classesDefiningInsVars := self classesDefiningInstanceVariable: aNewParameter inAny: implementors.
 	classesDefiningInsVars notEmpty ifTrue: [ self signalNewParameter: aNewParameter definedAsInstanceVariableIn: classesDefiningInsVars ]! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:59:47'!
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/17/2018 16:59:47'!
 assertNewParameter: aNewParameter isNotDefinedAsLocalInAny: implementors
 
 	| implementorsDefiningNewParameterAsLocal |
@@ -4063,7 +4443,7 @@ assertNewParameter: aNewParameter isNotDefinedAsLocalInAny: implementors
 	implementorsDefiningNewParameterAsLocal notEmpty ifTrue: [ 
 		self signalNewParameter: aNewParameter isDefinedAsLocalIn: implementorsDefiningNewParameterAsLocal ]! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:59:05'!
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/17/2018 16:59:05'!
 assertNewParameterValueCompiles: aNewParameterValue
 
 	[ Parser new parse: aNewParameterValue readStream class: self noPattern: true notifying: nil ifFail: [nil] ]
@@ -4072,12 +4452,12 @@ assertNewParameterValueCompiles: aNewParameterValue
 
 ! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:21:40'!
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/17/2018 12:21:40'!
 assertNewParameterValueIsNotEmpty: aNewParameterValue
 
 	aNewParameterValue withBlanksTrimmed isEmpty ifTrue: [ self signalNewParameterValueCanNotBeEmpty]! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 15:05:29'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 15:05:29'!
 classesDefiningInstanceVariable: aName inAny: implementors
  
 	^ implementors 
@@ -4088,12 +4468,12 @@ classesDefiningInstanceVariable: aName inAny: implementors
 			classesDefiningInstVar ]
 ! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:31:35'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 12:31:35'!
 errorMessageForInvalidParameterName: aName
 
 	^ '''' , aName , ''' is not a valid parameter name'.! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 15:18:46'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 15:18:46'!
 errorMessageForNewParameter: aNewParameter definedAsInstanceVariableIn: definingClasses
 
 	^ String streamContents: [ :messageStream |
@@ -4105,65 +4485,54 @@ errorMessageForNewParameter: aNewParameter definedAsInstanceVariableIn: defining
 			nextPutAll: aNewParameter;
 			nextPutAll: ' as instance variable' ]! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 17:00:33'!
-named: aNewParameter initializedWith: aNewParameterValue to: anOldSelector implementing: aNewSelector
-	addingToImplementors: implementorTrailingString addingToSenders: senderTrailingString
-	implementors: implementorsCollection senders: sendersCollection
-
-	| trimmedNewParameter trimmedNewParameterValue |
-	
-	trimmedNewParameter := aNewParameter withBlanksTrimmed.
-	trimmedNewParameterValue := aNewParameterValue withBlanksTrimmed.
-	
-	self assertIsValidParameterName: trimmedNewParameter.
-	self assertNewParameter: trimmedNewParameter isNotDefinedAsInstanceVariableInAny: implementorsCollection.
-	self assertNewParameter: trimmedNewParameter isNotDefinedAsLocalInAny: implementorsCollection.
-	self assertNewParameterValueIsNotEmpty: trimmedNewParameterValue.
-	self assertNewParameterValueCompiles: trimmedNewParameterValue.
-
-	^ self new initializedNamed: trimmedNewParameter initializedWith: trimmedNewParameterValue to: anOldSelector implementing: aNewSelector
-		addingToImplementors: implementorTrailingString addingToSenders: senderTrailingString
-		implementors: implementorsCollection senders: sendersCollection
-! !
-
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:00:27'!
-named: aNewParameter initializedWith: aNewParameterValue using: aNewKeyword toBinarySelector: anOldSelector  
-	implementors: implementorsCollection senders: sendersCollection
-
-	^self 
-		named: aNewParameter initializedWith: aNewParameterValue to: anOldSelector implementing: (anOldSelector,aNewKeyword) asSymbol
-		addingToImplementors: ' ',aNewKeyword, ' ', aNewParameter addingToSenders: ' ', aNewKeyword, ' ', aNewParameterValue
-		implementors: implementorsCollection senders: sendersCollection
-! !
-
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:21:31'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 16:21:31'!
 newParameterDefinedAsLocalErrorMessageFor: aNewParameter
 
 	^ aNewParameter, ' is already defined as parameter or temporary'! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:22:31'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 12:22:31'!
 newParameterValueCanNotBeEmptyErrorMessage
 	
 	^'New parameter value can not be empty'! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:24:53'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 12:24:53'!
 newParameterValueDoesNotCompileErrorMessage
 	
 	^'New parameter value code does not compile'! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:31:15'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 16:31:03'!
+notValidKeywordForNewParameterErrorMessage
+	
+	^'New keyword must be of keyword type with one parameter'! !
+
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:35:26'!
+selectorCanNotBeBinaryErrorMessage
+	
+	^'Selector can not be binary'! !
+
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:26:46'!
+selectorMustBeKeywordErrorMessage
+	
+	^'Selector must be of keyword type'! !
+
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:23:47'!
+selectorMustBeUnaryErrorMessage
+	
+	^'Selector must be unary'! !
+
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 12:31:15'!
 signalInvalidParameterName: aName
 
 	self refactoringError: (self errorMessageForInvalidParameterName: aName)
 
 ! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 15:11:03'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 15:11:03'!
 signalNewParameter: aNewParameter definedAsInstanceVariableIn: definingClasses
 
 	self refactoringError: (self errorMessageForNewParameter: aNewParameter definedAsInstanceVariableIn: definingClasses)! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:34:16'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 16:34:16'!
 signalNewParameter: aNewParameter isDefinedAsLocalIn: implementors
 
 	self 
@@ -4172,15 +4541,267 @@ signalNewParameter: aNewParameter isDefinedAsLocalIn: implementors
 		to: aNewParameter 
 	 ! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:22:07'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 12:22:07'!
 signalNewParameterValueCanNotBeEmpty
 	
 	self refactoringError: self newParameterValueCanNotBeEmptyErrorMessage! !
 
-!AddParameter class methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:24:53'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 12:24:53'!
 signalNewParameterValueDoesNotCompile
 	
 	self refactoringError: self newParameterValueDoesNotCompileErrorMessage! !
+
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 16:25:55'!
+signalNotValidKeywordForNewParameter
+	
+	self refactoringError: self notValidKeywordForNewParameterErrorMessage! !
+
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:35:05'!
+signalSelectorCanNotBeBinary
+	
+	self refactoringError: self selectorCanNotBeBinaryErrorMessage! !
+
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:29:54'!
+signalSelectorMustBeKeyword
+	
+	self refactoringError: self selectorMustBeKeywordErrorMessage! !
+
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:23:26'!
+signalSelectorMustBeUnary
+	
+	self refactoringError: self selectorMustBeUnaryErrorMessage! !
+
+!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 15:32:48'!
+implementorNewSourceCodeOf: anImplementor
+
+	|  newSource rangesToNewKeywords |
+	
+	rangesToNewKeywords := OrderedCollection new.
+	anImplementor methodNode selectorKeywordsRanges withIndexDo: [ :aKeywordRange :index | 
+		rangesToNewKeywords add: aKeywordRange -> (newSelectorKeywords at: index) ].
+		
+	newSource := anImplementor sourceCode copyReplacing: rangesToNewKeywords.	
+	^newSource! !
+
+!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:19:47'!
+addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
+	
+	| oldSelectorKeywordsRanges |
+	
+	oldSelectorKeywordsRanges := aMethodNode messageSendSelectorKeywordRangesOf: oldSelector ifAbsent: [ #() ].
+	oldSelectorKeywordsRanges do: [ :aMessageSendSelectorRanges | 
+		aMessageSendSelectorRanges withIndexDo: [ :aRange :index | rangesToKeywords add: aRange -> (newSelectorKeywords at: index) ]].
+	! !
+
+!RenameSelector methodsFor: 'initialization' stamp: 'HAW 8/9/2018 23:00:34'!
+initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
+	
+	oldSelector := anOldSelector.
+	newSelector := aNewSelector.
+	implementors := aCollectionOfImplementors.
+	"I have to make a copy of senders because it can change with recursive implementors - Hernan"
+	senders := aCollectionOfSenders asOrderedCollection.
+	
+	newSelectorKeywords := newSelector keywords.	
+	changes := Set new.! !
+
+!RenameSelector methodsFor: 'selectors' stamp: 'HAW 5/24/2017 19:43:23'!
+newSelector
+	
+	^newSelector ! !
+
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 20:02:05'!
+assert: aNewSelector hasTheSameNumberOfArgumentsAs: anOldSelector
+
+	aNewSelector numArgs ~= anOldSelector numArgs ifTrue: [ self signalNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector ]! !
+
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/26/2017 00:41:25'!
+assert: aNewSelector isNotEqualTo: anOldSelector
+
+	 aNewSelector = anOldSelector ifTrue: [ self signalNewSelectorEqualToOldSelector]! !
+
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 19:56:04'!
+assert: aNewSelector isOfSameTypeAs: anOldSelector
+
+	aNewSelector precedence ~= anOldSelector precedence ifTrue: [ self signalNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector ]! !
+
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 6/3/2017 11:54:48'!
+assertIsNotEmpty: aCollection signalMessageText: errorMessageText
+
+	aCollection isEmpty ifTrue: [ self refactoringError: errorMessageText ].! !
+
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/26/2017 00:44:37'!
+assertIsValidToRenameFrom: anOldSelector to: aNewSelector
+	
+	self assertIsNotEmpty: anOldSelector signalMessageText: self oldSelectorCanNotBeEmptyErrorMessage.
+	self assertIsNotEmpty: aNewSelector signalMessageText: self newSelectorCanNotBeEmptyErrorMessage.
+	self assert: aNewSelector isNotEqualTo: anOldSelector.
+	self assert: aNewSelector isOfSameTypeAs: anOldSelector.
+	self assert: aNewSelector hasTheSameNumberOfArgumentsAs: anOldSelector.
+	! !
+
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/31/2017 19:38:12'!
+assertNoImplementorClassIn: implementorsCollection implements: aNewSelector
+
+	| classesImplementingNewSelector |
+	
+	classesImplementingNewSelector := implementorsCollection 
+		select: [ :anImplementor | anImplementor methodClass includesSelector: aNewSelector ]
+		thenCollect: [ :anImplementor | anImplementor methodClass ].
+		
+	classesImplementingNewSelector notEmpty ifTrue: [ self signalNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector ]! !
+
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/31/2017 20:56:22'!
+warnIfImplementionsOf: aNewSelector overridesImplementationInSuperclassesOf: implementorsCollection
+
+	implementorsCollection do: [:anImplementor |
+		anImplementor methodClass 
+			withSuperclassThatIncludesSelector: aNewSelector 
+			do: [ :aSuperclass | self warnImplementionOf: aNewSelector in: anImplementor methodClass willOverrideImplementationIn: aSuperclass ]
+			ifNone: []]! !
+
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:59:44'!
+errorMessageForNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector
+
+	^'New selector #', aNewSelector, ' does not have the same number of arguments as #', anOldSelector ! !
+
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/31/2017 19:41:36'!
+errorMessageForNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector
+
+	^'Can not rename because #', aNewSelector, ' is implemented in: ', classesImplementingNewSelector asCommaStringAnd ! !
+
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:54:05'!
+errorMessageForNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector
+
+	^'New selector #', aNewSelector, ' is not of same type as #', anOldSelector ! !
+
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:51:46'!
+implementorsCanNotBeEmptyErrorMessage
+	
+	^'There are no methods to rename'! !
+
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:49:15'!
+newSelectorCanNotBeEmptyErrorMessage
+	
+	^'New selector can not be empty'! !
+
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/26/2017 00:40:01'!
+newSelectorEqualToOldSelectorErrorMessage
+	
+	^'There is nothing to rename when new selector is equals to old selector'! !
+
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:49:07'!
+oldSelectorCanNotBeEmptyErrorMessage
+	
+	^'Old selector can not be empty'! !
+
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:23'!
+signalNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector
+	
+	self refactoringError: (self errorMessageForNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector).! !
+
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:38'!
+signalNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector
+	
+	self refactoringError: (self errorMessageForNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector).! !
+
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:54'!
+signalNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector
+
+	self refactoringError: (self errorMessageForNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector).! !
+
+!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:58'!
+signalNewSelectorEqualToOldSelector
+
+	self refactoringError: self newSelectorEqualToOldSelectorErrorMessage.! !
+
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 19:58:50'!
+from: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
+
+	self assertIsValidToRenameFrom: anOldSelector to: aNewSelector.
+	self assertIsNotEmpty: aCollectionOfImplementors signalMessageText: self implementorsCanNotBeEmptyErrorMessage.
+	self assertAllImplementors: aCollectionOfImplementors haveSame: anOldSelector.
+	self assertNoImplementorClassIn: aCollectionOfImplementors implements: aNewSelector.
+	self assertAllSenders: aCollectionOfSenders send: anOldSelector.
+	
+	self warnIfImplementionsOf: aNewSelector overridesImplementationInSuperclassesOf: aCollectionOfImplementors.
+	
+	^self new initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
+	! !
+
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/26/2017 00:04:36'!
+from: anOldSelector to: aNewSelector in: aClassToRefactor
+
+	| implementors senders |
+	
+	implementors := OrderedCollection new.
+	senders := OrderedCollection new.
+	
+	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aClassToRefactor theNonMetaClass.
+	
+	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders ! !
+
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/30/2017 17:45:16'!
+from: anOldSelector to: aNewSelector inCategoriesAndHierarchyOf: aClass organizedBy: anOrganization
+
+	| implementors senders |
+	
+	implementors := IdentitySet new.
+	senders := IdentitySet new.
+
+	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategoriesAndHierarchyOf: aClass organizedBy: anOrganization.
+	
+	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders 
+! !
+
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/25/2017 23:59:19'!
+from: anOldSelector to: aNewSelector inCategoryOf: aClass organizedBy: anOrganization
+
+	| implementors senders |
+	
+	implementors := OrderedCollection new.
+	senders := OrderedCollection new.
+
+	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategory: aClass category organizedBy: anOrganization.
+	
+	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders 
+! !
+
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/25/2017 23:53:57'!
+from: anOldSelector to: aNewSelector inHierarchyOf: aClass 
+	
+	| implementors senders |
+	
+	implementors := OrderedCollection new.
+	senders := OrderedCollection new.
+	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass.
+	
+	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders 
+	
+	! !
+
+!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/30/2017 17:47:27'!
+from: anOldSelector to: aNewSelector inSystem: aSystem
+
+	| implementors senders |
+	
+	implementors := OrderedCollection new.
+	senders := OrderedCollection new.
+	
+	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inSystem: aSystem.
+		
+	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders 
+	! !
+
+!RenameSelector class methodsFor: 'warnings' stamp: 'HAW 6/3/2017 12:01:34'!
+warnImplementionOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass
+	
+	self refactoringWarning: (self warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass).! !
+
+!RenameSelector class methodsFor: 'warnings' stamp: 'HAW 8/1/2018 18:15:01'!
+warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass
+
+	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
 
 !ExtractToTemporary methodsFor: 'applying' stamp: 'HAW 10/18/2017 18:39:22'!
 apply
@@ -4449,6 +5070,29 @@ to: aClass named: aSuperclassName in: aSystem undeclared: anUndeclared
 	NewClassPrecondition valueFor: aSuperclassName in: aSystem undeclared: anUndeclared.
 	
 	^self new initializeTo: aClass theNonMetaClass named: aSuperclassName ! !
+
+!PushUpMethod methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 11:46:09'!
+apply
+
+	| methodCategory |
+	
+	methodCategory := method methodClass organization categoryOfElement: method selector.
+	method methodClass superclass
+		compile: method sourceCode 
+		classifyUnder: methodCategory.
+		
+	method methodClass removeSelector: method selector.
+ ! !
+
+!PushUpMethod methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 11:44:09'!
+initializeFor: aMethodToPushup
+
+	method := aMethodToPushup ! !
+
+!PushUpMethod class methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 11:43:53'!
+for: aMethodToPushUp
+
+	^self new initializeFor: aMethodToPushUp ! !
 
 !RemoveAllUnreferencedInstanceVariables methodsFor: 'initialization' stamp: 'HAW 8/2/2018 16:14:57'!
 initializeFrom: aClassToRefactor
@@ -4805,453 +5449,6 @@ from: anOldvariable to: aNewVariable in: aClassToRefactor
 	addInstanceVariable := AddInstanceVariable named: aNewVariable to: aClassToRefactor.
 	
 	^self new initializeFrom: anOldvariable addingWith: addInstanceVariable ! !
-
-!RenameSelector methodsFor: 'applying' stamp: 'HAW 5/31/2017 16:50:58'!
-apply
-
-	self 
-		createNewImplementors;
-		renameSenders;
-		removeOldImplementors.
-		
-	^changes
-		! !
-
-!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:39:28'!
-addToSendersIfOldSelectorIsSentIn: newImplementor
-	
-	(newImplementor refersToLiteral: oldSelector) ifTrue: [ senders add: newImplementor ]. 
-	! !
-
-!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:34:13'!
-compileNewImplementorOf: anImplementor
-		
-	| implementorClassification |
-	
-	implementorClassification := anImplementor methodClass organization categoryOfElement: oldSelector.
-	anImplementor methodClass 
-		compile: (self implementorNewSourceCodeOf: anImplementor) 
-		classifyUnder: implementorClassification.
-! !
-
-!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 14:39:40'!
-createNewImplementorOf: anImplementor
-
-	| newImplementor |
-
-	self compileNewImplementorOf: anImplementor.
-	newImplementor := anImplementor methodClass compiledMethodAt: newSelector.
-	self addToSendersIfOldSelectorIsSentIn: newImplementor.
-	
-	changes add: newImplementor methodReference 
-	
-	! !
-
-!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 5/25/2017 21:07:05'!
-createNewImplementors
-	
-	implementors do: [:anImplementor | self createNewImplementorOf: anImplementor ]
-	! !
-
-!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 15:32:48'!
-implementorNewSourceCodeOf: anImplementor
-
-	|  newSource rangesToNewKeywords |
-	
-	rangesToNewKeywords := OrderedCollection new.
-	anImplementor methodNode selectorKeywordsRanges withIndexDo: [ :aKeywordRange :index | 
-		rangesToNewKeywords add: aKeywordRange -> (newSelectorKeywords at: index) ].
-		
-	newSource := anImplementor sourceCode copyReplacing: rangesToNewKeywords.	
-	^newSource! !
-
-!RenameSelector methodsFor: 'remove old implementors - private' stamp: 'HAW 5/31/2017 16:49:41'!
-removeOldImplementor: anImplementor 
-
-	anImplementor methodClass removeSelector: anImplementor selector.
-	changes add: anImplementor methodReference! !
-
-!RenameSelector methodsFor: 'remove old implementors - private' stamp: 'HAW 5/31/2017 16:46:48'!
-removeOldImplementors
-	
-	implementors do: [:anImplementor | self removeOldImplementor: anImplementor ]! !
-
-!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:19:47'!
-addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
-	
-	| oldSelectorKeywordsRanges |
-	
-	oldSelectorKeywordsRanges := aMethodNode messageSendSelectorKeywordRangesOf: oldSelector ifAbsent: [ #() ].
-	oldSelectorKeywordsRanges do: [ :aMessageSendSelectorRanges | 
-		aMessageSendSelectorRanges withIndexDo: [ :aRange :index | rangesToKeywords add: aRange -> (newSelectorKeywords at: index) ]].
-	! !
-
-!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:13:41'!
-addRangesForLiteralOf: methodNode to: rangesToKeywords
-	
-	| oldSelectorLiteralRanges |
-	
-	oldSelectorLiteralRanges := methodNode rangesForLiteralNode: oldSelector ifAbsent: [ #() ].
-	oldSelectorLiteralRanges do: [ :oldSelectorLiteralRange | 
-		rangesToKeywords add: (oldSelectorLiteralRange first + 1 to: oldSelectorLiteralRange last) -> newSelector ].
-	
-! !
-
-!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:19:57'!
-rangesToKeywordsOf: aMethod
-	
-	| methodNode rangesToKeywords |
-	
-	methodNode := aMethod methodNode.
-	rangesToKeywords := SortedCollection sortBlock: [ :left :right | left key first < right key first ].
-	
-	self addMessageSendSelectorKeywordRangesOf: methodNode to: rangesToKeywords.
-	self addRangesForLiteralOf: methodNode to: rangesToKeywords.
-	
-	^rangesToKeywords	! !
-
-!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 5/25/2017 20:21:50'!
-renameSenders
-	
-	senders do: [ :aSender | self renameSendersIn: aSender ].
-	! !
-
-!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 15:32:48'!
-renameSendersIn: aMethod
-
-	| newSource |
-	
-	newSource := aMethod sourceCode copyReplacing: (self rangesToKeywordsOf: aMethod).
-	aMethod methodClass compile: newSource.
-	
-	changes add: (MethodReference class: aMethod methodClass selector: aMethod selector)! !
-
-!RenameSelector methodsFor: 'implementors/senders' stamp: 'HAW 5/28/2017 22:42:25'!
-implementorsSize
-	
-	^implementors size! !
-
-!RenameSelector methodsFor: 'implementors/senders' stamp: 'HAW 5/28/2017 22:42:32'!
-sendersSize
-	
-	^senders size! !
-
-!RenameSelector methodsFor: 'initialization' stamp: 'HAW 8/9/2018 23:00:34'!
-initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
-	
-	oldSelector := anOldSelector.
-	newSelector := aNewSelector.
-	implementors := aCollectionOfImplementors.
-	"I have to make a copy of senders because it can change with recursive implementors - Hernan"
-	senders := aCollectionOfSenders asOrderedCollection.
-	
-	newSelectorKeywords := newSelector keywords.	
-	changes := Set new.! !
-
-!RenameSelector methodsFor: 'selectors' stamp: 'HAW 5/24/2017 19:43:23'!
-newSelector
-	
-	^newSelector ! !
-
-!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 8/31/2017 16:00:13'!
-addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aPotentialClassToRefactor
-	
-	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor theNonMetaClass.
-	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor theMetaClass.
-
-! !
-
-!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/30/2017 17:45:37'!
-addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategoriesAndHierarchyOf: aClass organizedBy: anOrganization
-
-	| categories |
-	
-	categories := Set new.
-
-	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass doingPerClass: [:aClassInHierarchy | categories add: aClassInHierarchy category ].
-	categories do: [:aCategory | self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategory: aCategory organizedBy: anOrganization ].
-! !
-
-!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/26/2017 00:05:53'!
-addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategory: aCategory organizedBy: anOrganization
-
-	| classesInCategory |
-	
-	classesInCategory := anOrganization classesAt: aCategory.
-	classesInCategory do: [ :aPotentialClassToRefactor | self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aPotentialClassToRefactor ].
-! !
-
-!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/25/2017 23:55:00'!
-addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass
-
-	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass doingPerClass: [ :aClassInHierarchy | ]
-		
-	! !
-
-!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/26/2017 00:06:10'!
-addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass doingPerClass: aBlock
-
-	aClass theNonMetaClass withAllSubAndSuperclassesDo: [ :aPotentialClassToRefactor |
-		aPotentialClassToRefactor isMeta ifFalse: [ 
-			self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aPotentialClassToRefactor.
-			aBlock value: aPotentialClassToRefactor ]]
-	! !
-
-!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/30/2017 17:47:50'!
-addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inSystem: aSystem
-
-	aSystem allBehaviorsDo: [ :aPotentialClassToRefactor | 
-		self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor ].
-! !
-
-!RenameSelector class methodsFor: 'implementors and senders' stamp: 'HAW 5/26/2017 00:07:16'!
-addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor
-	
-	| potentialImplementor |
-	
-	potentialImplementor := aPotentialClassToRefactor compiledMethodAt: anOldSelector ifAbsent: [ nil ].
-	potentialImplementor ifNotNil: [ implementors add: potentialImplementor ].
-	
-	senders addAll: (aPotentialClassToRefactor methodsSelect: [ :aPotentialSender | aPotentialSender refersToLiteral: anOldSelector ]).
-! !
-
-!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 20:02:05'!
-assert: aNewSelector hasTheSameNumberOfArgumentsAs: anOldSelector
-
-	aNewSelector numArgs ~= anOldSelector numArgs ifTrue: [ self signalNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector ]! !
-
-!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/26/2017 00:41:25'!
-assert: aNewSelector isNotEqualTo: anOldSelector
-
-	 aNewSelector = anOldSelector ifTrue: [ self signalNewSelectorEqualToOldSelector]! !
-
-!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 19:56:04'!
-assert: aNewSelector isOfSameTypeAs: anOldSelector
-
-	aNewSelector precedence ~= anOldSelector precedence ifTrue: [ self signalNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector ]! !
-
-!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 19:22:42'!
-assertAllImplementors: implementors haveSame: aSelector
-
-	| invalidImplementors |
-	
-	invalidImplementors := implementors reject: [ :anImplementor | anImplementor selector = aSelector ].
-	invalidImplementors notEmpty ifTrue: [ self signalInvalidImplementors: invalidImplementors ].! !
-
-!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 21:34:26'!
-assertAllSenders: senders send: aSelector
-
-	| invalidSenders |
-	
-	invalidSenders := senders reject: [ :aSender | aSender refersToLiteral: aSelector ].
-	invalidSenders notEmpty ifTrue: [ self signalInvalidSenders: invalidSenders of: aSelector ]! !
-
-!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 6/3/2017 11:54:48'!
-assertIsNotEmpty: aCollection signalMessageText: errorMessageText
-
-	aCollection isEmpty ifTrue: [ self refactoringError: errorMessageText ].! !
-
-!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/26/2017 00:44:37'!
-assertIsValidToRenameFrom: anOldSelector to: aNewSelector
-	
-	self assertIsNotEmpty: anOldSelector signalMessageText: self oldSelectorCanNotBeEmptyErrorMessage.
-	self assertIsNotEmpty: aNewSelector signalMessageText: self newSelectorCanNotBeEmptyErrorMessage.
-	self assert: aNewSelector isNotEqualTo: anOldSelector.
-	self assert: aNewSelector isOfSameTypeAs: anOldSelector.
-	self assert: aNewSelector hasTheSameNumberOfArgumentsAs: anOldSelector.
-	! !
-
-!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/31/2017 19:38:12'!
-assertNoImplementorClassIn: implementorsCollection implements: aNewSelector
-
-	| classesImplementingNewSelector |
-	
-	classesImplementingNewSelector := implementorsCollection 
-		select: [ :anImplementor | anImplementor methodClass includesSelector: aNewSelector ]
-		thenCollect: [ :anImplementor | anImplementor methodClass ].
-		
-	classesImplementingNewSelector notEmpty ifTrue: [ self signalNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector ]! !
-
-!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/31/2017 20:56:22'!
-warnIfImplementionsOf: aNewSelector overridesImplementationInSuperclassesOf: implementorsCollection
-
-	implementorsCollection do: [:anImplementor |
-		anImplementor methodClass 
-			withSuperclassThatIncludesSelector: aNewSelector 
-			do: [ :aSuperclass | self warnImplementionOf: aNewSelector in: anImplementor methodClass willOverrideImplementationIn: aSuperclass ]
-			ifNone: []]! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:47:33'!
-errorMessageForInvalidImplementors: aCollectionOfInvalidImplementors
-
-	^String streamContents: [ :stream |
-		stream 
-			nextPutAll: (aCollectionOfInvalidImplementors size = 1 ifTrue: [ 'This method' ] ifFalse: [ 'These methods']);
-		 	nextPutAll: ' do not have same the same selector to rename: '.
-		aCollectionOfInvalidImplementors asCommaStringAndPritingWith: [:anImplementor | anImplementor printClassAndSelectorOn: stream ] ] ! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:47:09'!
-errorMessageForInvalidSenders: aCollectionOfInvalidSenders of: anOldSelector
-
-	^String streamContents: [ :stream |
-		stream 
-			nextPutAll: 'Message #';
-			nextPutAll: anOldSelector;
-			nextPutAll: ' is not send by: '.
-		aCollectionOfInvalidSenders asCommaStringAndPritingWith: [:aSender | aSender printClassAndSelectorOn: stream ] ] ! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:59:44'!
-errorMessageForNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector
-
-	^'New selector #', aNewSelector, ' does not have the same number of arguments as #', anOldSelector ! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/31/2017 19:41:36'!
-errorMessageForNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector
-
-	^'Can not rename because #', aNewSelector, ' is implemented in: ', classesImplementingNewSelector asCommaStringAnd ! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 19:54:05'!
-errorMessageForNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector
-
-	^'New selector #', aNewSelector, ' is not of same type as #', anOldSelector ! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:51:46'!
-implementorsCanNotBeEmptyErrorMessage
-	
-	^'There are no methods to rename'! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:49:15'!
-newSelectorCanNotBeEmptyErrorMessage
-	
-	^'New selector can not be empty'! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/26/2017 00:40:01'!
-newSelectorEqualToOldSelectorErrorMessage
-	
-	^'There is nothing to rename when new selector is equals to old selector'! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 5/25/2017 18:49:07'!
-oldSelectorCanNotBeEmptyErrorMessage
-	
-	^'Old selector can not be empty'! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:54:52'!
-signalInvalidImplementors: invalidImplementors
-
-	self refactoringError: (self errorMessageForInvalidImplementors: invalidImplementors).! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:07'!
-signalInvalidSenders: invalidSender of: aSelector
-
-	self refactoringError: (self errorMessageForInvalidSenders: invalidSender of: aSelector).! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:23'!
-signalNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector
-	
-	self refactoringError: (self errorMessageForNewSelector: aNewSelector doesNotHaveSameNumberOfArgumentsAs: anOldSelector).! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:38'!
-signalNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector
-	
-	self refactoringError: (self errorMessageForNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector).! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:54'!
-signalNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector
-
-	self refactoringError: (self errorMessageForNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector).! !
-
-!RenameSelector class methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:55:58'!
-signalNewSelectorEqualToOldSelector
-
-	self refactoringError: self newSelectorEqualToOldSelectorErrorMessage.! !
-
-!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 19:58:50'!
-from: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
-
-	self assertIsValidToRenameFrom: anOldSelector to: aNewSelector.
-	self assertIsNotEmpty: aCollectionOfImplementors signalMessageText: self implementorsCanNotBeEmptyErrorMessage.
-	self assertAllImplementors: aCollectionOfImplementors haveSame: anOldSelector.
-	self assertNoImplementorClassIn: aCollectionOfImplementors implements: aNewSelector.
-	self assertAllSenders: aCollectionOfSenders send: anOldSelector.
-	
-	self warnIfImplementionsOf: aNewSelector overridesImplementationInSuperclassesOf: aCollectionOfImplementors.
-	
-	^self new initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
-	! !
-
-!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/26/2017 00:04:36'!
-from: anOldSelector to: aNewSelector in: aClassToRefactor
-
-	| implementors senders |
-	
-	implementors := OrderedCollection new.
-	senders := OrderedCollection new.
-	
-	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders forClassAndMetaOf: aClassToRefactor theNonMetaClass.
-	
-	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders ! !
-
-!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/30/2017 17:45:16'!
-from: anOldSelector to: aNewSelector inCategoriesAndHierarchyOf: aClass organizedBy: anOrganization
-
-	| implementors senders |
-	
-	implementors := IdentitySet new.
-	senders := IdentitySet new.
-
-	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategoriesAndHierarchyOf: aClass organizedBy: anOrganization.
-	
-	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders 
-! !
-
-!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/25/2017 23:59:19'!
-from: anOldSelector to: aNewSelector inCategoryOf: aClass organizedBy: anOrganization
-
-	| implementors senders |
-	
-	implementors := OrderedCollection new.
-	senders := OrderedCollection new.
-
-	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inCategory: aClass category organizedBy: anOrganization.
-	
-	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders 
-! !
-
-!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/25/2017 23:53:57'!
-from: anOldSelector to: aNewSelector inHierarchyOf: aClass 
-	
-	| implementors senders |
-	
-	implementors := OrderedCollection new.
-	senders := OrderedCollection new.
-	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inHierarchyOf: aClass.
-	
-	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders 
-	
-	! !
-
-!RenameSelector class methodsFor: 'instance creation' stamp: 'HAW 5/30/2017 17:47:27'!
-from: anOldSelector to: aNewSelector inSystem: aSystem
-
-	| implementors senders |
-	
-	implementors := OrderedCollection new.
-	senders := OrderedCollection new.
-	
-	self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inSystem: aSystem.
-		
-	^self from: anOldSelector to: aNewSelector implementors: implementors senders: senders 
-	! !
-
-!RenameSelector class methodsFor: 'warnings' stamp: 'HAW 6/3/2017 12:01:34'!
-warnImplementionOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass
-	
-	self refactoringWarning: (self warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass).! !
-
-!RenameSelector class methodsFor: 'warnings' stamp: 'HAW 8/1/2018 18:15:01'!
-warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass
-
-	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
 
 !RenameTemporary methodsFor: 'applying' stamp: 'HAW 8/13/2018 15:28:15'!
 apply
@@ -5652,6 +5849,306 @@ on: aBrowserWindow for: aClassToRefactor
 	^self new initializeOn: aBrowserWindow for: aClassToRefactor 
 ! !
 
+!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:21:12'!
+askScope
+
+	| scopeMenu |
+	
+	scopeMenu := PopUpMenu labelArray: self scopeOptionLabels.
+	scopeChoice := scopeMenu startUpWithCaption: 'Select Refactoring Scope'.
+	scopeChoice = 0 ifTrue: [ self endRequest ].
+	! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:00:38'!
+calculateImplementorsAndSenders
+		
+	implementors := IdentitySet new.
+	senders := IdentitySet new.
+	
+	scopeChoice = 1 ifTrue: [ ^self implementorsAndSendersForClass ].
+	scopeChoice = 2 ifTrue: [ ^self implementorsAndSendersForHierarchy ].
+	scopeChoice = 3 ifTrue: [ ^self implementorsAndSendersInCategory ].
+	scopeChoice = 4 ifTrue: [ ^self implementorsAndSendersInCategoryAndHierarchy ].
+	scopeChoice = 5 ifTrue: [ ^self implementorsAndSendersInSystem ].
+	
+	self error: 'Unknown scope option' 
+		
+		! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:00:51'!
+implementorsAndSendersForClass
+
+	^self refactoringClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders forClassAndMetaOf: implementingClass! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:00:56'!
+implementorsAndSendersForHierarchy 
+		
+	^self refactoringClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inHierarchyOf: implementingClass! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:01:01'!
+implementorsAndSendersInCategory 
+
+	^self refactoringClass 
+		addImplementorsOf: oldSelector 
+		to: implementors 
+		andSendersTo: senders 
+		inCategory: implementingClass category 
+		organizedBy: SystemOrganization! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:01:05'!
+implementorsAndSendersInCategoryAndHierarchy 
+
+	^self refactoringClass 
+		addImplementorsOf: oldSelector 
+		to: implementors 
+		andSendersTo: senders 
+		inCategoriesAndHierarchyOf: implementingClass 
+		organizedBy: SystemOrganization ! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:01:15'!
+implementorsAndSendersInSystem
+		
+	^self refactoringClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:01:58'!
+scopeOptionLabels
+	
+	^{'In Class'. 'In Hierarchy'. 'In Category'. 'In Hierarchy and its Categories'. 'In System'}.! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:21:58'!
+startWizard
+		
+	ChangeSelectorImplementorsWindow openFrom: self! !
+
+!ChangeSelectorApplier methodsFor: 'accessing' stamp: 'HAW 8/18/2018 17:27:17'!
+browser: aChangeSelectorSendersWindow 
+	
+	browser := aChangeSelectorSendersWindow ! !
+
+!ChangeSelectorApplier methodsFor: 'accessing' stamp: 'HAW 8/18/2018 17:02:26'!
+implementors
+	
+	^implementors ! !
+
+!ChangeSelectorApplier methodsFor: 'accessing' stamp: 'HAW 8/18/2018 17:02:29'!
+implementors: implementorsCollection
+
+	implementors := implementorsCollection ! !
+
+!ChangeSelectorApplier methodsFor: 'accessing' stamp: 'HAW 8/18/2018 17:02:33'!
+oldSelector
+	
+	^oldSelector ! !
+
+!ChangeSelectorApplier methodsFor: 'accessing' stamp: 'HAW 8/18/2018 17:02:37'!
+senders
+	
+	^senders ! !
+
+!ChangeSelectorApplier methodsFor: 'accessing' stamp: 'HAW 8/18/2018 17:02:41'!
+senders: sendersCollection
+ 
+	senders := sendersCollection ! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/18/2018 17:02:46'!
+closeBrowser
+	
+	browser delete.
+	! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/18/2018 17:02:52'!
+messageSetWindowClass
+		
+	^MessageSetWindow 
+	! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/18/2018 17:02:56'!
+showChanges
+		
+	self 
+		closeBrowser;
+		showChangesInMessageSetWindow! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/18/2018 17:28:30'!
+showChangesInMessageSetWindow
+
+	self messageSetWindowClass openMessageList: changes asSortedCollection label: 'Changed methods' ! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 17:03:58'!
+refactoringClass
+
+	self subclassResponsibility ! !
+
+!ChangeSelectorApplier methodsFor: 'initialization' stamp: 'HAW 8/18/2018 17:04:20'!
+initializeFor: aSelector in: aClass
+	
+	oldSelector := aSelector.
+	implementingClass := aClass! !
+
+!ChangeSelectorApplier methodsFor: 'evaluation' stamp: 'HAW 8/18/2018 17:04:30'!
+value
+
+	requestExitBlock := [ ^self ].
+	
+	self 
+		requestRefactoringParametersHandlingRefactoringExceptions;
+		calculateImplementorsAndSenders;
+		startWizard
+		! !
+
+!ChangeSelectorApplier methodsFor: 'evaluation' stamp: 'HAW 8/18/2018 17:04:34'!
+wizardEnded
+
+	requestExitBlock := [ ^self ].
+	
+	self 
+		createRefactoringHandlingRefactoringExceptions;
+		applyRefactoring;
+		showChanges
+	
+			! !
+
+!ChangeSelectorApplier class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 17:17:52'!
+assertCanApplyRefactoringFor: aSelector in: aClass
+
+	self subclassResponsibility ! !
+
+!ChangeSelectorApplier class methodsFor: 'instance creation' stamp: 'HAW 8/18/2018 17:17:32'!
+for: aSelector in: aClass 
+	
+	self assertCanApplyRefactoringFor: aSelector in: aClass.
+	
+	^self new initializeFor: aSelector in: aClass
+	! !
+
+!AddParameterApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 16:46:49'!
+createRefactoring
+	
+	oldSelector isUnary ifTrue: [ ^self createRefactoringForUnarySelector].
+	oldSelector isKeyword ifTrue: [ ^self createRefactoringForKeywordSelector ].
+	
+	self error: 'oldSelector should be unary or keyword!!'! !
+
+!AddParameterApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 16:56:55'!
+createRefactoringForKeywordSelector
+	
+	^self refactoringClass 
+		named: newParameter
+		initializedWith: newParameterValue 
+		using: newKeyword 
+		toKeywordSelector: oldSelector 
+		implementors: implementors 
+		senders: senders ! !
+
+!AddParameterApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 16:56:55'!
+createRefactoringForUnarySelector
+	
+	^self refactoringClass 
+		named: newParameter
+		initializedWith: newParameterValue 
+		toUnarySelector: oldSelector 
+		implementors: implementors 
+		senders: senders ! !
+
+!AddParameterApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 16:56:55'!
+refactoringClass
+
+	^AddParameter! !
+
+!AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:06:28'!
+askNewKeyword
+
+ 	| enteredString |
+	
+	enteredString := self request: 'Enter keyword for new parameter'.
+	newKeyword := enteredString withBlanksTrimmed asSymbol.
+	self refactoringClass assertIsValidKeywordForNewParameter: newKeyword! !
+
+!AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:06:28'!
+askNewKeywordIfNecessary
+		
+	oldSelector isKeyword ifTrue: [self askNewKeyword]! !
+
+!AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 16:56:55'!
+askNewParameter
+		
+	| enteredString |
+	
+	enteredString := self request: 'Enter new parameter name'.
+	newParameter := enteredString withBlanksTrimmed.
+	self refactoringClass assertIsValidParameterName: newParameter
+! !
+
+!AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 16:56:55'!
+askNewParameterValue
+		
+	| enteredString |
+	
+	enteredString := self request: 'Enter parameter value for senders'.
+	newParameterValue := enteredString withBlanksTrimmed.
+	self refactoringClass assertNewParameterValueIsNotEmpty: newParameterValue.
+	self refactoringClass assertNewParameterValueCompiles: newParameterValue.
+! !
+
+!AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 16:40:45'!
+requestRefactoringParameters
+
+	self
+		askNewParameter;
+		askNewParameterValue;
+		askNewKeywordIfNecessary;
+		askScope
+		! !
+
+!AddParameterApplier class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 17:18:06'!
+assertCanApplyRefactoringFor: aSelector in: aClass
+
+	AddParameter assertCanAddParameterTo: aSelector.
+	
+
+	! !
+
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 17:02:06'!
+askNewSelector
+
+	| enteredString |
+	
+	enteredString := self request: 'Enter new selector:' initialAnswer: oldSelector.
+	newSelector := enteredString withBlanksTrimmed asSymbol.
+		
+! !
+
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 16:56:24'!
+assertCanRenameSelector
+		
+	self refactoringClass assertIsValidToRenameFrom: oldSelector to: newSelector.
+	! !
+
+!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:59:05'!
+requestRefactoringParameters
+
+	self
+		askNewSelector;
+		assertCanRenameSelector;
+		askScope
+		! !
+
+!RenameSelectorApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 16:56:24'!
+createRefactoring
+	
+	^self refactoringClass from: oldSelector to: newSelector implementors: implementors senders: senders.
+	! !
+
+!RenameSelectorApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 17:04:02'!
+refactoringClass
+
+	^RenameSelector ! !
+
+!RenameSelectorApplier class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 17:24:18'!
+assertCanApplyRefactoringFor: aSelector in: aClass 
+	
+	! !
+
 !InsertSuperclassApplier methodsFor: 'initialization' stamp: 'FJG 8/5/2018 22:31:03'!
 initializeOn: aBrowser for: aClass
 	browser _ aBrowser.
@@ -5893,202 +6390,6 @@ on: aBrowserWindow for: aClassToRefactor
 	^self new initializeOn: aBrowserWindow for: aClassToRefactor 
 ! !
 
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 17:02:06'!
-askNewSelector
-
-	| enteredString |
-	
-	enteredString := self request: 'Enter new selector:' initialAnswer: oldSelector.
-	newSelector := enteredString withBlanksTrimmed asSymbol.
-		
-! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:37:25'!
-askScope
-
-	| scopeMenu |
-	
-	scopeMenu := PopUpMenu labelArray: self scopeOptionLabels.
-	scopeChoice := scopeMenu startUpWithCaption: 'Select Rename Scope'.
-	scopeChoice = 0 ifTrue: [ self endRequest ].
-	! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:59:05'!
-assertCanRenameSelector
-		
-	self renameSelectorClass assertIsValidToRenameFrom: oldSelector to: newSelector.
-	! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/26/2017 15:01:25'!
-calculateImplementorsAndSenders
-		
-	implementors := IdentitySet new.
-	senders := IdentitySet new.
-	
-	scopeChoice = 1 ifTrue: [ ^self implementorsAndSendersForClass ].
-	scopeChoice = 2 ifTrue: [ ^self implementorsAndSendersForHierarchy ].
-	scopeChoice = 3 ifTrue: [ ^self implementorsAndSendersInCategory ].
-	scopeChoice = 4 ifTrue: [ ^self implementorsAndSendersInCategoryAndHierarchy ].
-	scopeChoice = 5 ifTrue: [ ^self implementorsAndSendersInSystem ].
-	
-	self error: 'Unknown scope option' 
-		
-		! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:58:43'!
-implementorsAndSendersForClass
-
-	^self renameSelectorClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders forClassAndMetaOf: implementingClass! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:58:43'!
-implementorsAndSendersForHierarchy 
-		
-	^self renameSelectorClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inHierarchyOf: implementingClass! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:58:43'!
-implementorsAndSendersInCategory 
-
-	^self renameSelectorClass 
-		addImplementorsOf: oldSelector 
-		to: implementors 
-		andSendersTo: senders 
-		inCategory: implementingClass category 
-		organizedBy: SystemOrganization! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:58:43'!
-implementorsAndSendersInCategoryAndHierarchy 
-
-	^self renameSelectorClass 
-		addImplementorsOf: oldSelector 
-		to: implementors 
-		andSendersTo: senders 
-		inCategoriesAndHierarchyOf: implementingClass 
-		organizedBy: SystemOrganization ! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:58:43'!
-implementorsAndSendersInSystem
-		
-	^self renameSelectorClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:59:05'!
-requestRefactoringParameters
-
-	self
-		askNewSelector;
-		assertCanRenameSelector;
-		askScope
-		! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/31/2017 15:37:37'!
-scopeOptionLabels
-	
-	^{'In Class'. 'In Hierarchy'. 'In Category'. 'In Hierarchy and its Categories'. 'In System'}.! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/15/2018 11:54:38'!
-startWizard
-		
-	RenameSelectorImplementorsWindow openFrom: self! !
-
-!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 8/15/2018 12:02:15'!
-browser: aRenameSelectorSendersWindow 
-	
-	browser := aRenameSelectorSendersWindow ! !
-
-!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:07'!
-implementors
-	
-	^implementors ! !
-
-!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:39:17'!
-implementors: implementorsCollection
-
-	implementors := implementorsCollection ! !
-
-!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:38:21'!
-oldSelector
-	
-	^oldSelector ! !
-
-!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:40:32'!
-senders
-	
-	^senders ! !
-
-!RenameSelectorApplier methodsFor: 'accessing' stamp: 'HAW 6/5/2017 17:41:12'!
-senders: sendersCollection
- 
-	senders := sendersCollection ! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:22:32'!
-closeBrowser
-	
-	browser delete.
-	! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:16:24'!
-messageSetWindowClass
-		
-	^MessageSetWindow 
-	! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:23:00'!
-showChanges
-		
-	self 
-		closeBrowser;
-		showChangesInMessageSetWindow! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/31/2017 16:23:11'!
-showChangesInMessageSetWindow
-
-	self messageSetWindowClass openMessageList: changes asSortedCollection label: 'Rename method changes' ! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/15/2018 11:58:43'!
-createRefactoring
-	
-	^self renameSelectorClass from: oldSelector to: newSelector implementors: implementors senders: senders.
-	! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/15/2018 11:58:43'!
-renameSelectorClass
-
-	^RenameSelector ! !
-
-!RenameSelectorApplier methodsFor: 'initialization' stamp: 'HAW 5/31/2017 19:24:05'!
-initializeFor: aSelector in: aClass
-	
-	oldSelector := aSelector.
-	implementingClass := aClass! !
-
-!RenameSelectorApplier methodsFor: 'evaluation' stamp: 'HAW 6/5/2017 19:06:02'!
-value
-
-	requestExitBlock := [ ^self ].
-	
-	self 
-		requestRefactoringParametersHandlingRefactoringExceptions;
-		calculateImplementorsAndSenders;
-		startWizard
-		! !
-
-!RenameSelectorApplier methodsFor: 'evaluation' stamp: 'HAW 6/5/2017 18:16:43'!
-wizardEnded
-
-	requestExitBlock := [ ^self ].
-	
-	self 
-		createRefactoringHandlingRefactoringExceptions;
-		applyRefactoring;
-		showChanges
-	
-			! !
-
-!RenameSelectorApplier class methodsFor: 'instance creation' stamp: 'HAW 5/31/2017 19:23:37'!
-for: aSelector in: aClass 
-	
-	^self new initializeFor: aSelector in: aClass
-	! !
-
 !RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/25/2017 21:37:58'!
 askNewVariableName
 		
@@ -6315,18 +6616,33 @@ messageListMenuOptions
 		}`.
 	! !
 
-!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 8/15/2018 11:57:58'!
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 8/18/2018 16:08:56'!
 messsageRefactoringMenuOptions
 
 	^ `{
 			{
 				#itemGroup 	-> 		10.
 				#itemOrder 		-> 		10.
-				#label 			-> 		'rename'.
+				#label 			-> 		'rename...'.
 				#selector 		-> 		#renameSelector.
 				#icon 			-> 		#saveAsIcon
 			} asDictionary.
+			{
+				#itemGroup 	-> 		10.
+				#itemOrder 		-> 		20.
+				#label 			-> 		'add parameter...'.
+				#selector 		-> 		#addParameter.
+				#icon 			-> 		#listAddIcon
+			} asDictionary.
+			{
+				#itemGroup 	-> 		10.
+				#itemOrder 		-> 		30.
+				#label 			-> 		'push up'.
+				#selector 		-> 		#pushUpSelector.
+				#icon 			-> 		#goTopIcon
+			} asDictionary.
 	}`.
+	
 	! !
 
 !Browser methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:50:40'!
@@ -6911,6 +7227,12 @@ addInstVar
 	model selectedClassOrMetaClass ifNotNil: [ :aClass |
 		(AddInstanceVariableApplier on: self for: aClass) value ].! !
 
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 8/18/2018 16:09:29'!
+addParameter
+	
+	model selectedMessageName ifNotNil: [ :oldSelector |
+		(AddParameterApplier for: oldSelector in: model selectedClassOrMetaClass) value ].! !
+
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 7/7/2018 19:30:42'!
 classRefactoringMenu
 
@@ -6930,6 +7252,17 @@ openClassRefactoringMenu
 openMessageRefactoringMenu
 
 	^self messageRefactoringMenu popUpInWorld! !
+
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 8/18/2018 12:39:36'!
+pushUpSelector
+	
+	"MOVER TODO ESTOS MENSAJES A BROWSER, EL MODELO!!?"
+	
+	model selectedMessageName ifNotNil: [ :selectedSelector |
+		(PushUpMethod for: model selectedClassOrMetaClass>>selectedSelector) apply.
+		model messageListIndex: 0.
+		model changed: #messageList.
+		model setClassOrganizer ].! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 8/2/2018 16:21:42'!
 removeAllUnreferencedInstVar

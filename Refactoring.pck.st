@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3418] on 18 August 2018 at 5:33:11 pm'!
-'Description AddParameter finished implementation. PushUpMethod quick implementation'!
-!provides: 'Refactoring' 1 51!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3429] on 25 August 2018 at 12:40:18 pm'!
+'Description Support for adding keyword messages as parameter. Fix when last parameter is a block'!
+!provides: 'Refactoring' 1 52!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -1278,17 +1278,7 @@ test13WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 	
 	! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 11:55:40'!
-allClassCategoriesOfTestData
-
-	^Array with: self classCategoryOfTestData ! !
-
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 16:45:58'!
-classToRefactorName
-	
-	^#ClassToAddParameter! !
-
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 17:08:32'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/17/2018 17:08:32'!
 test01AddingParameterToUnaryMessageAddsColonAndParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod |
@@ -1323,7 +1313,7 @@ test01AddingParameterToUnaryMessageAddsColonAndParameter
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
 test02AddingParameterToBinaryMessageAddsNewKeywordAndParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword |
@@ -1359,7 +1349,7 @@ test02AddingParameterToBinaryMessageAddsNewKeywordAndParameter
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
 test03AddingParameterToBinaryMessageMultipleSendsInSameMethodSameLiteral
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1396,7 +1386,7 @@ test03AddingParameterToBinaryMessageMultipleSendsInSameMethodSameLiteral
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
 test04AddingParameterToBinaryMessageWithMessageSendAsLastFormalParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1433,7 +1423,7 @@ test04AddingParameterToBinaryMessageWithMessageSendAsLastFormalParameter
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
 test05AddingParameterToBinaryMessageWithBinaryMessageSendAsLastFormalParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1470,7 +1460,7 @@ test05AddingParameterToBinaryMessageWithBinaryMessageSendAsLastFormalParameter
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
 test06AddingParameterToBinaryMessageWithKeywordMessageSendAsLastFormalParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1507,7 +1497,7 @@ test06AddingParameterToBinaryMessageWithKeywordMessageSendAsLastFormalParameter
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/16/2018 18:53:57'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/16/2018 18:53:57'!
 test07AddingParameterToUnaryMessageChangesReferencesToSelector
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod |
@@ -1540,7 +1530,7 @@ test07AddingParameterToUnaryMessageChangesReferencesToSelector
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
 test08AddingParameterToBinaryMessageChangesReferencesToSelector
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1575,7 +1565,7 @@ test08AddingParameterToBinaryMessageChangesReferencesToSelector
 
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:24:53'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/17/2018 12:24:53'!
 test09FailsIfNewParameterValueCanNotBeCompiled
 
 	self 
@@ -1586,7 +1576,7 @@ test09FailsIfNewParameterValueCanNotBeCompiled
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:25:16'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/17/2018 12:25:16'!
 test10FailsIfNewParameterValueIsEmpty
 
 	self 
@@ -1596,7 +1586,7 @@ test10FailsIfNewParameterValueIsEmpty
 		 failsWith: [ AddParameter newParameterValueCanNotBeEmptyErrorMessage ]
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:57:23'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/17/2018 16:57:23'!
 test11NewParameterNameCanNotBeEmpty
 
 	| newParameter |
@@ -1610,7 +1600,7 @@ test11NewParameterNameCanNotBeEmpty
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:34:07'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/17/2018 12:34:07'!
 test12NewParameterNameCanNotStartWithNumber
 
 	| newParameter |
@@ -1624,7 +1614,7 @@ test12NewParameterNameCanNotStartWithNumber
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 12:34:28'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/17/2018 12:34:28'!
 test13NewParameterNameCanNotContainSpaces
 
 	| newParameter |
@@ -1638,7 +1628,7 @@ test13NewParameterNameCanNotContainSpaces
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 15:14:45'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/17/2018 15:14:45'!
 test14NewParameterCanNotBeDefinedAsInstanceVariableInAnyImplementor
 
 	| classToRefactor oldSelector newParameter  |
@@ -1657,7 +1647,7 @@ test14NewParameterCanNotBeDefinedAsInstanceVariableInAnyImplementor
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
 test15NewParameterCanNotBeDefinedAsParameterInAnyImplementor
 
 	| classToRefactor oldSelector newParameter implementors |
@@ -1677,7 +1667,7 @@ test15NewParameterCanNotBeDefinedAsParameterInAnyImplementor
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:21:52'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:21:52'!
 test16WhenCreatedForUnarySelectorMustBeUnary
 
 	self 
@@ -1688,7 +1678,7 @@ test16WhenCreatedForUnarySelectorMustBeUnary
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
 test17WhenCreatedForBinarySelectorMustBeBinary
 
 	self 
@@ -1699,7 +1689,7 @@ test17WhenCreatedForBinarySelectorMustBeBinary
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 12:33:19'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:33:19'!
 test18CanNotAddParameterToBinaryKeyword
 
 	self 
@@ -1711,7 +1701,7 @@ test18CanNotAddParameterToBinaryKeyword
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 15:48:13'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 15:48:13'!
 test19AllImplementorsMustImplementOldSelector
 
 	| implementors |
@@ -1725,7 +1715,7 @@ test19AllImplementorsMustImplementOldSelector
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 15:53:37'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 15:53:37'!
 test20AllSendersShouldSendOldSelector
 
 	| oldSelector invalidSenders |
@@ -1740,7 +1730,7 @@ test20AllSendersShouldSendOldSelector
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 16:24:22'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 16:24:22'!
 test21NewKeywordToAddToOldSelectorCanNotBeUnary
 
 	self 
@@ -1751,7 +1741,7 @@ test21NewKeywordToAddToOldSelectorCanNotBeUnary
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 16:26:55'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 16:26:55'!
 test22NewKeywordToAddToOldSelectorCanNotBeBinary
 
 	self 
@@ -1762,7 +1752,7 @@ test22NewKeywordToAddToOldSelectorCanNotBeBinary
 	
 ! !
 
-!AddParameterTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 16:27:58'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 16:27:58'!
 test23NewKeywordToAddToOldSelectorCanNotBeKeywordWithMoreThanOneParameter
 
 	self 
@@ -1772,6 +1762,141 @@ test23NewKeywordToAddToOldSelectorCanNotBeKeywordWithMoreThanOneParameter
 		 failsWith: [ AddParameter notValidKeywordForNewParameterErrorMessage ]
 	
 ! !
+
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/24/2018 17:10:04'!
+test24AddingParameterToSendersTakeCaresOfSeparators
+
+	| refactoring classToRefactor oldSelector newSelector newParameter newParameterValue senderSelector |
+	
+	oldSelector := 'm1' asSymbol.
+	newSelector := (oldSelector, ':') asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '1'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString.
+	classToRefactor compile: senderSelector asString, ' self ', oldSelector asString, Character newLineCharacter asString,'	'.
+
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue toUnarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	self shouldnt: [ refactoring apply ] raise: Error.
+	
+	! !
+
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/24/2018 18:31:10'!
+test25IfNewParameterValueIsKeywordMessageSendAddParenthesisToItForUnaryMessages
+
+	| refactoring classToRefactor oldSelector newParameter newParameterValue senderSelector newSelector senderMethod senderMethodNode senderSourceCode senderSourceRange |
+	
+	oldSelector := 'm1' asSymbol.
+	newSelector := (oldSelector, ':') asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := 'self at: 1'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString.
+	classToRefactor compile: senderSelector asString, ' self ', oldSelector asString.
+
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue toUnarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self assert: (senderMethod sendsSelector: newSelector).
+	
+	senderMethodNode := senderMethod methodNode.
+	senderSourceRange := senderMethodNode encoder sourceRangeFor: senderMethodNode block statements first.
+	senderSourceCode := senderMethodNode sourceText copyFrom: senderSourceRange first to: senderSourceRange last.
+	self assert: (senderSourceCode endsWith: '(',newParameterValue,')')
+	
+	! !
+
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/24/2018 18:31:43'!
+test26IfNewParameterValueIsKeywordMessageSendAddParenthesisToItForKeywordMessages
+
+	| refactoring classToRefactor oldSelector newParameter newParameterValue senderSelector newSelector senderMethod newSelectorAddedKeyword senderMethodNode senderSourceCode senderSourceRange |
+	
+	oldSelector := 'm1:' asSymbol.
+	newSelectorAddedKeyword := 'm2:' asSymbol.
+	newSelector := (oldSelector,newSelectorAddedKeyword) asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := 'self at: 1'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString, ' oldParam'.
+	classToRefactor compile: senderSelector asString, ' self ', oldSelector asString, ' 1'.
+
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toKeywordSelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self assert: (senderMethod sendsSelector: newSelector).
+	
+	senderMethodNode := senderMethod methodNode.
+	senderSourceRange := senderMethodNode encoder sourceRangeFor: senderMethodNode block statements first.
+	senderSourceCode := senderMethodNode sourceText copyFrom: senderSourceRange first to: senderSourceRange last.
+	self assert: (senderSourceCode endsWith: '(',newParameterValue,')')
+	
+	! !
+
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/25/2018 11:23:42'!
+test27NewParameterValueCanNotHaveMoreThanOneStatement
+
+	self 
+		assertCreation: [ AddParameter 
+			named: 'newParameter' initializedWith: 'self m1. self m2.' toUnarySelector: thisContext selector 
+			implementors: {thisContext method} senders: {} ]
+		failsWith: [ AddParameter newParameterValueCanNotHaveMoreThanOneStatementErrorMessage ].
+	
+	! !
+
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/25/2018 12:24:32'!
+test28WhenSenderLastParameterIsABlockAddedParameterIsNotAddedInsideTheBlock
+
+	| refactoring classToRefactor oldSelector newParameter newParameterValue senderSelector newSelector senderMethod newSelectorAddedKeyword senderMethodNode senderSourceCode senderSourceRange senderFirstParameterValue |
+
+	oldSelector := 'm1:' asSymbol.
+	newSelectorAddedKeyword := 'm2:' asSymbol.
+	newSelector := (oldSelector,newSelectorAddedKeyword) asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '1'.
+	senderSelector := 'sender_m1' asSymbol.
+	senderFirstParameterValue := '[ 1 factorial ]'.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString, ' oldParam'.
+	classToRefactor compile: senderSelector asString, ' self ', oldSelector asString, senderFirstParameterValue.
+
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue using: newSelectorAddedKeyword toKeywordSelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self assert: (senderMethod sendsSelector: newSelector).
+	
+	senderMethodNode := senderMethod methodNode.
+	senderSourceRange := senderMethodNode encoder sourceRangeFor: senderMethodNode block statements first arguments first closureCreationNode.
+	senderSourceCode := senderMethodNode sourceText copyFrom: senderSourceRange first to: senderSourceRange last.
+	self assert: senderFirstParameterValue equals: senderSourceCode
+	! !
+
+!AddParameterTest methodsFor: 'class factory' stamp: 'HAW 8/16/2018 11:55:40'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
+!AddParameterTest methodsFor: 'class factory' stamp: 'HAW 8/24/2018 17:20:56'!
+classToRefactorName
+	
+	^#ClassToAddParameter! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -4122,7 +4247,7 @@ renameSenders
 	senders do: [ :aSender | self renameSendersIn: aSender ].
 	! !
 
-!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/18/2018 12:02:43'!
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/25/2018 12:17:57'!
 renameSendersIn: aMethod
 
 	| newSource |
@@ -4265,14 +4390,31 @@ initializedNamed: aNewParameter initializedWith: aNewParameterValue to: anOldSel
 	
 	changes := Set new.! !
 
-!AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 8/16/2018 17:45:14'!
+!AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 8/24/2018 17:16:38'!
 addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
 	
-	| oldSelectorLastPositions |
+	| oldSelectorLastPositions senderSourceCode |
 	
+	senderSourceCode := aMethodNode sourceText.
 	oldSelectorLastPositions := aMethodNode messageSendLasPositionsOf: oldSelector ifAbsent: [ #() ].
-	oldSelectorLastPositions do: [ :aPosition | rangesToKeywords add: ((aPosition+1) to: aPosition) -> senderTrailingString ]
+	oldSelectorLastPositions do: [ :aPosition | | newPosition |
+		newPosition := self firstNoSeparatorIndexIn: senderSourceCode startingFrom: aPosition.
+		rangesToKeywords add: ((newPosition+1) to: newPosition) -> senderTrailingString ]
 	! !
+
+!AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 8/24/2018 17:19:37'!
+firstNoSeparatorIndexIn: sourceCode startingFrom: aStartingPosition
+
+	"Looks going back for the first no separator char. See #test24AddingParameterToSendersTakeCaresOfSeparators
+	It assumes that there is always going to be a no separator wich holds due to how aStartPosition is obtained - Hernan"
+	
+	| noSeparatorIndex |
+	
+	noSeparatorIndex := aStartingPosition.
+	[ (sourceCode at: noSeparatorIndex) isSeparator ] whileTrue: [ noSeparatorIndex := noSeparatorIndex - 1 ].
+	
+	^noSeparatorIndex 
+		! !
 
 !AddParameter methodsFor: 'create new implementors - private' stamp: 'HAW 8/16/2018 17:10:32'!
 implementorNewSourceCodeOf: anImplementor
@@ -4289,36 +4431,42 @@ implementorNewSourceCodeOf: anImplementor
 		
 	^newSource! !
 
-!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 8/18/2018 12:22:18'!
+!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 8/25/2018 11:28:58'!
 named: aNewParameter 
 	initializedWith: aNewParameterValue 
 	toUnarySelector: anOldSelector  
 	implementors: implementorsCollection 
 	senders: sendersCollection
 
-	self assertIsUnary: anOldSelector.
+	| validNewParameterValue |
 	
+	self assertIsUnary: anOldSelector.
+	validNewParameterValue := self assertNewParameterValueIsValid: aNewParameterValue.
+
 	^self 
 		named: aNewParameter 
 		initializedWith: aNewParameterValue 
 		to: anOldSelector 
 		implementing: (self newSelectorFromUnary: anOldSelector)
 		addingToImplementors: (self unaryImplementorTrailingFor: aNewParameter)
-		addingToSenders: (self unarySenderTrailingFor: aNewParameterValue)
+		addingToSenders: (self unarySenderTrailingFor: validNewParameterValue)
 		implementors: implementorsCollection 
 		senders: sendersCollection
 ! !
 
-!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 8/18/2018 16:24:41'!
+!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 8/25/2018 11:28:58'!
 named: aNewParameter 
-	initializedWith: aNewParameterValue 
+	initializedWith: aNewParameterValue
 	using: aNewKeyword 
 	toKeywordSelector: anOldSelector  
 	implementors: implementorsCollection 
 	senders: sendersCollection
 
+	| validNewParameterValue |
+	
 	self assertIsKeyword: anOldSelector.
 	self assertIsValidKeywordForNewParameter: aNewKeyword.
+	validNewParameterValue := self assertNewParameterValueIsValid: aNewParameterValue.
 	
 	^self 
 		named: aNewParameter 
@@ -4326,7 +4474,7 @@ named: aNewParameter
 		to: anOldSelector 
 		implementing: (self newSelectorFromKeyword: anOldSelector adding: aNewKeyword) 
 		addingToImplementors: (self keywordImplementorTrailingFor: aNewKeyword and: aNewParameter) 
-		addingToSenders: (self keywordSenderTrailingFor: aNewKeyword and: aNewParameterValue)
+		addingToSenders: (self keywordSenderTrailingFor: aNewKeyword and: validNewParameterValue)
 		implementors: implementorsCollection 
 		senders: sendersCollection
 ! !
@@ -4341,7 +4489,7 @@ keywordSenderTrailingFor: aNewKeyword and: aNewParameterValue
 
 	^' ', aNewKeyword, ' ', aNewParameterValue! !
 
-!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 16:02:12'!
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/24/2018 17:53:58'!
 named: aNewParameter 
 	initializedWith: aNewParameterValue 
 	to: anOldSelector 
@@ -4351,23 +4499,20 @@ named: aNewParameter
 	implementors: implementorsCollection 
 	senders: sendersCollection
 
-	| trimmedNewParameter trimmedNewParameterValue |
+	| trimmedNewParameter |
 	
 	trimmedNewParameter := aNewParameter withBlanksTrimmed.
-	trimmedNewParameterValue := aNewParameterValue withBlanksTrimmed.
 	
 	self assertCanAddParameterTo: anOldSelector.
 	self assertIsValidParameterName: trimmedNewParameter.
 	self assertNewParameter: trimmedNewParameter isNotDefinedAsInstanceVariableInAny: implementorsCollection.
 	self assertNewParameter: trimmedNewParameter isNotDefinedAsLocalInAny: implementorsCollection.
-	self assertNewParameterValueIsNotEmpty: trimmedNewParameterValue.
-	self assertNewParameterValueCompiles: trimmedNewParameterValue.
 	self assertAllImplementors: implementorsCollection haveSame: anOldSelector.
 	self assertAllSenders: sendersCollection send: anOldSelector.
 	
 	^ self new 
 		initializedNamed: trimmedNewParameter 
-		initializedWith: trimmedNewParameterValue 
+		initializedWith: aNewParameterValue 
 		to: anOldSelector 
 		implementing: aNewSelector
 		addingToImplementors: implementorTrailingString 
@@ -4395,6 +4540,18 @@ unaryImplementorTrailingFor: aNewParameter
 unarySenderTrailingFor: aNewParameterValue
 
 	^ ': ', aNewParameterValue! !
+
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/25/2018 11:34:59'!
+addParenthesisTo: trimmedNewParameterValue ifNewParameterValueIsKeywordMessage: newParameterValueMethodNode
+
+	| newParameterNode |
+	
+	newParameterNode := newParameterValueMethodNode block statements first expr.
+		
+	^ (self hasToAddParenthesisBasedOn: newParameterNode)
+		ifTrue: [ '(', trimmedNewParameterValue, ')' ]
+		ifFalse: [ trimmedNewParameterValue ]
+	! !
 
 !AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 16:02:12'!
 assertCanAddParameterTo: aSelector
@@ -4443,19 +4600,42 @@ assertNewParameter: aNewParameter isNotDefinedAsLocalInAny: implementors
 	implementorsDefiningNewParameterAsLocal notEmpty ifTrue: [ 
 		self signalNewParameter: aNewParameter isDefinedAsLocalIn: implementorsDefiningNewParameterAsLocal ]! !
 
-!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/17/2018 16:59:05'!
-assertNewParameterValueCompiles: aNewParameterValue
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/25/2018 11:30:18'!
+assertNewParameterValueCompiles: trimmedNewParameterValue
 
-	[ Parser new parse: aNewParameterValue readStream class: self noPattern: true notifying: nil ifFail: [nil] ]
+	^ [ Parser new parse: trimmedNewParameterValue readStream class: self noPattern: true notifying: nil ifFail: [nil] ]
 		on: SyntaxErrorNotification 
-		do: [ :error | self signalNewParameterValueDoesNotCompile ].
+		do: [ :error | self signalNewParameterValueDoesNotCompile ].! !
 
-! !
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/25/2018 11:31:42'!
+assertNewParameterValueDoesNotHaveMoreThanOneStatement: newParameterValueMethodNode
+
+	newParameterValueMethodNode block statements size = 1 ifFalse: [ self signalNewParameterValueCanNotHaveMoreThanOneStatement ].
+	! !
 
 !AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/17/2018 12:21:40'!
 assertNewParameterValueIsNotEmpty: aNewParameterValue
 
 	aNewParameterValue withBlanksTrimmed isEmpty ifTrue: [ self signalNewParameterValueCanNotBeEmpty]! !
+
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/25/2018 11:33:38'!
+assertNewParameterValueIsValid: aNewParameterValue
+
+	| newParameterValueMethodNode trimmedNewParameterValue |
+	
+	trimmedNewParameterValue := aNewParameterValue withBlanksTrimmed.
+	self assertNewParameterValueIsNotEmpty: trimmedNewParameterValue.
+
+	newParameterValueMethodNode := self assertNewParameterValueCompiles: trimmedNewParameterValue.
+	self assertNewParameterValueDoesNotHaveMoreThanOneStatement: newParameterValueMethodNode.
+	
+	^self addParenthesisTo: trimmedNewParameterValue ifNewParameterValueIsKeywordMessage: newParameterValueMethodNode.
+	! !
+
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/25/2018 11:35:10'!
+hasToAddParenthesisBasedOn: newParameterNode
+	
+	^ newParameterNode isMessageNode and: [  newParameterNode selector key isKeyword ]! !
 
 !AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 15:05:29'!
 classesDefiningInstanceVariable: aName inAny: implementors
@@ -4494,6 +4674,11 @@ newParameterDefinedAsLocalErrorMessageFor: aNewParameter
 newParameterValueCanNotBeEmptyErrorMessage
 	
 	^'New parameter value can not be empty'! !
+
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/25/2018 11:26:54'!
+newParameterValueCanNotHaveMoreThanOneStatementErrorMessage
+	
+	^'New parameter value can not have more than one statement'! !
 
 !AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 12:24:53'!
 newParameterValueDoesNotCompileErrorMessage
@@ -4545,6 +4730,11 @@ signalNewParameter: aNewParameter isDefinedAsLocalIn: implementors
 signalNewParameterValueCanNotBeEmpty
 	
 	self refactoringError: self newParameterValueCanNotBeEmptyErrorMessage! !
+
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/25/2018 11:27:05'!
+signalNewParameterValueCanNotHaveMoreThanOneStatement
+	
+	self refactoringError: self newParameterValueCanNotHaveMoreThanOneStatementErrorMessage! !
 
 !AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 12:24:53'!
 signalNewParameterValueDoesNotCompile
@@ -6079,7 +6269,7 @@ askNewParameter
 	self refactoringClass assertIsValidParameterName: newParameter
 ! !
 
-!AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 16:56:55'!
+!AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/25/2018 11:28:58'!
 askNewParameterValue
 		
 	| enteredString |
@@ -6087,7 +6277,7 @@ askNewParameterValue
 	enteredString := self request: 'Enter parameter value for senders'.
 	newParameterValue := enteredString withBlanksTrimmed.
 	self refactoringClass assertNewParameterValueIsNotEmpty: newParameterValue.
-	self refactoringClass assertNewParameterValueCompiles: newParameterValue.
+	self refactoringClass assertNewParameterValueIsValid: newParameterValue.
 ! !
 
 !AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 16:40:45'!
@@ -7091,26 +7281,38 @@ lastKeywordLastPositionInSourceCode
 	^ keywordRanges last last.
 ! !
 
-!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:46:28'!
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/24/2018 18:13:51'!
 lastParameterLastPositionInSourceCodeEncodedWith: anEncoder 
 
-	| lastParameterRanges  |
-	
-	lastParameterRanges := anEncoder sourceRangeFor: arguments last.
+	^ (self lastParameterPositionInSourceCodeEncodedWith: anEncoder) last! !
+
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/25/2018 12:25:16'!
+lastParameterPositionInSourceCodeEncodedWith: anEncoder 
+
+	| lastParameter lastParameterRanges  |
+ 
+	lastParameter := arguments last.
+	"sourceRanges for BlockNode does not includes square brackets, but sourceRanges includes a LeafNode with the 
+	ranges including the square brackets. That LeafNode is the closureCreationNode of the BlockNode. 
+	That is why, if the lastParameter is a block node, I use the ranges of the closureCreationNode, if not the add of the
+	new parameter will occurr inside of the block. 
+	See #test28WhenSenderLastParameterIsABlockAddedParameterIsNotAddedInsideTheBlock  - Hernan"
+	lastParameter isBlockNode ifTrue: [ lastParameter := lastParameter closureCreationNode ].
+	lastParameterRanges := anEncoder sourceRangeFor: lastParameter.
 	
 	^ lastParameterRanges isInterval
-		ifTrue: [ lastParameterRanges last ]
-		ifFalse: [ self lastParameterLastPositionInSourceCodeFrom: lastParameterRanges ]! !
+		ifTrue: [ lastParameterRanges ]
+		ifFalse: [ self lastParameterPositionInSourceCodeFrom: lastParameterRanges ]! !
 
-!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:45:51'!
-lastParameterLastPositionInSourceCodeFrom: lastParameterRanges
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/24/2018 18:13:10'!
+lastParameterPositionInSourceCodeFrom: lastParameterRanges
 
 	| lastArgumentRangeForSelf lastKeywordLastPosition |
 	
 	lastKeywordLastPosition := self lastKeywordLastPositionInSourceCode.
 	lastArgumentRangeForSelf := lastParameterRanges detect: [ :aRange | aRange first >= lastKeywordLastPosition ].
 	
-	^ lastArgumentRangeForSelf last ! !
+	^ lastArgumentRangeForSelf  ! !
 
 !MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:36:48'!
 selectorLastPositionInSourceCodeEncodedWith: anEncoder
@@ -7227,11 +7429,14 @@ addInstVar
 	model selectedClassOrMetaClass ifNotNil: [ :aClass |
 		(AddInstanceVariableApplier on: self for: aClass) value ].! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 8/18/2018 16:09:29'!
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 8/25/2018 12:36:44'!
 addParameter
 	
-	model selectedMessageName ifNotNil: [ :oldSelector |
-		(AddParameterApplier for: oldSelector in: model selectedClassOrMetaClass) value ].! !
+	model selectedMessageName ifNotNil: [ :oldSelector | | refactoring |
+		refactoring := [ AddParameterApplier for: oldSelector in: model selectedClassOrMetaClass ]
+			on: Refactoring refactoringErrorClass 
+			do: [ :refactoringError | ^self inform: refactoringError messageText ].
+		refactoring value ].! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 7/7/2018 19:30:42'!
 classRefactoringMenu

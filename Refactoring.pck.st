@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3429] on 25 August 2018 at 12:40:18 pm'!
-'Description Support for adding keyword messages as parameter. Fix when last parameter is a block'!
-!provides: 'Refactoring' 1 52!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3430] on 4 September 2018 at 3:42:52 pm'!
+'Description RemoveParameter implementation'!
+!provides: 'Refactoring' 1 53!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -154,6 +154,16 @@ RefactoringTest subclass: #RemoveInstanceVariableTest
 RemoveInstanceVariableTest class
 	instanceVariableNames: ''!
 
+!classDefinition: #RemoveParameterTest category: #Refactoring!
+RefactoringTest subclass: #RemoveParameterTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RemoveParameterTest class' category: #Refactoring!
+RemoveParameterTest class
+	instanceVariableNames: ''!
+
 !classDefinition: #RenameClassTest category: #Refactoring!
 RefactoringTest subclass: #RenameClassTest
 	instanceVariableNames: ''
@@ -252,6 +262,16 @@ ChangeSelector subclass: #AddParameter
 	category: 'Refactoring'!
 !classDefinition: 'AddParameter class' category: #Refactoring!
 AddParameter class
+	instanceVariableNames: ''!
+
+!classDefinition: #RemoveParameter category: #Refactoring!
+ChangeSelector subclass: #RemoveParameter
+	instanceVariableNames: 'parameterToRemove parameterIndex senderReplacementString isLastParameter'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RemoveParameter class' category: #Refactoring!
+RemoveParameter class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameSelector category: #Refactoring!
@@ -392,6 +412,16 @@ ChangeSelectorApplier subclass: #AddParameterApplier
 	category: 'Refactoring'!
 !classDefinition: 'AddParameterApplier class' category: #Refactoring!
 AddParameterApplier class
+	instanceVariableNames: ''!
+
+!classDefinition: #RemoveParameterApplier category: #Refactoring!
+ChangeSelectorApplier subclass: #RemoveParameterApplier
+	instanceVariableNames: 'newParameter newParameterValue newKeyword originalMethod parameterToRemove'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RemoveParameterApplier class' category: #Refactoring!
+RemoveParameterApplier class
 	instanceVariableNames: ''!
 
 !classDefinition: #RenameSelectorApplier category: #Refactoring!
@@ -1059,6 +1089,11 @@ shouldFail: aBlock
 	
 	self should: aBlock raise: Exception ! !
 
+!RefactoringTest methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 16:38:44'!
+canNotRefactorDueToReferencesRefactoringError
+	
+	^ Refactoring canNotRefactorDueToReferencesErrorClass - MessageNotUnderstood.! !
+
 !RefactoringTest methodsFor: 'exceptions' stamp: 'HAW 6/3/2017 11:58:26'!
 refactoringError
 
@@ -1080,18 +1115,14 @@ setUp
 	
 	classCategories := Set new.! !
 
-!RefactoringTest methodsFor: 'setup/teardown' stamp: 'HAW 5/28/2017 23:15:42'!
+!RefactoringTest methodsFor: 'setup/teardown' stamp: 'HAW 9/4/2018 14:39:55'!
 tearDown
 
 	setUpAssertionsPassed ifTrue: [
 		self assertAllClassCategoriesAreExpectedToBeRemoved.
 		SystemOrganization removeSystemCategories: classCategories.
-		Browser allInstancesDo: [:aBrowser | aBrowser changed: #systemCategoryList ]]! !
-
-!RefactoringTest methodsFor: 'as yet unclassified' stamp: 'HAW 8/17/2018 16:38:44'!
-canNotRefactorDueToReferencesRefactoringError
-	
-	^ Refactoring canNotRefactorDueToReferencesErrorClass - MessageNotUnderstood.! !
+		Browser allInstancesDo: [:aBrowser | aBrowser changed: #systemCategoryList ].
+		SystemChangeNotifier uniqueInstance resetSilenceLevel ]! !
 
 !RefactoringTest methodsFor: 'Running' stamp: 'HAW 8/13/2018 12:34:11'!
 runCase
@@ -1647,7 +1678,7 @@ test14NewParameterCanNotBeDefinedAsInstanceVariableInAnyImplementor
 	
 ! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 9/2/2018 19:59:27'!
 test15NewParameterCanNotBeDefinedAsParameterInAnyImplementor
 
 	| classToRefactor oldSelector newParameter implementors |
@@ -1663,7 +1694,7 @@ test15NewParameterCanNotBeDefinedAsParameterInAnyImplementor
 		assertCreation: [ AddParameter 
 			named: newParameter initializedWith: '1' using: 'm2:' asSymbol toKeywordSelector: oldSelector 
 			implementors: implementors senders: {} ]
-		 failsWith: [ AddParameter newParameterDefinedAsLocalErrorMessageFor: newParameter ]
+		 failsWith: [ AddParameter errorMessageForNewParameterDefinedAsLocal: newParameter ]
 	
 ! !
 
@@ -2512,6 +2543,277 @@ test03WhenAppliedRemovesInstanceVariable
 	self deny: (classToRefactor definesInstanceVariableNamed: variableToRemove)	
 	
 	! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/2/2018 19:46:28'!
+test01CanNotRemoveParameterFromUnaryMessages
+
+	self 
+		assertCreation: [ RemoveParameter 
+			named: 'aParameter' 
+			from: thisContext method 
+			implementors: {thisContext method} 
+			senders: {} ]
+		failsWith: [ RemoveParameter canNotRemoveParameterFromUnaryMessagesErrorMessage ]
+! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/2/2018 19:46:43'!
+test02CanNotRemoveParameterFromBinaryMessages
+
+	self 
+		assertCreation: [ RemoveParameter 
+			named: '+' asSymbol 
+			from: Number>>#+ 
+			implementors: {Number>>#+} 
+			senders: {} ]
+		failsWith: [ RemoveParameter canNotRemoveParameterFromBinaryMessagesErrorMessage ]
+! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/2/2018 19:46:52'!
+test03CanNotRemoveParameterNotInMessage
+
+	| classToRefactor selectorToRemoveParameterFrom parameterNotInMessage |
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	selectorToRemoveParameterFrom := 'm1:' asSymbol.
+	classToRefactor compile: selectorToRemoveParameterFrom asString, ' parameter'.
+	parameterNotInMessage := 'otherParameter'.
+
+	self 
+		assertCreation: [ RemoveParameter 
+			named: parameterNotInMessage 
+			from: classToRefactor>>selectorToRemoveParameterFrom  
+			implementors: {classToRefactor >> selectorToRemoveParameterFrom } 
+			senders: {} ]
+		failsWith: [ RemoveParameter errorMessageForParameterNotInMessage: parameterNotInMessage ]
+! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/2/2018 19:46:03'!
+test04AllImplementorsMustImplementSelector
+
+	| classToRefactor selectorToRemoveParameterFrom parameterToRemove implementors |
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	selectorToRemoveParameterFrom := 'm1:' asSymbol.
+	parameterToRemove := 'parameter'.
+	classToRefactor compile: selectorToRemoveParameterFrom asString, ' parameter'.
+	implementors := {thisContext method}.
+	
+	self 
+		assertCreation: [ RemoveParameter 
+			named: parameterToRemove 
+			from: classToRefactor>>selectorToRemoveParameterFrom  
+			implementors: implementors 
+			senders: {} ]
+		failsWith: [ RemoveParameter errorMessageForInvalidImplementors: implementors ]
+! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/2/2018 19:49:28'!
+test05AllSendersShouldSendSelector
+
+	| classToRefactor selectorToRemoveParameterFrom parameterToRemove invalidSenders |
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	selectorToRemoveParameterFrom := 'm1:' asSymbol.
+	parameterToRemove := 'parameter'.
+	classToRefactor compile: selectorToRemoveParameterFrom asString, ' parameter'.
+	invalidSenders := {thisContext method}.
+	
+	self 
+		assertCreation: [ RemoveParameter 
+			named: parameterToRemove 
+			from: classToRefactor>>selectorToRemoveParameterFrom  
+			implementors: {} 
+			senders: invalidSenders ]
+		failsWith: [ RemoveParameter errorMessageForInvalidSenders: invalidSenders of: selectorToRemoveParameterFrom ]
+	
+! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/2/2018 19:57:35'!
+test06NoImplementorReferencesParameterToRemove
+
+	| classToRefactor selectorToRemoveParameterFrom parameterToRemove implementorsReferencingParameter |
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	selectorToRemoveParameterFrom := 'm1:' asSymbol.
+	parameterToRemove := 'parameter'.
+	classToRefactor compile: selectorToRemoveParameterFrom asString, ' parameter ^parameter'.
+	implementorsReferencingParameter := {classToRefactor>>selectorToRemoveParameterFrom }.
+	
+	self 
+		assertCreation: [ RemoveParameter 
+			named: parameterToRemove 
+			from: classToRefactor>>selectorToRemoveParameterFrom  
+			implementors: implementorsReferencingParameter 
+			senders: {} ]
+		failsWith: [ RemoveParameter errorMessageForParameterToRemoveIsReferenced: parameterToRemove ]! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/3/2018 17:58:11'!
+test07FirstParameterIsRemovedCorrectly
+
+	| classToRefactor selectorToRemoveParameterFrom parameterToRemove keywordToRemove keywordToKeep parameterToKeep refactoring |
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	keywordToRemove := 'm1:'.
+	keywordToKeep := 'm2:'.
+	selectorToRemoveParameterFrom := (keywordToRemove, keywordToKeep) asSymbol. 
+	parameterToRemove := 'parameter1'.
+	parameterToKeep := 'parameter2'.
+	classToRefactor compile: keywordToRemove,parameterToRemove, ' 
+	', keywordToKeep, parameterToKeep.
+	
+	refactoring := RemoveParameter 
+			named: parameterToRemove 
+			from: classToRefactor>>selectorToRemoveParameterFrom  
+			implementors: { classToRefactor>>selectorToRemoveParameterFrom } 
+			senders: {}.
+	refactoring apply.
+	
+	self assert: (classToRefactor canUnderstand: keywordToKeep asSymbol).
+	self assert: (classToRefactor sourceCodeAt: keywordToKeep asSymbol) equals: (keywordToKeep, parameterToKeep) ! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/3/2018 18:45:48'!
+test08LastParameterIsRemovedCorrectly
+
+	| classToRefactor selectorToRemoveParameterFrom parameterToRemove keywordToRemove keywordToKeep parameterToKeep refactoring |
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	keywordToKeep := 'm1:'.
+	keywordToRemove := 'm2:'.
+	selectorToRemoveParameterFrom := (keywordToKeep, keywordToRemove) asSymbol. 
+	parameterToKeep := 'parameter1'.
+	parameterToRemove := 'parameter2'.
+	classToRefactor compile: keywordToKeep,parameterToKeep, ' ', keywordToRemove, parameterToRemove,'
+	| t1 |'.
+	
+	refactoring := RemoveParameter 
+			named: parameterToRemove 
+			from: classToRefactor>>selectorToRemoveParameterFrom  
+			implementors: { classToRefactor>>selectorToRemoveParameterFrom } 
+			senders: {}.
+	refactoring apply.
+	
+	self assert: (classToRefactor canUnderstand: keywordToKeep asSymbol).
+	self assert: (classToRefactor sourceCodeAt: keywordToKeep asSymbol) equals: (keywordToKeep, parameterToKeep,' 
+	| t1 |') ! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 14:34:22'!
+test09MiddleParameterIsRemovedCorrectly
+
+	| classToRefactor selectorToRemoveParameterFrom parameterToRemove keywordToRemove keywordToKeep parameterToKeep refactoring newSelector |
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	keywordToRemove := 'm1:'.
+	keywordToKeep := 'm2:'.
+	selectorToRemoveParameterFrom := ('m0:',keywordToRemove, keywordToKeep) asSymbol. 
+	newSelector := ('m0:', keywordToKeep) asSymbol. 
+	parameterToRemove := 'parameter1'.
+	parameterToKeep := 'parameter2'.
+	classToRefactor compile: 'm0: parameter0 
+	',keywordToRemove,parameterToRemove, ' 
+	', keywordToKeep, parameterToKeep.
+	
+	refactoring := RemoveParameter 
+			named: parameterToRemove 
+			from: classToRefactor>>selectorToRemoveParameterFrom  
+			implementors: { classToRefactor>>selectorToRemoveParameterFrom } 
+			senders: {}.
+	refactoring apply.
+	
+	self assert: (classToRefactor canUnderstand: newSelector).
+	self assert: (classToRefactor sourceCodeAt: newSelector) equals: ('m0: parameter0 
+	',keywordToKeep, parameterToKeep) ! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/3/2018 17:34:00'!
+test10ParameterFromOneKeywordSelectorIsRemovedCorrectly
+
+	| classToRefactor selectorToRemoveParameterFrom parameterToRemove refactoring |
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	selectorToRemoveParameterFrom := 'm1:' asSymbol. 
+	parameterToRemove := 'parameter1'.
+	classToRefactor compile: selectorToRemoveParameterFrom asString,parameterToRemove.
+	
+	refactoring := RemoveParameter 
+			named: parameterToRemove 
+			from: classToRefactor>>selectorToRemoveParameterFrom  
+			implementors: { classToRefactor>>selectorToRemoveParameterFrom } 
+			senders: {}.
+	refactoring apply.
+	
+	self assert: (classToRefactor canUnderstand: 'm1' asSymbol).! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 11:30:51'!
+test11ParameterOfSendersOfMoreThanOneKeywordSelectorsIsRemovedCorrectly
+
+	| classToRefactor selectorToRemoveParameterFrom parameterToRemove keywordToRemove keywordToKeep parameterToKeep refactoring senderSelector senderMethod |
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	keywordToRemove := 'm1:'.
+	keywordToKeep := 'm2:'.
+	selectorToRemoveParameterFrom := (keywordToRemove, keywordToKeep) asSymbol. 
+	parameterToRemove := 'parameter1'.
+	parameterToKeep := 'parameter2'.
+	senderSelector := 'sender' asSymbol.
+	classToRefactor compile: keywordToRemove,parameterToRemove, ' ', keywordToKeep, parameterToKeep.
+	classToRefactor compile: senderSelector asString,'
+		self 
+			', keywordToRemove, ' 1 
+			', keywordToKeep, ' 2 '.
+	
+	refactoring := RemoveParameter 
+			named: parameterToRemove 
+			from: classToRefactor>>selectorToRemoveParameterFrom  
+			implementors: { classToRefactor>>selectorToRemoveParameterFrom } 
+			senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self assert: (senderMethod sendsSelector: keywordToKeep asSymbol).
+	self assert: senderMethod sourceCode equals: (senderSelector asString,'
+		self 
+			', keywordToKeep, ' 2 ')
+	
+	! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 11:56:18'!
+test12ParameterOfSendersOfOneKeywordSelectorsIsRemovedCorrectly
+
+	| classToRefactor selectorToRemoveParameterFrom parameterToRemove refactoring senderSelector senderMethod |
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	selectorToRemoveParameterFrom := 'm1:' asSymbol. 
+	parameterToRemove := 'parameter1'.
+	senderSelector := 'sender' asSymbol.
+	classToRefactor compile: selectorToRemoveParameterFrom,parameterToRemove.
+	classToRefactor compile: senderSelector asString,'
+		self 
+			', selectorToRemoveParameterFrom, '
+			 (1+2).'.
+	
+	refactoring := RemoveParameter 
+			named: parameterToRemove 
+			from: classToRefactor>>selectorToRemoveParameterFrom  
+			implementors: { classToRefactor>>selectorToRemoveParameterFrom } 
+			senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self assert: (senderMethod sendsSelector: 'm1' asSymbol).
+	self assert: senderMethod sourceCode equals: (senderSelector asString,'
+		self 
+			m1.')
+	
+	! !
+
+!RemoveParameterTest methodsFor: 'class factory' stamp: 'HAW 9/1/2018 12:22:36'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
+!RemoveParameterTest methodsFor: 'class factory' stamp: 'HAW 9/1/2018 12:24:23'!
+classToRefactorName
+	
+	^#ClassToRemoveParameter! !
 
 !RenameClassTest methodsFor: 'class factory' stamp: 'HAW 6/1/2017 18:59:24'!
 allClassCategoriesOfTestData
@@ -4177,14 +4479,16 @@ addToSendersIfOldSelectorIsSentIn: newImplementor
 	(newImplementor refersToLiteral: oldSelector) ifTrue: [ senders add: newImplementor ]. 
 	! !
 
-!ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/18/2018 12:02:16'!
+!ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 9/3/2018 17:46:05'!
 compileNewImplementorOf: anImplementor
 		
-	| implementorClassification |
+	| implementorClassification newSourceCode |
 	
 	implementorClassification := anImplementor methodClass organization categoryOfElement: oldSelector.
+	newSourceCode := self implementorNewSourceCodeOf: anImplementor.
+	
 	anImplementor methodClass 
-		compile: (self implementorNewSourceCodeOf: anImplementor) 
+		compile: newSourceCode  
 		classifyUnder: implementorClassification.
 ! !
 
@@ -4217,12 +4521,12 @@ addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
 
 	self subclassResponsibility ! !
 
-!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/18/2018 12:03:00'!
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 9/3/2018 19:48:30'!
 addRangesForLiteralOf: methodNode to: rangesToKeywords
 	
 	| oldSelectorLiteralRanges |
 	
-	oldSelectorLiteralRanges := methodNode rangesForLiteralNode: oldSelector ifAbsent: [ #() ].
+	oldSelectorLiteralRanges := methodNode positionsForLiteralNode: oldSelector ifAbsent: [ #() ].
 	oldSelectorLiteralRanges do: [ :oldSelectorLiteralRange | 
 		rangesToKeywords add: (oldSelectorLiteralRange first + 1 to: oldSelectorLiteralRange last) -> newSelector ].
 	
@@ -4266,6 +4570,18 @@ implementorsSize
 sendersSize
 	
 	^senders size! !
+
+!ChangeSelector methodsFor: 'initialization' stamp: 'HAW 9/3/2018 17:17:19'!
+initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
+	
+	oldSelector := anOldSelector.
+	newSelector := aNewSelector.
+	implementors := aCollectionOfImplementors.
+	"I have to make a copy of senders because it can change with recursive implementors - Hernan"
+	senders := aCollectionOfSenders asOrderedCollection.
+	
+	changes := Set new
+	! !
 
 !ChangeSelector class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 12:39:40'!
 assertAllImplementors: implementors haveSame: aSelector
@@ -4374,21 +4690,23 @@ addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPot
 	senders addAll: (aPotentialClassToRefactor methodsSelect: [ :aPotentialSender | aPotentialSender refersToLiteral: anOldSelector ]).
 ! !
 
-!AddParameter methodsFor: 'initialization' stamp: 'HAW 8/16/2018 19:49:29'!
-initializedNamed: aNewParameter initializedWith: aNewParameterValue to: anOldSelector implementing: aNewSelector  
-	addingToImplementors: anImplementorTrailingString addingToSenders: aSenderTrailingString
-	implementors: implementorsCollection senders: sendersCollection
+!AddParameter methodsFor: 'initialization' stamp: 'HAW 9/3/2018 17:15:21'!
+initializedNamed: aNewParameter 
+	initializedWith: aNewParameterValue 
+	to: anOldSelector 
+	implementing: aNewSelector  
+	addingToImplementors: anImplementorTrailingString 
+	addingToSenders: aSenderTrailingString
+	implementors: implementorsCollection 
+	senders: sendersCollection
 
+	super initializeFrom: anOldSelector to: aNewSelector implementors: implementorsCollection senders: sendersCollection.
+	
 	newParameter := aNewParameter.
 	newParameterValue := aNewParameterValue.
-	oldSelector := anOldSelector.
-	newSelector := aNewSelector.
 	implementorTrailingString := anImplementorTrailingString.
 	senderTrailingString := aSenderTrailingString.
-	implementors := implementorsCollection.
-	senders := sendersCollection.
-	
-	changes := Set new.! !
+	! !
 
 !AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 8/24/2018 17:16:38'!
 addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
@@ -4665,8 +4983,8 @@ errorMessageForNewParameter: aNewParameter definedAsInstanceVariableIn: defining
 			nextPutAll: aNewParameter;
 			nextPutAll: ' as instance variable' ]! !
 
-!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 16:21:31'!
-newParameterDefinedAsLocalErrorMessageFor: aNewParameter
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 9/2/2018 19:59:27'!
+errorMessageForNewParameterDefinedAsLocal: aNewParameter
 
 	^ aNewParameter, ' is already defined as parameter or temporary'! !
 
@@ -4717,11 +5035,11 @@ signalNewParameter: aNewParameter definedAsInstanceVariableIn: definingClasses
 
 	self refactoringError: (self errorMessageForNewParameter: aNewParameter definedAsInstanceVariableIn: definingClasses)! !
 
-!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 16:34:16'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 9/2/2018 19:59:27'!
 signalNewParameter: aNewParameter isDefinedAsLocalIn: implementors
 
 	self 
-		canNotRefactorDueToReferencesError: (self newParameterDefinedAsLocalErrorMessageFor: aNewParameter)
+		canNotRefactorDueToReferencesError: (self errorMessageForNewParameterDefinedAsLocal: aNewParameter)
 		references: (implementors collect: [ :implementor | MethodReference method: implementor ])
 		to: aNewParameter 
 	 ! !
@@ -4761,39 +5079,234 @@ signalSelectorMustBeUnary
 	
 	self refactoringError: self selectorMustBeUnaryErrorMessage! !
 
-!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/13/2018 15:32:48'!
+!RemoveParameter methodsFor: 'initialization' stamp: 'HAW 9/4/2018 14:31:23'!
+initializeNamed: aParameterToRemove
+	ofKeywordAtIndex: aParameterIndex
+	from: anOldSelector 
+	creating: aNewSelector 
+	implementors: implementorsCollection 
+	senders: sendersCollection
+	
+	super initializeFrom: anOldSelector to: aNewSelector implementors: implementorsCollection senders: sendersCollection.
+
+	parameterToRemove := aParameterToRemove.
+	parameterIndex := aParameterIndex.
+	senderReplacementString := newSelector isUnary ifTrue: [ newSelector asString ] ifFalse: [ '' ].
+	isLastParameter := oldSelector numArgs = parameterIndex 
+	! !
+
+!RemoveParameter methodsFor: 'create new implementors - private' stamp: 'HAW 9/4/2018 14:42:51'!
+implementorNewSourceCodeOf: anImplementor
+
+	| implementorMethodNode newSource originalSource parameterToRemovePosition selectorToRemovePosition |
+	
+	implementorMethodNode := anImplementor methodNode.
+	selectorToRemovePosition := implementorMethodNode selectorKeywordPositionAt: parameterIndex.
+	parameterToRemovePosition := implementorMethodNode parameterDefinitionPositionAt: parameterIndex.
+
+	originalSource := anImplementor sourceCode.
+	newSource := String streamContents: [ :newSourceStream | 
+		self writeBeforeKeywordIn: newSourceStream from: originalSource removing: selectorToRemovePosition.
+		self writeAfterParameterIn: newSourceStream from: originalSource removing: parameterToRemovePosition ].
+		
+	^newSource! !
+
+!RemoveParameter methodsFor: 'create new implementors - private' stamp: 'HAW 9/4/2018 14:42:51'!
+writeAfterParameterIn: newSourceStream from: originalSource removing: parameterToRemovePosition
+	
+	| afterParameterPosition |
+	
+	afterParameterPosition := parameterToRemovePosition last.
+	isLastParameter ifFalse: [ afterParameterPosition := self lastSeparatorIndexIn: originalSource startingFrom: afterParameterPosition ].
+	
+	newSourceStream nextPutAll: (originalSource copyFrom: afterParameterPosition + 1 to: originalSource size) 	! !
+
+!RemoveParameter methodsFor: 'create new implementors - private' stamp: 'HAW 9/4/2018 14:35:27'!
+writeBeforeKeywordIn: newSourceStream from: originalSource removing: selectorToRemovePosition
+
+	newSelector isUnary 
+		ifTrue: [ newSourceStream nextPutAll: newSelector ]
+		ifFalse: [ newSourceStream nextPutAll: (originalSource copyFrom: 1 to: selectorToRemovePosition first - 1) ].
+! !
+
+!RemoveParameter methodsFor: 'rename senders - private' stamp: 'HAW 9/4/2018 12:09:22'!
+addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
+	
+	| keywordAndParameterPositions senderSourceCode |
+	
+	senderSourceCode := aMethodNode sourceText.
+	keywordAndParameterPositions := aMethodNode keywordAndParameterPositionsAt: parameterIndex of: oldSelector ifAbsent: [ #() ].
+	keywordAndParameterPositions do: [ :aKeywordAndParameterPosition | | lastPosition |
+		lastPosition := self lastSeparatorIndexIn: senderSourceCode startingFrom: aKeywordAndParameterPosition last.
+		rangesToKeywords add: (aKeywordAndParameterPosition first to: lastPosition) -> senderReplacementString ]
+	! !
+
+!RemoveParameter methodsFor: 'rename senders - private' stamp: 'HAW 9/4/2018 12:10:34'!
+lastSeparatorIndexIn: senderSourceCode startingFrom: aPosition
+
+	| lastPosition senderSourceCodeSize |
+	
+	lastPosition := aPosition.
+	senderSourceCodeSize := senderSourceCode size.
+	[ lastPosition := lastPosition + 1.
+	lastPosition <= senderSourceCodeSize and: [ (senderSourceCode at: lastPosition) isSeparator ]] whileTrue. 
+
+	^lastPosition - 1! !
+
+!RemoveParameter class methodsFor: 'instance creation' stamp: 'HAW 9/4/2018 15:17:51'!
+named: aParameterToRemove from: aMethod implementors: implementorsCollection senders: sendersCollection
+	
+	| oldSelector methodNode parameterIndex newSelector |
+	
+	oldSelector := aMethod selector.
+	self assertCanRemoveParameterFrom: oldSelector.
+	
+	methodNode := aMethod methodNode.
+	parameterIndex := self assert: aParameterToRemove isDefinedIn: methodNode.
+	self assertAllImplementors: implementorsCollection haveSame: oldSelector.
+	self assertAllSenders: sendersCollection send: oldSelector.
+	self assertNoImplementorFrom: implementorsCollection reference: aParameterToRemove definedAt: parameterIndex.
+	
+	newSelector := self newSelectorFrom: oldSelector removingParameterAt: parameterIndex.
+	
+	^self new 
+		initializeNamed: aParameterToRemove
+		ofKeywordAtIndex: parameterIndex
+		from: oldSelector 
+		creating: newSelector 
+		implementors: implementorsCollection 
+		senders: sendersCollection
+! !
+
+!RemoveParameter class methodsFor: 'pre-conditions' stamp: 'HAW 9/2/2018 20:07:30'!
+assert: aParamerterToRemove isDefinedIn: methodNode
+
+	| parameterIndex |
+	
+	parameterIndex := methodNode arguments findFirst: [ :aParameterNode | aParameterNode name = aParamerterToRemove ].
+	parameterIndex = 0 ifTrue: [ self signalParameterNotInMessage: aParamerterToRemove ].
+	
+	^parameterIndex 
+		! !
+
+!RemoveParameter class methodsFor: 'pre-conditions' stamp: 'HAW 9/4/2018 15:18:13'!
+assertCanRemoveParameterFrom: oldSelector
+
+	self assertIsNotUnary: oldSelector.
+	self assertIsNotBinary: oldSelector.! !
+
+!RemoveParameter class methodsFor: 'pre-conditions' stamp: 'HAW 9/1/2018 12:34:26'!
+assertIsNotBinary: aSelector
+
+	aSelector isInfix ifTrue: [ self signalCanNotRemoveParameterFromBinaryMessages]! !
+
+!RemoveParameter class methodsFor: 'pre-conditions' stamp: 'HAW 9/1/2018 12:37:00'!
+assertIsNotUnary: aSelector
+
+	aSelector isUnary ifTrue: [ self signalCanNotRemoveParameterFromUnaryMessages]! !
+
+!RemoveParameter class methodsFor: 'pre-conditions' stamp: 'HAW 9/4/2018 15:41:24'!
+assertNoImplementorFrom: implementorsCollection reference: aParamerterToRemove definedAt: parameterIndex
+
+	| implementorsReferencingParameter |
+	
+	implementorsReferencingParameter := implementorsCollection select: [:anImplementor | anImplementor referencesParameterAt: parameterIndex ].
+	
+	implementorsReferencingParameter isEmpty ifFalse: [ self signalCanNotRemove: aParamerterToRemove dueToReferencesIn: implementorsReferencingParameter ].! !
+
+!RemoveParameter class methodsFor: 'exceptions' stamp: 'HAW 9/1/2018 12:35:57'!
+canNotRemoveParameterFromBinaryMessagesErrorMessage
+	
+	^'Can not remove parameter from binary messages. Rename message to a keyword one first'! !
+
+!RemoveParameter class methodsFor: 'exceptions' stamp: 'HAW 9/1/2018 12:36:43'!
+canNotRemoveParameterFromUnaryMessagesErrorMessage
+	
+	^'There is no parameter to remove in unary messages'! !
+
+!RemoveParameter class methodsFor: 'exceptions' stamp: 'HAW 9/2/2018 19:40:52'!
+errorMessageForParameterNotInMessage: aParameterToRemove
+
+	^aParameterToRemove, ' is not define as parameter'! !
+
+!RemoveParameter class methodsFor: 'exceptions' stamp: 'HAW 9/3/2018 16:27:21'!
+errorMessageForParameterToRemoveIsReferenced: aParameterToRemove
+
+	^aParameterToRemove, ' is being referenced in implementors'! !
+
+!RemoveParameter class methodsFor: 'exceptions' stamp: 'HAW 9/2/2018 20:21:43'!
+signalCanNotRemove: aParameterToRemove dueToReferencesIn: implementorsReferencingParameterToRemove
+
+	self 
+		canNotRefactorDueToReferencesError: (self errorMessageForParameterToRemoveIsReferenced: aParameterToRemove)
+		references: (implementorsReferencingParameterToRemove collect: [ :implementor | MethodReference method: implementor ])
+		to: aParameterToRemove 
+	 ! !
+
+!RemoveParameter class methodsFor: 'exceptions' stamp: 'HAW 9/1/2018 12:34:45'!
+signalCanNotRemoveParameterFromBinaryMessages
+	
+	self refactoringError: self canNotRemoveParameterFromBinaryMessagesErrorMessage! !
+
+!RemoveParameter class methodsFor: 'exceptions' stamp: 'HAW 9/1/2018 12:37:00'!
+signalCanNotRemoveParameterFromUnaryMessages
+	
+	self refactoringError: self canNotRemoveParameterFromUnaryMessagesErrorMessage! !
+
+!RemoveParameter class methodsFor: 'exceptions' stamp: 'HAW 9/2/2018 19:40:22'!
+signalParameterNotInMessage: aParameterToRemove
+
+	self refactoringError: (self errorMessageForParameterNotInMessage: aParameterToRemove)! !
+
+!RemoveParameter class methodsFor: 'instance creation - private' stamp: 'HAW 9/4/2018 14:49:20'!
+newSelectorFrom: oldSelector removingParameterAt: parameterIndex
+
+	| oldSelectorKeywords newSelectorAsString |
+	
+	oldSelectorKeywords := oldSelector keywords.
+	
+	newSelectorAsString := oldSelectorKeywords size = 1 
+		ifTrue: [ oldSelector allButLast ]
+		ifFalse: [ self newSelectorStringFrom: oldSelectorKeywords removing: parameterIndex ].
+	
+	^newSelectorAsString asSymbol ! !
+
+!RemoveParameter class methodsFor: 'instance creation - private' stamp: 'HAW 9/4/2018 14:50:53'!
+newSelectorStringFrom: oldSelectorKeywords removing: parameterIndex
+	
+	^ String streamContents: [ :stream | 
+			oldSelectorKeywords withIndexDo: [ :keyword :index | 
+				index = parameterIndex ifFalse: [ stream nextPutAll: keyword ]]]. ! !
+
+!RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 9/3/2018 19:49:44'!
 implementorNewSourceCodeOf: anImplementor
 
 	|  newSource rangesToNewKeywords |
 	
 	rangesToNewKeywords := OrderedCollection new.
-	anImplementor methodNode selectorKeywordsRanges withIndexDo: [ :aKeywordRange :index | 
+	anImplementor methodNode selectorKeywordsPositions withIndexDo: [ :aKeywordRange :index | 
 		rangesToNewKeywords add: aKeywordRange -> (newSelectorKeywords at: index) ].
 		
 	newSource := anImplementor sourceCode copyReplacing: rangesToNewKeywords.	
 	^newSource! !
 
-!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/13/2018 14:19:47'!
+!RenameSelector methodsFor: 'rename senders - private' stamp: 'HAW 9/3/2018 19:47:38'!
 addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
 	
 	| oldSelectorKeywordsRanges |
 	
-	oldSelectorKeywordsRanges := aMethodNode messageSendSelectorKeywordRangesOf: oldSelector ifAbsent: [ #() ].
+	oldSelectorKeywordsRanges := aMethodNode messageSendSelectorKeywordPositionsOf: oldSelector ifAbsent: [ #() ].
 	oldSelectorKeywordsRanges do: [ :aMessageSendSelectorRanges | 
 		aMessageSendSelectorRanges withIndexDo: [ :aRange :index | rangesToKeywords add: aRange -> (newSelectorKeywords at: index) ]].
 	! !
 
-!RenameSelector methodsFor: 'initialization' stamp: 'HAW 8/9/2018 23:00:34'!
+!RenameSelector methodsFor: 'initialization' stamp: 'HAW 9/3/2018 17:14:47'!
 initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders
 	
-	oldSelector := anOldSelector.
-	newSelector := aNewSelector.
-	implementors := aCollectionOfImplementors.
-	"I have to make a copy of senders because it can change with recursive implementors - Hernan"
-	senders := aCollectionOfSenders asOrderedCollection.
+	super initializeFrom: anOldSelector to: aNewSelector implementors: aCollectionOfImplementors senders: aCollectionOfSenders.
 	
 	newSelectorKeywords := newSelector keywords.	
-	changes := Set new.! !
+	! !
 
 !RenameSelector methodsFor: 'selectors' stamp: 'HAW 5/24/2017 19:43:23'!
 newSelector
@@ -5407,20 +5920,20 @@ newSourceCodeOf: aCompiledMethod
 
 	^newSource! !
 
-!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 15:21:16'!
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 9/3/2018 19:48:30'!
 rangesForLiteralOf: methodNode
 	
 	| literalRanges |
 	
-	literalRanges := methodNode rangesForLiteralNode: classToRenameOriginalName ifAbsent: [ #() ].
+	literalRanges := methodNode positionsForLiteralNode: classToRenameOriginalName ifAbsent: [ #() ].
 	literalRanges := literalRanges collect: [ :aRange | aRange first + 1 to: aRange last ].
 	
 	^literalRanges ! !
 
-!RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 15:20:59'!
+!RenameClass methodsFor: 'applying - private' stamp: 'HAW 9/3/2018 19:48:49'!
 rangesForLiteralVariableOf: methodNode
 	
-	^methodNode rangesForLiteralVariableNode: classToRenameOriginalName ifAbsent: [ #() ]
+	^methodNode positionsForLiteralVariableNode: classToRenameOriginalName ifAbsent: [ #() ]
 	! !
 
 !RenameClass methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 15:20:40'!
@@ -5549,12 +6062,12 @@ copyOldInstanceVariableToNewOne
 	
 ! !
 
-!RenameInstanceVariable methodsFor: 'applying - private' stamp: 'HAW 8/13/2018 15:28:01'!
+!RenameInstanceVariable methodsFor: 'applying - private' stamp: 'HAW 9/3/2018 19:48:09'!
 newSourceOf: aCompiledMethod 
 	
 	| newSource ranges |
 	
-	ranges := aCompiledMethod methodNode rangesForInstanceVariable: oldVariable ifAbsent: [ #() ].
+	ranges := aCompiledMethod methodNode positionsForInstanceVariable: oldVariable ifAbsent: [ #() ].
 	newSource := aCompiledMethod sourceCode copyReplacing: ranges with: self newVariable.
 	
 	^newSource
@@ -5640,12 +6153,12 @@ from: anOldvariable to: aNewVariable in: aClassToRefactor
 	
 	^self new initializeFrom: anOldvariable addingWith: addInstanceVariable ! !
 
-!RenameTemporary methodsFor: 'applying' stamp: 'HAW 8/13/2018 15:28:15'!
+!RenameTemporary methodsFor: 'applying' stamp: 'HAW 9/3/2018 19:49:06'!
 apply
 	
 	| newSource ranges |
 	
-	ranges := methodNode rangesForTemporaryVariable: oldVariable ifAbsent: [ #() ].
+	ranges := methodNode positionsForTemporaryVariable: oldVariable ifAbsent: [ #() ].
 	newSource := methodNode sourceText copyReplacing: ranges with: newVariable.
 	
 	^ newSource! !
@@ -6298,6 +6811,57 @@ assertCanApplyRefactoringFor: aSelector in: aClass
 
 	! !
 
+!RemoveParameterApplier methodsFor: 'refactoring - creation' stamp: 'HAW 9/4/2018 15:15:48'!
+createRefactoring
+	
+	^self refactoringClass named: parameterToRemove from: originalMethod implementors: implementors senders: senders ! !
+
+!RemoveParameterApplier methodsFor: 'refactoring - creation' stamp: 'HAW 9/4/2018 15:15:00'!
+refactoringClass
+
+	^RemoveParameter! !
+
+!RemoveParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 9/4/2018 15:30:50'!
+askParameterToRemove
+		
+	| methodNode parameterNames |
+	
+	originalMethod := implementingClass compiledMethodAt: oldSelector.
+	methodNode := originalMethod methodNode.
+	parameterNames := methodNode argumentNames.
+	
+	parameterNames size = 1 
+		ifTrue: [ parameterToRemove := parameterNames first ]
+		ifFalse: [ parameterToRemove := self selectParameterToRemoveForm: parameterNames ].
+	
+	! !
+
+!RemoveParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 9/4/2018 15:01:31'!
+requestRefactoringParameters
+
+	self
+		askParameterToRemove;
+		askScope
+		! !
+
+!RemoveParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 9/4/2018 15:36:30'!
+selectParameterToRemoveForm: parameterNames
+	
+	| parameterIndex |
+	
+	parameterIndex := (PopUpMenu labelArray: parameterNames) startUpWithCaption: 'Select parameter to remove'.
+	parameterIndex = 0 ifTrue: [self endRequest ].
+	
+	^parameterNames at: parameterIndex.! !
+
+!RemoveParameterApplier class methodsFor: 'pre-conditions' stamp: 'HAW 9/4/2018 15:17:09'!
+assertCanApplyRefactoringFor: aSelector in: aClass
+
+	RemoveParameter assertCanRemoveParameterFrom: aSelector.
+	
+
+	! !
+
 !RenameSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/5/2017 17:02:06'!
 askNewSelector
 
@@ -6806,7 +7370,7 @@ messageListMenuOptions
 		}`.
 	! !
 
-!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 8/18/2018 16:08:56'!
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 9/4/2018 15:19:24'!
 messsageRefactoringMenuOptions
 
 	^ `{
@@ -6827,6 +7391,13 @@ messsageRefactoringMenuOptions
 			{
 				#itemGroup 	-> 		10.
 				#itemOrder 		-> 		30.
+				#label 			-> 		'remove parameter...'.
+				#selector 		-> 		#removeParameter.
+				#icon 			-> 		#listRemoveIcon
+			} asDictionary.
+			{
+				#itemGroup 	-> 		10.
+				#itemOrder 		-> 		40.
 				#label 			-> 		'push up'.
 				#selector 		-> 		#pushUpSelector.
 				#icon 			-> 		#goTopIcon
@@ -6885,6 +7456,12 @@ removeMessageFromBrowserKeepingLabel
 	self deleteFromMessageList: self selection.
 	self reformulateList.
 ! !
+
+!SystemChangeNotifier methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 14:39:32'!
+resetSilenceLevel
+
+	"I do not use initialize because it can change without me noticing it - Hernan"
+	silenceLevel := 0! !
 
 !UndefinedObject methodsFor: '*Refactoring' stamp: 'HAW 6/24/2017 11:23:16'!
 whichClassDefinesInstanceVariable: aVariable ifNone: aNoneBlock 
@@ -7165,6 +7742,17 @@ readsInstanceVariable: aName
 
 	^self readsField: (self methodClass indexOfInstanceVariable: aName) ! !
 
+!CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 15:41:29'!
+referencesParameterAt: parameterIndex
+
+	| methodNode implementorParameterNodeToRemove parameterRanges |
+	
+	methodNode := self methodNode.
+	implementorParameterNodeToRemove := methodNode arguments at: parameterIndex.
+	parameterRanges := methodNode positionsForTemporaryVariable: implementorParameterNodeToRemove name ifAbsent: [#()].
+	
+	^parameterRanges size ~= 1! !
+
 !CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 11:32:37'!
 sourceCode
 
@@ -7231,6 +7819,20 @@ isReturn
 
 	^false! !
 
+!Encoder methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 15:24:19'!
+keywordAndParameterPositionsAt: anIndex of: aSelector ifAbsent: aBlock
+	
+	| positions |
+	
+	positions := sourceRanges keys 
+		select: [ :aParseNode | aParseNode isMessageNamed: aSelector ] 
+		thenCollect: [ :aMessageSendNode | aMessageSendNode keywordAndParameterPositionAt: anIndex encodedWith: self].
+		
+	^ positions isEmpty 
+		ifTrue: aBlock
+		ifFalse: [ positions ]
+	! !
+
 !Encoder methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:30:20'!
 messageSendLasPositionsOf: aSelector ifAbsent: aBlock
 	
@@ -7244,6 +7846,11 @@ messageSendLasPositionsOf: aSelector ifAbsent: aBlock
 	sortedPositions := positions asSortedCollection.
 	
 	^sortedPositions ! !
+
+!Encoder methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:45:40'!
+parameterDefinitionPositionFor: aParameterNode
+
+	^ (self sourceRangeFor: aParameterNode) first! !
 
 !EncoderForV3PlusClosures methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 16:07:52'!
 hasLocalNamed: aName
@@ -7270,6 +7877,18 @@ isMessageNamed: aSelector
 
 	^aSelector == selector key! !
 
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:41:44'!
+keywordAndParameterPositionAt: anIndex encodedWith: anEncoder
+	
+	| keywordPosition parameterPosition |
+	
+	keywordPosition := keywordRanges at: anIndex.
+	parameterPosition := self positionOfParameterAt: anIndex inSourceCodeEncodedWith: anEncoder.
+	
+	^keywordPosition first to: parameterPosition last
+
+	! !
+
 !MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 21:46:47'!
 keywordRanges
 
@@ -7286,33 +7905,44 @@ lastParameterLastPositionInSourceCodeEncodedWith: anEncoder
 
 	^ (self lastParameterPositionInSourceCodeEncodedWith: anEncoder) last! !
 
-!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/25/2018 12:25:16'!
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:36:57'!
 lastParameterPositionInSourceCodeEncodedWith: anEncoder 
 
-	| lastParameter lastParameterRanges  |
+	^self positionOfParameterAt: arguments size inSourceCodeEncodedWith: anEncoder ! !
+
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:38:59'!
+lastParameterPositionInSourceCodeFrom: lastParameterRanges
+
+	^self positionOfParameterAt: arguments size inSourceCodeFrom: lastParameterRanges ! !
+
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:24:35'!
+positionOfParameterAt: anIndex inSourceCodeEncodedWith: anEncoder
+
+	| parameter parameterRanges  |
  
-	lastParameter := arguments last.
+	parameter := arguments at: anIndex.
 	"sourceRanges for BlockNode does not includes square brackets, but sourceRanges includes a LeafNode with the 
 	ranges including the square brackets. That LeafNode is the closureCreationNode of the BlockNode. 
 	That is why, if the lastParameter is a block node, I use the ranges of the closureCreationNode, if not the add of the
 	new parameter will occurr inside of the block. 
 	See #test28WhenSenderLastParameterIsABlockAddedParameterIsNotAddedInsideTheBlock  - Hernan"
-	lastParameter isBlockNode ifTrue: [ lastParameter := lastParameter closureCreationNode ].
-	lastParameterRanges := anEncoder sourceRangeFor: lastParameter.
+	parameter isBlockNode ifTrue: [ parameter := parameter closureCreationNode ].
+	parameterRanges := anEncoder sourceRangeFor: parameter.
 	
-	^ lastParameterRanges isInterval
-		ifTrue: [ lastParameterRanges ]
-		ifFalse: [ self lastParameterPositionInSourceCodeFrom: lastParameterRanges ]! !
+	^ parameterRanges isInterval
+		ifTrue: [ parameterRanges ]
+		ifFalse: [ self positionOfParameterAt: anIndex inSourceCodeFrom: parameterRanges ]
+		! !
 
-!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/24/2018 18:13:10'!
-lastParameterPositionInSourceCodeFrom: lastParameterRanges
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:26:19'!
+positionOfParameterAt: anIndex inSourceCodeFrom: parameterRanges
 
-	| lastArgumentRangeForSelf lastKeywordLastPosition |
+	| argumentRangeForSelf keywordLastPosition |
 	
-	lastKeywordLastPosition := self lastKeywordLastPositionInSourceCode.
-	lastArgumentRangeForSelf := lastParameterRanges detect: [ :aRange | aRange first >= lastKeywordLastPosition ].
+	keywordLastPosition := (keywordRanges at: anIndex) last.
+	argumentRangeForSelf := parameterRanges detect: [ :aRange | aRange first >= keywordLastPosition ].
 	
-	^ lastArgumentRangeForSelf  ! !
+	^ argumentRangeForSelf  ! !
 
 !MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:36:48'!
 selectorLastPositionInSourceCodeEncodedWith: anEncoder
@@ -7320,6 +7950,11 @@ selectorLastPositionInSourceCodeEncodedWith: anEncoder
 	^originalSelector isUnary 
 		ifTrue: [ self lastKeywordLastPositionInSourceCode ]
 		ifFalse: [ self lastParameterLastPositionInSourceCodeEncodedWith: anEncoder ]! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 15:20:38'!
+argumentNames
+	
+	^arguments collect: [ :anArgumentNode | anArgumentNode name ]! !
 
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 6/25/2017 19:03:53'!
 classAndSelector
@@ -7336,43 +7971,60 @@ hasLocalNamed: aName
 
 	^ encoder hasLocalNamed: aName ! !
 
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:44:14'!
+keywordAndParameterPositionsAt: anIndex of: aSelector ifAbsent: aClosure
+
+	^encoder keywordAndParameterPositionsAt: anIndex of: aSelector ifAbsent: aClosure
+! !
+
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/16/2018 17:37:41'!
 messageSendLasPositionsOf: aSelector ifAbsent: aBlock 
 	
 	^encoder messageSendLasPositionsOf: aSelector ifAbsent: aBlock
 ! !
 
-!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 21:49:21'!
-messageSendSelectorKeywordRangesOf: aSelector ifAbsent: aBlock
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:47:38'!
+messageSendSelectorKeywordPositionsOf: aSelector ifAbsent: aBlock
 
-	^encoder messageSendSelectorKeywordRangesOf: aSelector ifAbsent: aBlock
+	^encoder messageSendSelectorKeywordPositionsOf: aSelector ifAbsent: aBlock
 ! !
 
-!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 19:23:38'!
-rangesForInstanceVariable: aName ifAbsent: aBlock
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:46:08'!
+parameterDefinitionPositionAt: anIndex
 
-	^encoder rangesForInstanceVariable: aName ifAbsent: aBlock
+	^encoder parameterDefinitionPositionFor: (arguments at: anIndex)
 ! !
 
-!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 20:59:26'!
-rangesForLiteralNode: aName ifAbsent: aBlock
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:48:09'!
+positionsForInstanceVariable: aName ifAbsent: aBlock
 
-	^encoder rangesForLiteralNode: aName ifAbsent: aBlock
+	^encoder positionsForInstanceVariable: aName ifAbsent: aBlock
 ! !
 
-!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 20:51:36'!
-rangesForLiteralVariableNode: aName ifAbsent: aBlock
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:48:30'!
+positionsForLiteralNode: aName ifAbsent: aBlock
 
-	^encoder rangesForLiteralVariableNode: aName ifAbsent: aBlock! !
-
-!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 19:41:54'!
-rangesForTemporaryVariable: aName ifAbsent: aBlock
-
-	^encoder rangesForTemporaryVariable: aName ifAbsent: aBlock
+	^encoder positionsForLiteralNode: aName ifAbsent: aBlock
 ! !
 
-!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 22:58:21'!
-selectorKeywordsRanges
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:48:49'!
+positionsForLiteralVariableNode: aName ifAbsent: aBlock
+
+	^encoder positionsForLiteralVariableNode: aName ifAbsent: aBlock! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:49:06'!
+positionsForTemporaryVariable: aName ifAbsent: aBlock
+
+	^encoder positionsForTemporaryVariable: aName ifAbsent: aBlock
+! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:46:36'!
+selectorKeywordPositionAt: anIndex
+
+	^selectorKeywordsRanges at: anIndex ! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:49:44'!
+selectorKeywordsPositions
 
 	^selectorKeywordsRanges! !
 
@@ -7480,6 +8132,15 @@ removeInstVar
 	
 	model selectedClassOrMetaClass ifNotNil: [ :aClass |
 		(RemoveInstanceVariableApplier on: self for: aClass) value ].! !
+
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 15:18:51'!
+removeParameter
+	
+	model selectedMessageName ifNotNil: [ :oldSelector | | refactoring |
+		refactoring := [ RemoveParameterApplier for: oldSelector in: model selectedClassOrMetaClass ]
+			on: Refactoring refactoringErrorClass 
+			do: [ :refactoringError | ^self inform: refactoringError messageText ].
+		refactoring value ].! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/6/2017 09:47:34'!
 renameInstVar

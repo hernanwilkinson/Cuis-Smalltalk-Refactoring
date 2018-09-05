@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3430] on 4 September 2018 at 3:42:52 pm'!
-'Description RemoveParameter implementation'!
-!provides: 'Refactoring' 1 53!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3430] on 4 September 2018 at 9:33:41 pm'!
+'Description AddParameter support adding at any place'!
+!provides: 'Refactoring' 1 55!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -256,7 +256,7 @@ ChangeSelector class
 
 !classDefinition: #AddParameter category: #Refactoring!
 ChangeSelector subclass: #AddParameter
-	instanceVariableNames: 'newParameter newParameterValue implementorTrailingString senderTrailingString'
+	instanceVariableNames: 'newParameter newParameterValue implementorTrailingString senderTrailingString index isAddingLast'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -406,7 +406,7 @@ ChangeSelectorApplier class
 
 !classDefinition: #AddParameterApplier category: #Refactoring!
 ChangeSelectorApplier subclass: #AddParameterApplier
-	instanceVariableNames: 'newParameter newParameterValue newKeyword'
+	instanceVariableNames: 'newParameter newParameterValue newKeyword parameterIndex'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -1720,12 +1720,12 @@ test17WhenCreatedForBinarySelectorMustBeBinary
 	
 ! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:33:19'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 20:10:41'!
 test18CanNotAddParameterToBinaryKeyword
 
 	self 
 		assertCreation: [ AddParameter 
-			named: 'newParam'  initializedWith: '1' to: '+' asSymbol implementing: 'm1:' asSymbol
+			named: 'newParam' at: 1 addingLast: true initializedWith: '1' to: '+' asSymbol implementing: 'm1:' asSymbol
 			addingToImplementors: '' addingToSenders: ''
 			implementors: {} senders: {} ]
 		 failsWith: [ AddParameter selectorCanNotBeBinaryErrorMessage ]
@@ -1918,6 +1918,119 @@ test28WhenSenderLastParameterIsABlockAddedParameterIsNotAddedInsideTheBlock
 	senderSourceCode := senderMethodNode sourceText copyFrom: senderSourceRange first to: senderSourceRange last.
 	self assert: senderFirstParameterValue equals: senderSourceCode
 	! !
+
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 19:43:44'!
+test29AddingParameterInTheMiddleWorksAsExpected
+
+	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword |
+	
+	oldSelector := 'm1:m3:' asSymbol.
+	newSelectorAddedKeyword := 'm2:' asSymbol.
+	newSelector := 'm1:m2:m3:' asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '2'.
+	senderSelector := 'sender' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: 'm1: p1 m3: p3'.
+	classToRefactor compile: senderSelector asString, ' self m1: 1 m3: 3'.
+	
+	refactoring := AddParameter 
+		named: newParameter at: 2 initializedWith: newParameterValue using: newSelectorAddedKeyword toKeywordSelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	self deny: (classToRefactor includesSelector: oldSelector).
+	self assert: (classToRefactor includesSelector: newSelector).
+	
+	newImplementorMethodNode :=  (classToRefactor>>newSelector) methodNode.
+	self assert: (newImplementorMethodNode arguments at: 2) name equals: newParameter.
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self deny: (senderMethod sendsSelector: oldSelector).
+	self assert: (senderMethod sendsSelector: newSelector).
+	
+	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue).
+	self assert: senderMethod sourceCode equals: senderSelector asString, ' self m1: 1 m2: 2 m3: 3'.
+! !
+
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 19:51:42'!
+test30AddingParameterInTheMiddleWithManySendersWorksAsExpected
+
+	| refactoring classToRefactor oldSelector newSelector newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword |
+	
+	oldSelector := 'm1:m3:' asSymbol.
+	newSelectorAddedKeyword := 'm2:' asSymbol.
+	newSelector := 'm1:m2:m3:' asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '2'.
+	senderSelector := 'sender' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: 'm1: p1 m3: p3'.
+	classToRefactor compile: senderSelector asString, '
+	self m1: 1 m3: 3.
+	self
+		m1: 4
+		m3: 6'.
+	
+	refactoring := AddParameter 
+		named: newParameter at: 2 initializedWith: newParameterValue using: newSelectorAddedKeyword toKeywordSelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self assert: senderMethod sourceCode equals: senderSelector asString, '
+	self m1: 1 m2: 2 m3: 3.
+	self
+		m1: 4
+		m2: 2 m3: 6'.
+! !
+
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 20:04:57'!
+test31IndexCanNotBeLessThanOne
+	
+	self 
+		assertCreation: [ 
+			AddParameter 
+				named: 'newParam' 
+				at: 0
+				initializedWith: '1' 
+				using: 'm2:' asSymbol 
+				toKeywordSelector: 'm1:' asSymbol  
+				implementors: {} 
+				senders: {} ]
+		failsWith: [ AddParameter errorMessageForInvalidParameterIndex: 0 for: 1 ]! !
+
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 20:06:29'!
+test32IndexCanNotBeBiggerThanNumberOfParametersPlusOne
+	
+	self 
+		assertCreation: [ 
+			AddParameter 
+				named: 'newParam' 
+				at: 3
+				initializedWith: '1' 
+				using: 'm2:' asSymbol 
+				toKeywordSelector: 'm1:' asSymbol  
+				implementors: {} 
+				senders: {} ]
+		failsWith: [ AddParameter errorMessageForInvalidParameterIndex: 3 for: 1 ]! !
+
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 20:07:45'!
+test33IndexMustBeInteger
+	
+	self 
+		assertCreation: [ 
+			AddParameter 
+				named: 'newParam' 
+				at: 1.5
+				initializedWith: '1' 
+				using: 'm2:' asSymbol 
+				toKeywordSelector: 'm1:' asSymbol  
+				implementors: {} 
+				senders: {} ]
+		failsWith: [ AddParameter errorMessageForInvalidParameterIndex: 1.5 for: 1 ]! !
 
 !AddParameterTest methodsFor: 'class factory' stamp: 'HAW 8/16/2018 11:55:40'!
 allClassCategoriesOfTestData
@@ -2802,6 +2915,38 @@ test12ParameterOfSendersOfOneKeywordSelectorsIsRemovedCorrectly
 	self assert: senderMethod sourceCode equals: (senderSelector asString,'
 		self 
 			m1.')
+	
+	! !
+
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 15:58:14'!
+test13ParameterIsRemovedCorrecltyFromSendersWithMoreThanOneSend
+
+	| classToRefactor selectorToRemoveParameterFrom parameterToRemove keywordToRemove keywordToKeep parameterToKeep refactoring senderSelector senderMethod |
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	keywordToRemove := 'm1:'.
+	keywordToKeep := 'm2:'.
+	selectorToRemoveParameterFrom := (keywordToRemove, keywordToKeep) asSymbol. 
+	parameterToRemove := 'parameter1'.
+	parameterToKeep := 'parameter2'.
+	senderSelector := 'sender' asSymbol.
+	classToRefactor compile: keywordToRemove,parameterToRemove, ' ', keywordToKeep, parameterToKeep.
+	classToRefactor compile: senderSelector asString,'
+		self ', keywordToRemove, ' 1 ', keywordToKeep, ' 2.
+		self ', keywordToRemove, ' 3 ', keywordToKeep, ' 4.'.
+	
+	refactoring := RemoveParameter 
+			named: parameterToRemove 
+			from: classToRefactor>>selectorToRemoveParameterFrom  
+			implementors: { classToRefactor>>selectorToRemoveParameterFrom } 
+			senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: senderSelector.
+	self assert: (senderMethod sendsSelector: keywordToKeep asSymbol).
+	self assert: senderMethod sourceCode equals: (senderSelector asString,'
+		self ', keywordToKeep, ' 2.
+		self ', keywordToKeep, ' 4.')
 	
 	! !
 
@@ -4479,13 +4624,13 @@ addToSendersIfOldSelectorIsSentIn: newImplementor
 	(newImplementor refersToLiteral: oldSelector) ifTrue: [ senders add: newImplementor ]. 
 	! !
 
-!ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 9/3/2018 17:46:05'!
+!ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 9/4/2018 19:05:08'!
 compileNewImplementorOf: anImplementor
 		
 	| implementorClassification newSourceCode |
 	
-	implementorClassification := anImplementor methodClass organization categoryOfElement: oldSelector.
 	newSourceCode := self implementorNewSourceCodeOf: anImplementor.
+	implementorClassification := anImplementor methodClass organization categoryOfElement: oldSelector.
 	
 	anImplementor methodClass 
 		compile: newSourceCode  
@@ -4551,12 +4696,13 @@ renameSenders
 	senders do: [ :aSender | self renameSendersIn: aSender ].
 	! !
 
-!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/25/2018 12:17:57'!
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 9/4/2018 19:25:20'!
 renameSendersIn: aMethod
 
-	| newSource |
+	| newSource rangesToNewStrings |
 	
-	newSource := aMethod sourceCode copyReplacing: (self rangesToKeywordsOf: aMethod).
+	rangesToNewStrings := self rangesToKeywordsOf: aMethod.
+	newSource := aMethod sourceCode copyReplacing: rangesToNewStrings.
 	aMethod methodClass compile: newSource.
 	
 	changes add: (MethodReference class: aMethod methodClass selector: aMethod selector)! !
@@ -4690,8 +4836,10 @@ addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPot
 	senders addAll: (aPotentialClassToRefactor methodsSelect: [ :aPotentialSender | aPotentialSender refersToLiteral: anOldSelector ]).
 ! !
 
-!AddParameter methodsFor: 'initialization' stamp: 'HAW 9/3/2018 17:15:21'!
+!AddParameter methodsFor: 'initialization' stamp: 'HAW 9/4/2018 19:00:42'!
 initializedNamed: aNewParameter 
+	at: anIndex
+	addingLast: anIsAddingLast
 	initializedWith: aNewParameterValue 
 	to: anOldSelector 
 	implementing: aNewSelector  
@@ -4706,18 +4854,26 @@ initializedNamed: aNewParameter
 	newParameterValue := aNewParameterValue.
 	implementorTrailingString := anImplementorTrailingString.
 	senderTrailingString := aSenderTrailingString.
-	! !
+	
+	index := anIndex.
+	isAddingLast := anIsAddingLast ! !
 
-!AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 8/24/2018 17:16:38'!
+!AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 9/4/2018 20:11:46'!
 addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
 	
-	| oldSelectorLastPositions senderSourceCode |
+	| insertionPoints senderSourceCode |
 	
 	senderSourceCode := aMethodNode sourceText.
-	oldSelectorLastPositions := aMethodNode messageSendLasPositionsOf: oldSelector ifAbsent: [ #() ].
-	oldSelectorLastPositions do: [ :aPosition | | newPosition |
-		newPosition := self firstNoSeparatorIndexIn: senderSourceCode startingFrom: aPosition.
-		rangesToKeywords add: ((newPosition+1) to: newPosition) -> senderTrailingString ]
+	isAddingLast 
+		ifTrue: [ 
+			insertionPoints := aMethodNode messageSendLasPositionsOf: oldSelector ifAbsent: [ #() ].
+			insertionPoints do: [ :aPosition | | newPosition |
+			newPosition := self firstNoSeparatorIndexIn: senderSourceCode startingFrom: aPosition.
+			rangesToKeywords add: ((newPosition+1) to: newPosition) -> senderTrailingString ]]
+		ifFalse: [ 
+			insertionPoints := aMethodNode messageSendKeywordPositionsAt: index of: oldSelector ifAbsent: [ #()].
+			insertionPoints do: [ :aPosition | 
+			rangesToKeywords add: (aPosition to: aPosition-1) -> senderTrailingString ]]
 	! !
 
 !AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 8/24/2018 17:19:37'!
@@ -4734,22 +4890,57 @@ firstNoSeparatorIndexIn: sourceCode startingFrom: aStartingPosition
 	^noSeparatorIndex 
 		! !
 
-!AddParameter methodsFor: 'create new implementors - private' stamp: 'HAW 8/16/2018 17:10:32'!
+!AddParameter methodsFor: 'create new implementors - private' stamp: 'HAW 9/4/2018 20:13:31'!
 implementorNewSourceCodeOf: anImplementor
 
-	|  newSource originalSource selectorLastPosition |
-	
-	selectorLastPosition := anImplementor methodNode selectorLastPosition.
+	| implementorMethodNode newSource originalSource insertionPoint |
+
+	implementorMethodNode := anImplementor methodNode.
+	insertionPoint := isAddingLast 
+		ifTrue: [ implementorMethodNode selectorLastPosition ]
+		ifFalse: [ (implementorMethodNode selectorKeywordPositionAt: index) first - 1].
+.
 	originalSource := anImplementor sourceCode.
 	newSource := String streamContents: [ :newSourceStream |
 		newSourceStream 
-			nextPutAll: (originalSource copyFrom: 1 to: selectorLastPosition);
+			nextPutAll: (originalSource copyFrom: 1 to: insertionPoint);
 			nextPutAll: implementorTrailingString;
-			nextPutAll: (originalSource copyFrom: selectorLastPosition + 1 to: originalSource size) ].
+			nextPutAll: (originalSource copyFrom: insertionPoint+1 to: originalSource size) ].
 		
 	^newSource! !
 
-!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 8/25/2018 11:28:58'!
+!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 9/4/2018 19:59:06'!
+named: aNewParameter
+	at: anIndex 
+	initializedWith: aNewParameterValue
+	using: aNewKeyword 
+	toKeywordSelector: anOldSelector  
+	implementors: implementorsCollection 
+	senders: sendersCollection
+
+	| validNewParameterValue isAddingLast numberOfParameters |
+	
+	self assertIsKeyword: anOldSelector.
+	self assertIsValidKeywordForNewParameter: aNewKeyword.
+	validNewParameterValue := self assertNewParameterValueIsValid: aNewParameterValue.
+	numberOfParameters := anOldSelector numArgs.
+	self assert: anIndex isValidIndexFor: numberOfParameters.
+	isAddingLast := anIndex > numberOfParameters.
+	
+	^self 
+		named: aNewParameter 
+		at: anIndex
+		addingLast: isAddingLast 
+		initializedWith: aNewParameterValue 
+		to: anOldSelector 
+		implementing: (self newSelectorAdding: aNewKeyword at: anIndex to: anOldSelector) 
+		addingToImplementors: (self keywordImplementorTrailingFor: aNewKeyword and: aNewParameter addingLast: isAddingLast) 
+		addingToSenders: (self keywordSenderTrailingFor: aNewKeyword and: validNewParameterValue addingLast: isAddingLast)
+		implementors: implementorsCollection 
+		senders: sendersCollection
+! !
+
+!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 9/4/2018 19:32:45'!
 named: aNewParameter 
 	initializedWith: aNewParameterValue 
 	toUnarySelector: anOldSelector  
@@ -4763,6 +4954,8 @@ named: aNewParameter
 
 	^self 
 		named: aNewParameter 
+		at: 1
+		addingLast: true
 		initializedWith: aNewParameterValue 
 		to: anOldSelector 
 		implementing: (self newSelectorFromUnary: anOldSelector)
@@ -4772,7 +4965,7 @@ named: aNewParameter
 		senders: sendersCollection
 ! !
 
-!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 8/25/2018 11:28:58'!
+!AddParameter class methodsFor: 'instance creation' stamp: 'HAW 9/4/2018 17:26:10'!
 named: aNewParameter 
 	initializedWith: aNewParameterValue
 	using: aNewKeyword 
@@ -4780,35 +4973,44 @@ named: aNewParameter
 	implementors: implementorsCollection 
 	senders: sendersCollection
 
-	| validNewParameterValue |
-	
-	self assertIsKeyword: anOldSelector.
-	self assertIsValidKeywordForNewParameter: aNewKeyword.
-	validNewParameterValue := self assertNewParameterValueIsValid: aNewParameterValue.
-	
 	^self 
 		named: aNewParameter 
-		initializedWith: aNewParameterValue 
-		to: anOldSelector 
-		implementing: (self newSelectorFromKeyword: anOldSelector adding: aNewKeyword) 
-		addingToImplementors: (self keywordImplementorTrailingFor: aNewKeyword and: aNewParameter) 
-		addingToSenders: (self keywordSenderTrailingFor: aNewKeyword and: validNewParameterValue)
+		at: anOldSelector numArgs + 1
+		initializedWith: aNewParameterValue
+		using: aNewKeyword 
+		toKeywordSelector: anOldSelector  
 		implementors: implementorsCollection 
 		senders: sendersCollection
 ! !
 
-!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 12:28:30'!
-keywordImplementorTrailingFor: aNewKeyword and: aNewParameter
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 9/4/2018 19:05:41'!
+keywordImplementorTrailingFor: aNewKeyword and: aNewParameter addingLast: isAddingLast
 
-	^' ',aNewKeyword, ' ', aNewParameter! !
+	^String streamContents: [ :stream |
+		isAddingLast ifTrue: [ stream space ].
+		stream
+			nextPutAll: aNewKeyword;
+			space;
+			nextPutAll: aNewParameter;
+			space ]! !
 
-!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 12:28:49'!
-keywordSenderTrailingFor: aNewKeyword and: aNewParameterValue
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 9/4/2018 19:23:31'!
+keywordSenderTrailingFor: aNewKeyword and: aNewParameterValue addingLast: isAddingLast
 
-	^' ', aNewKeyword, ' ', aNewParameterValue! !
+	^String streamContents: [ :stream |
+		isAddingLast ifTrue: [ stream space ].
+		stream
+			nextPutAll: aNewKeyword;
+			space;
+			nextPutAll: aNewParameterValue.
+		isAddingLast ifFalse: [ stream space ] ]
 
-!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/24/2018 17:53:58'!
+	! !
+
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 9/4/2018 19:00:16'!
 named: aNewParameter 
+	at: anIndex
+	addingLast: isAddingLast
 	initializedWith: aNewParameterValue 
 	to: anOldSelector 
 	implementing: aNewSelector
@@ -4829,7 +5031,9 @@ named: aNewParameter
 	self assertAllSenders: sendersCollection send: anOldSelector.
 	
 	^ self new 
-		initializedNamed: trimmedNewParameter 
+		initializedNamed: trimmedNewParameter
+		at: anIndex 
+		addingLast: isAddingLast
 		initializedWith: aNewParameterValue 
 		to: anOldSelector 
 		implementing: aNewSelector
@@ -4839,10 +5043,17 @@ named: aNewParameter
 		senders: sendersCollection
 ! !
 
-!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 12:17:35'!
-newSelectorFromKeyword: anOldSelector adding: aNewKeyword
+!AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 9/4/2018 21:32:44'!
+newSelectorAdding: aNewKeyword at: anIndex to: anOldSelector
 
-	^(anOldSelector,aNewKeyword) asSymbol! !
+	| keywords |
+	
+	keywords := anOldSelector keywords asOrderedCollection. 
+	keywords add: aNewKeyword beforeIndex: anIndex.
+	
+	^Symbol fromCollectionOfStrings: keywords.
+	
+	! !
 
 !AddParameter class methodsFor: 'instance creation - private' stamp: 'HAW 8/18/2018 12:14:00'!
 newSelectorFromUnary: anOldSelector
@@ -4870,6 +5081,11 @@ addParenthesisTo: trimmedNewParameterValue ifNewParameterValueIsKeywordMessage: 
 		ifTrue: [ '(', trimmedNewParameterValue, ')' ]
 		ifFalse: [ trimmedNewParameterValue ]
 	! !
+
+!AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 9/4/2018 20:08:37'!
+assert: anIndex isValidIndexFor: aNumberOfParameters
+
+	(anIndex isInteger and: [ (anIndex between: 1 and: aNumberOfParameters + 1)]) ifFalse: [ self signalInvalidParameterIndex: anIndex for: aNumberOfParameters ]! !
 
 !AddParameter class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 16:02:12'!
 assertCanAddParameterTo: aSelector
@@ -4966,6 +5182,11 @@ classesDefiningInstanceVariable: aName inAny: implementors
 			classesDefiningInstVar ]
 ! !
 
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 9/4/2018 20:03:25'!
+errorMessageForInvalidParameterIndex: anIndex for: aNumberOfParameters
+
+	^anIndex printString, ' is an invalid insertion index. It has to be between 1 and ', (aNumberOfParameters + 1) printString! !
+
 !AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 12:31:35'!
 errorMessageForInvalidParameterName: aName
 
@@ -5022,6 +5243,11 @@ selectorMustBeKeywordErrorMessage
 selectorMustBeUnaryErrorMessage
 	
 	^'Selector must be unary'! !
+
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 9/4/2018 20:02:24'!
+signalInvalidParameterIndex: anIndex for: aNumberOfParameters
+
+	self refactoringError: (self errorMessageForInvalidParameterIndex: anIndex for: aNumberOfParameters)! !
 
 !AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/17/2018 12:31:15'!
 signalInvalidParameterName: aName
@@ -5129,13 +5355,13 @@ writeBeforeKeywordIn: newSourceStream from: originalSource removing: selectorToR
 		ifFalse: [ newSourceStream nextPutAll: (originalSource copyFrom: 1 to: selectorToRemovePosition first - 1) ].
 ! !
 
-!RemoveParameter methodsFor: 'rename senders - private' stamp: 'HAW 9/4/2018 12:09:22'!
+!RemoveParameter methodsFor: 'rename senders - private' stamp: 'HAW 9/4/2018 17:42:53'!
 addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
 	
 	| keywordAndParameterPositions senderSourceCode |
 	
 	senderSourceCode := aMethodNode sourceText.
-	keywordAndParameterPositions := aMethodNode keywordAndParameterPositionsAt: parameterIndex of: oldSelector ifAbsent: [ #() ].
+	keywordAndParameterPositions := aMethodNode messageSendKeywordAndParameterPositionsAt: parameterIndex of: oldSelector ifAbsent: [ #() ].
 	keywordAndParameterPositions do: [ :aKeywordAndParameterPosition | | lastPosition |
 		lastPosition := self lastSeparatorIndexIn: senderSourceCode startingFrom: aKeywordAndParameterPosition last.
 		rangesToKeywords add: (aKeywordAndParameterPosition first to: lastPosition) -> senderReplacementString ]
@@ -5258,25 +5484,28 @@ signalParameterNotInMessage: aParameterToRemove
 
 	self refactoringError: (self errorMessageForParameterNotInMessage: aParameterToRemove)! !
 
-!RemoveParameter class methodsFor: 'instance creation - private' stamp: 'HAW 9/4/2018 14:49:20'!
+!RemoveParameter class methodsFor: 'instance creation - private' stamp: 'HAW 9/4/2018 21:22:36'!
+newSelectorConcatenating: oldSelectorKeywords removingAt: anIndex
+	
+	| keywords |
+	
+	keywords := oldSelectorKeywords asOrderedCollection.
+	keywords removeIndex: anIndex.
+	
+	^Symbol fromCollectionOfStrings: keywords.! !
+
+!RemoveParameter class methodsFor: 'instance creation - private' stamp: 'HAW 9/4/2018 21:30:47'!
 newSelectorFrom: oldSelector removingParameterAt: parameterIndex
 
-	| oldSelectorKeywords newSelectorAsString |
+	| oldSelectorKeywords newSelector |
 	
 	oldSelectorKeywords := oldSelector keywords.
 	
-	newSelectorAsString := oldSelectorKeywords size = 1 
-		ifTrue: [ oldSelector allButLast ]
-		ifFalse: [ self newSelectorStringFrom: oldSelectorKeywords removing: parameterIndex ].
+	newSelector := oldSelectorKeywords size = 1 
+		ifTrue: [ oldSelector allButLast asSymbol ]
+		ifFalse: [ self newSelectorConcatenating: oldSelectorKeywords removingAt: parameterIndex ].
 	
-	^newSelectorAsString asSymbol ! !
-
-!RemoveParameter class methodsFor: 'instance creation - private' stamp: 'HAW 9/4/2018 14:50:53'!
-newSelectorStringFrom: oldSelectorKeywords removing: parameterIndex
-	
-	^ String streamContents: [ :stream | 
-			oldSelectorKeywords withIndexDo: [ :keyword :index | 
-				index = parameterIndex ifFalse: [ stream nextPutAll: keyword ]]]. ! !
+	^newSelector! !
 
 !RenameSelector methodsFor: 'create new implementors - private' stamp: 'HAW 9/3/2018 19:49:44'!
 implementorNewSourceCodeOf: anImplementor
@@ -6732,11 +6961,12 @@ createRefactoring
 	
 	self error: 'oldSelector should be unary or keyword!!'! !
 
-!AddParameterApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 16:56:55'!
+!AddParameterApplier methodsFor: 'refactoring - creation' stamp: 'HAW 9/4/2018 20:24:53'!
 createRefactoringForKeywordSelector
 	
 	^self refactoringClass 
 		named: newParameter
+		at: parameterIndex 
 		initializedWith: newParameterValue 
 		using: newKeyword 
 		toKeywordSelector: oldSelector 
@@ -6757,6 +6987,27 @@ createRefactoringForUnarySelector
 refactoringClass
 
 	^AddParameter! !
+
+!AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 9/4/2018 20:33:41'!
+askInsertionIndex
+
+	| methodNode originalMethod parameterNames |
+	
+	originalMethod := implementingClass compiledMethodAt: oldSelector.
+	methodNode := originalMethod methodNode.
+	parameterNames := methodNode argumentNames.
+	parameterNames add: 'Add as last parameter'.
+
+	parameterIndex := (PopUpMenu labelArray: parameterNames) startUpWithCaption: 'Add Before?'.
+	parameterIndex = 0 ifTrue: [self endRequest ].
+	
+	! !
+
+!AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 9/4/2018 20:33:37'!
+askInsertionIndexIfNecessary
+
+	oldSelector isKeyword ifTrue: [ self askInsertionIndex ].
+	! !
 
 !AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:06:28'!
 askNewKeyword
@@ -6793,12 +7044,13 @@ askNewParameterValue
 	self refactoringClass assertNewParameterValueIsValid: newParameterValue.
 ! !
 
-!AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 16:40:45'!
+!AddParameterApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 9/4/2018 20:33:09'!
 requestRefactoringParameters
 
 	self
 		askNewParameter;
 		askNewParameterValue;
+		askInsertionIndexIfNecessary;
 		askNewKeywordIfNecessary;
 		askScope
 		! !
@@ -7705,6 +7957,11 @@ newFromAfterAppending: aNewString into: replacementStream keepingFrom: from skip
 	
 	^ aRange last + 1! !
 
+!Symbol class methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 21:31:30'!
+fromCollectionOfStrings: aCollectionOfStrings
+
+	^self newFrom: aCollectionOfStrings concatenation ! !
+
 !CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 5/31/2017 15:48:26'!
 classAndSelector
 
@@ -7819,8 +8076,8 @@ isReturn
 
 	^false! !
 
-!Encoder methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 15:24:19'!
-keywordAndParameterPositionsAt: anIndex of: aSelector ifAbsent: aBlock
+!Encoder methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 17:42:53'!
+messageSendKeywordAndParameterPositionsAt: anIndex of: aSelector ifAbsent: aBlock
 	
 	| positions |
 	
@@ -7832,6 +8089,20 @@ keywordAndParameterPositionsAt: anIndex of: aSelector ifAbsent: aBlock
 		ifTrue: aBlock
 		ifFalse: [ positions ]
 	! !
+
+!Encoder methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 19:17:59'!
+messageSendKeywordPositionsAt: anIndex of: aSelector ifAbsent: aBlock
+	
+	| positions sortedPositions |
+	
+	positions := sourceRanges keys 
+		select: [ :aParseNode | aParseNode isMessageNamed: aSelector ] 
+		thenCollect: [ :aMessageSendNode | (aMessageSendNode keywordPositionAt: anIndex) first ].
+		
+	positions isEmpty ifTrue: [ ^aBlock value ].
+	sortedPositions := positions asSortedCollection.
+	
+	^sortedPositions ! !
 
 !Encoder methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:30:20'!
 messageSendLasPositionsOf: aSelector ifAbsent: aBlock
@@ -7888,6 +8159,11 @@ keywordAndParameterPositionAt: anIndex encodedWith: anEncoder
 	^keywordPosition first to: parameterPosition last
 
 	! !
+
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 19:18:24'!
+keywordPositionAt: anIndex
+
+	^keywordRanges at: anIndex ! !
 
 !MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/9/2018 21:46:47'!
 keywordRanges
@@ -7971,11 +8247,17 @@ hasLocalNamed: aName
 
 	^ encoder hasLocalNamed: aName ! !
 
-!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:44:14'!
-keywordAndParameterPositionsAt: anIndex of: aSelector ifAbsent: aClosure
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 17:42:53'!
+messageSendKeywordAndParameterPositionsAt: anIndex of: aSelector ifAbsent: aClosure
 
-	^encoder keywordAndParameterPositionsAt: anIndex of: aSelector ifAbsent: aClosure
+	^encoder messageSendKeywordAndParameterPositionsAt: anIndex of: aSelector ifAbsent: aClosure
 ! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 19:07:38'!
+messageSendKeywordPositionsAt: anIndex of: aSelector ifAbsent: aBlock
+	
+	^encoder messageSendKeywordPositionsAt: anIndex of: aSelector ifAbsent: aBlock
+	! !
 
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/16/2018 17:37:41'!
 messageSendLasPositionsOf: aSelector ifAbsent: aBlock 

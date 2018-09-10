@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3430] on 4 September 2018 at 9:33:41 pm'!
-'Description AddParameter support adding at any place'!
-!provides: 'Refactoring' 1 55!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3430] on 10 September 2018 at 9:39:01 am'!
+'Description Fix to be able to rename a temporary when debugging'!
+!provides: 'Refactoring' 1 56!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -7658,6 +7658,11 @@ messsageRefactoringMenuOptions
 	
 	! !
 
+!CodeProvider methodsFor: '*Refactoring' stamp: 'HAW 9/8/2018 19:16:43'!
+isEditingMethod
+
+	^false! !
+
 !Browser methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:50:40'!
 insertSuperclass
 
@@ -7708,6 +7713,11 @@ removeMessageFromBrowserKeepingLabel
 	self deleteFromMessageList: self selection.
 	self reformulateList.
 ! !
+
+!Debugger methodsFor: '*Refactoring' stamp: 'HAW 9/8/2018 19:10:11'!
+isEditingMethod
+	
+	^true! !
 
 !SystemChangeNotifier methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 14:39:32'!
 resetSilenceLevel

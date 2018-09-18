@@ -1,5 +1,5 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3430] on 10 September 2018 at 9:39:01 am'!
-'Description Fix to be able to rename a temporary when debugging'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3430] on 18 September 2018 at 2:40:07 pm'!
+'Description Changes to SafelyRemoveClass. Not done yet'!
 !provides: 'Refactoring' 1 56!
 SystemOrganization addCategory: #Refactoring!
 
@@ -496,7 +496,7 @@ RenameTemporaryApplier class
 
 !classDefinition: #SafelyRemoveClassApplier category: #Refactoring!
 RefactoringApplier subclass: #SafelyRemoveClassApplier
-	instanceVariableNames: 'classToRemove'
+	instanceVariableNames: 'classToRemove browser'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -2078,51 +2078,54 @@ methodNodeOf: aSourceCode
 
 	^self methodNodeOf: aSourceCode in: self class! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:13:33'!
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 9/11/2018 16:11:45'!
 methodNodeOf: aSourceCode in: aClass
 
-	^Parser parse: aSourceCode class: aClass ! !
+	^aClass methodNodeFor: aSourceCode ! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/18/2017 17:28:45'!
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 9/11/2018 16:22:23'!
 test01NewVariableCanNotBeEmpty
 
-	| newVariable sourceCodeToExtract methodNodeToRefactor |
+	| newVariable sourceCodeToExtract sourceCode intervalToExtract |
 	
 	newVariable := ''.
-	sourceCodeToExtract := '1'.
-	methodNodeToRefactor := self methodNodeOf: 'm1 1'.
+	sourceCodeToExtract := '2'.
+	sourceCode := 'm1 | ', newVariable, ' | ', sourceCodeToExtract.
+	intervalToExtract := sourceCode intervalOfSubCollection: sourceCodeToExtract.
 	
 	self 
-		assertCreation: [ ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor ]
+		assertCreation: [ ExtractToTemporary named: newVariable at: intervalToExtract from: sourceCode in: self class ]
 		failsWith: [ ExtractToTemporary newVariableCanNotBeEmptyErrorMessage ]
 		! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/30/2017 06:39:27'!
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 9/11/2018 16:27:16'!
 test02NewVariableHasToBeValid
 
-	| newVariable sourceCodeToExtract methodNodeToRefactor |
+	| newVariable sourceCodeToExtract sourceCode intervalToExtract |
 	
 	newVariable := 'a b'.
-	sourceCodeToExtract := '1'.
-	methodNodeToRefactor := self methodNodeOf: 'm1 1'.
+	sourceCodeToExtract := '2'.
+	sourceCode := 'm1 | ', newVariable, ' | ', sourceCodeToExtract.
+	intervalToExtract := sourceCode intervalOfSubCollection: sourceCodeToExtract.
 	
 	self 
-		assertCreation: [ ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor ]
+		assertCreation: [ ExtractToTemporary named: newVariable at: intervalToExtract from: sourceCode in: self class ]
 		failsWith: [ ExtractToTemporary errorMessageForInvalidTemporaryVariable: newVariable ]
 	! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/30/2017 06:39:39'!
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 9/11/2018 16:22:06'!
 test03NewVariableNameCanNotBeDefinedInMethod
 
-	| newVariable sourceCodeToExtract methodNodeToRefactor |
+	| newVariable sourceCodeToExtract sourceCode intervalToExtract |
 	
 	newVariable := 'new'.
-	sourceCodeToExtract := '1'.
-	methodNodeToRefactor := self methodNodeOf: 'm1 | ', newVariable, ' | 1'.
+	sourceCodeToExtract := '2'.
+	sourceCode := 'm1 | ', newVariable, ' | ', sourceCodeToExtract.
+	intervalToExtract := sourceCode intervalOfSubCollection: sourceCodeToExtract.
 	
 	self 
-		assertCreation: [ ExtractToTemporary named: newVariable with: sourceCodeToExtract  in: methodNodeToRefactor ]
-		failsWith: [ ExtractToTemporary errorMessageForNewTemporaryVariable: newVariable isAlreadyDefinedIn: methodNodeToRefactor ]
+		assertCreation: [ ExtractToTemporary named: newVariable at: intervalToExtract from: sourceCode in: self class ]
+		failsWith: [ ExtractToTemporary errorMessageForNewTemporaryVariable: newVariable isAlreadyDefinedIn: 1 ]
 	! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/30/2017 06:39:47'!
@@ -5777,6 +5780,15 @@ shouldExtract: aParseNode
 
 	^parseNodeToExtract = aParseNode ! !
 
+!ExtractToTemporary methodsFor: 'as yet unclassified' stamp: 'HAW 9/11/2018 15:52:26'!
+research
+
+"
+TextEditor>>selectionInterval
+hasSelection
+selection
+"! !
+
 !ExtractToTemporary class methodsFor: 'pre-conditions' stamp: 'HAW 6/30/2017 06:25:21'!
 assert: aSourceCodeToExtract isIncludedIn: aMethodNodeToRefactor
 
@@ -5910,6 +5922,36 @@ sourceCodeToExtractCanNotIncludeReturnErrorMessage
 sourceCodeToExtractHasToBeOneStatementErrorMessage
 	
 	^'Can not extract more than one statement'! !
+
+!ExtractToTemporary class methodsFor: 'instance creation' stamp: 'HAW 9/11/2018 16:13:23'!
+named: aNewVariable at: anIntervalToExtract from: aMethodSourceCode in: aClass
+
+	|  trimmedNewVariable parseNodeToExtract trimmedSourceCodeToExtract methodNodeToExtract methodNodeToRefactor sourceCodeToExtract |
+	
+	trimmedNewVariable := aNewVariable withBlanksTrimmed.
+	methodNodeToRefactor := aClass methodNodeFor: aMethodSourceCode.
+	
+	self assertIsNotEmpty: trimmedNewVariable.
+	self assertIsValidVariableName: trimmedNewVariable.
+	self assert: trimmedNewVariable isNotDefinedIn: methodNodeToRefactor.
+	
+	sourceCodeToExtract := aMethodSourceCode copyFrom: anIntervalToExtract first to: anIntervalToExtract last.
+	trimmedSourceCodeToExtract := sourceCodeToExtract withBlanksTrimmed.
+	self assertSourceCodeIsNotEmpty: trimmedSourceCodeToExtract.
+	self assertIsNotReturn: trimmedSourceCodeToExtract. 
+	self assert: trimmedSourceCodeToExtract isIncludedIn: methodNodeToRefactor.
+
+	[ methodNodeToExtract := Parser parse: trimmedSourceCodeToExtract class: methodNodeToRefactor methodClass noPattern: true ]
+		on: SyntaxErrorNotification 
+		do: [ :anError | self signalColaborationToExtractHasSyntaxError: anError ].
+	
+	parseNodeToExtract := self paseNodeToExtractFrom: methodNodeToExtract. 
+
+	self warnIf: trimmedNewVariable isDefinedAsInstanceVariableInHierarchyOf: methodNodeToRefactor methodClass.
+
+	^self new initializeNamed: trimmedNewVariable with: parseNodeToExtract in: methodNodeToRefactor
+ 
+	! !
 
 !ExtractToTemporary class methodsFor: 'instance creation' stamp: 'HAW 10/4/2017 17:41:59'!
 named: aNewVariable with: aSourceCodeToExtract in: aMethodNodeToRefactor
@@ -7507,20 +7549,26 @@ createRefactoring
 		
 	^SafelyRemoveClass of: classToRemove ! !
 
-!SafelyRemoveClassApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/1/2018 16:53:48'!
+!SafelyRemoveClassApplier methodsFor: 'refactoring - changes' stamp: 'HAW 9/14/2018 13:48:37'!
+informChangesToBrowser
+
+	browser classListIndex: 0! !
+
+!SafelyRemoveClassApplier methodsFor: 'refactoring - changes' stamp: 'HAW 9/14/2018 13:47:58'!
 showChanges
 
-	! !
+	self informChangesToBrowser! !
 
-!SafelyRemoveClassApplier methodsFor: 'initialization' stamp: 'HAW 8/1/2018 16:54:14'!
-initializeOf: aClassToRemove 
+!SafelyRemoveClassApplier methodsFor: 'initialization' stamp: 'HAW 9/14/2018 13:47:41'!
+initializeOn: aBrowser of: aClassToRemove 
 	
+	browser := aBrowser.
 	classToRemove := aClassToRemove ! !
 
-!SafelyRemoveClassApplier class methodsFor: 'instance creation' stamp: 'HAW 8/1/2018 16:55:53'!
-of: aClassToRemove
+!SafelyRemoveClassApplier class methodsFor: 'instance creation' stamp: 'HAW 9/14/2018 13:47:16'!
+on: aBrowser of: aClassToRemove
 	
-	^self new initializeOf: aClassToRemove ! !
+	^self new initializeOn: aBrowser of: aClassToRemove ! !
 
 !RefactoringMenues class methodsFor: 'editor menus' stamp: 'HAW 7/10/2018 19:18:45'!
 smalltalkEditorMenuOptions
@@ -7686,11 +7734,11 @@ renameClass
 	self selectedClassOrMetaClass ifNotNil: [ :aBehavior |
 		(RenameClassApplier on: self for: aBehavior theNonMetaClass) value ].! !
 
-!Browser methodsFor: '*Refactoring' stamp: 'HAW 8/1/2018 17:05:36'!
+!Browser methodsFor: '*Refactoring' stamp: 'HAW 9/14/2018 13:46:59'!
 safelyRemoveClass
 
 	self selectedClassOrMetaClass ifNotNil: [ :aBehavior |
-		(SafelyRemoveClassApplier of: aBehavior theNonMetaClass) value ].! !
+		(SafelyRemoveClassApplier on: self of: aBehavior theNonMetaClass) value ].! !
 
 !MessageSet methodsFor: '*Refactoring' stamp: 'HAW 5/31/2017 15:33:51'!
 addMethodReference: aMethodReferenceToAdd ifIncluded: aBlockClosure 
@@ -7861,6 +7909,11 @@ superclassOrderInAll: categories
 		
 	^Array streamContents: [ :stream | Smalltalk hierarchySorted: classes do: [ :aClass | stream nextPut: aClass ]].! !
 
+!Number methodsFor: '*Refactoring' stamp: 'HAW 9/11/2018 16:25:44'!
+toSelfPlus: aDelta
+
+	^self to: self + aDelta ! !
+
 !Collection methodsFor: '*Refactoring' stamp: 'HAW 5/25/2017 19:16:42'!
 as: aPrintingBlock on: aStream delimiter: delimString last: lastDelimString
 
@@ -7903,6 +7956,15 @@ asStringOn: aStream delimiter: delimString last: lastDelimString
 		aStream nextPutAll: elem asString]
 	separatedBy: [
 		aStream nextPutAll: (n = sz ifTrue: [lastDelimString] ifFalse: [delimString])]! !
+
+!SequenceableCollection methodsFor: '*Refactoring' stamp: 'HAW 9/11/2018 16:26:23'!
+intervalOfSubCollection: aSubCollectionToFind
+
+	| startingIndex |
+	
+	startingIndex := self indexOfSubCollection: aSubCollectionToFind startingAt: 1.
+	
+	^startingIndex toSelfPlus: aSubCollectionToFind size! !
 
 !SequenceableCollection methodsFor: '*Refactoring' stamp: 'HAW 8/16/2018 12:38:04'!
 with: otherCollection do: twoArgBlock separatedBy: separatorBlock

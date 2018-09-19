@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3430] on 18 September 2018 at 2:40:07 pm'!
-'Description Changes to SafelyRemoveClass. Not done yet'!
-!provides: 'Refactoring' 1 56!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3445] on 19 September 2018 at 8:55:26 am'!
+'Description Fixed error in method categorization for Encoder'!
+!provides: 'Refactoring' 1 57!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -8190,10 +8190,58 @@ messageSendLasPositionsOf: aSelector ifAbsent: aBlock
 	
 	^sortedPositions ! !
 
+!Encoder methodsFor: '*Refactoring' stamp: 'HAW 9/19/2018 08:50:47'!
+messageSendSelectorKeywordPositionsOf: aSelector ifAbsent: aBlock
+	
+	| ranges sortedRanges |
+	
+	ranges := sourceRanges keys 
+		select: [ :aParseNode | aParseNode isMessageNamed: aSelector ] 
+		thenCollect: [ :aMessageSendNode | aMessageSendNode keywordRanges ].
+		
+	ranges isEmpty ifTrue: [ ^aBlock value ].
+	sortedRanges := ranges asSortedCollection: [ :left :right | left first first < right first first ].
+	
+	^sortedRanges ! !
+
 !Encoder methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:45:40'!
 parameterDefinitionPositionFor: aParameterNode
 
 	^ (self sourceRangeFor: aParameterNode) first! !
+
+!Encoder methodsFor: '*Refactoring' stamp: 'HAW 9/19/2018 08:53:32'!
+positionsForInstanceVariable: aName ifAbsent: aBlock
+
+	^ self 
+		rangesForVariable: aName 
+		checkingType: [ :variableNode | variableNode isInstanceVariableNode ]
+		ifAbsent: aBlock ! !
+
+!Encoder methodsFor: '*Refactoring' stamp: 'HAW 9/19/2018 08:51:25'!
+positionsForLiteralNode: aName ifAbsent: aBlock
+
+	| variableNode |
+	
+	variableNode := litSet at: aName ifAbsent: [ ^aBlock value ].
+	
+	^sourceRanges at: variableNode ifAbsent: aBlock! !
+
+!Encoder methodsFor: '*Refactoring' stamp: 'HAW 9/19/2018 08:52:56'!
+positionsForLiteralVariableNode: aName ifAbsent: aBlock
+
+	| variableNode |
+	
+	variableNode := litIndSet values detect: [ :aLiteralVariableNode | aLiteralVariableNode name = aName ] ifNone: [ ^aBlock value ].
+	
+	^sourceRanges at: variableNode ifAbsent: aBlock! !
+
+!Encoder methodsFor: '*Refactoring' stamp: 'HAW 9/19/2018 08:52:19'!
+positionsForTemporaryVariable: aName ifAbsent: aBlock
+
+	^ self 
+		rangesForVariable: aName 
+		checkingType: [ :variableNode | variableNode isTemp ]
+		ifAbsent: aBlock ! !
 
 !EncoderForV3PlusClosures methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 16:07:52'!
 hasLocalNamed: aName

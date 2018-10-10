@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3445] on 19 September 2018 at 8:55:26 am'!
-'Description Fixed error in method categorization for Encoder'!
-!provides: 'Refactoring' 1 57!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3461] on 10 October 2018 at 5:55:17 am'!
+'Description Use of ClassNameRequestMorph when add implementors/senders on rename method'!
+!provides: 'Refactoring' 1 58!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -669,12 +669,12 @@ addToList: aMethod
 
 	model addMethodReference: aMethod methodReference ifIncluded: [ self inform: 'Method already in list' ]! !
 
-!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:44:01'!
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 05:50:04'!
 do: aBlock withEnteredClassLabeled: aLabel
 		
 	| className |
 	
-	className := FillInTheBlankMorph request: aLabel onCancel: [ ^self ].
+	className := ClassNameRequestMorph request: aLabel onCancel: [ ^self ].
 	^self withClassNamed: className do: aBlock! !
 
 !ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 18:17:19'!
@@ -687,12 +687,16 @@ remove
 	
 	model removeMessageFromBrowserKeepingLabel! !
 
-!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:38:48'!
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 05:52:27'!
 withClassNamed: aName do: aBlock
 
-	(Smalltalk classNamed: aName asSymbol)
+	| trimmedName |
+	
+	trimmedName := aName withBlanksTrimmed.
+	
+	(Smalltalk classNamed: trimmedName asSymbol)
 		ifNotNil: aBlock
-		ifNil: [ self inform: 'Class ', aName, ' does not exist' ].
+		ifNil: [ self inform: 'Class ', trimmedName, ' does not exist' ].
 ! !
 
 !ChangeSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:22:39'!

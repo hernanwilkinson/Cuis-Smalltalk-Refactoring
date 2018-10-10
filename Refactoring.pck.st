@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3461] on 10 October 2018 at 5:55:17 am'!
-'Description Use of ClassNameRequestMorph when add implementors/senders on rename method'!
-!provides: 'Refactoring' 1 58!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3461] on 10 October 2018 at 8:00:32 pm'!
+'Description Changes in rename message wizard'!
+!provides: 'Refactoring' 1 59!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -396,7 +396,7 @@ AddInstanceVariableApplier class
 
 !classDefinition: #ChangeSelectorApplier category: #Refactoring!
 RefactoringApplier subclass: #ChangeSelectorApplier
-	instanceVariableNames: 'oldSelector newSelector scopeChoice implementors senders implementingClass browser'
+	instanceVariableNames: 'oldSelector newSelector scopeChoice implementors senders implementingClass browser shouldShowChanges'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -669,7 +669,7 @@ addToList: aMethod
 
 	model addMethodReference: aMethod methodReference ifIncluded: [ self inform: 'Method already in list' ]! !
 
-!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 05:50:04'!
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 10/9/2018 20:57:59'!
 do: aBlock withEnteredClassLabeled: aLabel
 		
 	| className |
@@ -682,21 +682,34 @@ inform: aClass doesNotImplement: aSelector
 
  	self inform: aClass name, ' does not implement #', aSelector ! !
 
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 19:48:13'!
+justRefactor
+	
+	request doNotShowChanges.
+	self refactor.! !
+
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 18:07:11'!
+refactor
+	
+	request browser: self. 	
+	request wizardEnded.
+	! !
+
 !ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 5/31/2017 17:07:19'!
 remove
 	
 	model removeMessageFromBrowserKeepingLabel! !
 
-!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 05:52:27'!
+!ChangeSelectorMessageSetWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 05:46:24'!
 withClassNamed: aName do: aBlock
 
-	| trimmedName |
+	| trimmedNamed |
 	
-	trimmedName := aName withBlanksTrimmed.
+	trimmedNamed := aName withBlanksTrimmed.
 	
-	(Smalltalk classNamed: trimmedName asSymbol)
+	(Smalltalk classNamed: trimmedNamed asSymbol)
 		ifNotNil: aBlock
-		ifNil: [ self inform: 'Class ', trimmedName, ' does not exist' ].
+		ifNil: [ self inform: 'Class ', trimmedNamed , ' does not exist' ].
 ! !
 
 !ChangeSelectorMessageSetWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:22:39'!
@@ -764,6 +777,24 @@ createCancelButton
 		label: 'Cancel'.
 ! !
 
+!ChangeSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 10/10/2018 19:47:37'!
+createJustRefactorButton
+
+	^PluggableButtonMorph 
+		model: self
+		stateGetter: nil
+		action: #justRefactor
+		label: 'Just Refactor!!'! !
+
+!ChangeSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 10/10/2018 19:47:43'!
+createRefactorButton
+
+	^PluggableButtonMorph 
+		model: self
+		stateGetter: nil
+		action: #refactor
+		label: 'Refactor'! !
+
 !ChangeSelectorMessageSetWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:16:37'!
 createRemoveButton
 	
@@ -825,31 +856,45 @@ addImplementorIn: classOfImplementorToAdd
 		
 	self addToList: implementorToAdd! !
 
-!ChangeSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 8/18/2018 17:22:20'!
-continue
-
+!ChangeSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 18:08:15'!
+changeImplementors
+	
 	request implementors: (self compiledMethodsFrom: model messageList).
+	! !
+
+!ChangeSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 18:07:57'!
+refactor
+
+	self changeImplementors.
+	super refactor ! !
+
+!ChangeSelectorImplementorsWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 19:55:52'!
+seeSenders
+
+	self changeImplementors.
 	self delete.	
 	
 	ChangeSelectorSendersWindow openFrom: request ! !
 
-!ChangeSelectorImplementorsWindow methodsFor: 'GUI building' stamp: 'HAW 5/31/2017 17:20:27'!
+!ChangeSelectorImplementorsWindow methodsFor: 'GUI building' stamp: 'HAW 10/10/2018 19:55:34'!
 addButtonsTo: row color: buttonColor
 
 	self addButton: self createRemoveButton to: row color: buttonColor.
 	self addButton: self createAddButton to: row color: buttonColor.
-	self addButton: self createContinueButton to: row color: buttonColor.
+	self addButton: self createSeeSendersButton to: row color: buttonColor.
+	self addButton: self createRefactorButton to: row color: buttonColor.
+	self addButton: self createJustRefactorButton to: row color: buttonColor.
 	self addButton: self createCancelButton to: row color: buttonColor.
 ! !
 
-!ChangeSelectorImplementorsWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:22:05'!
-createContinueButton
+!ChangeSelectorImplementorsWindow methodsFor: 'button creation' stamp: 'HAW 10/10/2018 19:55:52'!
+createSeeSendersButton
 	
 	^PluggableButtonMorph 
 		model: self
 		stateGetter: nil
-		action: #continue
-		label: 'Continue'.
+		action: #seeSenders
+		label: 'See Senders'.
 
 ! !
 
@@ -884,57 +929,45 @@ askAndAddSenderOf: classOfSenderToAdd
 	
 	self addToList: senderToAdd ! !
 
-!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 8/18/2018 17:21:58'!
-backToImplementors
-	
-	self changeRequestSenders.
-	self delete.
-	
-	ChangeSelectorImplementorsWindow openFrom: request! !
-
 !ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:53:24'!
 changeRequestSenders
 	
 	request senders: (self compiledMethodsFrom: model messageList).
 	! !
 
-!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 8/18/2018 17:25:48'!
+!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 18:09:18'!
 refactor
 	
 	self changeRequestSenders.
-	request browser: self. 
-	
-	request wizardEnded.
-	! !
+	super refactor ! !
 
-!ChangeSelectorSendersWindow methodsFor: 'GUI building' stamp: 'HAW 8/18/2018 17:24:56'!
+!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 10/10/2018 19:56:25'!
+seeImplementors
+	
+	self changeRequestSenders.
+	self delete.
+	
+	ChangeSelectorImplementorsWindow openFrom: request! !
+
+!ChangeSelectorSendersWindow methodsFor: 'GUI building' stamp: 'HAW 10/10/2018 19:56:45'!
 addButtonsTo: row color: buttonColor
 	
 	self addButton: self createRemoveButton to: row color: buttonColor.
 	self addButton: self createAddButton to: row color: buttonColor.
-	self addButton: self createBackToImplementorsButton to: row color: buttonColor.
+	self addButton: self createSeeImplementorsButton to: row color: buttonColor.
 	self addButton: self createRefactorButton to: row color: buttonColor.
+	self addButton: self createJustRefactorButton to: row color: buttonColor.
 	self addButton: self createCancelButton to: row color: buttonColor.
 ! !
 
-!ChangeSelectorSendersWindow methodsFor: 'button creation' stamp: 'HAW 5/31/2017 17:25:20'!
-createBackToImplementorsButton
+!ChangeSelectorSendersWindow methodsFor: 'button creation' stamp: 'HAW 10/10/2018 19:56:51'!
+createSeeImplementorsButton
 
 	^PluggableButtonMorph 
 		model: self
 		stateGetter: nil
-		action: #backToImplementors
-		label: 'Back to Implementors'.
-! !
-
-!ChangeSelectorSendersWindow methodsFor: 'button creation' stamp: 'HAW 8/18/2018 17:25:48'!
-createRefactorButton
-
-	^PluggableButtonMorph 
-		model: self
-		stateGetter: nil
-		action: #refactor
-		label: 'Refactor!!'.
+		action: #seeImplementors
+		label: 'See Implementors'.
 ! !
 
 !ChangeSelectorSendersWindow class methodsFor: 'instance creation' stamp: 'HAW 8/18/2018 17:26:18'!
@@ -6934,18 +6967,21 @@ closeBrowser
 	browser delete.
 	! !
 
+!ChangeSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 10/10/2018 19:50:39'!
+doNotShowChanges
+
+	shouldShowChanges := false! !
+
 !ChangeSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/18/2018 17:02:52'!
 messageSetWindowClass
 		
 	^MessageSetWindow 
 	! !
 
-!ChangeSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/18/2018 17:02:56'!
+!ChangeSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 10/10/2018 19:52:08'!
 showChanges
 		
-	self 
-		closeBrowser;
-		showChangesInMessageSetWindow! !
+	self showChangesInMessageSetWindow! !
 
 !ChangeSelectorApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/18/2018 17:28:30'!
 showChangesInMessageSetWindow
@@ -6957,11 +6993,12 @@ refactoringClass
 
 	self subclassResponsibility ! !
 
-!ChangeSelectorApplier methodsFor: 'initialization' stamp: 'HAW 8/18/2018 17:04:20'!
+!ChangeSelectorApplier methodsFor: 'initialization' stamp: 'HAW 10/10/2018 19:49:55'!
 initializeFor: aSelector in: aClass
 	
 	oldSelector := aSelector.
-	implementingClass := aClass! !
+	implementingClass := aClass.
+	shouldShowChanges := true.! !
 
 !ChangeSelectorApplier methodsFor: 'evaluation' stamp: 'HAW 8/18/2018 17:04:30'!
 value
@@ -6974,7 +7011,7 @@ value
 		startWizard
 		! !
 
-!ChangeSelectorApplier methodsFor: 'evaluation' stamp: 'HAW 8/18/2018 17:04:34'!
+!ChangeSelectorApplier methodsFor: 'evaluation' stamp: 'HAW 10/10/2018 19:52:35'!
 wizardEnded
 
 	requestExitBlock := [ ^self ].
@@ -6982,7 +7019,9 @@ wizardEnded
 	self 
 		createRefactoringHandlingRefactoringExceptions;
 		applyRefactoring;
-		showChanges
+		closeBrowser.
+	
+	shouldShowChanges ifTrue: [ self showChanges ]
 	
 			! !
 

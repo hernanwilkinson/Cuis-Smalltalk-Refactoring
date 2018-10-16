@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3461] on 10 October 2018 at 8:00:32 pm'!
-'Description Changes in rename message wizard'!
-!provides: 'Refactoring' 1 59!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3461] on 15 October 2018 at 10:07:05 pm'!
+'Description rename selector now works with special selectors like size, ==, etc.'!
+!provides: 'Refactoring' 1 60!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -915,7 +915,7 @@ add
 		withEnteredClassLabeled: 'Class that sends #', self oldSelector
 		! !
 
-!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 6/5/2017 17:35:00'!
+!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 10/15/2018 22:03:26'!
 askAndAddSenderOf: classOfSenderToAdd 
 		
 	| senderSelector senderToAdd |
@@ -925,7 +925,7 @@ askAndAddSenderOf: classOfSenderToAdd
 		compiledMethodAt: senderSelector asSymbol
 		ifAbsent: [ ^self inform: classOfSenderToAdd doesNotImplement: senderSelector asSymbol].
 		
-	(senderToAdd refersToLiteral: self oldSelector) ifFalse: [ ^self inform: senderToAdd classAndSelector, ' does not refer to #', self oldSelector ].
+	(senderToAdd sendsSelector: self oldSelector) ifFalse: [ ^self inform: senderToAdd classAndSelector, ' does not refer to #', self oldSelector ].
 	
 	self addToList: senderToAdd ! !
 
@@ -4777,12 +4777,12 @@ assertAllImplementors: implementors haveSame: aSelector
 	invalidImplementors := implementors reject: [ :anImplementor | anImplementor selector = aSelector ].
 	invalidImplementors notEmpty ifTrue: [ self signalInvalidImplementors: invalidImplementors ].! !
 
-!ChangeSelector class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 15:50:04'!
+!ChangeSelector class methodsFor: 'pre-conditions' stamp: 'HAW 10/15/2018 20:51:38'!
 assertAllSenders: senders send: aSelector
 
 	| invalidSenders |
 	
-	invalidSenders := senders reject: [ :aSender | aSender refersToLiteral: aSelector ].
+	invalidSenders := senders reject: [ :aSender | aSender sendsSelector: aSelector ].
 	invalidSenders notEmpty ifTrue: [ self signalInvalidSenders: invalidSenders of: aSelector ]! !
 
 !ChangeSelector class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:44:12'!
@@ -4865,7 +4865,7 @@ addImplementorsOf: anOldSelector to: implementors andSendersTo: senders inSystem
 		self addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor ].
 ! !
 
-!ChangeSelector class methodsFor: 'implementors and senders' stamp: 'HAW 8/18/2018 17:19:56'!
+!ChangeSelector class methodsFor: 'implementors and senders' stamp: 'HAW 10/15/2018 20:53:23'!
 addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPotentialClassToRefactor
 	
 	| potentialImplementor |
@@ -4873,8 +4873,8 @@ addImplementorsOf: anOldSelector to: implementors andSendersTo: senders of: aPot
 	potentialImplementor := aPotentialClassToRefactor compiledMethodAt: anOldSelector ifAbsent: [ nil ].
 	potentialImplementor ifNotNil: [ implementors add: potentialImplementor ].
 	
-	senders addAll: (aPotentialClassToRefactor methodsSelect: [ :aPotentialSender | aPotentialSender refersToLiteral: anOldSelector ]).
-! !
+	(aPotentialClassToRefactor whichSelectorsReferTo: anOldSelector) do: [ :aSelector | senders add: (aPotentialClassToRefactor compiledMethodAt: aSelector) ].
+	! !
 
 !AddParameter methodsFor: 'initialization' stamp: 'HAW 9/4/2018 19:00:42'!
 initializedNamed: aNewParameter 

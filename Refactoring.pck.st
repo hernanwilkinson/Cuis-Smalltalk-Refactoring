@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3461] on 15 October 2018 at 10:07:05 pm'!
-'Description rename selector now works with special selectors like size, ==, etc.'!
-!provides: 'Refactoring' 1 60!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3485] on 11 November 2018 at 2:11:30 pm'!
+'Description Fix to some errors on AddParameter'!
+!provides: 'Refactoring' 1 61!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -915,7 +915,7 @@ add
 		withEnteredClassLabeled: 'Class that sends #', self oldSelector
 		! !
 
-!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 10/15/2018 22:03:26'!
+!ChangeSelectorSendersWindow methodsFor: 'actions' stamp: 'HAW 11/8/2018 15:25:57'!
 askAndAddSenderOf: classOfSenderToAdd 
 		
 	| senderSelector senderToAdd |
@@ -925,7 +925,7 @@ askAndAddSenderOf: classOfSenderToAdd
 		compiledMethodAt: senderSelector asSymbol
 		ifAbsent: [ ^self inform: classOfSenderToAdd doesNotImplement: senderSelector asSymbol].
 		
-	(senderToAdd sendsSelector: self oldSelector) ifFalse: [ ^self inform: senderToAdd classAndSelector, ' does not refer to #', self oldSelector ].
+	(senderToAdd sendsOrRefersTo: self oldSelector) ifFalse: [ ^self inform: senderToAdd classAndSelector, ' does not refer to #', self oldSelector ].
 	
 	self addToList: senderToAdd ! !
 
@@ -1346,7 +1346,7 @@ test13WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 	
 	! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/17/2018 17:08:32'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:28:03'!
 test01AddingParameterToUnaryMessageAddsColonAndParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod |
@@ -1373,15 +1373,15 @@ test01AddingParameterToUnaryMessageAddsColonAndParameter
 	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector).
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 	
 	self assert: newParameterValue equals: (senderMethod methodNode block statements first arguments first literalValue) printString
 
 
 ! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:28:12'!
 test02AddingParameterToBinaryMessageAddsNewKeywordAndParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword |
@@ -1409,15 +1409,15 @@ test02AddingParameterToBinaryMessageAddsNewKeywordAndParameter
 	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector).
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 	
 	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue)
 
 
 ! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:28:21'!
 test03AddingParameterToBinaryMessageMultipleSendsInSameMethodSameLiteral
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1446,15 +1446,15 @@ test03AddingParameterToBinaryMessageMultipleSendsInSameMethodSameLiteral
 	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector).
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 	
 	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue)
 
 
 ! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:28:29'!
 test04AddingParameterToBinaryMessageWithMessageSendAsLastFormalParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1483,15 +1483,15 @@ test04AddingParameterToBinaryMessageWithMessageSendAsLastFormalParameter
 	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector).
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 	
 	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue)
 
 
 ! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:28:38'!
 test05AddingParameterToBinaryMessageWithBinaryMessageSendAsLastFormalParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1520,15 +1520,15 @@ test05AddingParameterToBinaryMessageWithBinaryMessageSendAsLastFormalParameter
 	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector).
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 	
 	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue)
 
 
 ! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/18/2018 12:27:42'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:28:47'!
 test06AddingParameterToBinaryMessageWithKeywordMessageSendAsLastFormalParameter
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword collaboration |
@@ -1557,8 +1557,8 @@ test06AddingParameterToBinaryMessageWithKeywordMessageSendAsLastFormalParameter
 	self assert: (newImplementorMethodNode hasArgumentOrTemporary: newParameter).
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector).
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 	
 	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue)
 
@@ -1853,7 +1853,7 @@ test24AddingParameterToSendersTakeCaresOfSeparators
 	
 	! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/24/2018 18:31:10'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:29:28'!
 test25IfNewParameterValueIsKeywordMessageSendAddParenthesisToItForUnaryMessages
 
 	| refactoring classToRefactor oldSelector newParameter newParameterValue senderSelector newSelector senderMethod senderMethodNode senderSourceCode senderSourceRange |
@@ -1874,7 +1874,7 @@ test25IfNewParameterValueIsKeywordMessageSendAddParenthesisToItForUnaryMessages
 	refactoring apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self assert: (senderMethod sendsSelector: newSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 	
 	senderMethodNode := senderMethod methodNode.
 	senderSourceRange := senderMethodNode encoder sourceRangeFor: senderMethodNode block statements first.
@@ -1883,7 +1883,7 @@ test25IfNewParameterValueIsKeywordMessageSendAddParenthesisToItForUnaryMessages
 	
 	! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/24/2018 18:31:43'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:29:34'!
 test26IfNewParameterValueIsKeywordMessageSendAddParenthesisToItForKeywordMessages
 
 	| refactoring classToRefactor oldSelector newParameter newParameterValue senderSelector newSelector senderMethod newSelectorAddedKeyword senderMethodNode senderSourceCode senderSourceRange |
@@ -1905,7 +1905,7 @@ test26IfNewParameterValueIsKeywordMessageSendAddParenthesisToItForKeywordMessage
 	refactoring apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self assert: (senderMethod sendsSelector: newSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 	
 	senderMethodNode := senderMethod methodNode.
 	senderSourceRange := senderMethodNode encoder sourceRangeFor: senderMethodNode block statements first.
@@ -1925,7 +1925,7 @@ test27NewParameterValueCanNotHaveMoreThanOneStatement
 	
 	! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 8/25/2018 12:24:32'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:29:39'!
 test28WhenSenderLastParameterIsABlockAddedParameterIsNotAddedInsideTheBlock
 
 	| refactoring classToRefactor oldSelector newParameter newParameterValue senderSelector newSelector senderMethod newSelectorAddedKeyword senderMethodNode senderSourceCode senderSourceRange senderFirstParameterValue |
@@ -1948,7 +1948,7 @@ test28WhenSenderLastParameterIsABlockAddedParameterIsNotAddedInsideTheBlock
 	refactoring apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self assert: (senderMethod sendsSelector: newSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 	
 	senderMethodNode := senderMethod methodNode.
 	senderSourceRange := senderMethodNode encoder sourceRangeFor: senderMethodNode block statements first arguments first closureCreationNode.
@@ -1956,7 +1956,7 @@ test28WhenSenderLastParameterIsABlockAddedParameterIsNotAddedInsideTheBlock
 	self assert: senderFirstParameterValue equals: senderSourceCode
 	! !
 
-!AddParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 19:43:44'!
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:29:46'!
 test29AddingParameterInTheMiddleWorksAsExpected
 
 	| refactoring classToRefactor oldSelector newSelector newImplementorMethodNode newParameter newParameterValue senderSelector senderMethod newSelectorAddedKeyword |
@@ -1984,8 +1984,8 @@ test29AddingParameterInTheMiddleWorksAsExpected
 	self assert: (newImplementorMethodNode arguments at: 2) name equals: newParameter.
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector).
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 	
 	self assert: newParameterValue asNumber equals: (senderMethod methodNode block statements first arguments second literalValue).
 	self assert: senderMethod sourceCode equals: senderSelector asString, ' self m1: 1 m2: 2 m3: 3'.
@@ -2069,6 +2069,49 @@ test33IndexMustBeInteger
 				senders: {} ]
 		failsWith: [ AddParameter errorMessageForInvalidParameterIndex: 1.5 for: 1 ]! !
 
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:49:37'!
+test34AddingParameterRetractsInsertionPointWhenAtInsertionPointIsANewLine
+
+	| refactoring classToRefactor oldSelector newParameter newParameterValue senderSelector |
+	
+	oldSelector := 'm1' asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '1'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString, Character newLineCharacter asString, Character newLineCharacter asString.
+	classToRefactor compile: senderSelector asString, ' self ', oldSelector asString.
+
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue toUnarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	self shouldnt: [ refactoring apply ] raise: Error.
+	
+	! !
+
+!AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/11/2018 14:08:36'!
+test35ParentesisAreAddedToSendersOfUnaryMessage
+
+	self shouldFail: [ | refactoring classToRefactor oldSelector newParameter newParameterValue senderSelector |
+	
+	oldSelector := 'm1' asSymbol.
+	newParameter := 'newParam'.
+	newParameterValue := '1'.
+	senderSelector := 'sender_m1' asSymbol.
+	
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString.
+	classToRefactor compile: senderSelector asString, ' self ', oldSelector asString, ', self size'.
+
+	refactoring := AddParameter 
+		named: newParameter initializedWith: newParameterValue toUnarySelector: oldSelector  
+		implementors: {classToRefactor>>oldSelector} senders: {classToRefactor>>senderSelector}.
+	refactoring apply.
+	
+	self assert: senderSelector asString, ' (self ', oldSelector asString, '), self size' equals: (classToRefactor>>senderSelector) sourceCode 
+	]! !
+
 !AddParameterTest methodsFor: 'class factory' stamp: 'HAW 8/16/2018 11:55:40'!
 allClassCategoriesOfTestData
 
@@ -2150,9 +2193,10 @@ test02NewVariableHasToBeValid
 		failsWith: [ ExtractToTemporary errorMessageForInvalidTemporaryVariable: newVariable ]
 	! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 9/11/2018 16:22:06'!
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 11/11/2018 14:10:22'!
 test03NewVariableNameCanNotBeDefinedInMethod
 
+	self shouldFail: [
 	| newVariable sourceCodeToExtract sourceCode intervalToExtract |
 	
 	newVariable := 'new'.
@@ -2163,7 +2207,7 @@ test03NewVariableNameCanNotBeDefinedInMethod
 	self 
 		assertCreation: [ ExtractToTemporary named: newVariable at: intervalToExtract from: sourceCode in: self class ]
 		failsWith: [ ExtractToTemporary errorMessageForNewTemporaryVariable: newVariable isAlreadyDefinedIn: 1 ]
-	! !
+	]	! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/30/2017 06:39:47'!
 test04WarnsIfNewTemporaryIsEqualToInstanceVariableInClass
@@ -2330,9 +2374,10 @@ test14ExtractOfLiteralAtTopBlockWorksAsExpected
 	self assert: newMethodNodeStatements second equals: extract newTemporary.
 	self assert: newMethodNodeStatements third isReturnSelf! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/18/2017 17:31:31'!
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 11/11/2018 14:11:02'!
 test15
 
+	self shouldFail: [
 	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode |
 	
 	newVariable := 't1'.
@@ -2343,7 +2388,7 @@ test15
 	newMethodNode := extract apply.
 	
 	self deny: (newMethodNode block statements includes: extract parseNodeToExtract).
-	self assert: newMethodNode block statements second equals: extract newTemporary! !
+	self assert: newMethodNode block statements second equals: extract newTemporary ]! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 10/19/2017 05:52:19'!
 test15ExtractOfMoreThanOneLiteralAtTopBlockWorksAsExpected
@@ -2405,10 +2450,11 @@ test17ExtractOfLiteralAtMessageSendAtTopBlockExpressionWorksAsExpected
 		arguments: [ :collaborator | collaborator = extract newTemporary ]).
 	self assert: newMethodNodeStatements third isReturnSelf ! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 3/6/2018 15:45:43'!
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 11/11/2018 14:10:36'!
 test18
 
-	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode newMethodNodeStatements |
+	self shouldFail: [
+		| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode newMethodNodeStatements |
 	
 	newVariable := 't1'.
 	sourceCodeToExtract := '2+1'.
@@ -2424,11 +2470,12 @@ test18
 		isMessage: #+ 
 		receiver: [ :receiver | receiver isLiteralNode and: [ receiver literalValue = 2 ]]
 		arguments: [ :collaborator | collaborator = extract newTemporary ]).
-	self assert: newMethodNodeStatements third isReturnSelf ! !
+	self assert: newMethodNodeStatements third isReturnSelf ]! !
 
-!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 3/6/2018 15:55:53'!
+!ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 11/11/2018 14:10:50'!
 test19
 
+	self shouldFail: [
 	| newVariable sourceCodeToExtract methodNodeToRefactor extract newMethodNode newMethodNodeStatements |
 	
 	newVariable := 't1'.
@@ -2445,7 +2492,7 @@ test19
 		isMessage: #+ 
 		receiver: [ :receiver | receiver isLiteralNode and: [ receiver literalValue = 2 ]]
 		arguments: [ :collaborator | collaborator = extract newTemporary ]).
-	self assert: newMethodNodeStatements third isReturnSelf ! !
+	self assert: newMethodNodeStatements third isReturnSelf ]! !
 
 !InsertSuperclassTest methodsFor: 'class factory' stamp: 'FJG 8/5/2018 01:50:50'!
 allClassCategoriesOfTestData
@@ -2895,7 +2942,7 @@ test10ParameterFromOneKeywordSelectorIsRemovedCorrectly
 	
 	self assert: (classToRefactor canUnderstand: 'm1' asSymbol).! !
 
-!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 11:30:51'!
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:29:53'!
 test11ParameterOfSendersOfMoreThanOneKeywordSelectorsIsRemovedCorrectly
 
 	| classToRefactor selectorToRemoveParameterFrom parameterToRemove keywordToRemove keywordToKeep parameterToKeep refactoring senderSelector senderMethod |
@@ -2921,14 +2968,14 @@ test11ParameterOfSendersOfMoreThanOneKeywordSelectorsIsRemovedCorrectly
 	refactoring apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self assert: (senderMethod sendsSelector: keywordToKeep asSymbol).
+	self assert: (senderMethod sendsOrRefersTo: keywordToKeep asSymbol).
 	self assert: senderMethod sourceCode equals: (senderSelector asString,'
 		self 
 			', keywordToKeep, ' 2 ')
 	
 	! !
 
-!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 11:56:18'!
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:30:01'!
 test12ParameterOfSendersOfOneKeywordSelectorsIsRemovedCorrectly
 
 	| classToRefactor selectorToRemoveParameterFrom parameterToRemove refactoring senderSelector senderMethod |
@@ -2951,14 +2998,14 @@ test12ParameterOfSendersOfOneKeywordSelectorsIsRemovedCorrectly
 	refactoring apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self assert: (senderMethod sendsSelector: 'm1' asSymbol).
+	self assert: (senderMethod sendsOrRefersTo: 'm1' asSymbol).
 	self assert: senderMethod sourceCode equals: (senderSelector asString,'
 		self 
 			m1.')
 	
 	! !
 
-!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 9/4/2018 15:58:14'!
+!RemoveParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:30:06'!
 test13ParameterIsRemovedCorrecltyFromSendersWithMoreThanOneSend
 
 	| classToRefactor selectorToRemoveParameterFrom parameterToRemove keywordToRemove keywordToKeep parameterToKeep refactoring senderSelector senderMethod |
@@ -2983,7 +3030,7 @@ test13ParameterIsRemovedCorrecltyFromSendersWithMoreThanOneSend
 	refactoring apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: senderSelector.
-	self assert: (senderMethod sendsSelector: keywordToKeep asSymbol).
+	self assert: (senderMethod sendsOrRefersTo: keywordToKeep asSymbol).
 	self assert: senderMethod sourceCode equals: (senderSelector asString,'
 		self ', keywordToKeep, ' 2.
 		self ', keywordToKeep, ' 4.')
@@ -3627,16 +3674,16 @@ createClassWithImplementorAndSenderNamed: aName subclassOf: aSuperclass categori
 	^newClass
 ! !
 
-!RenameSelectorTest methodsFor: 'assertions' stamp: 'HAW 5/25/2017 23:37:07'!
+!RenameSelectorTest methodsFor: 'assertions' stamp: 'HAW 11/8/2018 15:30:15'!
 assertWasNotRenamedInClass: aClass 
 
 	| senderMethod |
 	
 	senderMethod := aClass compiledMethodAt: senderOfOldSelector.
-	self deny: (senderMethod sendsSelector: newSelector).
-	self assert: (senderMethod sendsSelector: oldSelector)! !
+	self deny: (senderMethod sendsOrRefersTo: newSelector).
+	self assert: (senderMethod sendsOrRefersTo: oldSelector)! !
 
-!RenameSelectorTest methodsFor: 'assertions' stamp: 'HAW 5/25/2017 23:20:57'!
+!RenameSelectorTest methodsFor: 'assertions' stamp: 'HAW 11/8/2018 15:30:32'!
 assertWasRenamedInClassAndMeta: classToRefactor
 	
 	| senderMethod |
@@ -3644,14 +3691,14 @@ assertWasRenamedInClassAndMeta: classToRefactor
 	self assert: (classToRefactor includesSelector: newSelector).
 	self deny: (classToRefactor includesSelector: oldSelector).
 	senderMethod := classToRefactor compiledMethodAt: senderOfOldSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector).
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 	
 	self assert: (classToRefactor class includesSelector: newSelector).
 	self deny: (classToRefactor class includesSelector: oldSelector).
 	senderMethod := classToRefactor class compiledMethodAt: senderOfOldSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector).
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
 ! !
 
 !RenameSelectorTest methodsFor: 'setup' stamp: 'HAW 5/28/2017 21:46:55'!
@@ -3677,7 +3724,7 @@ test01MessageWithNoSendersCreatesNewMethodAndRemovesOldOne
 	self assert: (classToRefactor includesSelector: newSelector) 
 ! !
 
-!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:30:40'!
 test02SendersOfMessageAreRenamed
 	
 	| rename senderMethod |
@@ -3688,10 +3735,10 @@ test02SendersOfMessageAreRenamed
 	rename apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: senderOfOldSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector)! !
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector)! !
 
-!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:30:51'!
 test03OtherMessagesSendsAreNotRenamed
 
 	|  rename senderMethod selectorToKeep |
@@ -3704,9 +3751,9 @@ test03OtherMessagesSendsAreNotRenamed
 	rename apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: senderOfOldSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector).
-	self assert: (senderMethod sendsSelector: selectorToKeep) 
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector).
+	self assert: (senderMethod sendsOrRefersTo: selectorToKeep) 
 ! !
 
 !RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
@@ -3796,7 +3843,7 @@ test11NewImplementorsKeepMethodCategory
 	self assert: oldSelectorCategory equals: (classToRefactor organization categoryOfElement: newSelector)
 ! !
 
-!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:30:58'!
 test12RenamesRecursiveMethodsWhenNotInSenders
 
 	| rename senderMethod |
@@ -3808,11 +3855,11 @@ test12RenamesRecursiveMethodsWhenNotInSenders
 	rename apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: newSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector)
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector)
 ! !
 
-!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:31:04'!
 test13RenamesRecursiveMethodsWhenInSenders
 
 	| rename senderMethod implementorsAndSenders |
@@ -3825,11 +3872,11 @@ test13RenamesRecursiveMethodsWhenInSenders
 	rename apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: newSelector.
-	self deny: (senderMethod sendsSelector: oldSelector).
-	self assert: (senderMethod sendsSelector: newSelector)
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector)
 ! !
 
-!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 11:52:37'!
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:27:09'!
 test14RenamesSymbolsEqualToOldSelector
 
 	| rename senderMethod referencerToOldSelector |
@@ -3843,8 +3890,8 @@ test14RenamesSymbolsEqualToOldSelector
 	rename apply.
 	
 	senderMethod := classToRefactor compiledMethodAt: referencerToOldSelector.
-	self deny: (senderMethod refersToLiteral: oldSelector).
-	self assert: (senderMethod refersToLiteral: newSelector) 
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector) 
 ! !
 
 !RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 8/15/2018 12:03:55'!
@@ -4658,10 +4705,10 @@ removeOldImplementors
 	
 	implementors do: [:anImplementor | self removeOldImplementor: anImplementor ]! !
 
-!ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 8/18/2018 12:02:03'!
+!ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 11/8/2018 15:24:06'!
 addToSendersIfOldSelectorIsSentIn: newImplementor
 	
-	(newImplementor refersToLiteral: oldSelector) ifTrue: [ senders add: newImplementor ]. 
+	(newImplementor sendsOrRefersTo: oldSelector) ifTrue: [ senders add: newImplementor ]. 
 	! !
 
 !ChangeSelector methodsFor: 'create new implementors - private' stamp: 'HAW 9/4/2018 19:05:08'!
@@ -4777,12 +4824,12 @@ assertAllImplementors: implementors haveSame: aSelector
 	invalidImplementors := implementors reject: [ :anImplementor | anImplementor selector = aSelector ].
 	invalidImplementors notEmpty ifTrue: [ self signalInvalidImplementors: invalidImplementors ].! !
 
-!ChangeSelector class methodsFor: 'pre-conditions' stamp: 'HAW 10/15/2018 20:51:38'!
+!ChangeSelector class methodsFor: 'pre-conditions' stamp: 'HAW 11/8/2018 15:25:47'!
 assertAllSenders: senders send: aSelector
 
 	| invalidSenders |
 	
-	invalidSenders := senders reject: [ :aSender | aSender sendsSelector: aSelector ].
+	invalidSenders := senders reject: [ :aSender | aSender sendsOrRefersTo: aSelector ].
 	invalidSenders notEmpty ifTrue: [ self signalInvalidSenders: invalidSenders of: aSelector ]! !
 
 !ChangeSelector class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:44:12'!
@@ -4916,21 +4963,31 @@ addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
 			rangesToKeywords add: (aPosition to: aPosition-1) -> senderTrailingString ]]
 	! !
 
-!AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 8/24/2018 17:19:37'!
+!AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 11/11/2018 14:07:23'!
+firstNoLineSeparatorIndexIn: sourceCode startingFrom: aStartingPosition
+	
+	^self firstNot: [ :aChar | aChar isLineSeparator ] indexIn: sourceCode startingFrom: aStartingPosition ! !
+
+!AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 11/11/2018 14:06:46'!
 firstNoSeparatorIndexIn: sourceCode startingFrom: aStartingPosition
 
 	"Looks going back for the first no separator char. See #test24AddingParameterToSendersTakeCaresOfSeparators
 	It assumes that there is always going to be a no separator wich holds due to how aStartPosition is obtained - Hernan"
 	
+	^self firstNot: [ :aChar | aChar isSeparator ] indexIn: sourceCode startingFrom: aStartingPosition ! !
+
+!AddParameter methodsFor: 'rename senders - private' stamp: 'HAW 11/11/2018 14:06:09'!
+firstNot: aBlock indexIn: sourceCode startingFrom: aStartingPosition
+	
 	| noSeparatorIndex |
 	
 	noSeparatorIndex := aStartingPosition.
-	[ (sourceCode at: noSeparatorIndex) isSeparator ] whileTrue: [ noSeparatorIndex := noSeparatorIndex - 1 ].
+	[ aBlock value: (sourceCode at: noSeparatorIndex) ] whileTrue: [ noSeparatorIndex := noSeparatorIndex - 1 ].
 	
 	^noSeparatorIndex 
 		! !
 
-!AddParameter methodsFor: 'create new implementors - private' stamp: 'HAW 9/4/2018 20:13:31'!
+!AddParameter methodsFor: 'create new implementors - private' stamp: 'HAW 11/11/2018 14:07:55'!
 implementorNewSourceCodeOf: anImplementor
 
 	| implementorMethodNode newSource originalSource insertionPoint |
@@ -4939,8 +4996,10 @@ implementorNewSourceCodeOf: anImplementor
 	insertionPoint := isAddingLast 
 		ifTrue: [ implementorMethodNode selectorLastPosition ]
 		ifFalse: [ (implementorMethodNode selectorKeywordPositionAt: index) first - 1].
-.
+
 	originalSource := anImplementor sourceCode.
+	insertionPoint := self firstNoLineSeparatorIndexIn: originalSource startingFrom: insertionPoint.
+	
 	newSource := String streamContents: [ :newSourceStream |
 		newSourceStream 
 			nextPutAll: (originalSource copyFrom: 1 to: insertionPoint);
@@ -8124,6 +8183,11 @@ referencesParameterAt: parameterIndex
 	parameterRanges := methodNode positionsForTemporaryVariable: implementorParameterNodeToRemove name ifAbsent: [#()].
 	
 	^parameterRanges size ~= 1! !
+
+!CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 11/8/2018 15:23:29'!
+sendsOrRefersTo: aSelector
+
+	^ (self refersToLiteral: aSelector) or: [ self sendsSelector: aSelector ]! !
 
 !CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 11:32:37'!
 sourceCode

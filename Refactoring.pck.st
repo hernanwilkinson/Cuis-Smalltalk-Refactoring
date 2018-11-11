@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3485] on 11 November 2018 at 2:11:30 pm'!
-'Description Fix to some errors on AddParameter'!
-!provides: 'Refactoring' 1 61!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3487] on 11 November 2018 at 7:49:27 pm'!
+'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
+!provides: 'Refactoring' 1 62!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -8210,17 +8210,6 @@ valuesSelect: aCondition
 	
 	^selected! !
 
-!Parser methodsFor: '*Refactoring' stamp: 'HAW 6/26/2017 16:20:01'!
-parse: sourceStreamOrString class: behavior noPattern: aBoolean
-
-	^ self 
-		parse: sourceStreamOrString readStream 
-		class: behavior
-		noPattern: aBoolean 
-		context: nil 
-		notifying: nil 
-		ifFail: [^nil]! !
-
 !Parser class methodsFor: '*Refactoring' stamp: 'HAW 6/26/2017 16:17:57'!
 parse: sourceCode class: aClass
 
@@ -8536,13 +8525,6 @@ selectorKeywordPositionAt: anIndex
 selectorKeywordsPositions
 
 	^selectorKeywordsRanges! !
-
-!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 8/16/2018 18:04:39'!
-selectorLastPosition
-	
-	^self selector isUnary 
-		ifTrue: [ selectorKeywordsRanges last last ]
-		ifFalse: [ (encoder sourceRangeFor: arguments last) first last ]! !
 
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 6/25/2017 19:20:47'!
 tempNodes

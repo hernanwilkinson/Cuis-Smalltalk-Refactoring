@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3487] on 11 November 2018 at 7:49:27 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 23 November 2018 at 11:41:39 am'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 62!
+!provides: 'Refactoring' 1 64!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -114,6 +114,16 @@ RefactoringTest subclass: #AddParameterTest
 AddParameterTest class
 	instanceVariableNames: ''!
 
+!classDefinition: #ExtractToMethodObjectTest category: #Refactoring!
+RefactoringTest subclass: #ExtractToMethodObjectTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ExtractToMethodObjectTest class' category: #Refactoring!
+ExtractToMethodObjectTest class
+	instanceVariableNames: ''!
+
 !classDefinition: #ExtractToTemporaryTest category: #Refactoring!
 RefactoringTest subclass: #ExtractToTemporaryTest
 	instanceVariableNames: ''
@@ -212,6 +222,16 @@ RefactoringTest subclass: #SafelyRemoveClassTest
 	category: 'Refactoring'!
 !classDefinition: 'SafelyRemoveClassTest class' category: #Refactoring!
 SafelyRemoveClassTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #ExtractToMethodObject category: #Refactoring!
+Object subclass: #ExtractToMethodObject
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ExtractToMethodObject class' category: #Refactoring!
+ExtractToMethodObject class
 	instanceVariableNames: ''!
 
 !classDefinition: #NewClassPrecondition category: #Refactoring!
@@ -2121,6 +2141,29 @@ allClassCategoriesOfTestData
 classToRefactorName
 	
 	^#ClassToAddParameter! !
+
+!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 11/23/2018 11:38:37'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData! !
+
+!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 11/23/2018 11:38:55'!
+test01MethodObjectClassNameMustNotBelongToAnExistingClass
+
+	| aClass aCompiledMethod anExistingClassName |
+	
+	aClass := self createClassNamed: #AClass.
+	aClass compile: 'm1'.
+	aCompiledMethod  := aClass compiledMethodAt: #m1.
+	anExistingClassName  := #Object.
+	
+	self should: [
+		ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: anExistingClassName
+			subclassing: aClass]
+		raise: RefactoringError
+		withMessageText: [ ExtractToMethodObject methodObjectClassNameCannotBelongToExistingClassMessage ].! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -4406,6 +4449,16 @@ classToRemoveName
 	"I can not use the symbol directly because it would be a reference - Hernan"
 	^ 'ClassToRemove' asSymbol.
 	! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/23/2018 11:39:31'!
+from: aCompiledMethod toMethodObjectClassNamed: aSymbol subclassing: aClass 
+
+	RefactoringError signal: self methodObjectClassNameCannotBelongToExistingClassMessage.! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/23/2018 11:39:19'!
+methodObjectClassNameCannotBelongToExistingClassMessage
+	
+	^'Method Object class name cannot be the name of an existing class'.! !
 
 !NewClassPrecondition methodsFor: 'evaluating' stamp: 'HAW 8/13/2018 16:02:17'!
 value

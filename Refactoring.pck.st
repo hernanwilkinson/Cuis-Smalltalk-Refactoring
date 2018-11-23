@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 23 November 2018 at 11:41:39 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 23 November 2018 at 2:19:24 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 64!
+!provides: 'Refactoring' 1 65!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2142,12 +2142,12 @@ classToRefactorName
 	
 	^#ClassToAddParameter! !
 
-!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 11/23/2018 11:38:37'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/23/2018 11:38:37'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData! !
 
-!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 11/23/2018 11:38:55'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/23/2018 14:17:48'!
 test01MethodObjectClassNameMustNotBelongToAnExistingClass
 
 	| aClass aCompiledMethod anExistingClassName |
@@ -2161,9 +2161,29 @@ test01MethodObjectClassNameMustNotBelongToAnExistingClass
 		ExtractToMethodObject 
 			from: aCompiledMethod
 			toMethodObjectClassNamed: anExistingClassName
-			subclassing: aClass]
+			subclassing: aClass
+			onCategory: self classCategoryOfTestData]
 		raise: RefactoringError
 		withMessageText: [ ExtractToMethodObject methodObjectClassNameCannotBelongToExistingClassMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/23/2018 14:18:24'!
+test02CreatesMethodObjectClass
+	
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor |
+	
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor.
+	aClassToRefactor compile: 'm1'.
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  := #MethodObject.
+	
+	ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData.
+			
+	self assert: [Smalltalk hasClassNamed: methodObjectClassName ].! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -4450,10 +4470,15 @@ classToRemoveName
 	^ 'ClassToRemove' asSymbol.
 	! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/23/2018 11:39:31'!
-from: aCompiledMethod toMethodObjectClassNamed: aSymbol subclassing: aClass 
-
-	RefactoringError signal: self methodObjectClassNameCannotBelongToExistingClassMessage.! !
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/23/2018 14:18:59'!
+from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aMethodObjectSuperclass onCategory: aCategory
+	
+	Smalltalk hasClassNamed: aClassName ::
+		ifTrue: [RefactoringError signal: self methodObjectClassNameCannotBelongToExistingClassMessage].
+		
+	Object subclass: aClassName instanceVariableNames: '' classVariableNames: '' poolDictionaries: '' category: aCategory.
+		
+	! !
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/23/2018 11:39:19'!
 methodObjectClassNameCannotBelongToExistingClassMessage

@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 23 November 2018 at 2:19:24 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 25 November 2018 at 3:45:56 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 65!
+!provides: 'Refactoring' 1 66!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -226,7 +226,7 @@ SafelyRemoveClassTest class
 
 !classDefinition: #ExtractToMethodObject category: #Refactoring!
 Object subclass: #ExtractToMethodObject
-	instanceVariableNames: ''
+	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -2166,24 +2166,46 @@ test01MethodObjectClassNameMustNotBelongToAnExistingClass
 		raise: RefactoringError
 		withMessageText: [ ExtractToMethodObject methodObjectClassNameCannotBelongToExistingClassMessage ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/23/2018 14:18:24'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 15:40:50'!
 test02CreatesMethodObjectClass
 	
-	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor |
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
 	
-	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
-	aClassToRefactor := self createClassNamed: #AClassToRefactor.
+	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
 	aClassToRefactor compile: 'm1'.
-	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
-	methodObjectClassName  := #MethodObject.
+	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  _ #MethodObject.
 	
-	ExtractToMethodObject 
+	refactor _ ExtractToMethodObject 
 			from: aCompiledMethod
 			toMethodObjectClassNamed: methodObjectClassName 
 			subclassing: methodObjectSuperclass
 			onCategory: self classCategoryOfTestData.
+	refactor apply.
 			
 	self assert: [Smalltalk hasClassNamed: methodObjectClassName ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 15:40:07'!
+test03CreatesMethodObjectClassSubclassingTheSuper
+	
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor methodObjectClass refactor |
+	
+	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	aClassToRefactor compile: 'm1'.
+	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  _ #MethodObject.
+	
+	refactor _ ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData.
+	refactor apply.		
+	
+	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
+	self assert: [methodObjectClass superclass = methodObjectSuperclass  ].! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -4470,13 +4492,26 @@ classToRemoveName
 	^ 'ClassToRemove' asSymbol.
 	! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/23/2018 14:18:59'!
-from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aMethodObjectSuperclass onCategory: aCategory
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/25/2018 15:43:34'!
+apply
+
+	methodObjectSuperclass subclass: methodObjectClassName instanceVariableNames: '' classVariableNames: '' poolDictionaries: '' category: methodObjectCategory.! !
+
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/25/2018 15:45:17'!
+from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
+
+	methodToExtract _ aCompiledMethod.
+	methodObjectClassName _ aClassName.
+	methodObjectSuperclass _ aClass.
+	methodObjectCategory _ aCategory .! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/25/2018 15:42:44'!
+from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
 	
 	Smalltalk hasClassNamed: aClassName ::
 		ifTrue: [RefactoringError signal: self methodObjectClassNameCannotBelongToExistingClassMessage].
-		
-	Object subclass: aClassName instanceVariableNames: '' classVariableNames: '' poolDictionaries: '' category: aCategory.
+
+	^self new from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory. 		
 		
 	! !
 
@@ -4484,6 +4519,10 @@ from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aMethodO
 methodObjectClassNameCannotBelongToExistingClassMessage
 	
 	^'Method Object class name cannot be the name of an existing class'.! !
+
+!ExtractToMethodObject class methodsFor: 'evaluating' stamp: 'FGJ 11/25/2018 15:41:11'!
+apply
+	self shouldBeImplemented.! !
 
 !NewClassPrecondition methodsFor: 'evaluating' stamp: 'HAW 8/13/2018 16:02:17'!
 value

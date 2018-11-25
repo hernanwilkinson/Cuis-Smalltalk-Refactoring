@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 25 November 2018 at 3:45:56 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 25 November 2018 at 3:51:37 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 66!
+!provides: 'Refactoring' 1 67!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2206,6 +2206,27 @@ test03CreatesMethodObjectClassSubclassingTheSuper
 	
 	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
 	self assert: [methodObjectClass superclass = methodObjectSuperclass  ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 15:48:34'!
+test04CreatesMethodObjectClassInCategory
+	
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor methodObjectClass refactor |
+	
+	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	aClassToRefactor compile: 'm1'.
+	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  _ #MethodObject.
+	
+	refactor _ ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData.
+	refactor apply.		
+	
+	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
+	self assert: [methodObjectClass category = self classCategoryOfTestData].! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData

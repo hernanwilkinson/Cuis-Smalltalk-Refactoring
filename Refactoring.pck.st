@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 26 November 2018 at 5:57:56 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 26 November 2018 at 7:01:08 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 70!
+!provides: 'Refactoring' 1 71!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2268,8 +2268,8 @@ test06ExtractedMethodThatReturnsAConstantReturnsAConstant
 	
 	self assert: 1 equals: aClassToRefactor new m1.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/26/2018 17:55:36'!
-test07ExtractedMethodThatReturnsAConstantCreatesMethodObject
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/26/2018 18:14:32'!
+test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor refactoredMethod returnNode valueReceiver methodObjectClass |
 	
@@ -2306,14 +2306,14 @@ test07ExtractedMethodThatReturnsAConstantCreatesMethodObject
 	"El mensaje enviado es new"
 	self assert: [valueReceiver selector key = #new].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/26/2018 16:58:06'!
-test08ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
-	
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/26/2018 18:16:44'!
+test08ExtractedMethodThatReturnsAConstantReturnsTheConstant
+
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
 	
 	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
 	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
-	aClassToRefactor compile: 'm1 ^1'.
+	aClassToRefactor compile: 'm1 ^2'.
 	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
 	methodObjectClassName  _ #MethodObject.
 	
@@ -2324,7 +2324,7 @@ test08ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 			onCategory: self classCategoryOfTestData.
 	refactor apply.		
 	
-	self assert: true.! !
+	self assert: 2 equals: aClassToRefactor new m1.! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -4611,13 +4611,16 @@ classToRemoveName
 	^ 'ClassToRemove' asSymbol.
 	! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/26/2018 17:57:17'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/26/2018 18:53:56'!
 apply
 
-	| classToRefactor methodObjectClass |
+	| classToRefactor methodObjectClass aStream |
 	
 	methodObjectClass _ methodObjectSuperclass subclass: methodObjectClassName instanceVariableNames: '' classVariableNames: '' poolDictionaries: '' category: methodObjectCategory.
-	methodObjectClass compile: 'value ^1'.
+	aStream := RWBinaryOrTextStream with: ''.
+	self halt.
+	methodToExtract methodNode block printOn: aStream indent: 0.
+	methodObjectClass compile: 'value ', aStream contents.
 	
 	classToRefactor _ methodToExtract methodClass.
 	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' new) value'.! !

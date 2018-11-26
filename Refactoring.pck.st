@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 25 November 2018 at 3:51:37 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 26 November 2018 at 1:57:59 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 67!
+!provides: 'Refactoring' 1 68!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2166,8 +2166,28 @@ test01MethodObjectClassNameMustNotBelongToAnExistingClass
 		raise: RefactoringError
 		withMessageText: [ ExtractToMethodObject methodObjectClassNameCannotBelongToExistingClassMessage ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 15:40:50'!
-test02CreatesMethodObjectClass
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 15:59:40'!
+test02MethodObjectClassNameCannotBeEmpty
+	
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor |
+	
+	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	aClassToRefactor compile: 'm1'.
+	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  _ ''.
+	
+	self 
+		should: [ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData]
+		raise: RefactoringError
+		withMessageText: ExtractToMethodObject methodObjectClassNameCannotBeEmptyErrorMessage.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 15:55:48'!
+test03CreatesMethodObjectClass
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
 	
@@ -2186,8 +2206,8 @@ test02CreatesMethodObjectClass
 			
 	self assert: [Smalltalk hasClassNamed: methodObjectClassName ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 15:40:07'!
-test03CreatesMethodObjectClassSubclassingTheSuper
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 15:55:55'!
+test04CreatesMethodObjectClassSubclassingTheSuper
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor methodObjectClass refactor |
 	
@@ -2207,8 +2227,8 @@ test03CreatesMethodObjectClassSubclassingTheSuper
 	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
 	self assert: [methodObjectClass superclass = methodObjectSuperclass  ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 15:48:34'!
-test04CreatesMethodObjectClassInCategory
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 15:56:02'!
+test05CreatesMethodObjectClassInCategory
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor methodObjectClass refactor |
 	
@@ -2227,6 +2247,46 @@ test04CreatesMethodObjectClassInCategory
 	
 	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
 	self assert: [methodObjectClass category = self classCategoryOfTestData].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 16:27:33'!
+test06ExtractedMethodThatReturnsAConstantReturnsAConstant
+	
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
+	
+	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	aClassToRefactor compile: 'm1 ^1'.
+	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  _ #MethodObject.
+	
+	refactor _ ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData.
+	refactor apply.		
+	
+	self assert: 1 equals: aClassToRefactor new m1.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 16:41:17'!
+test07ExtractedMethodThatReturnsAConstantCreatesMethodObject
+	
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
+	
+	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	aClassToRefactor compile: 'm1 ^1'.
+	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  _ #MethodObject.
+	
+	refactor _ ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData.
+	refactor apply.		
+	
+	self assert: true.! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -4526,8 +4586,10 @@ from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass o
 	methodObjectSuperclass _ aClass.
 	methodObjectCategory _ aCategory .! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/25/2018 15:42:44'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/25/2018 16:03:59'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
+	
+	aClassName isEmpty ifTrue: [RefactoringError signal: self methodObjectClassNameCannotBeEmptyErrorMessage].
 	
 	Smalltalk hasClassNamed: aClassName ::
 		ifTrue: [RefactoringError signal: self methodObjectClassNameCannotBelongToExistingClassMessage].
@@ -4541,9 +4603,10 @@ methodObjectClassNameCannotBelongToExistingClassMessage
 	
 	^'Method Object class name cannot be the name of an existing class'.! !
 
-!ExtractToMethodObject class methodsFor: 'evaluating' stamp: 'FGJ 11/25/2018 15:41:11'!
-apply
-	self shouldBeImplemented.! !
+!ExtractToMethodObject class methodsFor: 'error handling' stamp: 'FGJ 11/25/2018 16:00:41'!
+methodObjectClassNameCannotBeEmptyErrorMessage
+	
+	^'Method Object class name cannot be empty.'! !
 
 !NewClassPrecondition methodsFor: 'evaluating' stamp: 'HAW 8/13/2018 16:02:17'!
 value

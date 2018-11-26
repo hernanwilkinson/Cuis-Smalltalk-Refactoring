@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 26 November 2018 at 5:36:20 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 26 November 2018 at 5:57:56 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 69!
+!provides: 'Refactoring' 1 70!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2268,7 +2268,7 @@ test06ExtractedMethodThatReturnsAConstantReturnsAConstant
 	
 	self assert: 1 equals: aClassToRefactor new m1.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/26/2018 17:35:53'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/26/2018 17:55:36'!
 test07ExtractedMethodThatReturnsAConstantCreatesMethodObject
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor refactoredMethod returnNode valueReceiver methodObjectClass |
@@ -2286,7 +2286,7 @@ test07ExtractedMethodThatReturnsAConstantCreatesMethodObject
 			onCategory: self classCategoryOfTestData.
 	refactor apply.		
 	
-	refactoredMethod _ aClassToRefactor compiledMethodAt: #m1.
+	refactoredMethod _ aClassToRefactor compiledMethodAt: #m1 :: methodNode.
 	self assert: refactoredMethod block statements size equals: 1.
 	
 	returnNode _ refactoredMethod block statements first.
@@ -2295,16 +2295,16 @@ test07ExtractedMethodThatReturnsAConstantCreatesMethodObject
 	"La sentencia de return es un envío de mensaje"
 	self assert: [returnNode expr class = MessageNode].
 	"El mensaje enviado es value"
-	self assert: [returnNode expr selector = #value].
+	self assert: [returnNode expr selector key = #value].
 	
 	valueReceiver _ returnNode expr receiver.
 	"El receiver de value es un messageNode"
 	self assert: [valueReceiver class = MessageNode].
 	"El receiver es la nueva MethodObject class"
 	methodObjectClass _ Smalltalk classNamed: methodObjectClassName.
-	self assert: [valueReceiver receiver = methodObjectClass].
+	self assert: [valueReceiver receiver key value = methodObjectClass].
 	"El mensaje enviado es new"
-	self assert: [valueReceiver selector = #new].! !
+	self assert: [valueReceiver selector key = #new].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/26/2018 16:58:06'!
 test08ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
@@ -4611,10 +4611,16 @@ classToRemoveName
 	^ 'ClassToRemove' asSymbol.
 	! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/25/2018 15:43:34'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/26/2018 17:57:17'!
 apply
 
-	methodObjectSuperclass subclass: methodObjectClassName instanceVariableNames: '' classVariableNames: '' poolDictionaries: '' category: methodObjectCategory.! !
+	| classToRefactor methodObjectClass |
+	
+	methodObjectClass _ methodObjectSuperclass subclass: methodObjectClassName instanceVariableNames: '' classVariableNames: '' poolDictionaries: '' category: methodObjectCategory.
+	methodObjectClass compile: 'value ^1'.
+	
+	classToRefactor _ methodToExtract methodClass.
+	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' new) value'.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/25/2018 15:45:17'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory

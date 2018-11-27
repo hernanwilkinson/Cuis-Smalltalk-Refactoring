@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 26 November 2018 at 7:01:08 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 2:38:11 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 71!
+!provides: 'Refactoring' 1 73!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2166,7 +2166,7 @@ test01MethodObjectClassNameMustNotBelongToAnExistingClass
 		raise: RefactoringError
 		withMessageText: [ ExtractToMethodObject methodObjectClassNameCannotBelongToExistingClassMessage ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 15:59:40'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 10:07:24'!
 test02MethodObjectClassNameCannotBeEmpty
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor |
@@ -2175,7 +2175,7 @@ test02MethodObjectClassNameCannotBeEmpty
 	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
 	aClassToRefactor compile: 'm1'.
 	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
-	methodObjectClassName  _ ''.
+	methodObjectClassName  _ ' '.
 	
 	self 
 		should: [ExtractToMethodObject 
@@ -2268,7 +2268,7 @@ test06ExtractedMethodThatReturnsAConstantReturnsAConstant
 	
 	self assert: 1 equals: aClassToRefactor new m1.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/26/2018 18:14:32'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 12:48:12'!
 test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor refactoredMethod returnNode valueReceiver methodObjectClass |
@@ -2290,20 +2290,20 @@ test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	self assert: refactoredMethod block statements size equals: 1.
 	
 	returnNode _ refactoredMethod block statements first.
-	"El nuevo método consiste en una sola sentencia de return"
+	"The new method consist only of a return statement"
 	self assert: [returnNode class = ReturnNode].
-	"La sentencia de return es un envío de mensaje"
+	"The return statement is the sending of a message"
 	self assert: [returnNode expr class = MessageNode].
-	"El mensaje enviado es value"
+	"The message sent is #value"
 	self assert: [returnNode expr selector key = #value].
 	
 	valueReceiver _ returnNode expr receiver.
-	"El receiver de value es un messageNode"
+	"The #value message receiver is a MessageNode"
 	self assert: [valueReceiver class = MessageNode].
-	"El receiver es la nueva MethodObject class"
+	"The receiver is the created MethodObject class"
 	methodObjectClass _ Smalltalk classNamed: methodObjectClassName.
 	self assert: [valueReceiver receiver key value = methodObjectClass].
-	"El mensaje enviado es new"
+	"The message sent is #new"
 	self assert: [valueReceiver selector key = #new].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/26/2018 18:16:44'!
@@ -4655,7 +4655,7 @@ methodObjectClassNameCannotBeEmptyErrorMessage
 	
 	^'Method Object class name cannot be empty.'! !
 
-!NewClassPrecondition methodsFor: 'evaluating' stamp: 'HAW 8/13/2018 16:02:17'!
+!NewClassPrecondition methodsFor: 'evaluating' stamp: 'FGJ 11/27/2018 10:10:34'!
 value
 
 	self assertNewClassNameIsNotEmpty.

@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 3:05:13 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 3:52:59 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 78!
+!provides: 'Refactoring' 1 79!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2147,7 +2147,7 @@ allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/23/2018 14:17:48'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 15:49:52'!
 test01MethodObjectClassNameMustNotBelongToAnExistingClass
 
 	| aClass aCompiledMethod anExistingClassName |
@@ -2164,9 +2164,9 @@ test01MethodObjectClassNameMustNotBelongToAnExistingClass
 			subclassing: aClass
 			onCategory: self classCategoryOfTestData]
 		raise: RefactoringError
-		withMessageText: [ ExtractToMethodObject methodObjectClassNameCannotBelongToExistingClassMessage ].! !
+		withMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: anExistingClassName ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:47:59'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 15:50:45'!
 test02MethodObjectClassNameCannotBeEmpty
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor |
@@ -2184,7 +2184,7 @@ test02MethodObjectClassNameCannotBeEmpty
 			subclassing: methodObjectSuperclass
 			onCategory: self classCategoryOfTestData]
 		raise: RefactoringError
-		withMessageText: ExtractToMethodObject methodObjectClassNameCannotBeEmptyErrorMessage.! !
+		withMessageText: NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:48:21'!
 test03CreatesMethodObjectClass
@@ -6059,27 +6059,20 @@ from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass o
 	methodObjectSuperclass := aClass.
 	methodObjectCategory := aCategory .! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/27/2018 15:03:33'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/27/2018 15:46:17'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
 	
-	aClassName isEmpty ifTrue: [self refactoringError:self methodObjectClassNameCannotBeEmptyErrorMessage].
+	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
 	
-	(Smalltalk hasClassNamed: aClassName)
-		ifTrue: [self refactoringError: self methodObjectClassNameCannotBelongToExistingClassMessage].
-
 	^self new from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory. 		
 		
 	! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/23/2018 11:39:19'!
-methodObjectClassNameCannotBelongToExistingClassMessage
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/27/2018 15:46:47'!
+newClassPreconditionClass
 	
-	^'Method Object class name cannot be the name of an existing class'.! !
-
-!ExtractToMethodObject class methodsFor: 'error handling' stamp: 'FGJ 11/25/2018 16:00:41'!
-methodObjectClassNameCannotBeEmptyErrorMessage
-	
-	^'Method Object class name cannot be empty.'! !
+	^NewClassPrecondition.	
+	! !
 
 !ExtractToTemporary methodsFor: 'applying' stamp: 'HAW 10/18/2017 18:39:22'!
 apply

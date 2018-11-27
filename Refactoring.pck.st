@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 2:51:34 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 2:54:32 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 75!
+!provides: 'Refactoring' 1 76!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2227,7 +2227,7 @@ test04CreatesMethodObjectClassSubclassingTheSuper
 	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
 	self assert: methodObjectClass superclass equals: methodObjectSuperclass.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:49:01'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:53:28'!
 test05CreatesMethodObjectClassInCategory
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor methodObjectClass refactor |
@@ -2236,7 +2236,7 @@ test05CreatesMethodObjectClassInCategory
 	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	aClassToRefactor compile: 'm1'.
 	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
-	methodObjectClassName  _ #MethodObject.
+	methodObjectClassName  := #MethodObject.
 	
 	refactor := ExtractToMethodObject 
 			from: aCompiledMethod
@@ -2268,7 +2268,7 @@ test06ExtractedMethodThatReturnsAConstantReturnsAConstant
 	
 	self assert: 1 equals: aClassToRefactor new m1.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:50:04'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:53:52'!
 test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor refactoredMethod returnNode valueReceiver methodObjectClass |
@@ -2286,7 +2286,7 @@ test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 			onCategory: self classCategoryOfTestData.
 	refactor apply.		
 	
-	refactoredMethod := aClassToRefactor compiledMethodAt: #m1 :: methodNode.
+	refactoredMethod := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	self assert: refactoredMethod block statements size equals: 1.
 	
 	returnNode := refactoredMethod block statements first.
@@ -4632,12 +4632,12 @@ from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass o
 	methodObjectSuperclass := aClass.
 	methodObjectCategory := aCategory .! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/25/2018 16:03:59'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/27/2018 14:52:57'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
 	
 	aClassName isEmpty ifTrue: [RefactoringError signal: self methodObjectClassNameCannotBeEmptyErrorMessage].
 	
-	Smalltalk hasClassNamed: aClassName ::
+	(Smalltalk hasClassNamed: aClassName)
 		ifTrue: [RefactoringError signal: self methodObjectClassNameCannotBelongToExistingClassMessage].
 
 	^self new from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory. 		

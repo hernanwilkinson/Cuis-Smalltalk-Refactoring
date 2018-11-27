@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 2:54:32 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 2:59:21 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 76!
+!provides: 'Refactoring' 1 77!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2268,7 +2268,7 @@ test06ExtractedMethodThatReturnsAConstantReturnsAConstant
 	
 	self assert: 1 equals: aClassToRefactor new m1.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:53:52'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:59:00'!
 test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor refactoredMethod returnNode valueReceiver methodObjectClass |
@@ -2291,15 +2291,15 @@ test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	
 	returnNode := refactoredMethod block statements first.
 	"The new method consist only of a return statement"
-	self assert: returnNode class equals: ReturnNode.
+	self assert: returnNode isReturn.
 	"The return statement is the sending of a message"
-	self assert: returnNode expr class equals: MessageNode.
+	self assert: returnNode expr isMessage.
 	"The message sent is #value"
 	self assert: returnNode expr selector key equals: #value.
 	
 	valueReceiver := returnNode expr receiver.
 	"The #value message receiver is a MessageNode"
-	self assert: valueReceiver class equals: MessageNode.
+	self assert: valueReceiver isMessage.
 	"The receiver is the created MethodObject class"
 	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
 	self assert: valueReceiver receiver key value equals: methodObjectClass.

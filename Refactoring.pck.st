@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 2:59:21 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 3:05:13 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 77!
+!provides: 'Refactoring' 1 78!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -224,16 +224,6 @@ RefactoringTest subclass: #SafelyRemoveClassTest
 SafelyRemoveClassTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObject category: #Refactoring!
-Object subclass: #ExtractToMethodObject
-	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObject class' category: #Refactoring!
-ExtractToMethodObject class
-	instanceVariableNames: ''!
-
 !classDefinition: #NewClassPrecondition category: #Refactoring!
 Object subclass: #NewClassPrecondition
 	instanceVariableNames: 'newClassName system undeclared'
@@ -302,6 +292,16 @@ ChangeSelector subclass: #RenameSelector
 	category: 'Refactoring'!
 !classDefinition: 'RenameSelector class' category: #Refactoring!
 RenameSelector class
+	instanceVariableNames: ''!
+
+!classDefinition: #ExtractToMethodObject category: #Refactoring!
+Refactoring subclass: #ExtractToMethodObject
+	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ExtractToMethodObject class' category: #Refactoring!
+ExtractToMethodObject class
 	instanceVariableNames: ''!
 
 !classDefinition: #ExtractToTemporary category: #Refactoring!
@@ -4611,49 +4611,6 @@ classToRemoveName
 	^ 'ClassToRemove' asSymbol.
 	! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:51:17'!
-apply
-
-	| classToRefactor methodObjectClass aStream |
-	
-	methodObjectClass := methodObjectSuperclass subclass: methodObjectClassName instanceVariableNames: '' classVariableNames: '' poolDictionaries: '' category: methodObjectCategory.
-	aStream := RWBinaryOrTextStream with: ''.
-	methodToExtract methodNode block printOn: aStream indent: 0.
-	methodObjectClass compile: 'value ', aStream contents.
-	
-	classToRefactor := methodToExtract methodClass.
-	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' new) value'.! !
-
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:51:06'!
-from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
-
-	methodToExtract := aCompiledMethod.
-	methodObjectClassName := aClassName.
-	methodObjectSuperclass := aClass.
-	methodObjectCategory := aCategory .! !
-
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/27/2018 14:52:57'!
-from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
-	
-	aClassName isEmpty ifTrue: [RefactoringError signal: self methodObjectClassNameCannotBeEmptyErrorMessage].
-	
-	(Smalltalk hasClassNamed: aClassName)
-		ifTrue: [RefactoringError signal: self methodObjectClassNameCannotBelongToExistingClassMessage].
-
-	^self new from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory. 		
-		
-	! !
-
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/23/2018 11:39:19'!
-methodObjectClassNameCannotBelongToExistingClassMessage
-	
-	^'Method Object class name cannot be the name of an existing class'.! !
-
-!ExtractToMethodObject class methodsFor: 'error handling' stamp: 'FGJ 11/25/2018 16:00:41'!
-methodObjectClassNameCannotBeEmptyErrorMessage
-	
-	^'Method Object class name cannot be empty.'! !
-
 !NewClassPrecondition methodsFor: 'evaluating' stamp: 'FGJ 11/27/2018 10:10:34'!
 value
 
@@ -6080,6 +6037,49 @@ warnImplementionOf: aNewSelector in: aClass willOverrideImplementationIn: aSuper
 warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplementationIn: aSuperclass
 
 	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
+
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:51:17'!
+apply
+
+	| classToRefactor methodObjectClass aStream |
+	
+	methodObjectClass := methodObjectSuperclass subclass: methodObjectClassName instanceVariableNames: '' classVariableNames: '' poolDictionaries: '' category: methodObjectCategory.
+	aStream := RWBinaryOrTextStream with: ''.
+	methodToExtract methodNode block printOn: aStream indent: 0.
+	methodObjectClass compile: 'value ', aStream contents.
+	
+	classToRefactor := methodToExtract methodClass.
+	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' new) value'.! !
+
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:51:06'!
+from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
+
+	methodToExtract := aCompiledMethod.
+	methodObjectClassName := aClassName.
+	methodObjectSuperclass := aClass.
+	methodObjectCategory := aCategory .! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/27/2018 15:03:33'!
+from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
+	
+	aClassName isEmpty ifTrue: [self refactoringError:self methodObjectClassNameCannotBeEmptyErrorMessage].
+	
+	(Smalltalk hasClassNamed: aClassName)
+		ifTrue: [self refactoringError: self methodObjectClassNameCannotBelongToExistingClassMessage].
+
+	^self new from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory. 		
+		
+	! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/23/2018 11:39:19'!
+methodObjectClassNameCannotBelongToExistingClassMessage
+	
+	^'Method Object class name cannot be the name of an existing class'.! !
+
+!ExtractToMethodObject class methodsFor: 'error handling' stamp: 'FGJ 11/25/2018 16:00:41'!
+methodObjectClassNameCannotBeEmptyErrorMessage
+	
+	^'Method Object class name cannot be empty.'! !
 
 !ExtractToTemporary methodsFor: 'applying' stamp: 'HAW 10/18/2017 18:39:22'!
 apply

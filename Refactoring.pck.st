@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 2:46:36 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 2:51:34 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 74!
+!provides: 'Refactoring' 1 75!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2166,16 +2166,16 @@ test01MethodObjectClassNameMustNotBelongToAnExistingClass
 		raise: RefactoringError
 		withMessageText: [ ExtractToMethodObject methodObjectClassNameCannotBelongToExistingClassMessage ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:42:42'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:47:59'!
 test02MethodObjectClassNameCannotBeEmpty
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor |
 	
-	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
-	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	aClassToRefactor compile: 'm1'.
-	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
-	methodObjectClassName  _ ''.
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  := ''.
 	
 	self 
 		should: [ExtractToMethodObject 
@@ -2186,18 +2186,18 @@ test02MethodObjectClassNameCannotBeEmpty
 		raise: RefactoringError
 		withMessageText: ExtractToMethodObject methodObjectClassNameCannotBeEmptyErrorMessage.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:40:22'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:48:21'!
 test03CreatesMethodObjectClass
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
 	
-	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
-	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	aClassToRefactor compile: 'm1'.
-	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
-	methodObjectClassName  _ #MethodObject.
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  := #MethodObject.
 	
-	refactor _ ExtractToMethodObject 
+	refactor := ExtractToMethodObject 
 			from: aCompiledMethod
 			toMethodObjectClassNamed: methodObjectClassName 
 			subclassing: methodObjectSuperclass
@@ -2206,18 +2206,18 @@ test03CreatesMethodObjectClass
 			
 	self assert: (Smalltalk hasClassNamed: methodObjectClassName).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:43:23'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:48:43'!
 test04CreatesMethodObjectClassSubclassingTheSuper
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor methodObjectClass refactor |
 	
-	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
-	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	aClassToRefactor compile: 'm1'.
-	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
-	methodObjectClassName  _ #MethodObject.
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  := #MethodObject.
 	
-	refactor _ ExtractToMethodObject 
+	refactor := ExtractToMethodObject 
 			from: aCompiledMethod
 			toMethodObjectClassNamed: methodObjectClassName 
 			subclassing: methodObjectSuperclass
@@ -2227,18 +2227,18 @@ test04CreatesMethodObjectClassSubclassingTheSuper
 	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
 	self assert: methodObjectClass superclass equals: methodObjectSuperclass.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:44:24'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:49:01'!
 test05CreatesMethodObjectClassInCategory
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor methodObjectClass refactor |
 	
-	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
-	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	aClassToRefactor compile: 'm1'.
-	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
 	methodObjectClassName  _ #MethodObject.
 	
-	refactor _ ExtractToMethodObject 
+	refactor := ExtractToMethodObject 
 			from: aCompiledMethod
 			toMethodObjectClassNamed: methodObjectClassName 
 			subclassing: methodObjectSuperclass
@@ -2248,18 +2248,18 @@ test05CreatesMethodObjectClassInCategory
 	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
 	self assert: methodObjectClass category equals: self classCategoryOfTestData.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/25/2018 16:27:33'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:49:22'!
 test06ExtractedMethodThatReturnsAConstantReturnsAConstant
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
 	
-	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
-	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	aClassToRefactor compile: 'm1 ^1'.
-	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
-	methodObjectClassName  _ #MethodObject.
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  := #MethodObject.
 	
-	refactor _ ExtractToMethodObject 
+	refactor := ExtractToMethodObject 
 			from: aCompiledMethod
 			toMethodObjectClassNamed: methodObjectClassName 
 			subclassing: methodObjectSuperclass
@@ -2268,28 +2268,28 @@ test06ExtractedMethodThatReturnsAConstantReturnsAConstant
 	
 	self assert: 1 equals: aClassToRefactor new m1.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:46:12'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:50:04'!
 test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor refactoredMethod returnNode valueReceiver methodObjectClass |
 	
-	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
-	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	aClassToRefactor compile: 'm1 ^1'.
-	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
-	methodObjectClassName  _ #MethodObject.
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  := #MethodObject.
 	
-	refactor _ ExtractToMethodObject 
+	refactor := ExtractToMethodObject 
 			from: aCompiledMethod
 			toMethodObjectClassNamed: methodObjectClassName 
 			subclassing: methodObjectSuperclass
 			onCategory: self classCategoryOfTestData.
 	refactor apply.		
 	
-	refactoredMethod _ aClassToRefactor compiledMethodAt: #m1 :: methodNode.
+	refactoredMethod := aClassToRefactor compiledMethodAt: #m1 :: methodNode.
 	self assert: refactoredMethod block statements size equals: 1.
 	
-	returnNode _ refactoredMethod block statements first.
+	returnNode := refactoredMethod block statements first.
 	"The new method consist only of a return statement"
 	self assert: returnNode class equals: ReturnNode.
 	"The return statement is the sending of a message"
@@ -2297,27 +2297,27 @@ test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	"The message sent is #value"
 	self assert: returnNode expr selector key equals: #value.
 	
-	valueReceiver _ returnNode expr receiver.
+	valueReceiver := returnNode expr receiver.
 	"The #value message receiver is a MessageNode"
 	self assert: valueReceiver class equals: MessageNode.
 	"The receiver is the created MethodObject class"
-	methodObjectClass _ Smalltalk classNamed: methodObjectClassName.
+	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
 	self assert: valueReceiver receiver key value equals: methodObjectClass.
 	"The message sent is #new"
 	self assert: valueReceiver selector key equals: #new.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/26/2018 18:16:44'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:50:29'!
 test08ExtractedMethodThatReturnsAConstantReturnsTheConstant
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
 	
-	methodObjectSuperclass _ self createClassNamed: #MethodObjectSuper.
-	aClassToRefactor _ self createClassNamed: #AClassToRefactor.
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor :=self createClassNamed: #AClassToRefactor.
 	aClassToRefactor compile: 'm1 ^2'.
-	aCompiledMethod  _ aClassToRefactor compiledMethodAt: #m1.
-	methodObjectClassName  _ #MethodObject.
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  := #MethodObject.
 	
-	refactor _ ExtractToMethodObject 
+	refactor := ExtractToMethodObject 
 			from: aCompiledMethod
 			toMethodObjectClassNamed: methodObjectClassName 
 			subclassing: methodObjectSuperclass
@@ -4611,26 +4611,26 @@ classToRemoveName
 	^ 'ClassToRemove' asSymbol.
 	! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:40:56'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:51:17'!
 apply
 
 	| classToRefactor methodObjectClass aStream |
 	
-	methodObjectClass _ methodObjectSuperclass subclass: methodObjectClassName instanceVariableNames: '' classVariableNames: '' poolDictionaries: '' category: methodObjectCategory.
+	methodObjectClass := methodObjectSuperclass subclass: methodObjectClassName instanceVariableNames: '' classVariableNames: '' poolDictionaries: '' category: methodObjectCategory.
 	aStream := RWBinaryOrTextStream with: ''.
 	methodToExtract methodNode block printOn: aStream indent: 0.
 	methodObjectClass compile: 'value ', aStream contents.
 	
-	classToRefactor _ methodToExtract methodClass.
+	classToRefactor := methodToExtract methodClass.
 	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' new) value'.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/25/2018 15:45:17'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:51:06'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
 
-	methodToExtract _ aCompiledMethod.
-	methodObjectClassName _ aClassName.
-	methodObjectSuperclass _ aClass.
-	methodObjectCategory _ aCategory .! !
+	methodToExtract := aCompiledMethod.
+	methodObjectClassName := aClassName.
+	methodObjectSuperclass := aClass.
+	methodObjectCategory := aCategory .! !
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/25/2018 16:03:59'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory

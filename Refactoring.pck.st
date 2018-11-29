@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3487] on 11 November 2018 at 7:49:27 pm'!
-'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 62!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3508] on 29 November 2018 at 8:24:21 pm'!
+'Description upto 3508 and refactoring for contextual rename'!
+!provides: 'Refactoring' 1 63!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -19,7 +19,11 @@ RefactoringError subclass: #CanNotRefactorDueToReferencesError
 	instanceVariableNames: 'references referencee'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+references : <Array | OrderedCollection> # SequenceableCollection
+referencee : <String | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class> # Object
+"!
 !classDefinition: 'CanNotRefactorDueToReferencesError class' category: #Refactoring!
 CanNotRefactorDueToReferencesError class
 	instanceVariableNames: ''!
@@ -39,7 +43,11 @@ ParseNodeVisitor subclass: #ExtractToTemporaryRewriter
 	instanceVariableNames: 'refactoring finder'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+refactoring : <ExtractToTemporary>
+finder : <ParseNodeToReplaceFinder>
+"!
 !classDefinition: 'ExtractToTemporaryRewriter class' category: #Refactoring!
 ExtractToTemporaryRewriter class
 	instanceVariableNames: ''!
@@ -49,7 +57,15 @@ ParseNodeVisitor subclass: #ParseNodeToReplaceFinder
 	instanceVariableNames: 'refactoring currentBlock nodesToReplace blockContainingFirstNodeToReplace firstNodeToReplaceIndex currentStatementIndex'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+refactoring : <ExtractToTemporary>
+currentBlock : <BlockNode | UndefinedObject> # BlockNode
+nodesToReplace : <OrderedCollection>
+blockContainingFirstNodeToReplace : <BlockNode>
+firstNodeToReplaceIndex : <SmallInteger>
+currentStatementIndex : <SmallInteger>
+"!
 !classDefinition: 'ParseNodeToReplaceFinder class' category: #Refactoring!
 ParseNodeToReplaceFinder class
 	instanceVariableNames: ''!
@@ -59,7 +75,10 @@ MessageSetWindow subclass: #ChangeSelectorMessageSetWindow
 	instanceVariableNames: 'request'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+request : <RenameSelectorApplier>
+"!
 !classDefinition: 'ChangeSelectorMessageSetWindow class' category: #Refactoring!
 ChangeSelectorMessageSetWindow class
 	instanceVariableNames: ''!
@@ -79,7 +98,10 @@ ChangeSelectorMessageSetWindow subclass: #ChangeSelectorSendersWindow
 	instanceVariableNames: 'changedMethods'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+changedMethods : <>
+"!
 !classDefinition: 'ChangeSelectorSendersWindow class' category: #Refactoring!
 ChangeSelectorSendersWindow class
 	instanceVariableNames: ''!
@@ -89,7 +111,11 @@ TestCase subclass: #RefactoringTest
 	instanceVariableNames: 'classCategories setUpAssertionsPassed'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+classCategories : <Set>
+setUpAssertionsPassed : <True | False> # Boolean
+"!
 !classDefinition: 'RefactoringTest class' category: #Refactoring!
 RefactoringTest class
 	instanceVariableNames: ''!
@@ -99,7 +125,10 @@ RefactoringTest subclass: #AddInstanceVariableTest
 	instanceVariableNames: 'newVariable'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+newVariable : <String>
+"!
 !classDefinition: 'AddInstanceVariableTest class' category: #Refactoring!
 AddInstanceVariableTest class
 	instanceVariableNames: ''!
@@ -179,7 +208,12 @@ RefactoringTest subclass: #RenameInstanceVariableTest
 	instanceVariableNames: 'oldVariable newVariable classToRefactor'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+oldVariable : <String>
+newVariable : <String>
+classToRefactor : <AnObsoleteClassWithoutInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class> # Object class
+"!
 !classDefinition: 'RenameInstanceVariableTest class' category: #Refactoring!
 RenameInstanceVariableTest class
 	instanceVariableNames: ''!
@@ -189,7 +223,13 @@ RefactoringTest subclass: #RenameSelectorTest
 	instanceVariableNames: 'oldSelector newSelector senderOfOldSelector classToRefactor'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+oldSelector : <Symbol>
+newSelector : <Symbol>
+senderOfOldSelector : <Symbol>
+classToRefactor : <AnObsoleteClassToRenameSelector class | AnObsoleteClassToRenameSelector class | AnObsoleteClassToRenameSelector class | AnObsoleteClassToRenameSelector class | AnObsoleteClassToRenameSelector class | AnObsoleteClassToRenameSelector class | AnObsoleteClassToRenameSelector class | AnObsoleteClassToRenameSelector class | AnObsoleteClassToRenameSelector class | AnObsoleteClassToRenameSelector class> # Object class
+"!
 !classDefinition: 'RenameSelectorTest class' category: #Refactoring!
 RenameSelectorTest class
 	instanceVariableNames: ''!
@@ -219,7 +259,12 @@ Object subclass: #NewClassPrecondition
 	instanceVariableNames: 'newClassName system undeclared'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+newClassName : <Symbol | String> # String
+system : <SystemDictionary>
+undeclared : <Dictionary>
+"!
 !classDefinition: 'NewClassPrecondition class' category: #Refactoring!
 NewClassPrecondition class
 	instanceVariableNames: ''!
@@ -239,7 +284,11 @@ Refactoring subclass: #AddInstanceVariable
 	instanceVariableNames: 'newVariable classToRefactor'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+newVariable : <String>
+classToRefactor : <AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class | AddInstanceVariableTest class | AnObsoleteClassToAddInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToRenameInstVar class | AnObsoleteClassToAddInstVar class | AnObsoleteClassToRenameInstVar class> # Object class
+"!
 !classDefinition: 'AddInstanceVariable class' category: #Refactoring!
 AddInstanceVariable class
 	instanceVariableNames: ''!
@@ -249,7 +298,14 @@ Refactoring subclass: #ChangeSelector
 	instanceVariableNames: 'oldSelector newSelector implementors senders changes'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+oldSelector : <Symbol>
+newSelector : <Symbol>
+implementors : <OrderedCollection | Array | IdentitySet> # Collection
+senders : <OrderedCollection>
+changes : <Set>
+"!
 !classDefinition: 'ChangeSelector class' category: #Refactoring!
 ChangeSelector class
 	instanceVariableNames: ''!
@@ -259,7 +315,15 @@ ChangeSelector subclass: #AddParameter
 	instanceVariableNames: 'newParameter newParameterValue implementorTrailingString senderTrailingString index isAddingLast'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+newParameter : <String>
+newParameterValue : <String>
+implementorTrailingString : <String>
+senderTrailingString : <String>
+index : <SmallInteger>
+isAddingLast : <True | False> # Boolean
+"!
 !classDefinition: 'AddParameter class' category: #Refactoring!
 AddParameter class
 	instanceVariableNames: ''!
@@ -269,7 +333,13 @@ ChangeSelector subclass: #RemoveParameter
 	instanceVariableNames: 'parameterToRemove parameterIndex senderReplacementString isLastParameter'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+parameterToRemove : <String>
+parameterIndex : <SmallInteger>
+senderReplacementString : <String>
+isLastParameter : <False | True> # Boolean
+"!
 !classDefinition: 'RemoveParameter class' category: #Refactoring!
 RemoveParameter class
 	instanceVariableNames: ''!
@@ -279,7 +349,10 @@ ChangeSelector subclass: #RenameSelector
 	instanceVariableNames: 'newSelectorKeywords'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+newSelectorKeywords : <Array>
+"!
 !classDefinition: 'RenameSelector class' category: #Refactoring!
 RenameSelector class
 	instanceVariableNames: ''!
@@ -289,7 +362,13 @@ Refactoring subclass: #ExtractToTemporary
 	instanceVariableNames: 'newVariable parseNodeToExtract methodNodeToRefactor newTemporary'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+newVariable : <String>
+parseNodeToExtract : <LiteralNode | MessageNode> # ParseNode
+methodNodeToRefactor : <MethodNode>
+newTemporary : <TempVariableNode>
+"!
 !classDefinition: 'ExtractToTemporary class' category: #Refactoring!
 ExtractToTemporary class
 	instanceVariableNames: ''!
@@ -299,7 +378,11 @@ Refactoring subclass: #InsertSuperclass
 	instanceVariableNames: 'classToRefactor superclassName'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+classToRefactor : <AnObsoleteClassToAddSuperclass class | AnObsoleteClassToAddSuperclass class | AnObsoleteClassToAddSuperclass class | AnObsoleteClassToAddSuperclass class | AnObsoleteClassToAddSuperclass class | AnObsoleteClassToAddSuperclass class | AnObsoleteClassToAddSuperclass class | AnObsoleteClassToAddSuperclass class | AnObsoleteClassToAddSuperclass class | AnObsoleteClassToAddSuperclass class> # Object class
+superclassName : <Symbol>
+"!
 !classDefinition: 'InsertSuperclass class' category: #Refactoring!
 InsertSuperclass class
 	instanceVariableNames: ''!
@@ -309,7 +392,10 @@ Refactoring subclass: #PushUpMethod
 	instanceVariableNames: 'method'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+method : <>
+"!
 !classDefinition: 'PushUpMethod class' category: #Refactoring!
 PushUpMethod class
 	instanceVariableNames: ''!
@@ -319,7 +405,10 @@ Refactoring subclass: #RemoveAllUnreferencedInstanceVariables
 	instanceVariableNames: 'classToRefactor'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+classToRefactor : <AnObsoleteClassWithoutInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithoutInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithoutInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class> # Object class
+"!
 !classDefinition: 'RemoveAllUnreferencedInstanceVariables class' category: #Refactoring!
 RemoveAllUnreferencedInstanceVariables class
 	instanceVariableNames: ''!
@@ -329,7 +418,11 @@ Refactoring subclass: #RemoveInstanceVariable
 	instanceVariableNames: 'variableToRemove classToRefactor'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+variableToRemove : <String>
+classToRefactor : <AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class> # Object class
+"!
 !classDefinition: 'RemoveInstanceVariable class' category: #Refactoring!
 RemoveInstanceVariable class
 	instanceVariableNames: ''!
@@ -339,7 +432,14 @@ Refactoring subclass: #RenameClass
 	instanceVariableNames: 'classToRename newClassName system undeclared classToRenameOriginalName'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+classToRename : <Juan1 class | AnObsoleteNewClassTest11 class | AnObsoleteNewClassTest07 class | AnObsoleteNewClassTest15 class | AnObsoleteNewClassTest07 class | AnObsoleteNewClassTest17 class | AnObsoleteNewClassTest07 class | AnObsoleteNewClassTest8 class | AnObsoleteNewClassTest09 class | AnObsoleteNewClassTest16 class | AnObsoleteNewClassTest10 class> # Object class
+newClassName : <Symbol>
+system : <SystemDictionary>
+undeclared : <Dictionary>
+classToRenameOriginalName : <Symbol>
+"!
 !classDefinition: 'RenameClass class' category: #Refactoring!
 RenameClass class
 	instanceVariableNames: ''!
@@ -349,7 +449,13 @@ Refactoring subclass: #RenameInstanceVariable
 	instanceVariableNames: 'oldVariable addInstanceVariable rewriter renamedReferences'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+oldVariable : <String>
+addInstanceVariable : <AddInstanceVariable>
+rewriter : <>
+renamedReferences : <OrderedCollection>
+"!
 !classDefinition: 'RenameInstanceVariable class' category: #Refactoring!
 RenameInstanceVariable class
 	instanceVariableNames: ''!
@@ -359,7 +465,12 @@ Refactoring subclass: #RenameTemporary
 	instanceVariableNames: 'oldVariable newVariable methodNode'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+oldVariable : <String>
+newVariable : <String>
+methodNode : <MethodNode>
+"!
 !classDefinition: 'RenameTemporary class' category: #Refactoring!
 RenameTemporary class
 	instanceVariableNames: ''!
@@ -369,7 +480,10 @@ Refactoring subclass: #SafelyRemoveClass
 	instanceVariableNames: 'classToRemove'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+classToRemove : <AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class> # Object class
+"!
 !classDefinition: 'SafelyRemoveClass class' category: #Refactoring!
 SafelyRemoveClass class
 	instanceVariableNames: ''!
@@ -379,7 +493,12 @@ Object subclass: #RefactoringApplier
 	instanceVariableNames: 'requestExitBlock refactoring changes'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+requestExitBlock : <BlockClosure>
+refactoring : <RenameClass | RenameInstanceVariable | RenameTemporary | DenotativeObjectRenameSelector | RenameSelector | DenotativeObjectRename> # Refactoring
+changes : <OrderedCollection | String | Set> # Collection
+"!
 !classDefinition: 'RefactoringApplier class' category: #Refactoring!
 RefactoringApplier class
 	instanceVariableNames: ''!
@@ -389,7 +508,13 @@ RefactoringApplier subclass: #AddInstanceVariableApplier
 	instanceVariableNames: 'classToRefactor oldInstanceVariable newInstanceVariable browser'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+classToRefactor : <>
+oldInstanceVariable : <>
+newInstanceVariable : <>
+browser : <>
+"!
 !classDefinition: 'AddInstanceVariableApplier class' category: #Refactoring!
 AddInstanceVariableApplier class
 	instanceVariableNames: ''!
@@ -399,7 +524,17 @@ RefactoringApplier subclass: #ChangeSelectorApplier
 	instanceVariableNames: 'oldSelector newSelector scopeChoice implementors senders implementingClass browser shouldShowChanges'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+oldSelector : <Symbol>
+newSelector : <Symbol>
+scopeChoice : <SmallInteger>
+implementors : <IdentitySet | OrderedCollection> # Collection
+senders : <IdentitySet | OrderedCollection> # Collection
+implementingClass : <TicTacToe class | Collection class | Metaclass | SmalltalkEditor class> # ClassDescription
+browser : <ChangeSelectorSendersWindow | ChangeSelectorImplementorsWindow> # ChangeSelectorMessageSetWindow
+shouldShowChanges : <True | False> # Boolean
+"!
 !classDefinition: 'ChangeSelectorApplier class' category: #Refactoring!
 ChangeSelectorApplier class
 	instanceVariableNames: ''!
@@ -409,7 +544,13 @@ ChangeSelectorApplier subclass: #AddParameterApplier
 	instanceVariableNames: 'newParameter newParameterValue newKeyword parameterIndex'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+newParameter : <>
+newParameterValue : <>
+newKeyword : <>
+parameterIndex : <>
+"!
 !classDefinition: 'AddParameterApplier class' category: #Refactoring!
 AddParameterApplier class
 	instanceVariableNames: ''!
@@ -419,7 +560,14 @@ ChangeSelectorApplier subclass: #RemoveParameterApplier
 	instanceVariableNames: 'newParameter newParameterValue newKeyword originalMethod parameterToRemove'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+newParameter : <>
+newParameterValue : <>
+newKeyword : <>
+originalMethod : <>
+parameterToRemove : <>
+"!
 !classDefinition: 'RemoveParameterApplier class' category: #Refactoring!
 RemoveParameterApplier class
 	instanceVariableNames: ''!
@@ -439,7 +587,12 @@ RefactoringApplier subclass: #InsertSuperclassApplier
 	instanceVariableNames: 'browser newSuperclassName classToRefactor'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+browser : <>
+newSuperclassName : <>
+classToRefactor : <>
+"!
 !classDefinition: 'InsertSuperclassApplier class' category: #Refactoring!
 InsertSuperclassApplier class
 	instanceVariableNames: ''!
@@ -449,7 +602,12 @@ RefactoringApplier subclass: #RemoveAllUnreferencedInstanceVariablesApplier
 	instanceVariableNames: 'classToRefactor browser variableToRemove'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+classToRefactor : <>
+browser : <>
+variableToRemove : <>
+"!
 !classDefinition: 'RemoveAllUnreferencedInstanceVariablesApplier class' category: #Refactoring!
 RemoveAllUnreferencedInstanceVariablesApplier class
 	instanceVariableNames: ''!
@@ -459,7 +617,12 @@ RefactoringApplier subclass: #RemoveInstanceVariableApplier
 	instanceVariableNames: 'classToRefactor browser variableToRemove'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+classToRefactor : <>
+browser : <>
+variableToRemove : <>
+"!
 !classDefinition: 'RemoveInstanceVariableApplier class' category: #Refactoring!
 RemoveInstanceVariableApplier class
 	instanceVariableNames: ''!
@@ -469,7 +632,12 @@ RefactoringApplier subclass: #RenameClassApplier
 	instanceVariableNames: 'browser classToRename newClassName'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+browser : <DenotativeObjectBrowser | Browser> # Browser
+classToRename : <Juan1 class | PlayingX class | RenameSelectorApplier class | RenameClassApplier class> # Object class
+newClassName : <String | Symbol> # String
+"!
 !classDefinition: 'RenameClassApplier class' category: #Refactoring!
 RenameClassApplier class
 	instanceVariableNames: ''!
@@ -479,7 +647,13 @@ RefactoringApplier subclass: #RenameInstanceVariableApplier
 	instanceVariableNames: 'classToRefactor oldInstanceVariable newInstanceVariable browser'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+classToRefactor : <TicTacToe class | Metaclass | SmalltalkEditor class> # ClassDescription
+oldInstanceVariable : <String>
+newInstanceVariable : <String>
+browser : <DenotativeObjectBrowser | Browser> # Browser
+"!
 !classDefinition: 'RenameInstanceVariableApplier class' category: #Refactoring!
 RenameInstanceVariableApplier class
 	instanceVariableNames: ''!
@@ -489,7 +663,14 @@ RefactoringApplier subclass: #RenameTemporaryApplier
 	instanceVariableNames: 'classToRefactor oldVariable newVariable smalltalkEditor methodNode'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+classToRefactor : <TicTacToe class | Metaclass | SmalltalkEditor class> # ClassDescription
+oldVariable : <String>
+newVariable : <String>
+smalltalkEditor : <SmalltalkEditor | DenotativeObjectSmalltalkEditor> # SmalltalkEditor
+methodNode : <MethodNode>
+"!
 !classDefinition: 'RenameTemporaryApplier class' category: #Refactoring!
 RenameTemporaryApplier class
 	instanceVariableNames: ''!
@@ -499,7 +680,11 @@ RefactoringApplier subclass: #SafelyRemoveClassApplier
 	instanceVariableNames: 'classToRemove browser'
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Refactoring'!
+	category: 'Refactoring'
+"
+classToRemove : <>
+browser : <>
+"!
 !classDefinition: 'SafelyRemoveClassApplier class' category: #Refactoring!
 SafelyRemoveClassApplier class
 	instanceVariableNames: ''!
@@ -4030,6 +4215,79 @@ test22WarnsWhenOverridesSuperclassImplementation
 		warnsWith: [ RenameSelector warningMessageForImplementationOf: newSelector in: Number willOverrideImplementationIn: Object ]
 ! !
 
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 11/29/2018 14:14:49'!
+test23OldSelectorIsRenamedWhenDefinedInLiteralArray
+
+	| rename senderMethod referencerToOldSelector |
+	
+	referencerToOldSelector := #m1.
+	self createClassToRefactor.
+	classToRefactor compile: oldSelector asString.
+	classToRefactor compile: referencerToOldSelector asString , ' ^#(#' , oldSelector asString, ')'.
+
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>referencerToOldSelector).
+	rename apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: referencerToOldSelector.
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector) 
+! !
+
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 11/29/2018 15:20:23'!
+test24OldSelectorIsRenamedWhenDefinedInLiteralArrayMoreThanOnce
+
+	| rename senderMethod referencerToOldSelector |
+	
+	referencerToOldSelector := #m1.
+	self createClassToRefactor.
+	classToRefactor compile: oldSelector asString.
+	classToRefactor compile: referencerToOldSelector asString , ' ^#(#' , oldSelector asString, ' #' , oldSelector asString,')'.
+
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>referencerToOldSelector).
+	rename apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: referencerToOldSelector.
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector) 
+! !
+
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 11/29/2018 15:22:15'!
+test25OldSelectorIsRenamedWhenDefinedInMoreThanOneLiteralArrayMoreThanOnce
+
+	| rename senderMethod referencerToOldSelector |
+	
+	referencerToOldSelector := #m1.
+	self createClassToRefactor.
+	classToRefactor compile: oldSelector asString.
+	classToRefactor compile: referencerToOldSelector asString , ' ^#(#' , oldSelector asString, ' #' , oldSelector asString,'), #(#' , oldSelector asString, ' #' , oldSelector asString,')'.
+
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>referencerToOldSelector).
+	rename apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: referencerToOldSelector.
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector) 
+! !
+
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 11/29/2018 15:24:47'!
+test26DoesNotRenameLiteralsThatBeginsWithOldSelectorInsideLiteralArray
+
+	| rename senderMethod referencerToOldSelector |
+	
+	referencerToOldSelector := #m1.
+	self createClassToRefactor.
+	classToRefactor compile: oldSelector asString.
+	classToRefactor compile: referencerToOldSelector asString , ' ^#(#' , oldSelector asString, ' #' , oldSelector asString,'1)'.
+
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>referencerToOldSelector).
+	rename apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: referencerToOldSelector.
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector). 
+	self assert: (senderMethod sendsOrRefersTo: (oldSelector,'1') asSymbol) 
+! !
+
 !RenameTemporaryTest methodsFor: 'class factory' stamp: 'HAW 6/25/2017 21:53:44'!
 allClassCategoriesOfTestData
 
@@ -4674,16 +4932,16 @@ warnNewVariable: newVariable willBeHiddenAtAll: methods
 
 	^ self refactoringWarning: (self warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods).! !
 
-!AddInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/11/2017 18:32:30'!
+!AddInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 11/28/2018 19:19:20'!
 warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
  
 	^String streamContents: [ :stream |
 		stream 
 			nextPutAll: newVariable;
 			nextPutAll: ' will be hidden at '.
-		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
+		methods asCommaStringAndPrintingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
-!ChangeSelector methodsFor: 'applying' stamp: 'HAW 8/18/2018 11:59:02'!
+!ChangeSelector methodsFor: 'applying' stamp: 'HAW 11/29/2018 15:19:19'!
 apply
 	
 	self 
@@ -4748,23 +5006,38 @@ implementorNewSourceCodeOf: anImplementor
 
 	self subclassResponsibility ! !
 
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 11/29/2018 15:28:39'!
+add: oldSelectorLiteralRanges to: rangesToKeywords
+
+	oldSelectorLiteralRanges do: [ :oldSelectorLiteralRange | 
+		rangesToKeywords add: (oldSelectorLiteralRange first + 1 to: oldSelectorLiteralRange last) -> newSelector ].
+	
+
+	! !
+
 !ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/18/2018 12:05:39'!
 addMessageSendSelectorKeywordRangesOf: aMethodNode to: rangesToKeywords
 
 	self subclassResponsibility ! !
 
-!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 9/3/2018 19:48:30'!
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 11/29/2018 15:29:06'!
+addRangesForLiteralInLiteralArrayOf: methodNode to: rangesToKeywords
+
+	| oldSelectorLiteralRanges |
+	
+	oldSelectorLiteralRanges := methodNode positionsInLiteralArrayOf: oldSelector.
+	self add: oldSelectorLiteralRanges to: rangesToKeywords ! !
+
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 11/29/2018 15:28:27'!
 addRangesForLiteralOf: methodNode to: rangesToKeywords
 	
 	| oldSelectorLiteralRanges |
 	
-	oldSelectorLiteralRanges := methodNode positionsForLiteralNode: oldSelector ifAbsent: [ #() ].
-	oldSelectorLiteralRanges do: [ :oldSelectorLiteralRange | 
-		rangesToKeywords add: (oldSelectorLiteralRange first + 1 to: oldSelectorLiteralRange last) -> newSelector ].
-	
-! !
+	oldSelectorLiteralRanges := methodNode positionsForLiteralNode: oldSelector ifAbsent: [ ^#() ].
+	self add: oldSelectorLiteralRanges to: rangesToKeywords.
+	! !
 
-!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 8/18/2018 12:03:09'!
+!ChangeSelector methodsFor: 'rename senders - private' stamp: 'HAW 11/29/2018 14:16:42'!
 rangesToKeywordsOf: aMethod
 	
 	| methodNode rangesToKeywords |
@@ -4774,6 +5047,7 @@ rangesToKeywordsOf: aMethod
 	
 	self addMessageSendSelectorKeywordRangesOf: methodNode to: rangesToKeywords.
 	self addRangesForLiteralOf: methodNode to: rangesToKeywords.
+	self addRangesForLiteralInLiteralArrayOf: methodNode to: rangesToKeywords.
 	
 	^rangesToKeywords	! !
 
@@ -4824,7 +5098,7 @@ assertAllImplementors: implementors haveSame: aSelector
 	invalidImplementors := implementors reject: [ :anImplementor | anImplementor selector = aSelector ].
 	invalidImplementors notEmpty ifTrue: [ self signalInvalidImplementors: invalidImplementors ].! !
 
-!ChangeSelector class methodsFor: 'pre-conditions' stamp: 'HAW 11/8/2018 15:25:47'!
+!ChangeSelector class methodsFor: 'pre-conditions' stamp: 'HAW 11/29/2018 12:04:20'!
 assertAllSenders: senders send: aSelector
 
 	| invalidSenders |
@@ -4832,16 +5106,16 @@ assertAllSenders: senders send: aSelector
 	invalidSenders := senders reject: [ :aSender | aSender sendsOrRefersTo: aSelector ].
 	invalidSenders notEmpty ifTrue: [ self signalInvalidSenders: invalidSenders of: aSelector ]! !
 
-!ChangeSelector class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:44:12'!
+!ChangeSelector class methodsFor: 'exceptions' stamp: 'HAW 11/28/2018 19:19:20'!
 errorMessageForInvalidImplementors: aCollectionOfInvalidImplementors
 
 	^String streamContents: [ :stream |
 		stream 
 			nextPutAll: (aCollectionOfInvalidImplementors size = 1 ifTrue: [ 'This method' ] ifFalse: [ 'These methods']);
 		 	nextPutAll: ' do not have same the same selector to rename: '.
-		aCollectionOfInvalidImplementors asCommaStringAndPritingWith: [:anImplementor | anImplementor printClassAndSelectorOn: stream ] ] ! !
+		aCollectionOfInvalidImplementors asCommaStringAndPrintingWith: [:anImplementor | anImplementor printClassAndSelectorOn: stream ] ] ! !
 
-!ChangeSelector class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 15:49:52'!
+!ChangeSelector class methodsFor: 'exceptions' stamp: 'HAW 11/28/2018 19:19:20'!
 errorMessageForInvalidSenders: aCollectionOfInvalidSenders of: anOldSelector
 
 	^String streamContents: [ :stream |
@@ -4849,7 +5123,7 @@ errorMessageForInvalidSenders: aCollectionOfInvalidSenders of: anOldSelector
 			nextPutAll: 'Message #';
 			nextPutAll: anOldSelector;
 			nextPutAll: ' is not send by: '.
-		aCollectionOfInvalidSenders asCommaStringAndPritingWith: [:aSender | aSender printClassAndSelectorOn: stream ] ] ! !
+		aCollectionOfInvalidSenders asCommaStringAndPrintingWith: [:aSender | aSender printClassAndSelectorOn: stream ] ] ! !
 
 !ChangeSelector class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:43:59'!
 signalInvalidImplementors: invalidImplementors
@@ -6929,22 +7203,6 @@ askScope
 	scopeChoice = 0 ifTrue: [ self endRequest ].
 	! !
 
-!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:00:38'!
-calculateImplementorsAndSenders
-		
-	implementors := IdentitySet new.
-	senders := IdentitySet new.
-	
-	scopeChoice = 1 ifTrue: [ ^self implementorsAndSendersForClass ].
-	scopeChoice = 2 ifTrue: [ ^self implementorsAndSendersForHierarchy ].
-	scopeChoice = 3 ifTrue: [ ^self implementorsAndSendersInCategory ].
-	scopeChoice = 4 ifTrue: [ ^self implementorsAndSendersInCategoryAndHierarchy ].
-	scopeChoice = 5 ifTrue: [ ^self implementorsAndSendersInSystem ].
-	
-	self error: 'Unknown scope option' 
-		
-		! !
-
 !ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:00:51'!
 implementorsAndSendersForClass
 
@@ -6979,11 +7237,6 @@ implementorsAndSendersInCategoryAndHierarchy
 implementorsAndSendersInSystem
 		
 	^self refactoringClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ! !
-
-!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:01:58'!
-scopeOptionLabels
-	
-	^{'In Class'. 'In Hierarchy'. 'In Category'. 'In Hierarchy and its Categories'. 'In System'}.! !
 
 !ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:21:58'!
 startWizard
@@ -7283,17 +7536,6 @@ requestRefactoringParameters
 		askScope
 		! !
 
-!RenameSelectorApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 16:56:24'!
-createRefactoring
-	
-	^self refactoringClass from: oldSelector to: newSelector implementors: implementors senders: senders.
-	! !
-
-!RenameSelectorApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 17:04:02'!
-refactoringClass
-
-	^RenameSelector ! !
-
 !RenameSelectorApplier class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 17:24:18'!
 assertCanApplyRefactoringFor: aSelector in: aClass 
 	
@@ -7480,8 +7722,10 @@ askNewVariableName
 	newInstanceVariable := self request: 'Enter new name:' initialAnswer: oldInstanceVariable. 
 	newInstanceVariable := newInstanceVariable withBlanksTrimmed ! !
 
-!RenameInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/30/2017 17:27:08'!
+!RenameInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 11/28/2018 19:37:54'!
 chooseInstanceVariable
+	
+	oldInstanceVariable ifNotNil: [ ^self ].
 		
 	classToRefactor 
 		chooseDefiningInstanceVariableAlphabeticallyWith: self selectVariableLabel
@@ -7506,10 +7750,10 @@ createRefactoring
 	^RenameInstanceVariable from: oldInstanceVariable to: newInstanceVariable in: classToRefactor.
 	! !
 
-!RenameInstanceVariableApplier methodsFor: 'refactoring - changes' stamp: 'HAW 6/5/2017 16:54:45'!
+!RenameInstanceVariableApplier methodsFor: 'refactoring - changes' stamp: 'HAW 11/28/2018 19:38:47'!
 informChangesToBrowser
 		
-	browser model acceptedContentsChanged! !
+	browser acceptedContentsChanged! !
 
 !RenameInstanceVariableApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/30/2017 17:30:22'!
 openChangedMethods 
@@ -7528,27 +7772,35 @@ showChanges
 		informChangesToBrowser;
 		openChangedMethods ! !
 
-!RenameInstanceVariableApplier methodsFor: 'initialization' stamp: 'HAW 6/5/2017 16:58:13'!
-initializeOn: aBrowserWindow for: aClassToRefactor 
+!RenameInstanceVariableApplier methodsFor: 'initialization' stamp: 'HAW 11/28/2018 19:40:02'!
+initializeOn: aBrowserWindow for: anOldInstanceVariable at: aClassToRefactor 
 	
 	browser := aBrowserWindow.
-	classToRefactor := aClassToRefactor ! !
+	classToRefactor := aClassToRefactor.
+	oldInstanceVariable := anOldInstanceVariable ! !
 
-!RenameInstanceVariableApplier class methodsFor: 'instance creation' stamp: 'HAW 6/5/2017 16:57:44'!
-on: aBrowserWindow for: aClassToRefactor
+!RenameInstanceVariableApplier class methodsFor: 'instance creation' stamp: 'HAW 11/29/2018 20:19:06'!
+on: aBrowser at: aClassToRefactor
 	
-	^self new initializeOn: aBrowserWindow for: aClassToRefactor 
+	^self new initializeOn: aBrowser for: nil at: aClassToRefactor 
 ! !
+
+!RenameInstanceVariableApplier class methodsFor: 'instance creation' stamp: 'HAW 11/29/2018 20:18:59'!
+on: aBrowser for: anInstanceVariableName at:  aClassToRefactor 
+	
+	^self new initializeOn: aBrowser for: anInstanceVariableName at: aClassToRefactor ! !
 
 !RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 6/25/2017 21:37:58'!
 askNewVariableName
 		
 	newVariable := (self request: 'Enter new name:' initialAnswer: oldVariable) withBlanksTrimmed ! !
 
-!RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 10/4/2017 17:11:11'!
+!RenameTemporaryApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 11/28/2018 19:42:45'!
 chooseTemporaryVariable
 	
 	| variables |
+	
+	oldVariable ifNotNil: [ ^self ].
 	
 	variables := methodNode tempNames.
 	variables isEmpty 
@@ -7602,12 +7854,13 @@ createRefactoring
 	^RenameTemporary from: oldVariable to: newVariable in: methodNode 
 	! !
 
-!RenameTemporaryApplier methodsFor: 'initialization' stamp: 'HAW 8/9/2018 19:39:37'!
-initializeOn: aSmalltalkEditor
+!RenameTemporaryApplier methodsFor: 'initialization' stamp: 'HAW 11/28/2018 19:43:15'!
+initializeOn: aSmalltalkEditor for: aTemporary
 
 	smalltalkEditor := aSmalltalkEditor.
 	classToRefactor := smalltalkEditor codeProvider selectedClassOrMetaClass.
 	methodNode := classToRefactor methodNodeFor: smalltalkEditor actualContents string.
+	oldVariable := aTemporary 
 	! !
 
 !RenameTemporaryApplier methodsFor: 'refactoring - changes' stamp: 'HAW 8/9/2018 19:43:41'!
@@ -7629,10 +7882,10 @@ errorMessageForCanNotParseMethod: anError
 			newLine;
 			nextPutAll: anError messageText ]! !
 
-!RenameTemporaryApplier class methodsFor: 'instance creation' stamp: 'HAW 6/25/2017 21:29:37'!
-on: aSmalltalkEditor
+!RenameTemporaryApplier class methodsFor: 'instance creation' stamp: 'HAW 11/28/2018 19:44:13'!
+on: aSmalltalkEditor for: aTemporary
 	
-	^self new initializeOn: aSmalltalkEditor ! !
+	^self new initializeOn: aSmalltalkEditor for: aTemporary! !
 
 !SafelyRemoveClassApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/1/2018 16:54:40'!
 confirmationMessageText
@@ -7672,15 +7925,15 @@ on: aBrowser of: aClassToRemove
 	
 	^self new initializeOn: aBrowser of: aClassToRemove ! !
 
-!RefactoringMenues class methodsFor: 'editor menus' stamp: 'HAW 7/10/2018 19:18:45'!
+!RefactoringMenues class methodsFor: 'editor menus' stamp: 'HAW 11/28/2018 20:23:45'!
 smalltalkEditorMenuOptions
 
 	^`{
 		{
 				#itemGroup 	-> 		35.
 				#itemOrder 		-> 		10.
-				#label 			-> 		'Rename temporary'.
-				#selector 		-> 		#renameTemporary.
+				#label 			-> 		'Rename... (R)'.
+				#selector 		-> 		#contextualRename.
 				#icon 			-> 		#saveAsIcon
 		} asDictionary 
 	}`! !
@@ -8035,8 +8288,8 @@ asCommaStringAnd
 
 	^String streamContents: [:s | self asStringOn: s delimiter: ', ' last: ' and ']! !
 
-!Collection methodsFor: '*Refactoring' stamp: 'HAW 5/25/2017 19:16:28'!
-asCommaStringAndPritingWith: aPrintingBlock
+!Collection methodsFor: '*Refactoring' stamp: 'HAW 11/28/2018 19:19:20'!
+asCommaStringAndPrintingWith: aPrintingBlock
 
 	^String streamContents: [:s | self as: aPrintingBlock on: s delimiter: ', ' last: ' and ']! !
 
@@ -8089,15 +8342,17 @@ copyReplacing: rangesToNewStrings
 	^self class streamContents: [ :replacementStream | self copyReplacing: rangesToNewStrings into: replacementStream  ].
 ! !
 
-!String methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 17:23:04'!
+!String methodsFor: '*Refactoring' stamp: 'HAW 11/28/2018 19:51:47'!
 copyReplacing: rangesToNewStrings into: replacementStream
 
 	| lastFrom |
 	
-	lastFrom := rangesToNewStrings 
-		inject: 1
-		into: [ :from :aRangeToNewString | 
-			self newFromAfterAppending: aRangeToNewString value into: replacementStream keepingFrom: from skipping: aRangeToNewString key ].
+	lastFrom := rangesToNewStrings inject: 1 into: [ :from :aRangeToNewString | 
+		self 
+			newFromAfterAppending: aRangeToNewString value 
+			into: replacementStream
+			keepingFrom: from 
+			skipping: aRangeToNewString key ].
 						
 	replacementStream nextPutAll: (self copyFrom: lastFrom to: self size). 
 ! !
@@ -8184,10 +8439,10 @@ referencesParameterAt: parameterIndex
 	
 	^parameterRanges size ~= 1! !
 
-!CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 11/8/2018 15:23:29'!
+!CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 12:04:03'!
 sendsOrRefersTo: aSelector
 
-	^ (self refersToLiteral: aSelector) or: [ self sendsSelector: aSelector ]! !
+	^ (self hasLiteralThorough: aSelector) or: [ self sendsSelector: aSelector ]! !
 
 !CompiledMethod methodsFor: '*Refactoring' stamp: 'HAW 8/13/2018 11:32:37'!
 sourceCode
@@ -8241,6 +8496,11 @@ isMessageNamed: aSelector
 
 !ParseNode methodsFor: '*Refactoring' stamp: 'HAW 10/19/2017 05:54:57'!
 isReturn
+
+	^false! !
+
+!ParseNode methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 20:10:40'!
+isTempOrArg
 
 	^false! !
 
@@ -8339,6 +8599,17 @@ positionsForTemporaryVariable: aName ifAbsent: aBlock
 		checkingType: [ :variableNode | variableNode isTemp ]
 		ifAbsent: aBlock ! !
 
+!Encoder methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 14:44:56'!
+positionsOfLiteralArraysContaining: aSymbol 
+	
+	| positions |
+	
+	positions := OrderedCollection new.
+	litSet keysAndValuesDo: [ :aLiteral :aLiteralNode | 
+		(aLiteral isArray and: [ aLiteral hasLiteral: aSymbol ]) ifTrue: [ positions addAll: (sourceRanges at: aLiteralNode) ]].
+	
+	^positions ! !
+
 !EncoderForV3PlusClosures methodsFor: '*Refactoring' stamp: 'HAW 8/17/2018 16:07:52'!
 hasLocalNamed: aName
 
@@ -8358,6 +8629,11 @@ nameAndKey: aName
 isInstanceVariableNode
 
 	^true! !
+
+!TempVariableNode methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 20:10:19'!
+isTempOrArg
+
+	^self isTemp or: [ self isArg ]! !
 
 !MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/11/2018 19:23:15'!
 isMessageNamed: aSelector
@@ -8443,6 +8719,16 @@ selectorLastPositionInSourceCodeEncodedWith: anEncoder
 		ifTrue: [ self lastKeywordLastPositionInSourceCode ]
 		ifFalse: [ self lastParameterLastPositionInSourceCodeEncodedWith: anEncoder ]! !
 
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 15:38:51'!
+addPositionTo: symbolPositions of: symbolString inside: literalArrayPosition
+
+	| insidePosition |
+			
+	insidePosition := literalArrayPosition first.
+	[ insidePosition < literalArrayPosition last ] whileTrue: [
+		insidePosition := self nextPositionAfterAddPositionTo: symbolPositions of: symbolString startingAt: insidePosition ].
+	! !
+
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/4/2018 15:20:38'!
 argumentNames
 	
@@ -8487,6 +8773,23 @@ messageSendSelectorKeywordPositionsOf: aSelector ifAbsent: aBlock
 	^encoder messageSendSelectorKeywordPositionsOf: aSelector ifAbsent: aBlock
 ! !
 
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 15:42:05'!
+nextPositionAfterAddPositionTo: symbolPositions of: symbolString startingAt: insidePosition 
+
+	| symbolStartPosition nextPosition |
+		
+	symbolStartPosition := sourceText indexOfSubCollection: symbolString startingAt: insidePosition.
+	
+	symbolStartPosition = 0 
+		ifTrue: [ nextPosition := SmallInteger maxVal ]
+		ifFalse: [ 
+			nextPosition := symbolStartPosition + symbolString size. 
+			(sourceText at: nextPosition) isValidInIdentifiers ifFalse: [ symbolPositions add: (symbolStartPosition to: nextPosition - 1) ]].
+		
+	^nextPosition
+
+	! !
+
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:46:08'!
 parameterDefinitionPositionAt: anIndex
 
@@ -8516,6 +8819,33 @@ positionsForTemporaryVariable: aName ifAbsent: aBlock
 	^encoder positionsForTemporaryVariable: aName ifAbsent: aBlock
 ! !
 
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 15:33:58'!
+positionsInLiteralArrayOf: aSymbol 
+	
+	| literalArrayPositions |
+	
+	literalArrayPositions := encoder positionsOfLiteralArraysContaining: aSymbol.
+	
+	^self positionsOf: aSymbol printString containedIn: literalArrayPositions.
+	
+! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 15:36:45'!
+positionsOf: symbolString containedIn: literalArrayPositions
+
+	| symbolPositions |
+	
+	symbolPositions := OrderedCollection new.
+	
+	literalArrayPositions do: [ :literalArrayPosition | self addPositionTo: symbolPositions of: symbolString inside: literalArrayPosition ].
+		
+	^symbolPositions 
+						
+					
+		
+	
+! !
+
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:46:36'!
 selectorKeywordPositionAt: anIndex
 
@@ -8530,6 +8860,14 @@ selectorKeywordsPositions
 tempNodes
 	
 	^encoder tempNodes ! !
+
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 20:03:13'!
+withParseNodeIncluding: aPosition do: aBlock ifAbsent: anAbsentBlock
+
+	| nodeAndPosition |
+	
+	nodeAndPosition :=self parseNodeIncluding: aPosition ifAbsent: [ ^ anAbsentBlock value ].
+	^aBlock value: nodeAndPosition key.! !
 
 !ReturnNode methodsFor: '*Refactoring' stamp: 'HAW 10/19/2017 05:55:14'!
 isReturn
@@ -8556,15 +8894,81 @@ hasUnacceptedEdits: aBoolean
 
 	^morph hasUnacceptedEdits: aBoolean ! !
 
-!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 10/4/2017 17:29:01'!
-renameTemporary
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 20:04:59'!
+contextualRename
+
+	self 
+		withMethodNodeAndClassDo: [ :methodNode :classToRefactor | self contextualRenameOf: methodNode in: classToRefactor] 
+		ifErrorsParsing: [ :anError | morph flash ].
+		
+		! !
+
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 11/28/2018 20:22:42'!
+contextualRename: aKeyboardEvent 
+	
+	self contextualRename.
+	^true! !
+
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 20:06:22'!
+contextualRenameOf: aMethodNode in: aClassToRefactor
+		
+	aMethodNode 
+		withParseNodeIncluding: self startIndex
+		do: [ :nodeUnderCursor | self rename: nodeUnderCursor in: aClassToRefactor ]
+		ifAbsent: [ 
+			self startIndex < aMethodNode selectorLastPosition 
+				ifTrue: [ self renameSelectorFor: aMethodNode selector in: aClassToRefactor ]
+				ifFalse: [ morph flash ]]
+	
+			
+! !
+
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 20:11:27'!
+rename: aNodeUnderCursor in: aClassToRefactor 
+
+	aNodeUnderCursor isMessageNode ifTrue: [ ^ self renameSelectorFor: aNodeUnderCursor selector key in: aClassToRefactor ].
+	aNodeUnderCursor isTempOrArg ifTrue: [ ^self renameTemporary: aNodeUnderCursor name ].
+	aNodeUnderCursor isInstanceVariableNode ifTrue: [ ^ self renameInstanceVariableOn: self codeProvider for: aNodeUnderCursor name at: aClassToRefactor ].
+	aNodeUnderCursor isLiteralVariableNode ifTrue: [ | posibleBehavior |
+		posibleBehavior := aNodeUnderCursor key value.
+		posibleBehavior isBehavior ifTrue: [ ^self renameClassOn: self codeProvider for: posibleBehavior theNonMetaClass ]].
+	
+	^morph flash! !
+
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 20:07:49'!
+renameClassOn: aBrowser for: aClassToRefactor
+
+	(RenameClassApplier on: aBrowser for: aClassToRefactor) value! !
+
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 20:13:12'!
+renameInstanceVariableOn: aBrowser for: anInstanceVariableName at: aClassToRefactor 
+	
+	(RenameInstanceVariableApplier on: aBrowser for: anInstanceVariableName at: aClassToRefactor) value! !
+
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 20:06:45'!
+renameSelectorFor: aSelector in: aClassToRefactor
+
+	(RenameSelectorApplier for: aSelector in: aClassToRefactor) value! !
+
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 11/28/2018 20:05:40'!
+renameTemporary: aTemporaryName
 	
 	self codeProvider isEditingMethod ifTrue: [ | applier |
-		[ applier := RenameTemporaryApplier on: self ] 
+		[ applier := RenameTemporaryApplier on: self for: aTemporaryName ] 
 			on: SyntaxErrorNotification 
 			do: [:anError | ^self inform: (RenameTemporaryApplier errorMessageForCanNotParseMethod: anError) ].
 		applier value ].
 ! !
+
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 19:30:44'!
+withMethodNodeAndClassDo: aBlock ifErrorsParsing: anErrorBlock
+
+	| class methodNode | 
+	
+	class := self codeProvider selectedClassOrMetaClass.
+	methodNode := [ class methodNodeFor: model actualContents ] on: Error do: [ :anError |  ^ anErrorBlock value: anError ].
+	
+	^aBlock value: methodNode value: class.! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/11/2017 19:16:33'!
 addInstVar
@@ -8633,11 +9037,11 @@ removeParameter
 			do: [ :refactoringError | ^self inform: refactoringError messageText ].
 		refactoring value ].! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 6/6/2017 09:47:34'!
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 11/28/2018 20:10:23'!
 renameInstVar
 	
-	model selectedClassOrMetaClass ifNotNil: [ :aClass |
-		(RenameInstanceVariableApplier on: self for: aClass) value ].! !
+	model selectedClassOrMetaClass ifNotNil: [ :aClass | 
+		(RenameInstanceVariableApplier on: self model at: aClass) value ].! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 8/15/2018 11:54:11'!
 renameSelector

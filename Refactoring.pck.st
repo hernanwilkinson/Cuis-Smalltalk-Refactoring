@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 30 November 2018 at 12:30:59 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 30 November 2018 at 12:39:27 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 81!
+!provides: 'Refactoring' 1 82!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -6045,18 +6045,29 @@ warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplement
 
 	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:51:17'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 12:38:59'!
 apply
 
-	| classToRefactor methodObjectClass aStream |
+	| methodObjectClass |
 	
-	methodObjectClass := methodObjectSuperclass subclass: methodObjectClassName instanceVariableNames: '' classVariableNames: '' poolDictionaries: '' category: methodObjectCategory.
+	methodObjectClass := methodObjectSuperclass
+		subclass: methodObjectClassName
+		instanceVariableNames: ''
+		classVariableNames: ''
+		poolDictionaries: ''
+		category: methodObjectCategory.
+	
+	self compileExtractedMethodAsValueMethodOn: methodObjectClass.
+	self replaceExtractedMethodWithMethodObjectInvocation.! !
+
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 12:37:05'!
+compileExtractedMethodAsValueMethodOn: aClass
+
+	| aStream |
+	
 	aStream := RWBinaryOrTextStream with: ''.
 	methodToExtract methodNode block printOn: aStream indent: 0.
-	methodObjectClass compile: 'value ', aStream contents.
-	
-	classToRefactor := methodToExtract methodClass.
-	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' new) value'.! !
+	aClass compile: 'value ', aStream contents.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:51:06'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
@@ -6065,6 +6076,14 @@ from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass o
 	methodObjectClassName := aClassName.
 	methodObjectSuperclass := aClass.
 	methodObjectCategory := aCategory .! !
+
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 12:38:49'!
+replaceExtractedMethodWithMethodObjectInvocation
+
+	| classToRefactor |
+	
+	classToRefactor := methodToExtract methodClass.
+	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' new) value'.! !
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/27/2018 15:46:17'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory

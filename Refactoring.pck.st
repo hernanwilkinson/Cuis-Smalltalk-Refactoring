@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 27 November 2018 at 3:52:59 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 30 November 2018 at 12:30:59 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 79!
+!provides: 'Refactoring' 1 81!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2147,6 +2147,15 @@ allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData! !
 
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/30/2018 12:01:09'!
+assertMethodConsistsOnlyOfReturnStatement: aMethodNode
+	
+	| returnNode |
+	
+	self assert: aMethodNode block statements size equals: 1.
+	returnNode :=  aMethodNode block statements first.
+	self assert: returnNode isReturn.! !
+
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 15:49:52'!
 test01MethodObjectClassNameMustNotBelongToAnExistingClass
 
@@ -2268,10 +2277,10 @@ test06ExtractedMethodThatReturnsAConstantReturnsAConstant
 	
 	self assert: 1 equals: aClassToRefactor new m1.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:59:00'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/30/2018 12:30:38'!
 test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	
-	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor refactoredMethod returnNode valueReceiver methodObjectClass |
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor refactoredMethod valueMessageReceiver methodObjectClass returnStatement disregardArguments |
 	
 	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
 	aClassToRefactor := self createClassNamed: #AClassToRefactor.
@@ -2287,24 +2296,22 @@ test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	refactor apply.		
 	
 	refactoredMethod := (aClassToRefactor compiledMethodAt: #m1) methodNode.
-	self assert: refactoredMethod block statements size equals: 1.
 	
-	returnNode := refactoredMethod block statements first.
-	"The new method consist only of a return statement"
-	self assert: returnNode isReturn.
-	"The return statement is the sending of a message"
-	self assert: returnNode expr isMessage.
-	"The message sent is #value"
-	self assert: returnNode expr selector key equals: #value.
+	self assertMethodConsistsOnlyOfReturnStatement: refactoredMethod.
 	
-	valueReceiver := returnNode expr receiver.
-	"The #value message receiver is a MessageNode"
-	self assert: valueReceiver isMessage.
-	"The receiver is the created MethodObject class"
+	returnStatement :=  refactoredMethod block statements first expr.
+	disregardArguments := nil.
+	self assert: (returnStatement
+		isMessage: #value
+		receiver: [ :receiver | receiver isMessage]
+		arguments: disregardArguments).
+		
+	valueMessageReceiver := returnStatement receiver.
 	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
-	self assert: valueReceiver receiver key value equals: methodObjectClass.
-	"The message sent is #new"
-	self assert: valueReceiver selector key equals: #new.! !
+	self assert: (valueMessageReceiver 
+		isMessage: #new
+		receiver: [:receiver | receiver key value = methodObjectClass]
+		arguments: true).! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:50:29'!
 test08ExtractedMethodThatReturnsAConstantReturnsTheConstant

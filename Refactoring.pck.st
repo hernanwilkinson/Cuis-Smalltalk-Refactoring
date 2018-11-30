@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3508] on 29 November 2018 at 8:24:21 pm'!
-'Description upto 3508 and refactoring for contextual rename'!
-!provides: 'Refactoring' 1 63!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3508] on 30 November 2018 at 3:33:31 pm'!
+'Description new test for renaming selectors inside lit arrays'!
+!provides: 'Refactoring' 1 64!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -531,7 +531,7 @@ newSelector : <Symbol>
 scopeChoice : <SmallInteger>
 implementors : <IdentitySet | OrderedCollection> # Collection
 senders : <IdentitySet | OrderedCollection> # Collection
-implementingClass : <TicTacToe class | Collection class | Metaclass | SmalltalkEditor class> # ClassDescription
+implementingClass : <TicTacToe class | Collection class | Metaclass | SmalltalkEditor class | ParseNodeTypesDisplay class> # ClassDescription
 browser : <ChangeSelectorSendersWindow | ChangeSelectorImplementorsWindow> # ChangeSelectorMessageSetWindow
 shouldShowChanges : <True | False> # Boolean
 "!
@@ -4286,6 +4286,25 @@ test26DoesNotRenameLiteralsThatBeginsWithOldSelectorInsideLiteralArray
 	self deny: (senderMethod sendsOrRefersTo: oldSelector).
 	self assert: (senderMethod sendsOrRefersTo: newSelector). 
 	self assert: (senderMethod sendsOrRefersTo: (oldSelector,'1') asSymbol) 
+! !
+
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 11/30/2018 15:04:14'!
+test27DoesNotRenameLiteralsThatBeginsWithOldSelectorAndEndWithColonInsideLiteralArray
+
+	| rename senderMethod referencerToOldSelector |
+	
+	referencerToOldSelector := #m1.
+	self createClassToRefactor.
+	classToRefactor compile: oldSelector asString.
+	classToRefactor compile: referencerToOldSelector asString , ' ^#(#' , oldSelector asString, ' #' , oldSelector asString,':)'.
+
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>referencerToOldSelector).
+	rename apply.
+	
+	senderMethod := classToRefactor compiledMethodAt: referencerToOldSelector.
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector). 
+	self assert: (senderMethod sendsOrRefersTo: (oldSelector,':') asSymbol) 
 ! !
 
 !RenameTemporaryTest methodsFor: 'class factory' stamp: 'HAW 6/25/2017 21:53:44'!
@@ -8773,7 +8792,7 @@ messageSendSelectorKeywordPositionsOf: aSelector ifAbsent: aBlock
 	^encoder messageSendSelectorKeywordPositionsOf: aSelector ifAbsent: aBlock
 ! !
 
-!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 15:42:05'!
+!MethodNode methodsFor: '*Refactoring' stamp: 'HAW 11/30/2018 15:06:55'!
 nextPositionAfterAddPositionTo: symbolPositions of: symbolString startingAt: insidePosition 
 
 	| symbolStartPosition nextPosition |
@@ -8784,7 +8803,7 @@ nextPositionAfterAddPositionTo: symbolPositions of: symbolString startingAt: ins
 		ifTrue: [ nextPosition := SmallInteger maxVal ]
 		ifFalse: [ 
 			nextPosition := symbolStartPosition + symbolString size. 
-			(sourceText at: nextPosition) isValidInIdentifiers ifFalse: [ symbolPositions add: (symbolStartPosition to: nextPosition - 1) ]].
+			(sourceText at: nextPosition) tokenish ifFalse: [ symbolPositions add: (symbolStartPosition to: nextPosition - 1) ]].
 		
 	^nextPosition
 
@@ -8960,7 +8979,7 @@ renameTemporary: aTemporaryName
 		applier value ].
 ! !
 
-!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 19:30:44'!
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 20:28:32'!
 withMethodNodeAndClassDo: aBlock ifErrorsParsing: anErrorBlock
 
 	| class methodNode | 

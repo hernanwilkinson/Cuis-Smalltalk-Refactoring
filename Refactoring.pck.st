@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 30 November 2018 at 12:39:27 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 30 November 2018 at 2:59:23 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 82!
+!provides: 'Refactoring' 1 83!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -6060,14 +6060,10 @@ apply
 	self compileExtractedMethodAsValueMethodOn: methodObjectClass.
 	self replaceExtractedMethodWithMethodObjectInvocation.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 12:37:05'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 14:57:49'!
 compileExtractedMethodAsValueMethodOn: aClass
 
-	| aStream |
-	
-	aStream := RWBinaryOrTextStream with: ''.
-	methodToExtract methodNode block printOn: aStream indent: 0.
-	aClass compile: 'value ', aStream contents.! !
+	aClass compile: 'value ', self methodToExtractBodySourceCode.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:51:06'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
@@ -6076,6 +6072,21 @@ from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass o
 	methodObjectClassName := aClassName.
 	methodObjectSuperclass := aClass.
 	methodObjectCategory := aCategory .! !
+
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 14:58:42'!
+methodToExtractBodySourceCode
+
+	| aStream methodBodyAsBlock |
+	
+	aStream := RWBinaryOrTextStream with: ''.
+	methodBodyAsBlock := methodToExtract methodNode block.
+	methodBodyAsBlock printOn: aStream indent: 0.
+	^self removeBlockEnclosingCharacters: aStream contents.! !
+
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 14:56:23'!
+removeBlockEnclosingCharacters: aBlockSourceCode
+
+	^(aBlockSourceCode withoutPrefix: '[') withoutSuffix: ']'.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 12:38:49'!
 replaceExtractedMethodWithMethodObjectInvocation

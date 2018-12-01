@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 30 November 2018 at 2:59:23 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 1 December 2018 at 5:09:17 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 83!
+!provides: 'Refactoring' 1 84!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2313,14 +2313,14 @@ test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 		receiver: [:receiver | receiver key value = methodObjectClass]
 		arguments: true).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:50:29'!
-test08ExtractedMethodThatReturnsAConstantReturnsTheConstant
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/30/2018 15:01:46'!
+test08ExtractedMethodThatReturnsAConstantReturnsAnArrayConstant
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
 	
 	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
 	aClassToRefactor :=self createClassNamed: #AClassToRefactor.
-	aClassToRefactor compile: 'm1 ^2'.
+	aClassToRefactor compile: 'm1 ^#(1 2 3)'.
 	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
 	methodObjectClassName  := #MethodObject.
 	
@@ -2331,7 +2331,27 @@ test08ExtractedMethodThatReturnsAConstantReturnsTheConstant
 			onCategory: self classCategoryOfTestData.
 	refactor apply.		
 	
-	self assert: 2 equals: aClassToRefactor new m1.! !
+	self assert: #(1 2 3) equals: aClassToRefactor new m1.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/1/2018 17:09:08'!
+test09WhenExtractedMethodAssignedAnInstanceVariable
+
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
+	
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor :=self createClassNamed: #AClassToRefactor.
+	aClassToRefactor compile: 'm1 ^#(1 2 3)'.
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
+	methodObjectClassName  := #MethodObject.
+	
+	refactor := ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData.
+	refactor apply.		
+	
+	self assert: #(1 2 3) equals: aClassToRefactor new m1.! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData

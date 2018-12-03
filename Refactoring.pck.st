@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 1 December 2018 at 5:09:17 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 3 December 2018 at 5:46:27 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 84!
+!provides: 'Refactoring' 1 85!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2147,6 +2147,39 @@ allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData! !
 
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/3/2018 16:42:39'!
+assert: aRefactoredMethod isAnInvocationToMethodObjectClassNamed: aClassName
+
+	| disregardArguments methodObjectClass returnStatement valueMessageReceiver |
+	
+	self assertMethodConsistsOnlyOfReturnStatement: aRefactoredMethod.
+	
+	returnStatement :=  aRefactoredMethod block statements first expr.
+	disregardArguments := nil.
+	self assert: (returnStatement
+		isMessage: #value
+		receiver: [ :receiver | receiver isMessage]
+		arguments: disregardArguments).
+		
+	valueMessageReceiver := returnStatement receiver.
+	methodObjectClass := Smalltalk classNamed: aClassName.
+	self assert: (valueMessageReceiver 
+		isMessage: #new
+		receiver: [:receiver | receiver key value = methodObjectClass]
+		arguments: true).! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/3/2018 17:41:30'!
+assert: aMethodNode sends: aSelector to: aConstant
+	
+	| disregardArguments |
+	
+	disregardArguments := nil.
+	
+	self assert: (aMethodNode block statements first 
+		isMessage: aSelector
+		receiver: [ :receiver | receiver literalValue = aConstant]
+		arguments: disregardArguments).! !
+
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/30/2018 12:01:09'!
 assertMethodConsistsOnlyOfReturnStatement: aMethodNode
 	
@@ -2277,10 +2310,10 @@ test06ExtractedMethodThatReturnsAConstantReturnsAConstant
 	
 	self assert: 1 equals: aClassToRefactor new m1.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/30/2018 12:30:38'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/3/2018 16:42:57'!
 test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	
-	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor refactoredMethod valueMessageReceiver methodObjectClass returnStatement disregardArguments |
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor refactoredMethod |
 	
 	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
 	aClassToRefactor := self createClassNamed: #AClassToRefactor.
@@ -2297,21 +2330,7 @@ test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	
 	refactoredMethod := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	
-	self assertMethodConsistsOnlyOfReturnStatement: refactoredMethod.
-	
-	returnStatement :=  refactoredMethod block statements first expr.
-	disregardArguments := nil.
-	self assert: (returnStatement
-		isMessage: #value
-		receiver: [ :receiver | receiver isMessage]
-		arguments: disregardArguments).
-		
-	valueMessageReceiver := returnStatement receiver.
-	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
-	self assert: (valueMessageReceiver 
-		isMessage: #new
-		receiver: [:receiver | receiver key value = methodObjectClass]
-		arguments: true).! !
+	self assert: refactoredMethod isAnInvocationToMethodObjectClassNamed: methodObjectClassName.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/30/2018 15:01:46'!
 test08ExtractedMethodThatReturnsAConstantReturnsAnArrayConstant
@@ -2333,15 +2352,20 @@ test08ExtractedMethodThatReturnsAConstantReturnsAnArrayConstant
 	
 	self assert: #(1 2 3) equals: aClassToRefactor new m1.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/1/2018 17:09:08'!
-test09WhenExtractedMethodAssignedAnInstanceVariable
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/3/2018 17:38:13'!
+test09WhenMethodSendsAMessageToAConstantTheMethodObjectSendsTheSameMessageToTheSameConstant
 
-	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor messageToConstantSourceCode aRefactoredMethod methodObjectClass valueMethod aConstant messageToConstant |
 	
 	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
-	aClassToRefactor :=self createClassNamed: #AClassToRefactor.
-	aClassToRefactor compile: 'm1 ^#(1 2 3)'.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor.
+	
+	messageToConstant := 'isNil'.
+	aConstant := 2.
+	messageToConstantSourceCode := 'm1 ', aConstant asString, ' ', messageToConstant.
+	aClassToRefactor compile: messageToConstantSourceCode.
 	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
+	
 	methodObjectClassName  := #MethodObject.
 	
 	refactor := ExtractToMethodObject 
@@ -2351,7 +2375,12 @@ test09WhenExtractedMethodAssignedAnInstanceVariable
 			onCategory: self classCategoryOfTestData.
 	refactor apply.		
 	
-	self assert: #(1 2 3) equals: aClassToRefactor new m1.! !
+	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
+	self assert: aRefactoredMethod methodNode isAnInvocationToMethodObjectClassNamed: methodObjectClassName .
+
+	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
+	valueMethod := methodObjectClass compiledMethodAt: #value.
+	self assert: valueMethod methodNode sends: messageToConstant asSymbol to: aConstant.! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData

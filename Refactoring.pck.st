@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 3 December 2018 at 5:46:27 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 4 December 2018 at 1:59:42 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 85!
+!provides: 'Refactoring' 1 86!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2168,6 +2168,29 @@ assert: aRefactoredMethod isAnInvocationToMethodObjectClassNamed: aClassName
 		receiver: [:receiver | receiver key value = methodObjectClass]
 		arguments: true).! !
 
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/3/2018 18:15:28'!
+assert: aMethodNode isAnInvocationToMethodObjectClassNamed: aClassName creatingWith: constructorSelector passing: argumentValidator
+
+	| disregardArguments methodObjectClass returnStatement valueMessageReceiver |
+	
+	self assertMethodConsistsOnlyOfReturnStatement: aMethodNode.
+	
+	returnStatement :=  aMethodNode block statements first expr.
+	disregardArguments := nil.
+	self assert: (returnStatement
+		isMessage: #value
+		receiver: [ :receiver | receiver isMessage]
+		arguments: disregardArguments).
+		
+	valueMessageReceiver := returnStatement receiver.
+	methodObjectClass := Smalltalk classNamed: aClassName.
+	self assert: (valueMessageReceiver 
+		isMessage: constructorSelector
+		receiver: [:receiver | receiver key value = methodObjectClass]
+		arguments: argumentValidator).
+
+! !
+
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/3/2018 17:41:30'!
 assert: aMethodNode sends: aSelector to: aConstant
 	
@@ -2381,6 +2404,43 @@ test09WhenMethodSendsAMessageToAConstantTheMethodObjectSendsTheSameMessageToTheS
 	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
 	valueMethod := methodObjectClass compiledMethodAt: #value.
 	self assert: valueMethod methodNode sends: messageToConstant asSymbol to: aConstant.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/4/2018 13:01:22'!
+test10WhenMethodSendsAMessageToSelfTheMethodObjectSendsItToTheRefactoredObject
+
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod messageReceiver selector aRefactoredClassInstance messageToSelfSourceCode |
+	
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'calledSelector'.
+	
+	aClassToRefactor compile: 'selectorToCheck calledSelector := true'.
+	aClassToRefactor compile: 'selectorWasCalled ^calledSelector'.
+	
+	selector := #selectorToCheck.
+	messageReceiver := 'self'.
+	messageToSelfSourceCode := 'm1 ', messageReceiver, ' ', selector.
+	aClassToRefactor compile: messageToSelfSourceCode.
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
+	
+	methodObjectClassName  := #MethodObject.
+	
+	refactor := ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData.
+	refactor apply.		
+	
+	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
+	self assert: aRefactoredMethod methodNode
+		isAnInvocationToMethodObjectClassNamed: methodObjectClassName
+		creatingWith: #contextProvider:
+		passing: nil.
+		"passing: [:argument | argument isSelfPseudoVariable]."
+
+	aRefactoredClassInstance := aClassToRefactor new.
+	aRefactoredClassInstance m1.
+	self assert: (aRefactoredClassInstance perform: #selectorWasCalled).! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -6094,10 +6154,13 @@ warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplement
 
 	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 12:38:59'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/4/2018 12:24:14'!
 apply
 
-	| methodObjectClass |
+	| methodObjectClass instanceVariables |
+	
+	instanceVariables := Set new.
+	self methodToExtractReferencesSelf ifTrue: [instanceVariables add: 'contextProvider'].
 	
 	methodObjectClass := methodObjectSuperclass
 		subclass: methodObjectClassName
@@ -6106,13 +6169,43 @@ apply
 		poolDictionaries: ''
 		category: methodObjectCategory.
 	
+	self compileConstructorFrom: instanceVariables into: methodObjectClass.
 	self compileExtractedMethodAsValueMethodOn: methodObjectClass.
 	self replaceExtractedMethodWithMethodObjectInvocation.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 14:57:49'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/4/2018 12:35:06'!
+compileConstructorFrom: instanceVariables into: aClass
+
+	| methodTitle methodBody |
+	
+	methodTitle := instanceVariables inject: '' into: [
+		:accum :instVarName | accum append: (instVarName, ': a', instVarName capitalized, ' ')].
+	methodBody := instanceVariables inject: '' into: [
+		:accum :instVarName | accum append: (instVarName, ' := a', instVarName capitalized, '. ')]. 
+	
+	aClass class compile: methodTitle, methodBody.! !
+
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/4/2018 13:24:58'!
 compileExtractedMethodAsValueMethodOn: aClass
 
-	aClass compile: 'value ', self methodToExtractBodySourceCode.! !
+	| newSourceCode copiedUpto methodNode originalSourceCode |
+	
+	newSourceCode := RWBinaryOrTextStream with: ''.
+	methodNode :=  methodToExtract methodNode.
+	self halt.
+	copiedUpto := (methodNode encoder sourceRangeFor: methodNode block statements first) first - 1.
+	originalSourceCode := methodNode sourceText.
+	methodNode accept: (ParseNodeEnumerator ofBlock: [:aNode | 
+		aNode isSelfPseudoVariable ifTrue: [
+			| range |
+			self halt.
+			range := methodNode encoder sourceRangeFor: aNode.
+			newSourceCode nextPutAll: (originalSourceCode copyFrom: copiedUpto + 1 to: range first first - 1).
+			newSourceCode nextPutAll: 'contextProvider'.
+			copiedUpto := range first last.]]).
+	newSourceCode nextPutAll: (originalSourceCode copyFrom: copiedUpto + 1 to: originalSourceCode size).
+	
+	aClass compile: 'value ', newSourceCode contents.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:51:06'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory
@@ -6137,13 +6230,23 @@ removeBlockEnclosingCharacters: aBlockSourceCode
 
 	^(aBlockSourceCode withoutPrefix: '[') withoutSuffix: ']'.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 12:38:49'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/4/2018 12:48:22'!
 replaceExtractedMethodWithMethodObjectInvocation
 
-	| classToRefactor |
+	| classToRefactor constructorMessage |
 	
 	classToRefactor := methodToExtract methodClass.
-	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' new) value'.! !
+	constructorMessage := 'new'.
+	self methodToExtractReferencesSelf ifTrue: [constructorMessage := 'contextProvider: self'].
+	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' ', constructorMessage, ') value'.! !
+
+!ExtractToMethodObject methodsFor: 'inspecting' stamp: 'FGJ 12/4/2018 12:22:38'!
+methodToExtractReferencesSelf
+	
+	methodToExtract methodNode accept: (ParseNodeEnumerator ofBlock: [
+		:aNode | aNode isSelfPseudoVariable ifTrue: [^true]]).
+	
+	^false.! !
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/27/2018 15:46:17'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory

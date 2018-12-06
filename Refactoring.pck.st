@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3508] on 30 November 2018 at 3:33:31 pm'!
-'Description new test for renaming selectors inside lit arrays'!
-!provides: 'Refactoring' 1 64!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3508] on 6 December 2018 at 8:42:25 pm'!
+'Description selectorSymbol and receiverOrCascadeReceiver in MessageNode'!
+!provides: 'Refactoring' 1 66!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -22,7 +22,7 @@ RefactoringError subclass: #CanNotRefactorDueToReferencesError
 	category: 'Refactoring'
 "
 references : <Array | OrderedCollection> # SequenceableCollection
-referencee : <String | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class> # Object
+referencee : <String | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class | AnObsoleteTypeInfoError class | AnObsoleteClassToRemove class | AnObsoleteClassToRemove class> # Object
 "!
 !classDefinition: 'CanNotRefactorDueToReferencesError class' category: #Refactoring!
 CanNotRefactorDueToReferencesError class
@@ -77,7 +77,7 @@ MessageSetWindow subclass: #ChangeSelectorMessageSetWindow
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-request : <RenameSelectorApplier>
+request : <AddParameterApplier | RemoveParameterApplier | RenameSelectorApplier> # ChangeSelectorApplier
 "!
 !classDefinition: 'ChangeSelectorMessageSetWindow class' category: #Refactoring!
 ChangeSelectorMessageSetWindow class
@@ -394,7 +394,7 @@ Refactoring subclass: #PushUpMethod
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-method : <>
+method : <CompiledMethod>
 "!
 !classDefinition: 'PushUpMethod class' category: #Refactoring!
 PushUpMethod class
@@ -421,7 +421,7 @@ Refactoring subclass: #RemoveInstanceVariable
 	category: 'Refactoring'
 "
 variableToRemove : <String>
-classToRefactor : <AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class> # Object class
+classToRefactor : <AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | BrowseTypedSelector class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class> # Object class
 "!
 !classDefinition: 'RemoveInstanceVariable class' category: #Refactoring!
 RemoveInstanceVariable class
@@ -434,7 +434,7 @@ Refactoring subclass: #RenameClass
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-classToRename : <Juan1 class | AnObsoleteNewClassTest11 class | AnObsoleteNewClassTest07 class | AnObsoleteNewClassTest15 class | AnObsoleteNewClassTest07 class | AnObsoleteNewClassTest17 class | AnObsoleteNewClassTest07 class | AnObsoleteNewClassTest8 class | AnObsoleteNewClassTest09 class | AnObsoleteNewClassTest16 class | AnObsoleteNewClassTest10 class> # Object class
+classToRename : <AnObsoleteJuan1 class | AnObsoleteNewClassTest11 class | AnObsoleteNewClassTest07 class | AnObsoleteNewClassTest15 class | AnObsoleteNewClassTest07 class | AnObsoleteNewClassTest17 class | AnObsoleteNewClassTest07 class | AnObsoleteNewClassTest8 class | AnObsoleteNewClassTest09 class | AnObsoleteNewClassTest16 class | AnObsoleteNewClassTest10 class> # Object class
 newClassName : <Symbol>
 system : <SystemDictionary>
 undeclared : <Dictionary>
@@ -496,8 +496,8 @@ Object subclass: #RefactoringApplier
 	category: 'Refactoring'
 "
 requestExitBlock : <BlockClosure>
-refactoring : <RenameClass | RenameInstanceVariable | RenameTemporary | DenotativeObjectRenameSelector | RenameSelector | DenotativeObjectRename> # Refactoring
-changes : <OrderedCollection | String | Set> # Collection
+refactoring : <RemoveAllUnreferencedInstanceVariables | RemoveInstanceVariable | RenameClass | RenameInstanceVariable | RenameTemporary | SafelyRemoveClass | AddParameter | RemoveParameter | RenameSelector | TypedRenameSelector | DenotativeObjectRenameSelector | DenotativeObjectRename> # Refactoring
+changes : <RemoveInstanceVariable | Array | String | SafelyRemoveClass | OrderedCollection | Set> # Object
 "!
 !classDefinition: 'RefactoringApplier class' category: #Refactoring!
 RefactoringApplier class
@@ -531,7 +531,7 @@ newSelector : <Symbol>
 scopeChoice : <SmallInteger>
 implementors : <IdentitySet | OrderedCollection> # Collection
 senders : <IdentitySet | OrderedCollection> # Collection
-implementingClass : <TicTacToe class | Collection class | Metaclass | SmalltalkEditor class | ParseNodeTypesDisplay class> # ClassDescription
+implementingClass : <TicTacToe class | SmalltalkEditor class | ParseNodeTypesDisplay class | Wallet class | TransferWithdraw class | Metaclass | Collection class | SystemDictionary class | Clock class | ChangeSelectorMessageSetWindow class | ParseNodeTypeInfo class | BrowseTypedImplementors class | AssignmentNode class | BrowseTypedSelector class> # ClassDescription
 browser : <ChangeSelectorSendersWindow | ChangeSelectorImplementorsWindow> # ChangeSelectorMessageSetWindow
 shouldShowChanges : <True | False> # Boolean
 "!
@@ -546,10 +546,10 @@ ChangeSelectorApplier subclass: #AddParameterApplier
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-newParameter : <>
-newParameterValue : <>
-newKeyword : <>
-parameterIndex : <>
+newParameter : <String>
+newParameterValue : <String>
+newKeyword : <Symbol>
+parameterIndex : <SmallInteger>
 "!
 !classDefinition: 'AddParameterApplier class' category: #Refactoring!
 AddParameterApplier class
@@ -565,8 +565,8 @@ ChangeSelectorApplier subclass: #RemoveParameterApplier
 newParameter : <>
 newParameterValue : <>
 newKeyword : <>
-originalMethod : <>
-parameterToRemove : <>
+originalMethod : <CompiledMethod>
+parameterToRemove : <String>
 "!
 !classDefinition: 'RemoveParameterApplier class' category: #Refactoring!
 RemoveParameterApplier class
@@ -604,8 +604,8 @@ RefactoringApplier subclass: #RemoveAllUnreferencedInstanceVariablesApplier
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-classToRefactor : <>
-browser : <>
+classToRefactor : <TransferWithdraw class | TransferDeposit class | Wallet class> # Object class
+browser : <BrowserWindow>
 variableToRemove : <>
 "!
 !classDefinition: 'RemoveAllUnreferencedInstanceVariablesApplier class' category: #Refactoring!
@@ -619,9 +619,9 @@ RefactoringApplier subclass: #RemoveInstanceVariableApplier
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-classToRefactor : <>
-browser : <>
-variableToRemove : <>
+classToRefactor : <BrowseTypedSelector class>
+browser : <BrowserWindow>
+variableToRemove : <String>
 "!
 !classDefinition: 'RemoveInstanceVariableApplier class' category: #Refactoring!
 RemoveInstanceVariableApplier class
@@ -635,7 +635,7 @@ RefactoringApplier subclass: #RenameClassApplier
 	category: 'Refactoring'
 "
 browser : <DenotativeObjectBrowser | Browser> # Browser
-classToRename : <Juan1 class | PlayingX class | RenameSelectorApplier class | RenameClassApplier class> # Object class
+classToRename : <Array class | RenameSelectorApplier class | TransferWithdraw class | TransferDeposit class | AnObsoleteJuan1 class | RenameClassApplier class | PlayingX class | BrowseTypedImplementors class | AnObsoleteTypeInfoError class | IncompleteTypeInfo class | BrowseTypedSelector class> # Object class
 newClassName : <String | Symbol> # String
 "!
 !classDefinition: 'RenameClassApplier class' category: #Refactoring!
@@ -649,7 +649,7 @@ RefactoringApplier subclass: #RenameInstanceVariableApplier
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-classToRefactor : <TicTacToe class | Metaclass | SmalltalkEditor class> # ClassDescription
+classToRefactor : <TicTacToe class | TusLibrosSystemFacade class | SmalltalkEditor class | Transfer class | Metaclass> # ClassDescription
 oldInstanceVariable : <String>
 newInstanceVariable : <String>
 browser : <DenotativeObjectBrowser | Browser> # Browser
@@ -665,7 +665,7 @@ RefactoringApplier subclass: #RenameTemporaryApplier
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-classToRefactor : <TicTacToe class | Metaclass | SmalltalkEditor class> # ClassDescription
+classToRefactor : <TicTacToe class | Metaclass | SmalltalkEditor class | BrowseTypedSelector class | BrowseTypedSenders class | ParseNode class | FintechTest class | Transfer class> # ClassDescription
 oldVariable : <String>
 newVariable : <String>
 smalltalkEditor : <SmalltalkEditor | DenotativeObjectSmalltalkEditor> # SmalltalkEditor
@@ -682,8 +682,8 @@ RefactoringApplier subclass: #SafelyRemoveClassApplier
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-classToRemove : <>
-browser : <>
+classToRemove : <AnObsoleteTicTacToe2 class | AnObsoleteNoImplementorForMessageSend class | AnObsoleteTypeInfoError class | AnObsoleteNoImplementorForMessageSend class | AnObsoleteTypedSendersSearch class | AnObsoleteXX class | AnObsoleteFastTransferWithdraw class> # Object class
+browser : <Browser>
 "!
 !classDefinition: 'SafelyRemoveClassApplier class' category: #Refactoring!
 SafelyRemoveClassApplier class
@@ -8654,10 +8654,10 @@ isTempOrArg
 
 	^self isTemp or: [ self isArg ]! !
 
-!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 8/11/2018 19:23:15'!
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 12/6/2018 17:19:05'!
 isMessageNamed: aSelector
 
-	^aSelector == selector key! !
+	^aSelector == self selectorSymbol ! !
 
 !MessageNode methodsFor: '*Refactoring' stamp: 'HAW 9/3/2018 19:41:44'!
 keywordAndParameterPositionAt: anIndex encodedWith: anEncoder
@@ -8737,6 +8737,11 @@ selectorLastPositionInSourceCodeEncodedWith: anEncoder
 	^originalSelector isUnary 
 		ifTrue: [ self lastKeywordLastPositionInSourceCode ]
 		ifFalse: [ self lastParameterLastPositionInSourceCodeEncodedWith: anEncoder ]! !
+
+!MessageNode methodsFor: '*Refactoring' stamp: 'HAW 12/6/2018 17:18:55'!
+selectorSymbol
+
+	^selector key! !
 
 !MethodNode methodsFor: '*Refactoring' stamp: 'HAW 11/29/2018 15:38:51'!
 addPositionTo: symbolPositions of: symbolString inside: literalArrayPosition

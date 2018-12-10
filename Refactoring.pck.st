@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 10 December 2018 at 10:24:44 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 10 December 2018 at 11:08:13 am'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 87!
+!provides: 'Refactoring' 1 89!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2407,7 +2407,7 @@ test09WhenMethodSendsAMessageToAConstantTheMethodObjectSendsTheSameMessageToTheS
 	valueMethod := methodObjectClass compiledMethodAt: #value.
 	self assert: valueMethod methodNode sends: messageToConstant asSymbol to: aConstant.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/4/2018 13:01:22'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 11:08:07'!
 test10WhenMethodSendsAMessageToSelfTheMethodObjectSendsItToTheRefactoredObject
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod messageReceiver selector aRefactoredClassInstance messageToSelfSourceCode |
@@ -6239,11 +6239,17 @@ replaceExtractedMethodWithMethodObjectInvocation
 	self methodToExtractReferencesSelf ifTrue: [constructorMessage := 'contextProvider: self'].
 	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' ', constructorMessage, ') value'.! !
 
-!ExtractToMethodObject methodsFor: 'inspecting' stamp: 'FGJ 12/4/2018 12:22:38'!
+!ExtractToMethodObject methodsFor: 'inspecting' stamp: 'FGJ 12/10/2018 10:51:30'!
 methodToExtractReferencesSelf
 	
-	methodToExtract methodNode accept: (ParseNodeEnumerator ofBlock: [
-		:aNode | aNode isSelfPseudoVariable ifTrue: [^true]]).
+	| methodNode |
+	
+	methodNode := methodToExtract methodNode.
+	methodNode 
+		accept: (ParseNodeEnumerator 
+			ofBlock: [:aNode | aNode isSelfPseudoVariable ifTrue: [^true]]
+			select: [:aNode | aNode isReturn not
+				or: [methodNode encoder rawSourceRanges at: aNode ifPresent: [:irrelevant | true] ifAbsent: [false]]]).
 	
 	^false.! !
 

@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 4 December 2018 at 1:59:42 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 10 December 2018 at 10:24:44 am'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 86!
+!provides: 'Refactoring' 1 87!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2251,14 +2251,16 @@ test02MethodObjectClassNameCannotBeEmpty
 		raise: RefactoringError
 		withMessageText: NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/27/2018 14:48:21'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/7/2018 14:36:43'!
 test03CreatesMethodObjectClass
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
 	
 	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	
 	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	aClassToRefactor compile: 'm1'.
+	
 	aCompiledMethod  := aClassToRefactor compiledMethodAt: #m1.
 	methodObjectClassName  := #MethodObject.
 	
@@ -6154,26 +6156,26 @@ warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplement
 
 	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/4/2018 12:24:14'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/7/2018 15:01:44'!
 apply
 
 	| methodObjectClass instanceVariables |
 	
 	instanceVariables := Set new.
 	self methodToExtractReferencesSelf ifTrue: [instanceVariables add: 'contextProvider'].
-	
 	methodObjectClass := methodObjectSuperclass
 		subclass: methodObjectClassName
-		instanceVariableNames: ''
+		instanceVariableNames: (' ' join: instanceVariables)
 		classVariableNames: ''
 		poolDictionaries: ''
 		category: methodObjectCategory.
 	
-	self compileConstructorFrom: instanceVariables into: methodObjectClass.
+	instanceVariables isEmpty ifFalse: [
+		self compileConstructorFrom: instanceVariables into: methodObjectClass].
 	self compileExtractedMethodAsValueMethodOn: methodObjectClass.
 	self replaceExtractedMethodWithMethodObjectInvocation.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/4/2018 12:35:06'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/7/2018 14:34:47'!
 compileConstructorFrom: instanceVariables into: aClass
 
 	| methodTitle methodBody |
@@ -6183,29 +6185,26 @@ compileConstructorFrom: instanceVariables into: aClass
 	methodBody := instanceVariables inject: '' into: [
 		:accum :instVarName | accum append: (instVarName, ' := a', instVarName capitalized, '. ')]. 
 	
-	aClass class compile: methodTitle, methodBody.! !
+	aClass compile: methodTitle, methodBody.
+	aClass class compile: methodTitle, ' ^self new ', methodTitle.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/4/2018 13:24:58'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/7/2018 14:44:41'!
 compileExtractedMethodAsValueMethodOn: aClass
 
-	| newSourceCode copiedUpto methodNode originalSourceCode |
+	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced sourceCodeWithSelfReplaced selfRanges |
 	
-	newSourceCode := RWBinaryOrTextStream with: ''.
 	methodNode :=  methodToExtract methodNode.
-	self halt.
-	copiedUpto := (methodNode encoder sourceRangeFor: methodNode block statements first) first - 1.
-	originalSourceCode := methodNode sourceText.
-	methodNode accept: (ParseNodeEnumerator ofBlock: [:aNode | 
-		aNode isSelfPseudoVariable ifTrue: [
-			| range |
-			self halt.
-			range := methodNode encoder sourceRangeFor: aNode.
-			newSourceCode nextPutAll: (originalSourceCode copyFrom: copiedUpto + 1 to: range first first - 1).
-			newSourceCode nextPutAll: 'contextProvider'.
-			copiedUpto := range first last.]]).
-	newSourceCode nextPutAll: (originalSourceCode copyFrom: copiedUpto + 1 to: originalSourceCode size).
+	selfRanges := methodNode encoder 
+		rangesForVariable: 'self' 
+		checkingType: [:node | node isSelfPseudoVariable] 
+		ifAbsent: [Set new].
 	
-	aClass compile: 'value ', newSourceCode contents.! !
+	originalSourceCode := methodNode sourceText.
+	sourceCodeWithSelfReplaced := originalSourceCode copyReplacing: selfRanges with: 'contextProvider'.
+	
+	endHeaderIndex := Parser methodHeaderLengthFrom: methodNode sourceText.
+	sourceCodeWithSelectorReplaced := sourceCodeWithSelfReplaced copyReplacing: { Interval from: 1 to: endHeaderIndex. } with: 'value'. 
+	aClass compile: sourceCodeWithSelectorReplaced.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 14:51:06'!
 from: aCompiledMethod toMethodObjectClassNamed: aClassName subclassing: aClass onCategory: aCategory

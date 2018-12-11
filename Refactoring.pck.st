@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 10 December 2018 at 5:13:46 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 11 December 2018 at 12:43:09 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 92!
+!provides: 'Refactoring' 1 94!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -222,6 +222,16 @@ RefactoringTest subclass: #SafelyRemoveClassTest
 	category: 'Refactoring'!
 !classDefinition: 'SafelyRemoveClassTest class' category: #Refactoring!
 SafelyRemoveClassTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #VariablesToExtractFinderTest category: #Refactoring!
+RefactoringTest subclass: #VariablesToExtractFinderTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'VariablesToExtractFinderTest class' category: #Refactoring!
+VariablesToExtractFinderTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #NewClassPrecondition category: #Refactoring!
@@ -542,6 +552,16 @@ Object subclass: #RefactoringMenues
 	category: 'Refactoring'!
 !classDefinition: 'RefactoringMenues class' category: #Refactoring!
 RefactoringMenues class
+	instanceVariableNames: ''!
+
+!classDefinition: #VariablesToExtractFinder category: #Refactoring!
+Object subclass: #VariablesToExtractFinder
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'VariablesToExtractFinder class' category: #Refactoring!
+VariablesToExtractFinder class
 	instanceVariableNames: ''!
 
 
@@ -4912,6 +4932,180 @@ classToRemoveName
 	^ 'ClassToRemove' asSymbol.
 	! !
 
+!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 11:04:14'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
+!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 11:10:31'!
+test01WhenTheMethodHasNoVariablesItReturnsAnEmptySet
+
+	| aClass anEmptyMethodSourceCode emptyCompiledMethod emptyMethodSelector variablesToExtract |
+	
+	aClass := self createClassNamed: #AClass.
+	emptyMethodSelector := #m1.
+	anEmptyMethodSourceCode := emptyMethodSelector asString.
+	
+	aClass compile: anEmptyMethodSourceCode.
+	
+	emptyCompiledMethod := aClass compiledMethodAt: emptyMethodSelector.
+	
+	variablesToExtract := VariablesToExtractFinder findIn: emptyCompiledMethod.
+	
+	self assert: variablesToExtract isEmpty.! !
+
+!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 11:14:23'!
+test02WhenTheMethodHasOnlyTemporaryVariablesItReturnsAnEmptySet
+
+	| aClass emptyCompiledMethod variablesToExtract aMethodWithTempVarSourceCode methodSelector |
+	
+	aClass := self createClassNamed: #AClass.
+	methodSelector := #m1.
+	aMethodWithTempVarSourceCode := methodSelector asString, '
+		| aTempVar | 
+		
+		aTempVar := 2.
+		
+		^aTempVar.'.
+	
+	aClass compile: aMethodWithTempVarSourceCode.
+	
+	emptyCompiledMethod := aClass compiledMethodAt: methodSelector.
+	
+	variablesToExtract := VariablesToExtractFinder findIn: emptyCompiledMethod.
+	
+	self assert: variablesToExtract isEmpty.! !
+
+!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 11:39:06'!
+test03WhenTheMethodReferencesSelfPseudoVariableItFindsIt
+
+	| aClass variablesToExtract methodSelector selfReferencingCompiledMethod selfReferencingMethodSourceCode |
+	
+	aClass := self createClassNamed: #AClass.
+	methodSelector := #m1.
+	selfReferencingMethodSourceCode := methodSelector asString, '
+	
+		self m2.'.
+	
+	aClass compile: selfReferencingMethodSourceCode.
+	
+	selfReferencingCompiledMethod := aClass compiledMethodAt: methodSelector.
+	
+	variablesToExtract := VariablesToExtractFinder findIn: selfReferencingCompiledMethod.
+	
+	self assert: 1 equals: variablesToExtract size.
+	self assert: (variablesToExtract includes: 'self').! !
+
+!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 11:39:23'!
+test04WhenTheMethodHasArgumentsTheyAreIncludedAsVariablesToExtract
+
+	| aClass variablesToExtract methodSelector aMethodWithAnArgumentSourceCode compiledMethodWithArg |
+	
+	aClass := self createClassNamed: #AClass.
+	methodSelector := #m1:.
+	aMethodWithAnArgumentSourceCode := methodSelector asString, ' anArg
+	
+		^anArg + 2'.
+	
+	aClass compile: aMethodWithAnArgumentSourceCode.
+	
+	compiledMethodWithArg := aClass compiledMethodAt: methodSelector.
+	
+	variablesToExtract := VariablesToExtractFinder findIn: compiledMethodWithArg.
+	
+	self assert: 1 equals: variablesToExtract size.
+	self assert: (variablesToExtract includes: 'anArg').! !
+
+!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 11:48:05'!
+test04WhenTheMethodReferencesAnInstanceVariableItFindsIt
+
+	| aClass variablesToExtract methodSelector aMethodReferencingInstVarSourceCode compiledMethodWithInstVar instVarName |
+	
+	instVarName := 'anInstVar'.
+	aClass := self createClassNamed: #AClass instanceVariableNames: instVarName.
+	methodSelector := #m1.
+	aMethodReferencingInstVarSourceCode := methodSelector asString, '
+	
+		^anInstVar isNil'.
+	
+	aClass compile: aMethodReferencingInstVarSourceCode.
+	
+	compiledMethodWithInstVar := aClass compiledMethodAt: methodSelector.
+	
+	variablesToExtract := VariablesToExtractFinder findIn: compiledMethodWithInstVar.
+	
+	self assert: 1 equals: variablesToExtract size.
+	self assert: (variablesToExtract includes: instVarName).! !
+
+!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 11:58:18'!
+test05WhenTheMethodReferencesAClassVariableItFindsIt
+
+	| aClass variablesToExtract methodSelector aMethodReferencingClassVarSourceCode compiledMethodWithClassVar classVarName |
+	
+	classVarName := 'AClassVar'.
+	aClass := self 
+		createClassNamed: #AClass
+		subclassOf: Object
+		instanceVariableNames: ''
+		classVariableNames: classVarName
+		poolDictionaries: ''
+		category: self classCategoryOfTestData.
+	
+	methodSelector := #m1.
+	aMethodReferencingClassVarSourceCode := methodSelector asString, '
+	
+		^', classVarName, ' isNil'.
+	
+	aClass compile: aMethodReferencingClassVarSourceCode.
+	
+	compiledMethodWithClassVar := aClass compiledMethodAt: methodSelector.
+	
+	variablesToExtract := VariablesToExtractFinder findIn: compiledMethodWithClassVar.
+	
+	self assert: 1 equals: variablesToExtract size.
+	self assert: (variablesToExtract includes: classVarName).! !
+
+!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 12:29:13'!
+test06WhenTheMethodReferencesAPoolVariableItFindsIt
+
+	| aClass variablesToExtract methodSelector aMethodReferencingPoolVarSourceCode compiledMethodWithPoolVar aSharedPoolName aPoolVariableName |
+	
+	aSharedPoolName := #ASharedPool.
+	aPoolVariableName := 'APoolVariable'.
+	self 
+		createClassNamed: aSharedPoolName
+		subclassOf: SharedPool
+		instanceVariableNames: ''
+		classVariableNames: aPoolVariableName
+		poolDictionaries: ''
+		category: self classCategoryOfTestData.
+	
+	aClass := self 
+		createClassNamed: #AClass
+		subclassOf: Object
+		instanceVariableNames: ''
+		classVariableNames: ''
+		poolDictionaries: aSharedPoolName asString
+		category: self classCategoryOfTestData.
+	
+	methodSelector := #m1.
+	aMethodReferencingPoolVarSourceCode := methodSelector asString, '
+		^', aPoolVariableName, ' isNil
+	'.
+	
+	aClass compile: aMethodReferencingPoolVarSourceCode.
+	
+	compiledMethodWithPoolVar := aClass compiledMethodAt: methodSelector.
+	
+	variablesToExtract := VariablesToExtractFinder findIn: compiledMethodWithPoolVar.
+	
+	self assert: 1 equals: variablesToExtract size.
+	self assert: (variablesToExtract includes: aPoolVariableName). ! !
+
+!VariablesToExtractFinderTest class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 11:09:15'!
+findIn: aCompiledMethod 
+	self shouldBeImplemented.! !
+
 !NewClassPrecondition methodsFor: 'evaluating' stamp: 'FGJ 11/27/2018 10:10:34'!
 value
 
@@ -8523,6 +8717,96 @@ messsageRefactoringMenuOptions
 			} asDictionary.
 	}`.
 	
+	! !
+
+!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 11:44:37'!
+argumentsOf: aMethodNode
+	
+	^aMethodNode arguments collect: [:aTempVarNode | aTempVarNode key]! !
+
+!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 12:11:21'!
+classVariablesReferencedBy: aMethodNode
+
+	| classVariablesFound |
+	
+	classVariablesFound := Set new.
+
+	aMethodNode 
+		accept: (ParseNodeEnumerator 
+			ofBlock: [:aNode | 
+				(aNode isVariableNode
+					and: [aMethodNode methodClass definesClassVariableNamedInHierarchy: aNode name])
+				ifTrue: [classVariablesFound add: aNode name]]).
+	
+	^classVariablesFound.
+
+! !
+
+!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 11:42:28'!
+doesItReferencesSelf: aMethodNode
+	
+	aMethodNode 
+		accept: (ParseNodeEnumerator 
+			ofBlock: [:aNode | aNode isSelfPseudoVariable ifTrue: [^true]]
+			select: [:aNode | aNode isReturn not
+				or: [aMethodNode encoder rawSourceRanges at: aNode ifPresent: [:irrelevant | true] ifAbsent: [false]]]).
+	
+	^false.! !
+
+!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 12:35:45'!
+findIn: aCompiledMethod 
+	
+	| variablesToExtract aMethodNode |
+	
+	variablesToExtract := Set new.
+	aMethodNode := aCompiledMethod methodNode.
+	
+	(self doesItReferencesSelf: aMethodNode)
+		ifTrue: [variablesToExtract add: 'self'].
+		
+	variablesToExtract addAll: (self argumentsOf: aMethodNode).
+	variablesToExtract addAll: (self instanceVariablesReferencedBy: aMethodNode).
+	variablesToExtract addAll: (self classVariablesReferencedBy: aMethodNode).
+	variablesToExtract addAll: (self poolVariablesReferencedBy: aMethodNode).
+				
+	^variablesToExtract! !
+
+!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 11:54:07'!
+instanceVariablesReferencedBy: aMethodNode
+
+	| instanceVariablesFound |
+	
+	instanceVariablesFound := Set new.
+
+	aMethodNode 
+		accept: (ParseNodeEnumerator 
+			ofBlock: [:aNode | aNode isInstanceVariableNode 
+				ifTrue: [instanceVariablesFound add: aNode key]]).
+	
+	^instanceVariablesFound.
+
+! !
+
+!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 12:42:56'!
+poolVariablesReferencedBy: aMethodNode
+
+	| poolVariablesFound aMethodNodePoolVariables |
+	
+	poolVariablesFound := Set new.
+	aMethodNodePoolVariables := Set new.
+	aMethodNode methodClass 
+		allSharedPools
+		do: [:aPool | aMethodNodePoolVariables addAll: aPool allClassVarNames].
+	
+	aMethodNode 
+		accept: (ParseNodeEnumerator 
+			ofBlock: [:aNode | (aNode isVariableNode
+				and: [aMethodNodePoolVariables includes: aNode name])
+				ifTrue: [poolVariablesFound add: aNode name]]).
+	
+	^poolVariablesFound.
+
+
 	! !
 
 !CodeProvider methodsFor: '*Refactoring' stamp: 'HAW 9/8/2018 19:16:43'!

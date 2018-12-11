@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 11 December 2018 at 12:43:09 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 11 December 2018 at 1:16:58 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 94!
+!provides: 'Refactoring' 1 95!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -5016,8 +5016,8 @@ test04WhenTheMethodHasArgumentsTheyAreIncludedAsVariablesToExtract
 	self assert: 1 equals: variablesToExtract size.
 	self assert: (variablesToExtract includes: 'anArg').! !
 
-!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 11:48:05'!
-test04WhenTheMethodReferencesAnInstanceVariableItFindsIt
+!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 13:05:05'!
+test05WhenTheMethodReferencesAnInstanceVariableItFindsIt
 
 	| aClass variablesToExtract methodSelector aMethodReferencingInstVarSourceCode compiledMethodWithInstVar instVarName |
 	
@@ -5037,8 +5037,8 @@ test04WhenTheMethodReferencesAnInstanceVariableItFindsIt
 	self assert: 1 equals: variablesToExtract size.
 	self assert: (variablesToExtract includes: instVarName).! !
 
-!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 11:58:18'!
-test05WhenTheMethodReferencesAClassVariableItFindsIt
+!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 13:05:24'!
+test06WhenTheMethodReferencesAClassVariableItFindsIt
 
 	| aClass variablesToExtract methodSelector aMethodReferencingClassVarSourceCode compiledMethodWithClassVar classVarName |
 	
@@ -5065,8 +5065,8 @@ test05WhenTheMethodReferencesAClassVariableItFindsIt
 	self assert: 1 equals: variablesToExtract size.
 	self assert: (variablesToExtract includes: classVarName).! !
 
-!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 12:29:13'!
-test06WhenTheMethodReferencesAPoolVariableItFindsIt
+!VariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 13:05:37'!
+test07WhenTheMethodReferencesAPoolVariableItFindsIt
 
 	| aClass variablesToExtract methodSelector aMethodReferencingPoolVarSourceCode compiledMethodWithPoolVar aSharedPoolName aPoolVariableName |
 	
@@ -8724,22 +8724,20 @@ argumentsOf: aMethodNode
 	
 	^aMethodNode arguments collect: [:aTempVarNode | aTempVarNode key]! !
 
-!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 12:11:21'!
+!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 13:10:38'!
 classVariablesReferencedBy: aMethodNode
 
-	| classVariablesFound |
+	| classVariableNodes classVariableNodeCondition |
 	
-	classVariablesFound := Set new.
+	classVariableNodeCondition := [
+		:aNode | 
+		(aNode isVariableNode
+			and: [aMethodNode methodClass definesClassVariableNamedInHierarchy: aNode name])].
+	classVariableNodes := self 
+		selectOn: aMethodNode
+		allNodesThatSatisfy: classVariableNodeCondition.
 
-	aMethodNode 
-		accept: (ParseNodeEnumerator 
-			ofBlock: [:aNode | 
-				(aNode isVariableNode
-					and: [aMethodNode methodClass definesClassVariableNamedInHierarchy: aNode name])
-				ifTrue: [classVariablesFound add: aNode name]]).
-	
-	^classVariablesFound.
-
+	^classVariableNodes collect: [:aNode | aNode name].
 ! !
 
 !VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 11:42:28'!
@@ -8771,43 +8769,56 @@ findIn: aCompiledMethod
 				
 	^variablesToExtract! !
 
-!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 11:54:07'!
+!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 13:13:44'!
 instanceVariablesReferencedBy: aMethodNode
 
-	| instanceVariablesFound |
+	| instVariableNodeCondition instVariableNodes |
 	
-	instanceVariablesFound := Set new.
-
-	aMethodNode 
-		accept: (ParseNodeEnumerator 
-			ofBlock: [:aNode | aNode isInstanceVariableNode 
-				ifTrue: [instanceVariablesFound add: aNode key]]).
+	instVariableNodeCondition := [:aNode | aNode isInstanceVariableNode].
+	instVariableNodes := self 
+		selectOn: aMethodNode
+		allNodesThatSatisfy: instVariableNodeCondition.
 	
-	^instanceVariablesFound.
+	^instVariableNodes collect: [:aNode | aNode key].
 
 ! !
 
-!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 12:42:56'!
+!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 13:16:43'!
 poolVariablesReferencedBy: aMethodNode
 
-	| poolVariablesFound aMethodNodePoolVariables |
+	| aMethodNodePoolVariables poolVariableNodeCondition poolVariableNodes |
 	
-	poolVariablesFound := Set new.
 	aMethodNodePoolVariables := Set new.
 	aMethodNode methodClass 
 		allSharedPools
 		do: [:aPool | aMethodNodePoolVariables addAll: aPool allClassVarNames].
 	
-	aMethodNode 
-		accept: (ParseNodeEnumerator 
-			ofBlock: [:aNode | (aNode isVariableNode
-				and: [aMethodNodePoolVariables includes: aNode name])
-				ifTrue: [poolVariablesFound add: aNode name]]).
+	poolVariableNodeCondition := [
+		:aNode |
+		aNode isVariableNode
+			and: [aMethodNodePoolVariables includes: aNode name]].
+	poolVariableNodes := self
+		selectOn: aMethodNode
+		allNodesThatSatisfy: poolVariableNodeCondition.
 	
-	^poolVariablesFound.
+	^poolVariableNodes collect: [:aNode | aNode name].
 
 
 	! !
+
+!VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 12/11/2018 13:10:50'!
+selectOn: aMethodNode allNodesThatSatisfy: aNodeCondition
+
+	| allNodesThatSatisfy |
+	
+	allNodesThatSatisfy := Set new.
+	
+	aMethodNode 
+		accept: (ParseNodeEnumerator 
+			ofBlock: [:aNode | (aNodeCondition value: aNode)
+				ifTrue: [allNodesThatSatisfy add: aNode]]).
+			
+	^allNodesThatSatisfy! !
 
 !CodeProvider methodsFor: '*Refactoring' stamp: 'HAW 9/8/2018 19:16:43'!
 isEditingMethod

@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 11 December 2018 at 2:51:53 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 11 December 2018 at 4:59:20 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 96!
+!provides: 'Refactoring' 1 98!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2673,6 +2673,61 @@ test15MethodCanNotReferenceSuper
 				invokedWith: #value.]
 		raise: RefactoringError
 		withMessageText: [ExtractToMethodObject methodCanNotReferenceSuperErrorMessage.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/11/2018 16:16:26'!
+test16WhenMethodSendsAMessageToAnInstanceVariableTheMethodObjectSendsItToItsCorrespondingInstanceVariable
+
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod aRefactoredClassInstance classWithVerifiableMessage verifiableMessageSelector methodToRefactorSelector checkCallToInstVarMessageSelector instVarName instVarSetterSourceCode methodToRefactorSourceCode methodToCheckCallToInstVarSourceCode |
+	
+	instVarName := 'anInstVar'.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: instVarName.
+	
+	verifiableMessageSelector := #verifiableMessageSend.
+	methodToRefactorSelector := #m1.
+	methodToRefactorSourceCode := methodToRefactorSelector asString, '
+		', instVarName, ' ', verifiableMessageSelector asString, '.'.
+	aClassToRefactor compile: methodToRefactorSourceCode.
+	
+	instVarSetterSourceCode := instVarName, ': arg
+		', instVarName, ' := arg.'.
+	aClassToRefactor compile: instVarSetterSourceCode.
+	
+	checkCallToInstVarMessageSelector := #checkCallToInstVar.
+	methodToCheckCallToInstVarSourceCode := checkCallToInstVarMessageSelector asString, '
+		^', instVarName, ' hasCalledTheVerifiableMessage.'.
+	aClassToRefactor compile: methodToCheckCallToInstVarSourceCode.
+	
+	classWithVerifiableMessage := self createClassNamed: #ClassWithVerifiableMessage instanceVariableNames: 'hasCalledTheVerifiableMessage'.
+	classWithVerifiableMessage compile: verifiableMessageSelector asString, '
+		hasCalledTheVerifiableMessage := true.'.
+	classWithVerifiableMessage compile: 'hasCalledTheVerifiableMessage
+		^hasCalledTheVerifiableMessage'.	
+	
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: methodToRefactorSelector.
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	methodObjectClassName  := #MethodObject.
+	
+	refactor := ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData
+			withExtractedVariablesToInstanceVariables: {instVarName -> 'instVarReplacement' } asDictionary
+			withInstanceCreationMessageFrom: {'passingInstVar' -> instVarName}
+			invokedWith: #value.
+	refactor apply.		
+	
+	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
+	self assert: aRefactoredMethod methodNode
+		isAnInvocationToMethodObjectClassNamed: methodObjectClassName
+		creatingWith: #passingInstVar:
+		passing: nil.
+		"passing: [:argument | argument isSelfPseudoVariable]."
+
+	aRefactoredClassInstance := aClassToRefactor new.
+	aRefactoredClassInstance anInstVar: classWithVerifiableMessage new.
+	aRefactoredClassInstance m1.
+	self assert: (aRefactoredClassInstance perform: checkCallToInstVarMessageSelector).! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -6560,7 +6615,7 @@ warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplement
 
 	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 14:40:04'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 16:52:07'!
 apply
 
 	| methodObjectClass |
@@ -6573,53 +6628,38 @@ apply
 		category: methodObjectCategory.
 	
 	self compileInstanceCreationMethodInto: methodObjectClass.
-	self compileExtractedMethodAsValueMethodOn: methodObjectClass.
+	self compileExtractedMethodAsInvocationMethodOn: methodObjectClass.
 	self replaceExtractedMethodWithMethodObjectInvocation.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 17:12:13'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 16:58:59'!
 compileExtractedMethodAsInvocationMethodOn: aClass
 
-	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced sourceCodeWithSelfReplaced selfRanges selfInstVarReplacement |
+	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced disregardType sourceCodeWithVariablesReplaced rangesToNewStrings |
 	
 	methodNode :=  methodToExtract methodNode.
-	selfRanges := methodNode encoder 
-		rangesForVariable: 'self' 
-		checkingType: [:node | node isSelfPseudoVariable] 
-		ifAbsent: [Set new].
+	rangesToNewStrings := SortedCollection sortBlock: [:rangeToStringA :rangeToStringB | rangeToStringA key first < rangeToStringB key first].
+	disregardType := [:aNode | true].
+	methodVariableNamesToInstanceVariableNames keys
+		do: [
+			:aVariableName |
+			| rangesOfVariable |
+			rangesOfVariable := methodNode encoder 
+				rangesForVariable: aVariableName 
+				checkingType: disregardType 
+				ifAbsent: [Set new].
+				
+			rangesOfVariable do: [
+				:aRange |
+				| rangeToNewString instVarForVar |
+				instVarForVar := methodVariableNamesToInstanceVariableNames at: aVariableName.
+				rangeToNewString := Association key: aRange value: instVarForVar.
+				rangesToNewStrings add: rangeToNewString]].
 	
 	originalSourceCode := methodNode sourceText.
-	selfRanges isEmpty 
-		ifFalse: [
-			selfInstVarReplacement := methodVariableNamesToInstanceVariableNames at: 'self'.
-			sourceCodeWithSelfReplaced := originalSourceCode copyReplacing: selfRanges with: selfInstVarReplacement.]
-		ifTrue: [
-			sourceCodeWithSelfReplaced := originalSourceCode.].
+	sourceCodeWithVariablesReplaced := originalSourceCode copyReplacing: rangesToNewStrings.
 	
 	endHeaderIndex := Parser methodHeaderLengthFrom: methodNode sourceText.
-	sourceCodeWithSelectorReplaced := sourceCodeWithSelfReplaced copyReplacing: { Interval from: 1 to: endHeaderIndex. } with: methodObjectInvocationSelector asString. 
-	aClass compile: sourceCodeWithSelectorReplaced.! !
-
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 16:33:46'!
-compileExtractedMethodAsValueMethodOn: aClass
-
-	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced sourceCodeWithSelfReplaced selfRanges selfInstVarReplacement |
-	
-	methodNode :=  methodToExtract methodNode.
-	selfRanges := methodNode encoder 
-		rangesForVariable: 'self' 
-		checkingType: [:node | node isSelfPseudoVariable] 
-		ifAbsent: [Set new].
-	
-	originalSourceCode := methodNode sourceText.
-	selfRanges isEmpty 
-		ifFalse: [
-			selfInstVarReplacement := methodVariableNamesToInstanceVariableNames at: 'self'.
-			sourceCodeWithSelfReplaced := originalSourceCode copyReplacing: selfRanges with: selfInstVarReplacement.]
-		ifTrue: [
-			sourceCodeWithSelfReplaced := originalSourceCode.].
-	
-	endHeaderIndex := Parser methodHeaderLengthFrom: methodNode sourceText.
-	sourceCodeWithSelectorReplaced := sourceCodeWithSelfReplaced copyReplacing: { Interval from: 1 to: endHeaderIndex. } with: 'value'. 
+	sourceCodeWithSelectorReplaced := sourceCodeWithVariablesReplaced copyReplacing: { Interval from: 1 to: endHeaderIndex. } with: methodObjectInvocationSelector asString. 
 	aClass compile: sourceCodeWithSelectorReplaced.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 16:18:31'!

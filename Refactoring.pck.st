@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 11 December 2018 at 1:16:58 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 11 December 2018 at 2:51:53 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 95!
+!provides: 'Refactoring' 1 96!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2646,6 +2646,33 @@ test14MethodObjectIsInvokedWithTheChosenSelector
 		creatingWith: #contextProviderKeyword:
 		invokingWith: #aCustomInvocationSelector
 		passing: ignoreArguments.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/11/2018 14:44:48'!
+test15MethodCanNotReferenceSuper
+
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor aMethodSelector |
+	
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'calledSelector'.
+	
+	aMethodSelector := #m1.
+	aClassToRefactor compile: aMethodSelector asString, ' super isNil.'.
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: aMethodSelector.
+	
+	methodObjectClassName  := #MethodObject.
+	
+	self 
+		should: [
+			ExtractToMethodObject 
+				from: aCompiledMethod
+				toMethodObjectClassNamed: methodObjectClassName 
+				subclassing: methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: #() asDictionary
+				withInstanceCreationMessageFrom: #()
+				invokedWith: #value.]
+		raise: RefactoringError
+		withMessageText: [ExtractToMethodObject methodCanNotReferenceSuperErrorMessage.! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -6680,7 +6707,13 @@ methodToExtractReferencesSelf
 	
 	^false.! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/10/2018 17:04:27'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/11/2018 14:50:46'!
+assertItDoesNotReferenceSuper: aCompiledMethod
+
+	aCompiledMethod sendsToSuper
+		ifTrue: [self signalMethodReferencesSuper.! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/11/2018 14:45:50'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
@@ -6690,6 +6723,7 @@ withInstanceCreationMessageFrom: messageKeywordToInstanceVariableName
 invokedWith: anInvocationSelector
 	
 	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
+	self assertItDoesNotReferenceSuper: aCompiledMethod.
 	
 	^self new 
 		from: aCompiledMethod
@@ -6701,11 +6735,20 @@ invokedWith: anInvocationSelector
 		invokedWith: anInvocationSelector
 ! !
 
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/11/2018 14:49:45'!
+methodCanNotReferenceSuperErrorMessage
+	^'The method to be extracted can not reference super pseudo variable'! !
+
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/27/2018 15:46:47'!
 newClassPreconditionClass
 	
 	^NewClassPrecondition.	
 	! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/11/2018 14:51:12'!
+signalMethodReferencesSuper
+	
+	self refactoringError: self methodCanNotReferenceSuperErrorMessage.! !
 
 !ExtractToTemporary methodsFor: 'applying' stamp: 'HAW 10/18/2017 18:39:22'!
 apply

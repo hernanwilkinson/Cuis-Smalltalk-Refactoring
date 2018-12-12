@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 12 December 2018 at 1:46:06 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 12 December 2018 at 1:55:36 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 101!
+!provides: 'Refactoring' 1 102!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2789,6 +2789,75 @@ test17WhenMethodSendsAMessageToAClassVariableTheMethodObjectSendsItToItsCorrespo
 	aRefactoredClassInstance AClassVar: classWithVerifiableMessage new.
 	aRefactoredClassInstance m1.
 	self assert: (aRefactoredClassInstance perform: checkCallToClassVarMessageSelector).! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/12/2018 13:55:12'!
+test18WhenMethodSendsAMessageToAPoolVariableTheMethodObjectSendsItToItsCorrespondingInstanceVariable
+
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod aRefactoredClassInstance classWithVerifiableMessage verifiableMessageSelector methodToRefactorSelector methodToRefactorSourceCode aPoolName poolVarName checkCallToPoolVarMessageSelector methodToCheckCallToPoolVarSourceCode poolVarSetterSourceCode |
+	
+	poolVarName := 'APoolVar'.
+	aPoolName := #APool.
+	self 
+		createClassNamed: aPoolName
+		subclassOf: SharedPool
+		instanceVariableNames: ''
+		classVariableNames: poolVarName
+		poolDictionaries: ''
+		category: self classCategoryOfTestData.
+	aClassToRefactor := self 
+		createClassNamed: #AClassToRefactor 
+		subclassOf: Object
+		instanceVariableNames: ''
+		classVariableNames: ''
+		poolDictionaries: aPoolName asString
+		category: self classCategoryOfTestData.
+	
+	verifiableMessageSelector := #verifiableMessageSend.
+	methodToRefactorSelector := #m1.
+	methodToRefactorSourceCode := methodToRefactorSelector asString, '
+		', poolVarName, ' ', verifiableMessageSelector asString, '.'.
+	aClassToRefactor compile: methodToRefactorSourceCode.
+	
+	poolVarSetterSourceCode := poolVarName, ': arg
+		', poolVarName, ' := arg.'.
+	aClassToRefactor compile: poolVarSetterSourceCode.
+	
+	checkCallToPoolVarMessageSelector := #checkCallToPoolVar.
+	methodToCheckCallToPoolVarSourceCode := checkCallToPoolVarMessageSelector asString, '
+		^', poolVarName, ' hasCalledTheVerifiableMessage.'.
+	aClassToRefactor compile: methodToCheckCallToPoolVarSourceCode.
+	
+	classWithVerifiableMessage := self createClassNamed: #ClassWithVerifiableMessage instanceVariableNames: 'hasCalledTheVerifiableMessage'.
+	classWithVerifiableMessage compile: verifiableMessageSelector asString, '
+		hasCalledTheVerifiableMessage := true.'.
+	classWithVerifiableMessage compile: 'hasCalledTheVerifiableMessage
+		^hasCalledTheVerifiableMessage'.	
+	
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: methodToRefactorSelector.
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	methodObjectClassName  := #MethodObject.
+	
+	refactor := ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData
+			withExtractedVariablesToInstanceVariables: {poolVarName -> 'poolVarReplacement' } asDictionary
+			withInstanceCreationMessageFrom: {'passingPoolVar' -> poolVarName}
+			invokedWith: #value.
+	refactor apply.		
+	
+	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
+	self assert: aRefactoredMethod methodNode
+		isAnInvocationToMethodObjectClassNamed: methodObjectClassName
+		creatingWith: #passingPoolVar:
+		passing: nil.
+		"passing: [:argument | argument isSelfPseudoVariable]."
+
+	aRefactoredClassInstance := aClassToRefactor new.
+	aRefactoredClassInstance APoolVar: classWithVerifiableMessage new.
+	aRefactoredClassInstance m1.
+	self assert: (aRefactoredClassInstance perform: checkCallToPoolVarMessageSelector).! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData

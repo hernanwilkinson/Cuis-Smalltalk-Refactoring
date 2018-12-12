@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 11 December 2018 at 4:59:20 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 12 December 2018 at 1:46:06 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 98!
+!provides: 'Refactoring' 1 101!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2674,7 +2674,7 @@ test15MethodCanNotReferenceSuper
 		raise: RefactoringError
 		withMessageText: [ExtractToMethodObject methodCanNotReferenceSuperErrorMessage.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/11/2018 16:16:26'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/12/2018 12:14:13'!
 test16WhenMethodSendsAMessageToAnInstanceVariableTheMethodObjectSendsItToItsCorrespondingInstanceVariable
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod aRefactoredClassInstance classWithVerifiableMessage verifiableMessageSelector methodToRefactorSelector checkCallToInstVarMessageSelector instVarName instVarSetterSourceCode methodToRefactorSourceCode methodToCheckCallToInstVarSourceCode |
@@ -2728,6 +2728,67 @@ test16WhenMethodSendsAMessageToAnInstanceVariableTheMethodObjectSendsItToItsCorr
 	aRefactoredClassInstance anInstVar: classWithVerifiableMessage new.
 	aRefactoredClassInstance m1.
 	self assert: (aRefactoredClassInstance perform: checkCallToInstVarMessageSelector).! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/11/2018 17:26:32'!
+test17WhenMethodSendsAMessageToAClassVariableTheMethodObjectSendsItToItsCorrespondingInstanceVariable
+
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod aRefactoredClassInstance classWithVerifiableMessage verifiableMessageSelector methodToRefactorSelector methodToRefactorSourceCode classVarName classVarSetterSourceCode checkCallToClassVarMessageSelector methodToCheckCallToClassVarSourceCode |
+	
+	classVarName := 'AClassVar'.
+	aClassToRefactor := self 
+		createClassNamed: #AClassToRefactor 
+		subclassOf: Object
+		instanceVariableNames: ''
+		classVariableNames: classVarName
+		poolDictionaries: ''
+		category: self classCategoryOfTestData.
+	
+	verifiableMessageSelector := #verifiableMessageSend.
+	methodToRefactorSelector := #m1.
+	methodToRefactorSourceCode := methodToRefactorSelector asString, '
+		', classVarName, ' ', verifiableMessageSelector asString, '.'.
+	aClassToRefactor compile: methodToRefactorSourceCode.
+	
+	classVarSetterSourceCode := classVarName, ': arg
+		', classVarName, ' := arg.'.
+	aClassToRefactor compile: classVarSetterSourceCode.
+	
+	checkCallToClassVarMessageSelector := #checkCallToInstVar.
+	methodToCheckCallToClassVarSourceCode := checkCallToClassVarMessageSelector asString, '
+		^', classVarName, ' hasCalledTheVerifiableMessage.'.
+	aClassToRefactor compile: methodToCheckCallToClassVarSourceCode.
+	
+	classWithVerifiableMessage := self createClassNamed: #ClassWithVerifiableMessage instanceVariableNames: 'hasCalledTheVerifiableMessage'.
+	classWithVerifiableMessage compile: verifiableMessageSelector asString, '
+		hasCalledTheVerifiableMessage := true.'.
+	classWithVerifiableMessage compile: 'hasCalledTheVerifiableMessage
+		^hasCalledTheVerifiableMessage'.	
+	
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: methodToRefactorSelector.
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	methodObjectClassName  := #MethodObject.
+	
+	refactor := ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData
+			withExtractedVariablesToInstanceVariables: {classVarName -> 'classVarReplacement' } asDictionary
+			withInstanceCreationMessageFrom: {'passingClassVar' -> classVarName}
+			invokedWith: #value.
+	refactor apply.		
+	
+	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
+	self assert: aRefactoredMethod methodNode
+		isAnInvocationToMethodObjectClassNamed: methodObjectClassName
+		creatingWith: #passingClassVar:
+		passing: nil.
+		"passing: [:argument | argument isSelfPseudoVariable]."
+
+	aRefactoredClassInstance := aClassToRefactor new.
+	aRefactoredClassInstance AClassVar: classWithVerifiableMessage new.
+	aRefactoredClassInstance m1.
+	self assert: (aRefactoredClassInstance perform: checkCallToClassVarMessageSelector).! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -3222,12 +3283,12 @@ test09NewSuperclassNameCanNotBeEmpty
 		assertCreation: [ InsertSuperclass to: self class named: '' asSymbol ]
 		failsWith: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage ].! !
 
-!InsertSuperclassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:23:12'!
+!InsertSuperclassTest methodsFor: 'tests' stamp: 'FGJ 12/12/2018 10:53:24'!
 test10NewSuperclassNameCanNotHaveSpaces
 	
 	self
 		assertCreation: [ InsertSuperclass to: self class named: 'With spaces' asSymbol ]
-		failsWith: [ NewClassPrecondition newClassNameCanNotHaveSpacesErrorMessage ].! !
+		failsWith: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
 
 !RemoveAllUnreferencedInstanceVariablesTest methodsFor: 'tests' stamp: 'HAW 8/2/2018 16:15:11'!
 test01NoVariableIsRemovedWhenClassHasNoInstanceVariable
@@ -3828,7 +3889,7 @@ test13NewClassNameHasToBeASymbol
 		assertCreation: [ RenameClass from: self class to: '' asSymbol ]
 		failsWith: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage]! !
 
-!RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:35:56'!
+!RenameClassTest methodsFor: 'tests' stamp: 'FGJ 12/12/2018 10:53:24'!
 test14NewClassNameCanNotHaveSpaces
 
 	| oldClassName classToRefactor |
@@ -3838,7 +3899,7 @@ test14NewClassNameCanNotHaveSpaces
 
 	self 
 		assertCreation: [ RenameClass from: classToRefactor to: 'With spaces' asSymbol ]
-		failsWith: [ NewClassPrecondition newClassNameCanNotHaveSpacesErrorMessage]! !
+		failsWith: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage]! !
 
 !RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/9/2018 14:44:13'!
 test15ItDoesNotRenameReferencesToClassVariableWithSameName
@@ -5188,13 +5249,13 @@ test07WhenTheMethodReferencesAPoolVariableItFindsIt
 findIn: aCompiledMethod 
 	self shouldBeImplemented.! !
 
-!NewClassPrecondition methodsFor: 'evaluating' stamp: 'FGJ 11/27/2018 10:10:34'!
+!NewClassPrecondition methodsFor: 'evaluating' stamp: 'FGJ 12/12/2018 10:50:36'!
 value
 
 	self assertNewClassNameIsNotEmpty.
 	self assertNewClassNameSymbol.
 	self assertNewClassNameStartsWithUppercaseLetter.
-	self assertNewClassNameHasNoSpaces.
+	self assertNewClassNameHasNoSeparators.
 	self assertNewClassNameDoesNotExistInSystem.
 	self assertNewClassNameIsNotUndeclaredInUndeclared.
 
@@ -5205,10 +5266,11 @@ assertNewClassNameDoesNotExistInSystem
 
 	(system classNamed: newClassName) ifNotNil: [ self class signalAlreadyExistClassNamed: newClassName ]! !
 
-!NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'HAW 8/13/2018 16:10:47'!
-assertNewClassNameHasNoSpaces
+!NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'FGJ 12/12/2018 10:51:27'!
+assertNewClassNameHasNoSeparators
 
-	(newClassName includes: Character space) ifTrue: [ self class signalNewClassNameCanNotHaveSpaces ]! !
+	(newClassName anySatisfy: [:aChar | aChar isSeparator])
+		ifTrue: [ self class signalNewClassNameCanNotHaveSeparators]! !
 
 !NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'HAW 8/13/2018 17:32:07'!
 assertNewClassNameIsNotEmpty
@@ -5237,10 +5299,10 @@ initializeFor: aNewClassName in: aSystem undeclared: anUndeclaredDictionary
 	system := aSystem.
 	undeclared := anUndeclaredDictionary ! !
 
-!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'FGJ 12/12/2018 10:48:13'!
 errorMessageForAlreadyExistClassNamed: aNewClassName
 
-	^aNewClassName, ' already exist'! !
+	^'A class named ', aNewClassName, ' already exists'! !
 
 !NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
 errorMessageForNewClassIsUndeclared: aNewClassName
@@ -5252,10 +5314,10 @@ newClassNameCanNotBeEmptyErrorMessage
 	
 	^'New class name can not be empty'! !
 
-!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
-newClassNameCanNotHaveSpacesErrorMessage
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'FGJ 12/12/2018 10:53:24'!
+newClassNameCanNotHaveSeparatorsErrorMessage
 	
-	^'New class name can not have spaces'! !
+	^'New class name can not have separators'! !
 
 !NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
 newNameMustBeSymbolErrorMessage
@@ -5287,10 +5349,10 @@ signalNewClassNameCanNotBeEmpty
 	
 	self refactoringError: self newClassNameCanNotBeEmptyErrorMessage! !
 
-!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
-signalNewClassNameCanNotHaveSpaces
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'FGJ 12/12/2018 10:53:24'!
+signalNewClassNameCanNotHaveSeparators
 	
-	self refactoringError: self newClassNameCanNotHaveSpacesErrorMessage ! !
+	self refactoringError: self newClassNameCanNotHaveSeparatorsErrorMessage ! !
 
 !NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
 signalNewNameMustBeSymbol
@@ -6631,7 +6693,7 @@ apply
 	self compileExtractedMethodAsInvocationMethodOn: methodObjectClass.
 	self replaceExtractedMethodWithMethodObjectInvocation.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 16:58:59'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/12/2018 13:45:48'!
 compileExtractedMethodAsInvocationMethodOn: aClass
 
 	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced disregardType sourceCodeWithVariablesReplaced rangesToNewStrings |
@@ -6647,7 +6709,11 @@ compileExtractedMethodAsInvocationMethodOn: aClass
 				rangesForVariable: aVariableName 
 				checkingType: disregardType 
 				ifAbsent: [Set new].
-				
+			
+			rangesOfVariable addAll: (methodNode encoder 
+				rangesForLiteralVariableNode: aVariableName 
+				ifAbsent: [Set new]).
+					
 			rangesOfVariable do: [
 				:aRange |
 				| rangeToNewString instVarForVar |
@@ -6732,20 +6798,6 @@ replaceExtractedMethodWithMethodObjectInvocation
 				into: [:accum :keywordToVarName |
 					accum append: keywordToVarName key, ': ', keywordToVarName value]].
 	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' ', constructorMessage, ') ', methodObjectInvocationSelector asString.! !
-
-!ExtractToMethodObject methodsFor: 'inspecting' stamp: 'FGJ 12/10/2018 10:51:30'!
-methodToExtractReferencesSelf
-	
-	| methodNode |
-	
-	methodNode := methodToExtract methodNode.
-	methodNode 
-		accept: (ParseNodeEnumerator 
-			ofBlock: [:aNode | aNode isSelfPseudoVariable ifTrue: [^true]]
-			select: [:aNode | aNode isReturn not
-				or: [methodNode encoder rawSourceRanges at: aNode ifPresent: [:irrelevant | true] ifAbsent: [false]]]).
-	
-	^false.! !
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/11/2018 14:50:46'!
 assertItDoesNotReferenceSuper: aCompiledMethod
@@ -7085,15 +7137,20 @@ initializeTo: aClass named: aSuperclassName
 	classToRefactor := aClass.
 	superclassName := aSuperclassName.! !
 
+!InsertSuperclass class methodsFor: 'instance creation' stamp: 'FGJ 12/12/2018 11:04:24'!
+newClassPreconditionClass
+
+	^NewClassPrecondition ! !
+
 !InsertSuperclass class methodsFor: 'instance creation' stamp: 'HAW 8/13/2018 17:34:37'!
 to: aClass named: aSuperclassName
 	
 	^self to: aClass named: aSuperclassName in: Smalltalk undeclared: Undeclared! !
 
-!InsertSuperclass class methodsFor: 'instance creation' stamp: 'HAW 8/13/2018 17:41:04'!
+!InsertSuperclass class methodsFor: 'instance creation' stamp: 'FGJ 12/12/2018 11:04:11'!
 to: aClass named: aSuperclassName in: aSystem undeclared: anUndeclared
 
-	NewClassPrecondition valueFor: aSuperclassName in: aSystem undeclared: anUndeclared.
+	self newClassPreconditionClass valueFor: aSuperclassName in: aSystem undeclared: anUndeclared.
 	
 	^self new initializeTo: aClass theNonMetaClass named: aSuperclassName ! !
 

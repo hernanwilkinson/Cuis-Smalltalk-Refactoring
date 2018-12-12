@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 12 December 2018 at 1:55:36 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 12 December 2018 at 3:18:50 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 102!
+!provides: 'Refactoring' 1 103!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2858,6 +2858,62 @@ test18WhenMethodSendsAMessageToAPoolVariableTheMethodObjectSendsItToItsCorrespon
 	aRefactoredClassInstance APoolVar: classWithVerifiableMessage new.
 	aRefactoredClassInstance m1.
 	self assert: (aRefactoredClassInstance perform: checkCallToPoolVarMessageSelector).! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/12/2018 15:13:55'!
+test19WhenMethodSendsAMessageToAnArgumentTheMethodObjectSendsItToItsCorrespondingInstanceVariable
+
+	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod aRefactoredClassInstance classWithVerifiableMessage verifiableMessageSelector methodToRefactorSelector methodToRefactorSourceCode anArgName anInstanceWithVerifiableMessage methodObjectClass |
+	
+	aClassToRefactor := self 
+		createClassNamed: #AClassToRefactor 
+		subclassOf: Object
+		instanceVariableNames: ''
+		classVariableNames: ''
+		poolDictionaries: ''
+		category: self classCategoryOfTestData.
+	
+	anArgName := 'anArg'.
+	verifiableMessageSelector := #verifiableMessageSend.
+	methodToRefactorSelector := #m1:.
+	methodToRefactorSourceCode := methodToRefactorSelector asString, ' ', anArgName, '
+		', anArgName, ' ', verifiableMessageSelector asString, '.'.
+	aClassToRefactor compile: methodToRefactorSourceCode.
+	
+	classWithVerifiableMessage := self createClassNamed: #ClassWithVerifiableMessage instanceVariableNames: 'hasCalledTheVerifiableMessage'.
+	classWithVerifiableMessage compile: verifiableMessageSelector asString, '
+		hasCalledTheVerifiableMessage := true.'.
+	classWithVerifiableMessage compile: 'hasCalledTheVerifiableMessage
+		^hasCalledTheVerifiableMessage'.	
+	
+	aCompiledMethod  := aClassToRefactor compiledMethodAt: methodToRefactorSelector.
+	methodObjectSuperclass := self createClassNamed: #MethodObjectSuper.
+	methodObjectClassName  := #MethodObject.
+	
+	refactor := ExtractToMethodObject 
+			from: aCompiledMethod
+			toMethodObjectClassNamed: methodObjectClassName 
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData
+			withExtractedVariablesToInstanceVariables: {anArgName -> 'argReplacement' } asDictionary
+			withInstanceCreationMessageFrom: {'passingArg' -> anArgName}
+			invokedWith: #customInvocationSelector.
+	refactor apply.		
+	
+	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
+	self assert: aRefactoredMethod methodNode
+		isAnInvocationToMethodObjectClassNamed: methodObjectClassName
+		creatingWith: #passingArg:
+		invokingWith: #customInvocationSelector
+		passing: nil.
+		"passing: [:argument | argument isSelfPseudoVariable]."
+	
+	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
+	self assert: (methodObjectClass canUnderstand: #customInvocationSelector).
+
+	aRefactoredClassInstance := aClassToRefactor new.
+	anInstanceWithVerifiableMessage := classWithVerifiableMessage new.
+	aRefactoredClassInstance m1: anInstanceWithVerifiableMessage.
+	self assert: (anInstanceWithVerifiableMessage perform: #hasCalledTheVerifiableMessage).! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -6746,7 +6802,7 @@ warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplement
 
 	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/11/2018 16:52:07'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/12/2018 14:39:56'!
 apply
 
 	| methodObjectClass |
@@ -6762,10 +6818,10 @@ apply
 	self compileExtractedMethodAsInvocationMethodOn: methodObjectClass.
 	self replaceExtractedMethodWithMethodObjectInvocation.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/12/2018 13:45:48'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/12/2018 14:58:04'!
 compileExtractedMethodAsInvocationMethodOn: aClass
 
-	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced disregardType sourceCodeWithVariablesReplaced rangesToNewStrings |
+	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced disregardType sourceCodeWithVariablesReplaced rangesToNewStrings rangesToNewStringsWithArgsFiltered |
 	
 	methodNode :=  methodToExtract methodNode.
 	rangesToNewStrings := SortedCollection sortBlock: [:rangeToStringA :rangeToStringB | rangeToStringA key first < rangeToStringB key first].
@@ -6790,8 +6846,10 @@ compileExtractedMethodAsInvocationMethodOn: aClass
 				rangeToNewString := Association key: aRange value: instVarForVar.
 				rangesToNewStrings add: rangeToNewString]].
 	
+	rangesToNewStringsWithArgsFiltered := self filter: rangesToNewStrings ofArgRangesOf: methodNode.
+	
 	originalSourceCode := methodNode sourceText.
-	sourceCodeWithVariablesReplaced := originalSourceCode copyReplacing: rangesToNewStrings.
+	sourceCodeWithVariablesReplaced := originalSourceCode copyReplacing: rangesToNewStringsWithArgsFiltered.
 	
 	endHeaderIndex := Parser methodHeaderLengthFrom: methodNode sourceText.
 	sourceCodeWithSelectorReplaced := sourceCodeWithVariablesReplaced copyReplacing: { Interval from: 1 to: endHeaderIndex. } with: methodObjectInvocationSelector asString. 
@@ -6818,6 +6876,17 @@ compileInstanceCreationMethodInto: aClass
 	aClass class compile: methodTitle, ' ^self new ', methodTitle.
 	
 	^true.! !
+
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/12/2018 15:07:36'!
+filter: rangesToStrings ofArgRangesOf: aMethodNode
+	
+	| endHeaderIndex 
+	|
+	endHeaderIndex := Parser methodHeaderLengthFrom: aMethodNode sourceText.
+	
+	^rangesToStrings select: [
+		:rangeToString |
+		rangeToString key first > endHeaderIndex].! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 17:04:08'!
 from: aCompiledMethod

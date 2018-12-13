@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3508] on 6 December 2018 at 8:42:25 pm'!
-'Description selectorSymbol and receiverOrCascadeReceiver in MessageNode'!
-!provides: 'Refactoring' 1 66!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3508] on 13 December 2018 at 7:02:35 pm'!
+'Description Can rename from/to binary/keyword of 1 parameter. Removed #doSilently: on tests. Before integration with ExtractMethodObject brach'!
+!provides: 'Refactoring' 1 68!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -421,7 +421,7 @@ Refactoring subclass: #RemoveInstanceVariable
 	category: 'Refactoring'
 "
 variableToRemove : <String>
-classToRefactor : <AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | BrowseTypedSelector class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class> # Object class
+classToRefactor : <AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | AnObsoleteClassWithInstVar class | BrowseTypedSelector class | AnObsoleteClassWithInstVar class> # Object class
 "!
 !classDefinition: 'RemoveInstanceVariable class' category: #Refactoring!
 RemoveInstanceVariable class
@@ -531,7 +531,7 @@ newSelector : <Symbol>
 scopeChoice : <SmallInteger>
 implementors : <IdentitySet | OrderedCollection> # Collection
 senders : <IdentitySet | OrderedCollection> # Collection
-implementingClass : <TicTacToe class | SmalltalkEditor class | ParseNodeTypesDisplay class | Wallet class | TransferWithdraw class | Metaclass | Collection class | SystemDictionary class | Clock class | ChangeSelectorMessageSetWindow class | ParseNodeTypeInfo class | BrowseTypedImplementors class | AssignmentNode class | BrowseTypedSelector class> # ClassDescription
+implementingClass : <TicTacToe class | SmalltalkEditor class | ParseNodeTypesDisplay class | AnObsoleteWallet class | AnObsoleteTransferWithdraw class | Metaclass | Collection class | SystemDictionary class | AnObsoleteClock class | ChangeSelectorMessageSetWindow class | ParseNodeTypeInfo class | BrowseTypedImplementors class | AssignmentNode class | BrowseTypedSelector class> # ClassDescription
 browser : <ChangeSelectorSendersWindow | ChangeSelectorImplementorsWindow> # ChangeSelectorMessageSetWindow
 shouldShowChanges : <True | False> # Boolean
 "!
@@ -604,7 +604,7 @@ RefactoringApplier subclass: #RemoveAllUnreferencedInstanceVariablesApplier
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-classToRefactor : <TransferWithdraw class | TransferDeposit class | Wallet class> # Object class
+classToRefactor : <AnObsoleteTransferWithdraw class | AnObsoleteTransferDeposit class | AnObsoleteWallet class | AnObsoleteTransfer class | StackSizeWatcher class> # Object class
 browser : <BrowserWindow>
 variableToRemove : <>
 "!
@@ -635,7 +635,7 @@ RefactoringApplier subclass: #RenameClassApplier
 	category: 'Refactoring'
 "
 browser : <DenotativeObjectBrowser | Browser> # Browser
-classToRename : <Array class | RenameSelectorApplier class | TransferWithdraw class | TransferDeposit class | AnObsoleteJuan1 class | RenameClassApplier class | PlayingX class | BrowseTypedImplementors class | AnObsoleteTypeInfoError class | IncompleteTypeInfo class | BrowseTypedSelector class> # Object class
+classToRename : <Array class | RenameSelectorApplier class | AnObsoleteTransferWithdraw class | AnObsoleteTransferDeposit class | AnObsoleteJuan1 class | RenameClassApplier class | PlayingX class | BrowseTypedImplementors class | AnObsoleteTypeInfoError class | IncompleteTypeInfo class | BrowseTypedSelector class> # Object class
 newClassName : <String | Symbol> # String
 "!
 !classDefinition: 'RenameClassApplier class' category: #Refactoring!
@@ -649,8 +649,8 @@ RefactoringApplier subclass: #RenameInstanceVariableApplier
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-classToRefactor : <TicTacToe class | TusLibrosSystemFacade class | SmalltalkEditor class | Transfer class | Metaclass> # ClassDescription
-oldInstanceVariable : <String>
+classToRefactor : <TicTacToe class | Metaclass | SmalltalkEditor class | TusLibrosSystemFacade class | AnObsoleteTransfer class | StackSizeWatcher class> # ClassDescription
+oldInstanceVariable : <String | UndefinedObject> # String
 newInstanceVariable : <String>
 browser : <DenotativeObjectBrowser | Browser> # Browser
 "!
@@ -665,7 +665,7 @@ RefactoringApplier subclass: #RenameTemporaryApplier
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-classToRefactor : <TicTacToe class | Metaclass | SmalltalkEditor class | BrowseTypedSelector class | BrowseTypedSenders class | ParseNode class | FintechTest class | Transfer class> # ClassDescription
+classToRefactor : <TicTacToe class | Metaclass | SmalltalkEditor class | BrowseTypedSelector class | BrowseTypedSenders class | ParseNode class | AnObsoleteFintechTest class | AnObsoleteTransfer class> # ClassDescription
 oldVariable : <String>
 newVariable : <String>
 smalltalkEditor : <SmalltalkEditor | DenotativeObjectSmalltalkEditor> # SmalltalkEditor
@@ -682,7 +682,7 @@ RefactoringApplier subclass: #SafelyRemoveClassApplier
 	poolDictionaries: ''
 	category: 'Refactoring'
 "
-classToRemove : <AnObsoleteTicTacToe2 class | AnObsoleteNoImplementorForMessageSend class | AnObsoleteTypeInfoError class | AnObsoleteNoImplementorForMessageSend class | AnObsoleteTypedSendersSearch class | AnObsoleteXX class | AnObsoleteFastTransferWithdraw class> # Object class
+classToRemove : <AnObsoleteFastTransferWithdraw class | AnObsoleteTypedSendersSearch class | AnObsoleteTypeInfoError class | AnObsoleteXXX1 class | AnObsoleteXX class | AnObsoleteTicTacToe2 class | AnObsoleteNoImplementorForMessageSend class | AnObsoleteNoImplementorForMessageSend class> # Object class
 browser : <Browser>
 "!
 !classDefinition: 'SafelyRemoveClassApplier class' category: #Refactoring!
@@ -1345,11 +1345,6 @@ tearDown
 		SystemOrganization removeSystemCategories: classCategories.
 		Browser allInstancesDo: [:aBrowser | aBrowser changed: #systemCategoryList ].
 		SystemChangeNotifier uniqueInstance resetSilenceLevel ]! !
-
-!RefactoringTest methodsFor: 'Running' stamp: 'HAW 8/13/2018 12:34:11'!
-runCase
-
-	^ SystemChangeNotifier uniqueInstance doSilently: [ super runCase ]! !
 
 !AddInstanceVariableTest methodsFor: 'class factory' stamp: 'HAW 6/6/2017 09:59:58'!
 allClassCategoriesOfTestData
@@ -3269,6 +3264,17 @@ test04NewClassShouldNotExist
 		assertCreation: [ RenameClass from: self class to: newClassName in: Smalltalk ]
 		failsWith: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: newClassName ]! !
 
+!RenameClassTest methodsFor: 'tests' stamp: 'HAW 12/13/2018 17:59:19'!
+test04_01NewClassNameShouldNotBeAGlobalVariable
+
+	| newClassName |
+	
+	newClassName := #Smalltalk.
+	
+	self 
+		assertCreation: [ RenameClass from: self class to: newClassName in: Smalltalk ]
+		failsWith: [ NewClassPrecondition errorMessageForAlreadyExistGlobalNamed: newClassName ]! !
+
 !RenameClassTest methodsFor: 'tests' stamp: 'HAW 8/13/2018 18:33:35'!
 test05NewClassShouldNotBeUndeclare
 
@@ -4307,6 +4313,76 @@ test27DoesNotRenameLiteralsThatBeginsWithOldSelectorAndEndWithColonInsideLiteral
 	self assert: (senderMethod sendsOrRefersTo: (oldSelector,':') asSymbol) 
 ! !
 
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 12/13/2018 18:46:23'!
+test28CanRenameFromBinaryToKeywordOfOneParameter
+
+	| rename senderMethod referencerToOldSelector |
+	
+	referencerToOldSelector := #m1.
+	oldSelector := '&&' asSymbol.
+	newSelector := 'abc:' asSymbol.
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString, ' aParameter'.
+	classToRefactor compile: referencerToOldSelector asString , ' ^self ' , oldSelector asString,' 1'.
+
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>referencerToOldSelector).
+	rename apply.
+	
+	self assert: (classToRefactor includesSelector: newSelector).
+	self deny: (classToRefactor includesSelector: oldSelector).
+	senderMethod := classToRefactor compiledMethodAt: referencerToOldSelector.
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector). 
+! !
+
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 12/13/2018 18:53:24'!
+test29CanRenameFromKeywordOfOneParameterToBinary
+
+	| rename senderMethod referencerToOldSelector |
+	
+	referencerToOldSelector := #m1.
+	oldSelector := 'abc:' asSymbol.
+	newSelector := '&&' asSymbol.
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString, ' aParameter'.
+	classToRefactor compile: referencerToOldSelector asString , ' ^self ' , oldSelector asString,' 1'.
+
+	rename := RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: (Array with: classToRefactor>>referencerToOldSelector).
+	rename apply.
+	
+	self assert: (classToRefactor includesSelector: newSelector).
+	self deny: (classToRefactor includesSelector: oldSelector).
+	senderMethod := classToRefactor compiledMethodAt: referencerToOldSelector.
+	self deny: (senderMethod sendsOrRefersTo: oldSelector).
+	self assert: (senderMethod sendsOrRefersTo: newSelector). 
+! !
+
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 12/13/2018 19:00:10'!
+test30CanNotRenameFromBinaryToKeywordOfMoreThanOneParameter
+
+	oldSelector := '&&' asSymbol.
+	newSelector := 'abc:def:' asSymbol.
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: oldSelector asString, ' aParameter'.
+
+	self 
+		should: [ RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: #() ]
+		raise: Error
+		withMessageText: (RenameSelector errorMessageForNewSelector: newSelector isNotOfSameTypeAs: oldSelector)! !
+
+!RenameSelectorTest methodsFor: 'tests' stamp: 'HAW 12/13/2018 18:59:39'!
+test31CanNotRenameFromKeywordOfOneParameterToBinary
+
+	oldSelector := 'abc:def:' asSymbol.
+	newSelector := '&&' asSymbol.
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: 'abc: p1 def: p2'.
+
+	self 
+		should: [ RenameSelector from: oldSelector to: newSelector implementors: (Array with: classToRefactor>>oldSelector) senders: #() ]
+		raise: Error
+		withMessageText: (RenameSelector errorMessageForNewSelector: newSelector isNotOfSameTypeAs: oldSelector)! !
+
 !RenameTemporaryTest methodsFor: 'class factory' stamp: 'HAW 6/25/2017 21:53:44'!
 allClassCategoriesOfTestData
 
@@ -4696,10 +4772,13 @@ value
 
 ! !
 
-!NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'HAW 8/13/2018 16:10:43'!
+!NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'HAW 12/13/2018 17:56:31'!
 assertNewClassNameDoesNotExistInSystem
 
-	(system classNamed: newClassName) ifNotNil: [ self class signalAlreadyExistClassNamed: newClassName ]! !
+	system at: newClassName ifPresent: [ :value | 
+		value isBehavior 
+			ifTrue: [ self class signalAlreadyExistClassNamed: newClassName ]
+			ifFalse: [  self class signalAlreadyExistGlobalNamed: newClassName ]].! !
 
 !NewClassPrecondition methodsFor: 'evaluating - private' stamp: 'HAW 8/13/2018 16:10:47'!
 assertNewClassNameHasNoSpaces
@@ -4733,10 +4812,15 @@ initializeFor: aNewClassName in: aSystem undeclared: anUndeclaredDictionary
 	system := aSystem.
 	undeclared := anUndeclaredDictionary ! !
 
-!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 12/13/2018 17:56:51'!
 errorMessageForAlreadyExistClassNamed: aNewClassName
 
-	^aNewClassName, ' already exist'! !
+	^'Class named ', aNewClassName, ' already exist'! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 12/13/2018 17:59:02'!
+errorMessageForAlreadyExistGlobalNamed: aNewClassName
+
+	^'There is already a global variable named ', aNewClassName ! !
 
 !NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
 errorMessageForNewClassIsUndeclared: aNewClassName
@@ -4772,6 +4856,11 @@ refactoringError: aMessage
 signalAlreadyExistClassNamed: aNewClassName
 
 	self refactoringError: (self errorMessageForAlreadyExistClassNamed: aNewClassName).! !
+
+!NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 12/13/2018 17:58:29'!
+signalAlreadyExistGlobalNamed: aNewClassName
+
+	self refactoringError: (self errorMessageForAlreadyExistGlobalNamed: aNewClassName)! !
 
 !NewClassPrecondition class methodsFor: 'exceptions' stamp: 'HAW 8/13/2018 15:58:18'!
 signalNewClassIsUndeclared: aNewClassName
@@ -5621,10 +5710,11 @@ notValidKeywordForNewParameterErrorMessage
 	
 	^'New keyword must be of keyword type with one parameter'! !
 
-!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:35:26'!
+!AddParameter class methodsFor: 'exceptions' stamp: 'HAW 12/13/2018 17:46:33'!
 selectorCanNotBeBinaryErrorMessage
 	
-	^'Selector can not be binary'! !
+	^'Can not add parameter to a binary selector.
+Rename it to a keyword message first.'! !
 
 !AddParameter class methodsFor: 'exceptions' stamp: 'HAW 8/18/2018 12:26:46'!
 selectorMustBeKeywordErrorMessage
@@ -5944,10 +6034,14 @@ assert: aNewSelector isNotEqualTo: anOldSelector
 
 	 aNewSelector = anOldSelector ifTrue: [ self signalNewSelectorEqualToOldSelector]! !
 
-!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/25/2017 19:56:04'!
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 12/13/2018 18:53:51'!
 assert: aNewSelector isOfSameTypeAs: anOldSelector
 
-	aNewSelector precedence ~= anOldSelector precedence ifTrue: [ self signalNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector ]! !
+	(self isRenamigBetweenBinary: anOldSelector andKeywordOfOneParameter: aNewSelector) ifTrue: [ ^self ].
+	(self isRenamigBetweenBinary: aNewSelector andKeywordOfOneParameter: anOldSelector) ifTrue: [ ^self ].
+
+	aNewSelector precedence ~= anOldSelector precedence ifTrue: [ 
+		self signalNewSelector: aNewSelector isNotOfSameTypeAs: anOldSelector ]! !
 
 !RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 6/3/2017 11:54:48'!
 assertIsNotEmpty: aCollection signalMessageText: errorMessageText
@@ -5974,6 +6068,14 @@ assertNoImplementorClassIn: implementorsCollection implements: aNewSelector
 		thenCollect: [ :anImplementor | anImplementor methodClass ].
 		
 	classesImplementingNewSelector notEmpty ifTrue: [ self signalNewSelector: aNewSelector implementedInAll: classesImplementingNewSelector ]! !
+
+!RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 12/13/2018 18:52:19'!
+isRenamigBetweenBinary: aPotentiallyBinarySelector andKeywordOfOneParameter: aPotentiallyKeywordSelector
+
+	^aPotentiallyBinarySelector isInfix 
+		and: [ aPotentiallyKeywordSelector isKeyword
+		and: [ aPotentiallyKeywordSelector numArgs = 1 ]]
+! !
 
 !RenameSelector class methodsFor: 'pre-conditions' stamp: 'HAW 5/31/2017 20:56:22'!
 warnIfImplementionsOf: aNewSelector overridesImplementationInSuperclassesOf: implementorsCollection
@@ -7222,6 +7324,22 @@ askScope
 	scopeChoice = 0 ifTrue: [ self endRequest ].
 	! !
 
+!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 12/13/2018 17:41:06'!
+calculateImplementorsAndSenders
+		
+	implementors := IdentitySet new.
+	senders := IdentitySet new.
+	
+	scopeChoice = 1 ifTrue: [ ^self implementorsAndSendersForClass ].
+	scopeChoice = 2 ifTrue: [ ^self implementorsAndSendersForHierarchy ].
+	scopeChoice = 3 ifTrue: [ ^self implementorsAndSendersInCategory ].
+	scopeChoice = 4 ifTrue: [ ^self implementorsAndSendersInCategoryAndHierarchy ].
+	scopeChoice = 5 ifTrue: [ ^self implementorsAndSendersInSystem ].
+	
+	self error: 'Unknown scope option' 
+		
+		! !
+
 !ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:00:51'!
 implementorsAndSendersForClass
 
@@ -7256,6 +7374,11 @@ implementorsAndSendersInCategoryAndHierarchy
 implementorsAndSendersInSystem
 		
 	^self refactoringClass addImplementorsOf: oldSelector to: implementors andSendersTo: senders inSystem: Smalltalk ! !
+
+!ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 12/13/2018 17:41:33'!
+scopeOptionLabels
+	
+	^{'In Class'. 'In Hierarchy'. 'In Category'. 'In Hierarchy and its Categories'. 'In System'}.! !
 
 !ChangeSelectorApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 8/18/2018 17:21:58'!
 startWizard
@@ -7554,6 +7677,17 @@ requestRefactoringParameters
 		assertCanRenameSelector;
 		askScope
 		! !
+
+!RenameSelectorApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 16:56:24'!
+createRefactoring
+	
+	^self refactoringClass from: oldSelector to: newSelector implementors: implementors senders: senders.
+	! !
+
+!RenameSelectorApplier methodsFor: 'refactoring - creation' stamp: 'HAW 8/18/2018 17:04:02'!
+refactoringClass
+
+	^RenameSelector ! !
 
 !RenameSelectorApplier class methodsFor: 'pre-conditions' stamp: 'HAW 8/18/2018 17:24:18'!
 assertCanApplyRefactoringFor: aSelector in: aClass 

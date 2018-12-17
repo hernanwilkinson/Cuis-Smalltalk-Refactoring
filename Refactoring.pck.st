@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 12 December 2018 at 3:18:50 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 17 December 2018 at 12:12:07 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 103!
+!provides: 'Refactoring' 1 106!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -122,6 +122,16 @@ RefactoringTest subclass: #ExtractToMethodObjectTest
 	category: 'Refactoring'!
 !classDefinition: 'ExtractToMethodObjectTest class' category: #Refactoring!
 ExtractToMethodObjectTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #ExtractToMethodObjectTestDraft category: #Refactoring!
+RefactoringTest subclass: #ExtractToMethodObjectTestDraft
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ExtractToMethodObjectTestDraft class' category: #Refactoring!
+ExtractToMethodObjectTestDraft class
 	instanceVariableNames: ''!
 
 !classDefinition: #ExtractToTemporaryTest category: #Refactoring!
@@ -2175,12 +2185,89 @@ classToRefactorName
 	
 	^#ClassToAddParameter! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/23/2018 11:38:37'!
+!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/15/2018 16:06:36'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/3/2018 16:42:39'!
+!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 11:23:22'!
+compiledMethodReferencingSelf
+
+	| aClass aMessageSelector aMessageSourceCode |
+
+	aClass := self createClassNamed: #AClass.
+	aMessageSelector := #m1.
+	aMessageSourceCode := aMessageSelector asString, '
+		self isNil.'.
+	aClass compile: aMessageSourceCode.
+	
+	^aClass compiledMethodAt: aMessageSelector! !
+
+!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 11:21:23'!
+defaultEvaluationSelector
+	
+	^#defaultEvaluationSelector! !
+
+!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 11:19:01'!
+methodObjectClassName
+
+	^#MethodObject! !
+
+!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 11:20:17'!
+methodObjectSuperclass
+
+	^self createClassNamed: #MethodObjectSuperclass! !
+
+!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/15/2018 16:20:06'!
+test01MethodObjectClassNameMustBeValid
+
+	| aClass anExistingClassName aCompiledMethodToRefactor anEvaluationSelector |
+	
+	aClass := self createClassNamed: #AClass.
+	aClass compile: 'm1'.
+	aCompiledMethodToRefactor  := aClass compiledMethodAt: #m1.
+	anExistingClassName  := #Object.
+	anEvaluationSelector := #value.
+	
+	self should: [
+		ExtractToMethodObject 
+			from: aCompiledMethodToRefactor
+			toMethodObjectClassNamed: anExistingClassName
+			subclassing: aClass
+			onCategory: self classCategoryOfTestData
+			evaluatedWith: anEvaluationSelector]
+		raise: RefactoringError
+		withMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: anExistingClassName ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 12:10:58'!
+test02AllVariablesToParametrizeMustHaveACorrespondingMethodObjectInstanceVariableName
+
+	| namesForParametrizedMissingSelf keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName |
+	
+	namesForParametrizedMissingSelf := #() asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'}.
+	variablesToParametrizeWithoutInstVarName := Set with: 'self'.
+	
+	self should: [
+		ExtractToMethodObject 
+			from: self compiledMethodReferencingSelf
+			toMethodObjectClassNamed: self methodObjectClassName
+			subclassing: self methodObjectSuperclass
+			onCategory: self classCategoryOfTestData
+			withExtractedVariablesToInstanceVariables: namesForParametrizedMissingSelf
+			withInstanceCreationMessageFrom: keywordToParametrizedVariable
+			evaluatedWith: self defaultEvaluationSelector
+			]
+		raise: RefactoringError
+		withMessageText: [ ExtractToMethodObject 
+			variablesToParametrizedDoNotHaveInstanceVariableNames: variablesToParametrizeWithoutInstVarName].! !
+
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 11/23/2018 11:38:37'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData! !
+
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/3/2018 16:42:39'!
 assert: aRefactoredMethod isAnInvocationToMethodObjectClassNamed: aClassName
 
 	| disregardArguments methodObjectClass returnStatement valueMessageReceiver |
@@ -2201,7 +2288,7 @@ assert: aRefactoredMethod isAnInvocationToMethodObjectClassNamed: aClassName
 		receiver: [:receiver | receiver key value = methodObjectClass]
 		arguments: true).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:09:33'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:09:33'!
 assert: aMethodNode
 isAnInvocationToMethodObjectClassNamed: aClassName
 creatingWith: constructorSelector
@@ -2228,7 +2315,7 @@ passing: argumentValidator
 
 ! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:10:13'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:10:13'!
 assert: aMethodNode
 isAnInvocationToMethodObjectClassNamed: aClassName
 creatingWith: constructorSelector
@@ -2242,7 +2329,7 @@ passing: argumentValidator
 		passing: argumentValidator
 ! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/3/2018 17:41:30'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/3/2018 17:41:30'!
 assert: aMethodNode sends: aSelector to: aConstant
 	
 	| disregardArguments |
@@ -2254,7 +2341,7 @@ assert: aMethodNode sends: aSelector to: aConstant
 		receiver: [ :receiver | receiver literalValue = aConstant]
 		arguments: disregardArguments).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/30/2018 12:01:09'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 11/30/2018 12:01:09'!
 assertMethodConsistsOnlyOfReturnStatement: aMethodNode
 	
 	| returnNode |
@@ -2263,7 +2350,7 @@ assertMethodConsistsOnlyOfReturnStatement: aMethodNode
 	returnNode :=  aMethodNode block statements first.
 	self assert: returnNode isReturn.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:05:11'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test01MethodObjectClassNameMustNotBelongToAnExistingClass
 
 	| aClass aCompiledMethod anExistingClassName |
@@ -2281,11 +2368,11 @@ test01MethodObjectClassNameMustNotBelongToAnExistingClass
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: #() asDictionary
 			withInstanceCreationMessageFrom: #()
-			invokedWith: #value]
+			evaluatedWith: #value]
 		raise: RefactoringError
 		withMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: anExistingClassName ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:05:21'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test02MethodObjectClassNameCannotBeEmpty
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor |
@@ -2304,11 +2391,11 @@ test02MethodObjectClassNameCannotBeEmpty
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: #() asDictionary
 			withInstanceCreationMessageFrom: #()
-			invokedWith: #value]
+			evaluatedWith: #value]
 		raise: RefactoringError
 		withMessageText: NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:05:27'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test03CreatesMethodObjectClass
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
@@ -2328,12 +2415,12 @@ test03CreatesMethodObjectClass
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: #() asDictionary
 			withInstanceCreationMessageFrom: #()
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.
 			
 	self assert: (Smalltalk hasClassNamed: methodObjectClassName).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:05:33'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test04CreatesMethodObjectClassSubclassingTheSuper
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor methodObjectClass refactor |
@@ -2351,13 +2438,13 @@ test04CreatesMethodObjectClassSubclassingTheSuper
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: #() asDictionary
 			withInstanceCreationMessageFrom: #()
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
 	self assert: methodObjectClass superclass equals: methodObjectSuperclass.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:05:39'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test05CreatesMethodObjectClassInCategory
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor methodObjectClass refactor |
@@ -2375,13 +2462,13 @@ test05CreatesMethodObjectClassInCategory
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: #() asDictionary
 			withInstanceCreationMessageFrom: #()
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	methodObjectClass := Smalltalk classNamed: methodObjectClassName.
 	self assert: methodObjectClass category equals: self classCategoryOfTestData.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:05:47'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test06ExtractedMethodThatReturnsAConstantReturnsAConstant
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
@@ -2399,12 +2486,12 @@ test06ExtractedMethodThatReturnsAConstantReturnsAConstant
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: #() asDictionary
 			withInstanceCreationMessageFrom: #()
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	self assert: 1 equals: aClassToRefactor new m1.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:05:52'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 	
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor refactoredMethod |
@@ -2422,14 +2509,14 @@ test07ExtractedMethodThatReturnsAConstantBecomesAnInvocationToMethodObject
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: #() asDictionary
 			withInstanceCreationMessageFrom: #()
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	refactoredMethod := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	
 	self assert: refactoredMethod isAnInvocationToMethodObjectClassNamed: methodObjectClassName.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:05:58'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test08ExtractedMethodThatReturnsAConstantReturnsAnArrayConstant
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor |
@@ -2447,12 +2534,12 @@ test08ExtractedMethodThatReturnsAConstantReturnsAnArrayConstant
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: #() asDictionary
 			withInstanceCreationMessageFrom: #()
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	self assert: #(1 2 3) equals: aClassToRefactor new m1.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:06:04'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test09WhenMethodSendsAMessageToAConstantTheMethodObjectSendsTheSameMessageToTheSameConstant
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor messageToConstantSourceCode aRefactoredMethod methodObjectClass valueMethod aConstant messageToConstant |
@@ -2475,7 +2562,7 @@ test09WhenMethodSendsAMessageToAConstantTheMethodObjectSendsTheSameMessageToTheS
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: #() asDictionary
 			withInstanceCreationMessageFrom: #()
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
@@ -2485,7 +2572,7 @@ test09WhenMethodSendsAMessageToAConstantTheMethodObjectSendsTheSameMessageToTheS
 	valueMethod := methodObjectClass compiledMethodAt: #value.
 	self assert: valueMethod methodNode sends: messageToConstant asSymbol to: aConstant.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:06:12'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test10WhenMethodSendsAMessageToSelfTheMethodObjectSendsItToTheRefactoredObject
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod messageReceiver selector aRefactoredClassInstance messageToSelfSourceCode |
@@ -2511,7 +2598,7 @@ test10WhenMethodSendsAMessageToSelfTheMethodObjectSendsItToTheRefactoredObject
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: {'self' -> 'contextProvider' } asDictionary
 			withInstanceCreationMessageFrom: {'contextProviderKeyword' -> 'self'}
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
@@ -2525,7 +2612,7 @@ test10WhenMethodSendsAMessageToSelfTheMethodObjectSendsItToTheRefactoredObject
 	aRefactoredClassInstance m1.
 	self assert: (aRefactoredClassInstance perform: #selectorWasCalled).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:06:17'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test11WhenMethodObjectHasNoInstanceVariablesTheNewMessageIsUsedToCreateItsInstance
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod ignoreArguments |
@@ -2545,7 +2632,7 @@ test11WhenMethodObjectHasNoInstanceVariablesTheNewMessageIsUsedToCreateItsInstan
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: #() asDictionary
 			withInstanceCreationMessageFrom: #()
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
@@ -2555,7 +2642,7 @@ test11WhenMethodObjectHasNoInstanceVariablesTheNewMessageIsUsedToCreateItsInstan
 		creatingWith: #new
 		passing: ignoreArguments.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:06:25'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test12WhenItHasInstanceVariablesMethodObjectIsCreatedWithTheChosenSelector
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod ignoreArguments |
@@ -2575,7 +2662,7 @@ test12WhenItHasInstanceVariablesMethodObjectIsCreatedWithTheChosenSelector
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: {'self' -> 'contextProvider'.} asDictionary
 			withInstanceCreationMessageFrom: {'contextProviderKeyword' -> 'self'.}
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
@@ -2585,7 +2672,7 @@ test12WhenItHasInstanceVariablesMethodObjectIsCreatedWithTheChosenSelector
 		creatingWith: #contextProviderKeyword:
 		passing: ignoreArguments.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 16:55:27'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/10/2018 16:55:27'!
 test13WhenItHasInstanceVariablesMethodObjectIsCreatedPassingVariablesWithTheChosenKeyword
 "
 Esperando que pueda pasarle más de un argumento a la creación del MethodObject
@@ -2616,7 +2703,7 @@ Esperando que pueda pasarle más de un argumento a la creación del MethodObject
 		passing: [:aVarArg :selfArg | ].
 "! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/10/2018 17:09:04'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test14MethodObjectIsInvokedWithTheChosenSelector
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod ignoreArguments |
@@ -2636,7 +2723,7 @@ test14MethodObjectIsInvokedWithTheChosenSelector
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: {'self' -> 'contextProvider'. 'aVar' -> 'anInstVar'} asDictionary
 			withInstanceCreationMessageFrom: {'contextProviderKeyword' -> 'self'.}
-			invokedWith: #aCustomInvocationSelector.
+			evaluatedWith: #aCustomInvocationSelector.
 	refactor apply.		
 	
 	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
@@ -2647,7 +2734,7 @@ test14MethodObjectIsInvokedWithTheChosenSelector
 		invokingWith: #aCustomInvocationSelector
 		passing: ignoreArguments.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/11/2018 14:44:48'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test15MethodCanNotReferenceSuper
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor aMethodSelector |
@@ -2670,11 +2757,11 @@ test15MethodCanNotReferenceSuper
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: #() asDictionary
 				withInstanceCreationMessageFrom: #()
-				invokedWith: #value.]
+				evaluatedWith: #value.]
 		raise: RefactoringError
-		withMessageText: [ExtractToMethodObject methodCanNotReferenceSuperErrorMessage.! !
+		withMessageText: [ExtractToMethodObject methodCanNotReferenceSuperErrorMessage].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/12/2018 12:14:13'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test16WhenMethodSendsAMessageToAnInstanceVariableTheMethodObjectSendsItToItsCorrespondingInstanceVariable
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod aRefactoredClassInstance classWithVerifiableMessage verifiableMessageSelector methodToRefactorSelector checkCallToInstVarMessageSelector instVarName instVarSetterSourceCode methodToRefactorSourceCode methodToCheckCallToInstVarSourceCode |
@@ -2714,7 +2801,7 @@ test16WhenMethodSendsAMessageToAnInstanceVariableTheMethodObjectSendsItToItsCorr
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: {instVarName -> 'instVarReplacement' } asDictionary
 			withInstanceCreationMessageFrom: {'passingInstVar' -> instVarName}
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
@@ -2729,7 +2816,7 @@ test16WhenMethodSendsAMessageToAnInstanceVariableTheMethodObjectSendsItToItsCorr
 	aRefactoredClassInstance m1.
 	self assert: (aRefactoredClassInstance perform: checkCallToInstVarMessageSelector).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/11/2018 17:26:32'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test17WhenMethodSendsAMessageToAClassVariableTheMethodObjectSendsItToItsCorrespondingInstanceVariable
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod aRefactoredClassInstance classWithVerifiableMessage verifiableMessageSelector methodToRefactorSelector methodToRefactorSourceCode classVarName classVarSetterSourceCode checkCallToClassVarMessageSelector methodToCheckCallToClassVarSourceCode |
@@ -2775,7 +2862,7 @@ test17WhenMethodSendsAMessageToAClassVariableTheMethodObjectSendsItToItsCorrespo
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: {classVarName -> 'classVarReplacement' } asDictionary
 			withInstanceCreationMessageFrom: {'passingClassVar' -> classVarName}
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
@@ -2790,7 +2877,7 @@ test17WhenMethodSendsAMessageToAClassVariableTheMethodObjectSendsItToItsCorrespo
 	aRefactoredClassInstance m1.
 	self assert: (aRefactoredClassInstance perform: checkCallToClassVarMessageSelector).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/12/2018 13:55:12'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test18WhenMethodSendsAMessageToAPoolVariableTheMethodObjectSendsItToItsCorrespondingInstanceVariable
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod aRefactoredClassInstance classWithVerifiableMessage verifiableMessageSelector methodToRefactorSelector methodToRefactorSourceCode aPoolName poolVarName checkCallToPoolVarMessageSelector methodToCheckCallToPoolVarSourceCode poolVarSetterSourceCode |
@@ -2844,7 +2931,7 @@ test18WhenMethodSendsAMessageToAPoolVariableTheMethodObjectSendsItToItsCorrespon
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: {poolVarName -> 'poolVarReplacement' } asDictionary
 			withInstanceCreationMessageFrom: {'passingPoolVar' -> poolVarName}
-			invokedWith: #value.
+			evaluatedWith: #value.
 	refactor apply.		
 	
 	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
@@ -2859,7 +2946,7 @@ test18WhenMethodSendsAMessageToAPoolVariableTheMethodObjectSendsItToItsCorrespon
 	aRefactoredClassInstance m1.
 	self assert: (aRefactoredClassInstance perform: checkCallToPoolVarMessageSelector).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/12/2018 15:13:55'!
+!ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 12/15/2018 16:17:56'!
 test19WhenMethodSendsAMessageToAnArgumentTheMethodObjectSendsItToItsCorrespondingInstanceVariable
 
 	| aCompiledMethod methodObjectClassName methodObjectSuperclass aClassToRefactor refactor aRefactoredMethod aRefactoredClassInstance classWithVerifiableMessage verifiableMessageSelector methodToRefactorSelector methodToRefactorSourceCode anArgName anInstanceWithVerifiableMessage methodObjectClass |
@@ -2896,7 +2983,7 @@ test19WhenMethodSendsAMessageToAnArgumentTheMethodObjectSendsItToItsCorrespondin
 			onCategory: self classCategoryOfTestData
 			withExtractedVariablesToInstanceVariables: {anArgName -> 'argReplacement' } asDictionary
 			withInstanceCreationMessageFrom: {'passingArg' -> anArgName}
-			invokedWith: #customInvocationSelector.
+			evaluatedWith: #customInvocationSelector.
 	refactor apply.		
 	
 	aRefactoredMethod := aClassToRefactor compiledMethodAt: #m1.
@@ -6888,14 +6975,31 @@ filter: rangesToStrings ofArgRangesOf: aMethodNode
 		:rangeToString |
 		rangeToString key first > endHeaderIndex].! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 17:04:08'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/15/2018 16:18:48'!
+from: aCompiledMethod
+toMethodObjectClassNamed: aClassName
+subclassing: aClass
+onCategory: aCategory
+evaluatedWith: anInvocationSelector
+
+	methodToExtract := aCompiledMethod.
+	methodObjectClassName := aClassName.
+	methodObjectSuperclass := aClass.
+	methodObjectCategory := aCategory.
+	methodVariableNamesToInstanceVariableNames := #() asDictionary.
+	selectorKeywordToVariableName := #().
+	methodObjectInstanceVariables := Set new.
+	methodObjectInvocationSelector := anInvocationSelector.
+! !
+
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/15/2018 16:17:56'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
 onCategory: aCategory
 withExtractedVariablesToInstanceVariables: variablesToInstanceVariables
 withInstanceCreationMessageFrom: keywordsToVariables
-invokedWith: anInvocationSelector
+evaluatedWith: anInvocationSelector
 
 	methodToExtract := aCompiledMethod.
 	methodObjectClassName := aClassName.
@@ -6937,20 +7041,32 @@ replaceExtractedMethodWithMethodObjectInvocation
 					accum append: keywordToVarName key, ': ', keywordToVarName value]].
 	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' ', constructorMessage, ') ', methodObjectInvocationSelector asString.! !
 
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/17/2018 12:05:31'!
+assertAllVariablesToParametrizeFrom: aCompiledMethod HaveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariableNames
+
+	| variablesToParametrize variablesWithNames |
+	
+	variablesToParametrize := VariablesToExtractFinder findIn: aCompiledMethod.
+	variablesWithNames := variablesToParametrizeToInstanceVariableNames keys asSet.
+	
+	variablesToParametrize = variablesWithNames
+		ifFalse: [
+			| variablesWithoutNames |
+			variablesWithoutNames := variablesToParametrize copyWithoutAll: variablesWithNames.
+			self signalVariablesToParametrizeWithoutInstanceVariableName: variablesWithoutNames.]! !
+
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/11/2018 14:50:46'!
 assertItDoesNotReferenceSuper: aCompiledMethod
 
 	aCompiledMethod sendsToSuper
-		ifTrue: [self signalMethodReferencesSuper.! !
+		ifTrue: [self signalMethodReferencesSuper].! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/11/2018 14:45:50'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/15/2018 16:20:58'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
 onCategory: aCategory
-withExtractedVariablesToInstanceVariables: methodVariableNamesToInstanceVariableNames
-withInstanceCreationMessageFrom: messageKeywordToInstanceVariableName
-invokedWith: anInvocationSelector
+evaluatedWith: anEvaluationSelector
 	
 	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
 	self assertItDoesNotReferenceSuper: aCompiledMethod.
@@ -6960,9 +7076,32 @@ invokedWith: anInvocationSelector
 		toMethodObjectClassNamed: aClassName
 		subclassing: aClass
 		onCategory: aCategory
+		evaluatedWith: anEvaluationSelector
+! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/17/2018 11:29:46'!
+from: aCompiledMethod
+toMethodObjectClassNamed: aClassName
+subclassing: aClass
+onCategory: aCategory
+withExtractedVariablesToInstanceVariables: methodVariableNamesToInstanceVariableNames
+withInstanceCreationMessageFrom: messageKeywordToInstanceVariableName
+evaluatedWith: anInvocationSelector
+	
+	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
+	self assertItDoesNotReferenceSuper: aCompiledMethod.
+	self 
+		assertAllVariablesToParametrizeFrom: aCompiledMethod
+		HaveAnInstanceVariableNameIn: methodVariableNamesToInstanceVariableNames .
+	
+	^self new 
+		from: aCompiledMethod
+		toMethodObjectClassNamed: aClassName
+		subclassing: aClass
+		onCategory: aCategory
 		withExtractedVariablesToInstanceVariables: methodVariableNamesToInstanceVariableNames
 		withInstanceCreationMessageFrom: messageKeywordToInstanceVariableName
-		invokedWith: anInvocationSelector
+		evaluatedWith: anInvocationSelector
 ! !
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/11/2018 14:49:45'!
@@ -6979,6 +7118,16 @@ newClassPreconditionClass
 signalMethodReferencesSuper
 	
 	self refactoringError: self methodCanNotReferenceSuperErrorMessage.! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/17/2018 12:08:53'!
+signalVariablesToParametrizeWithoutInstanceVariableName: variablesWithoutNames
+
+	self refactoringError: (self variablesToParametrizedDoNotHaveInstanceVariableNames: variablesWithoutNames).! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/17/2018 12:10:11'!
+variablesToParametrizedDoNotHaveInstanceVariableNames: variablesWithoutNames
+
+	^'The variables: ', (', ' join: variablesWithoutNames), ' do not have a corresponding Method Object instance variable name'! !
 
 !ExtractToTemporary methodsFor: 'applying' stamp: 'HAW 10/18/2017 18:39:22'!
 apply

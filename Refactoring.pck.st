@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 17 December 2018 at 12:12:07 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 18 December 2018 at 4:02:57 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 106!
+!provides: 'Refactoring' 1 121!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -252,6 +252,16 @@ Object subclass: #NewClassPrecondition
 	category: 'Refactoring'!
 !classDefinition: 'NewClassPrecondition class' category: #Refactoring!
 NewClassPrecondition class
+	instanceVariableNames: ''!
+
+!classDefinition: #NewInstanceVariablePrecondition category: #Refactoring!
+Object subclass: #NewInstanceVariablePrecondition
+	instanceVariableNames: 'classToAddInstVar instVarName'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'NewInstanceVariablePrecondition class' category: #Refactoring!
+NewInstanceVariablePrecondition class
 	instanceVariableNames: ''!
 
 !classDefinition: #Refactoring category: #Refactoring!
@@ -1239,32 +1249,32 @@ classToRefactorName
 
 	^#ClassToAddInstVar! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:38:25'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:58:23'!
 test01NewVariableNameCanNotBeEmpty
 	
 	newVariable := '   '.
 	self 
 		assertCreation: [ AddInstanceVariable named: newVariable to: self class ]
-		failsWith: [AddInstanceVariable newVariableCanNotBeEmptyErrorMessage ]
+		failsWith: [NewInstanceVariablePrecondition newVariableCanNotBeEmptyErrorMessage ]
 ! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:38:33'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:55:32'!
 test02NewVariableNameCanNotContainBlanks
 	
 	newVariable := 'a b'.
 	self 
 		assertCreation: [ AddInstanceVariable named: newVariable to: self class ]
-		failsWith: [AddInstanceVariable errorMessageForInvalidInstanceVariable: newVariable ]
+		failsWith: [NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: newVariable ]
 
 	! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:38:41'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:55:40'!
 test03NewVariableNameCanNotContainInvalidCharacters
 
 	newVariable := '2a'.
 	self 
 		assertCreation: [ AddInstanceVariable named: newVariable to: self class ]
-		failsWith: [AddInstanceVariable errorMessageForInvalidInstanceVariable: newVariable ]
+		failsWith: [NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: newVariable ]
 
 ! !
 
@@ -1275,7 +1285,7 @@ test04ValidNewVariableNameGetBlanksTrimmed
 			
 	self assert: newVariable withBlanksTrimmed equals: (AddInstanceVariable named: newVariable to: self class) newVariable! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:38:57'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:56:56'!
 test05NewVariableNameCanNotBeDefinedInClass
 
 	| classToRefactor |
@@ -1285,10 +1295,10 @@ test05NewVariableNameCanNotBeDefinedInClass
 	
 	self 
 		assertCreation: [AddInstanceVariable named: newVariable to: classToRefactor ]
-		failsWith: [AddInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactor )]
+		failsWith: [NewInstanceVariablePrecondition errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactor )]
 	! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:39:06'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:57:06'!
 test06NewVariableNameCanNotBeDefinedInSuperclasses
 
 	|  classToRefactorSuperclass classToRefactor  |
@@ -1299,10 +1309,10 @@ test06NewVariableNameCanNotBeDefinedInSuperclasses
 	
 	self 
 		assertCreation: [AddInstanceVariable named: newVariable to: classToRefactor ]
-		failsWith: [AddInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSuperclass)]
+		failsWith: [NewInstanceVariablePrecondition errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSuperclass)]
 ! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:39:13'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:57:13'!
 test07NewVariableNameCanNotBeDefinedInAnySubclass
 
 	| classToRefactor classToRefactorSubclass |
@@ -1313,7 +1323,7 @@ test07NewVariableNameCanNotBeDefinedInAnySubclass
 	
 	self 
 		assertCreation: [AddInstanceVariable named: newVariable to: classToRefactor ]
-		failsWith: [AddInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSubclass)]
+		failsWith: [NewInstanceVariablePrecondition errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSubclass)]
 	
 		! !
 
@@ -1331,7 +1341,7 @@ test08AddCreatesNewInstanceVariable
 	self assert: (classToRefactor definesInstanceVariableNamed: newVariable).
 	! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:39:31'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:59:51'!
 test09WarnsWhenNewVariableEqualsTemporaryVariableOfAMethodInClass
 
 	| selector classToRefactor |
@@ -1343,10 +1353,10 @@ test09WarnsWhenNewVariableEqualsTemporaryVariableOfAMethodInClass
 	
 	self 
 		assertCreation: [ AddInstanceVariable named: newVariable to: classToRefactor ]
-		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ NewInstanceVariablePrecondition warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:39:42'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 16:00:03'!
 test10WarnsWhenNewVariableEqualsArgumentOfAMethodInClass
 
 	| selector classToRefactor |
@@ -1358,10 +1368,10 @@ test10WarnsWhenNewVariableEqualsArgumentOfAMethodInClass
 	
 	self 
 		assertCreation: [ AddInstanceVariable named: newVariable to: classToRefactor ]
-		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ NewInstanceVariablePrecondition warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:39:50'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 16:00:08'!
 test11WarnsWhenNewVariableEqualsArgumentOfABlockInAMethodInClass
 
 	| selector classToRefactor |
@@ -1373,10 +1383,10 @@ test11WarnsWhenNewVariableEqualsArgumentOfABlockInAMethodInClass
 		
 	self 
 		assertCreation: [ AddInstanceVariable named: newVariable to: classToRefactor ]
-		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ NewInstanceVariablePrecondition warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:39:58'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 16:00:13'!
 test12WarnsWhenNewVariableEqualsTemporaryOfABlockInAMethodInClass
 
 	| selector classToRefactor |
@@ -1388,11 +1398,11 @@ test12WarnsWhenNewVariableEqualsTemporaryOfABlockInAMethodInClass
 		
 	self 
 		assertCreation: [ AddInstanceVariable named: newVariable to: classToRefactor ]
-		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ NewInstanceVariablePrecondition warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	
 	! !
 
-!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/11/2017 18:40:05'!
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 16:00:18'!
 test13WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 
 	| selector classToRefactor subclass |
@@ -1405,7 +1415,7 @@ test13WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 		
 	self 
 		assertCreation: [ AddInstanceVariable named: newVariable to: classToRefactor ]
-		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (subclass>>selector)) ].
+		warnsWith: [ NewInstanceVariablePrecondition warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (subclass>>selector)) ].
 	
 	! !
 
@@ -2185,12 +2195,302 @@ classToRefactorName
 	
 	^#ClassToAddParameter! !
 
-!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/15/2018 16:06:36'!
+!ExtractToMethodObjectTest methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 18:44:40'!
+creationWithExtractedVariablesToInstanceVariables: parametrizedVariablesToInstanceVariables
+withInstanceCreationMessageFrom: keywordToParametrizedVariable
+failsWithMessageText: aMessageTextBlock
+
+	self 
+		should: [
+			ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: parametrizedVariablesToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector]
+		raise: RefactoringError
+		withMessageText: aMessageTextBlock.
+		! !
+
+!ExtractToMethodObjectTest methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 18:03:06'!
+creationWithMethodObjectClassName: aClassName 
+failsWithMessageText: aMessageTextBlock
+
+	self 
+		should: [
+			ExtractToMethodObject 
+				from: self emptyCompiledMethod 
+				toMethodObjectClassNamed: aClassName 
+				subclassing: self methodObjectSuperclass 
+				onCategory: self classCategoryOfTestData
+				evaluatedWith: self defaultEvaluationSelector ]
+		raise: RefactoringError
+		withMessageText: aMessageTextBlock.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:05:06'!
+test01MethodObjectClassNameMustNotBeEmpty
+
+	| anEmptyClassName |
+	
+	anEmptyClassName  := ''.
+	
+	self 
+		creationWithMethodObjectClassName: anEmptyClassName
+		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:05:25'!
+test02MethodObjectClassNameMustBeASymbol
+
+	| aStringClassName |
+	
+	aStringClassName  := 'MethodObject'.
+	
+	self 
+		creationWithMethodObjectClassName: aStringClassName
+		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:04:32'!
+test03MethodObjectClassNameMustStartWithUppercaseLetter
+
+	| nonCapitalizedClassName |
+	
+	nonCapitalizedClassName  := #methodObject.
+	
+	self 
+		creationWithMethodObjectClassName: nonCapitalizedClassName
+		failsWithMessageText:[ NewClassPrecondition newNameMustStartWithUppercaseLetterErrorMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:01:52'!
+test04MethodObjectClassNameMustNotHaveSeparators
+
+	| classNameWithSeparators |
+	
+	classNameWithSeparators  := 'Method Object' asSymbol.
+	
+	self creationWithMethodObjectClassName: classNameWithSeparators 
+		  failsWithMessageText: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:06:57'!
+test05MethodObjectClassNameMustNotExist
+
+	| anExistingClassName |
+	
+	anExistingClassName  := #Object.
+	
+	self creationWithMethodObjectClassName: anExistingClassName 
+		  failsWithMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: anExistingClassName ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:44:32'!
+test06AllVariablesToParametrizeMustHaveACorrespondingMethodObjectInstanceVariableName
+
+	| namesForParametrizedMissingSelf keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName |
+	
+	namesForParametrizedMissingSelf := #() asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'}.
+	variablesToParametrizeWithoutInstVarName := Set with: 'self'.
+	
+	self 
+		creationWithExtractedVariablesToInstanceVariables: namesForParametrizedMissingSelf
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ ExtractToMethodObject 
+			variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesToParametrizeWithoutInstVarName].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:45:28'!
+test07AllInstanceVariableNamesMustCorrespondToVariableToParametrize
+
+	| keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName namesForParametrizedVariables |
+	
+	namesForParametrizedVariables := {
+		'self' -> 'oldSelf'.
+		'inexistentVariableToParametrize' -> 'anInstVarName'
+	} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'}.
+	variablesToParametrizeWithoutInstVarName := Set with: 'inexistentVariableToParametrize'.
+	
+	self 
+		creationWithExtractedVariablesToInstanceVariables: namesForParametrizedVariables
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ ExtractToMethodObject 
+			unknownVariablesToParametrizeErrorMessage: variablesToParametrizeWithoutInstVarName].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:46:02'!
+test08MethodObjectInstanceVariableNamesMustNotBeEmpty
+
+	| keywordToParametrizedVariable namesWithEmptyInstanceVariable |
+	
+	namesWithEmptyInstanceVariable := {'self' -> ''.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'}.
+	
+	self 
+		creationWithExtractedVariablesToInstanceVariables: namesWithEmptyInstanceVariable
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ NewInstanceVariablePrecondition newVariableCanNotBeEmptyErrorMessage].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:46:35'!
+test09MethodObjectInstanceVariableNamesCanNotContainBlanks
+
+	| keywordToParametrizedVariable namesWithBlanksInstanceVariable anInstVarNameWithBlanks |
+	
+	anInstVarNameWithBlanks := 'an Inst Var Name'.
+	namesWithBlanksInstanceVariable := {'self' -> anInstVarNameWithBlanks.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'}.
+	
+	self 
+		creationWithExtractedVariablesToInstanceVariables: namesWithBlanksInstanceVariable
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: anInstVarNameWithBlanks].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:49:55'!
+test10MethodObjectInstanceVariableNamesCanNotContainInvalidCharacters
+
+	| keywordToParametrizedVariable anInstVarNameWithInvalidCharacters namesWithInvalidCharsInstanceVariable |
+	
+	anInstVarNameWithInvalidCharacters := 'anInst2!!!!VarName'.
+	namesWithInvalidCharsInstanceVariable := {'self' -> anInstVarNameWithInvalidCharacters.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'}.
+	
+	self 
+		creationWithExtractedVariablesToInstanceVariables: namesWithInvalidCharsInstanceVariable
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: anInstVarNameWithInvalidCharacters].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:55:52'!
+test11MethodObjectInstanceVariableNamesCanNotBeDefinedInSuperclasses
+
+	| keywordToParametrizedVariable anInstVarName methodObjectSuperclass namesWithAlreadyDefinedInstanceVariable |
+	
+	anInstVarName := 'anInstVarName'.
+	methodObjectSuperclass := self
+		createClassNamed: #MethodObjectSuperclass
+		instanceVariableNames: anInstVarName.
+	namesWithAlreadyDefinedInstanceVariable := {'self' -> anInstVarName .} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'}.
+	
+	self 
+		should: [
+			ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: namesWithAlreadyDefinedInstanceVariable
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector]
+		raise: RefactoringError
+		withMessageText: [ 
+			NewInstanceVariablePrecondition
+				errorMessageForNewInstanceVariable: anInstVarName
+				alreadyDefinedInAll: {methodObjectSuperclass} ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 19:09:50'!
+test12MethodObjectInstanceVariableNamesCanNotBeDuplicated
+
+	| keywordToParametrizedVariable anInstVarName namesWithAlreadyDefinedInstanceVariable aClassToRefactor aDuplicatedInstVarName aCompiledMethodToRefactor |
+	
+	aDuplicatedInstVarName := 'aDuplicatedInstVarName'.
+	anInstVarName := 'anInstVar'.
+	aClassToRefactor := self
+		createClassNamed: #AClassToRefactor
+		instanceVariableNames: anInstVarName.	
+	aClassToRefactor compile: 'm1
+		self isNil.
+		', anInstVarName ,' isNil.'.
+	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
+	
+	namesWithAlreadyDefinedInstanceVariable := {
+		'self' -> aDuplicatedInstVarName.
+		anInstVarName -> aDuplicatedInstVarName} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'. #andWith -> anInstVarName }.
+	
+	self 
+		should: [
+			ExtractToMethodObject 
+				from: aCompiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: namesWithAlreadyDefinedInstanceVariable
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector]
+		raise: RefactoringError
+		withMessageText: [ 
+			ExtractToMethodObject duplicatedInstanceVariablesErrorMessageFor: {aDuplicatedInstVarName} ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 12:02:25'!
+test13MethodObjectInstanceVariableNamesCanNotBeNamedAsMethodTemporal
+
+	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor aTemporalName namesWithSameAsTemporal |
+	
+	aClassToRefactor := self createClassNamed: #AClassToRefactor.
+	aTemporalName	  := 'aTemporal'.
+	aClassToRefactor compile: 'm1
+		| ', aTemporalName, ' |
+		
+		', aTemporalName, ' := 1.
+		self isNil.
+		
+		^', aTemporalName, ' + 2'.
+		
+	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
+	
+	namesWithSameAsTemporal := {'self' -> aTemporalName.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	self 
+		should: [
+			ExtractToMethodObject 
+				from: aCompiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: namesWithSameAsTemporal
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector]
+		raise: RefactoringError
+		withMessageText: [ 
+			ExtractToMethodObject instanceVariableNamesSameAsTemporalsErrorMessageFor: {aTemporalName} ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 16:00:28'!
+test14MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockTemporal
+
+	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor namesWithSameAsTemporal aBlockTemporalName |
+	
+	aClassToRefactor := self createClassNamed: #AClassToRefactor.
+	aBlockTemporalName	  := 'aBlockTemporal'.
+	aClassToRefactor compile: 'm1
+		^[
+			| ', aBlockTemporalName, ' |
+			
+			self isNil.
+			', aBlockTemporalName, '.]'.
+		
+	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
+	
+	namesWithSameAsTemporal := {'self' -> aBlockTemporalName.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	self 
+		should: [
+			ExtractToMethodObject 
+				from: aCompiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: namesWithSameAsTemporal
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector]
+		raise: RefactoringError
+		withMessageText: [ 
+			ExtractToMethodObject instanceVariableNamesShadowedByBlockTemporalsErrorMessageFor: {aBlockTemporalName} ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/15/2018 16:06:36'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData! !
 
-!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 11:23:22'!
+!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/17/2018 11:23:22'!
 compiledMethodReferencingSelf
 
 	| aClass aMessageSelector aMessageSourceCode |
@@ -2203,64 +2503,31 @@ compiledMethodReferencingSelf
 	
 	^aClass compiledMethodAt: aMessageSelector! !
 
-!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 11:21:23'!
+!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/17/2018 11:21:23'!
 defaultEvaluationSelector
 	
 	^#defaultEvaluationSelector! !
 
-!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 11:19:01'!
+!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/17/2018 17:51:55'!
+emptyCompiledMethod
+
+	| aClass |
+	
+	aClass := self createClassNamed: #AClass.
+	aClass compile: 'm1'.
+	
+	^aClass compiledMethodAt: #m1.
+	! !
+
+!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/17/2018 11:19:01'!
 methodObjectClassName
 
 	^#MethodObject! !
 
-!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 11:20:17'!
+!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/17/2018 11:20:17'!
 methodObjectSuperclass
 
 	^self createClassNamed: #MethodObjectSuperclass! !
-
-!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/15/2018 16:20:06'!
-test01MethodObjectClassNameMustBeValid
-
-	| aClass anExistingClassName aCompiledMethodToRefactor anEvaluationSelector |
-	
-	aClass := self createClassNamed: #AClass.
-	aClass compile: 'm1'.
-	aCompiledMethodToRefactor  := aClass compiledMethodAt: #m1.
-	anExistingClassName  := #Object.
-	anEvaluationSelector := #value.
-	
-	self should: [
-		ExtractToMethodObject 
-			from: aCompiledMethodToRefactor
-			toMethodObjectClassNamed: anExistingClassName
-			subclassing: aClass
-			onCategory: self classCategoryOfTestData
-			evaluatedWith: anEvaluationSelector]
-		raise: RefactoringError
-		withMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: anExistingClassName ].! !
-
-!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 12:10:58'!
-test02AllVariablesToParametrizeMustHaveACorrespondingMethodObjectInstanceVariableName
-
-	| namesForParametrizedMissingSelf keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName |
-	
-	namesForParametrizedMissingSelf := #() asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'}.
-	variablesToParametrizeWithoutInstVarName := Set with: 'self'.
-	
-	self should: [
-		ExtractToMethodObject 
-			from: self compiledMethodReferencingSelf
-			toMethodObjectClassNamed: self methodObjectClassName
-			subclassing: self methodObjectSuperclass
-			onCategory: self classCategoryOfTestData
-			withExtractedVariablesToInstanceVariables: namesForParametrizedMissingSelf
-			withInstanceCreationMessageFrom: keywordToParametrizedVariable
-			evaluatedWith: self defaultEvaluationSelector
-			]
-		raise: RefactoringError
-		withMessageText: [ ExtractToMethodObject 
-			variablesToParametrizedDoNotHaveInstanceVariableNames: variablesToParametrizeWithoutInstVarName].! !
 
 !ExtractToMethodObjectTestDraft methodsFor: 'tests' stamp: 'FGJ 11/23/2018 11:38:37'!
 allClassCategoriesOfTestData
@@ -4267,25 +4534,25 @@ test01CanNotRenameAnInstanceVariableNotDefinedInClass
 	self assertRenameCreationFailsWith: [ RenameInstanceVariable errorMessageForInstanceVariable: oldVariable notDefinedIn: classToRefactor ]
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:01:33'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:58:39'!
 test02NewVariableNameCanNotBeEmpty
 	
 	newVariable := '   '.
-	self createClassToRefactorAndAssertRenameCreationFailsWith: [AddInstanceVariable newVariableCanNotBeEmptyErrorMessage ]
+	self createClassToRefactorAndAssertRenameCreationFailsWith: [NewInstanceVariablePrecondition newVariableCanNotBeEmptyErrorMessage ]
 ! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:00:28'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:56:16'!
 test03NewVariableNameCanNotContainBlanks
 	
 	newVariable := 'a b'.
-	self createClassToRefactorAndAssertRenameCreationFailsWith: [AddInstanceVariable errorMessageForInvalidInstanceVariable: newVariable]
+	self createClassToRefactorAndAssertRenameCreationFailsWith: [NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: newVariable]
 ! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:00:33'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:56:25'!
 test04NewVariableNameCanNotContainInvalidCharacters
 
 	newVariable := '2a'.
-	self createClassToRefactorAndAssertRenameCreationFailsWith: [AddInstanceVariable errorMessageForInvalidInstanceVariable: newVariable]
+	self createClassToRefactorAndAssertRenameCreationFailsWith: [NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: newVariable]
 ! !
 
 !RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 5/28/2017 21:33:30'!
@@ -4298,14 +4565,14 @@ test05ValidNewVariableNameGetBlanksTrimmed
 		shouldnt: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
 		raise: self refactoringError ! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:00:58'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:57:28'!
 test06NewVariableNameCanNotBeDefinedInClass
 
 	newVariable := oldVariable.
-	self createClassToRefactorAndAssertRenameCreationFailsWith: [AddInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactor )]
+	self createClassToRefactorAndAssertRenameCreationFailsWith: [NewInstanceVariablePrecondition errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactor )]
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:01:05'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:57:44'!
 test07NewVariableNameCanNotBeDefinedInSuperclasses
 
 	|  classToRefactorSuperclass  |
@@ -4313,12 +4580,12 @@ test07NewVariableNameCanNotBeDefinedInSuperclasses
 	classToRefactorSuperclass := self createClassNamed: #SuperclassWithInstVar instanceVariableNames: newVariable.
 	classToRefactor := self createClassNamed: self classToRefactorName subclassOf: classToRefactorSuperclass instanceVariableNames: oldVariable.
 	
-	self assertRenameCreationFailsWith: [AddInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSuperclass)]
+	self assertRenameCreationFailsWith: [NewInstanceVariablePrecondition errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSuperclass)]
 	
 	
 ! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:01:14'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 15:57:51'!
 test08NewVariableNameCanNotBeDefinedInAnySubclass
 
 	| classToRefactorSubclass |
@@ -4326,7 +4593,7 @@ test08NewVariableNameCanNotBeDefinedInAnySubclass
 	self createClassToRefactor.
 	classToRefactorSubclass := self createClassNamed: #SubclassWithInstVar subclassOf: classToRefactor instanceVariableNames: newVariable.
 	
-	self assertRenameCreationFailsWith: [AddInstanceVariable errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSubclass)]
+	self assertRenameCreationFailsWith: [NewInstanceVariablePrecondition errorMessageForNewInstanceVariable: newVariable alreadyDefinedInAll: (Array with: classToRefactorSubclass)]
 	
 		! !
 
@@ -4430,7 +4697,7 @@ test14NewVariableOfExistingInstancesReferToOldVariableValue
 	self assert: 1 equals:  (instance instVarNamed: newVariable).
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:02:51'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 16:00:26'!
 test15WarnsWhenNewVariableEqualsTemporaryVariableOfAMethodInClass
 
 	| selector |
@@ -4441,10 +4708,10 @@ test15WarnsWhenNewVariableEqualsTemporaryVariableOfAMethodInClass
 	
 	self 
 		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
-		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ NewInstanceVariablePrecondition warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:02:56'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 16:00:31'!
 test16WarnsWhenNewVariableEqualsArgumentOfAMethodInClass
 
 	| selector |
@@ -4455,10 +4722,10 @@ test16WarnsWhenNewVariableEqualsArgumentOfAMethodInClass
 	
 	self 
 		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
-		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ NewInstanceVariablePrecondition warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:03:00'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 16:00:36'!
 test17WarnsWhenNewVariableEqualsArgumentOfABlockInAMethodInClass
 
 	| selector |
@@ -4469,10 +4736,10 @@ test17WarnsWhenNewVariableEqualsArgumentOfABlockInAMethodInClass
 	
 	self 
 		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
-		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ NewInstanceVariablePrecondition warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:03:03'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 16:00:41'!
 test18WarnsWhenNewVariableEqualsTemporaryOfABlockInAMethodInClass
 
 	| selector |
@@ -4483,10 +4750,10 @@ test18WarnsWhenNewVariableEqualsTemporaryOfABlockInAMethodInClass
 	
 	self 
 		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
-		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
+		warnsWith: [ NewInstanceVariablePrecondition warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (classToRefactor>>selector)) ].
 	! !
 
-!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 6/17/2017 20:03:08'!
+!RenameInstanceVariableTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 16:00:46'!
 test19WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 
 	| selector subclass |
@@ -4498,7 +4765,7 @@ test19WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 	
 	self 
 		assertCreation: [ RenameInstanceVariable from: oldVariable to: newVariable in: classToRefactor ]
-		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (subclass>>selector)) ].
+		warnsWith: [ NewInstanceVariablePrecondition warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (subclass>>selector)) ].
 	! !
 
 !RenameSelectorTest methodsFor: 'class factory' stamp: 'HAW 5/28/2017 23:26:45'!
@@ -5587,6 +5854,154 @@ valueFor: aNewClassName in: aSystem undeclared: anUndeclaredDictionary
 
 	^(self for: aNewClassName in: aSystem undeclared: anUndeclaredDictionary) value! !
 
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:37:51'!
+assertIsNotAlreadyDefined
+	
+	^ classToAddInstVar 
+		withClassesThatDefineInHierarchyInstanceVariable: instVarName 
+		do: [ :definingClasses | self signalNewInstanceVariable: instVarName alreadyDefinedInAll: definingClasses ]
+		ifNone: [ ].! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:29:44'!
+assertIsNotEmpty
+
+	instVarName isEmpty ifTrue: [ self signalNewVariableCanNotBeEmpty]! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:31:17'!
+assertIsValidInstanceVariableName
+
+	| scannedNames |
+
+	scannedNames := Scanner new scanFieldNames: instVarName .
+	scannedNames size = 1 ifFalse: [ self signalInvalidInstanceVariable: instVarName ].
+	scannedNames first = instVarName ifFalse: [ self signalInvalidInstanceVariable: instVarName ].! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:48:12'!
+methodsDefiningNewVariable
+	
+	| methodsDefiningNewVariableInHierarchy |
+	
+	methodsDefiningNewVariableInHierarchy := OrderedCollection new.
+	
+	classToAddInstVar 
+		withAllSubclassesDo: [ 
+			:class | 
+			| methodsDefiningNewVariableInClass definesNewVariable |
+			
+			definesNewVariable := [:aMethod | aMethod hasArgumentOrTemporary: instVarName].
+			methodsDefiningNewVariableInClass := class methodsSelect: definesNewVariable.
+			
+			methodsDefiningNewVariableInHierarchy addAll: methodsDefiningNewVariableInClass.].
+		
+	^methodsDefiningNewVariableInHierarchy 
+		
+	! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:30:15'!
+newVariableCanNotBeEmptyErrorMessage
+	
+	^'New variable can not be empty'! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:35:00'!
+of: anInstanceVariableName for: aClass
+
+	instVarName := anInstanceVariableName withBlanksTrimmed.
+	classToAddInstVar := aClass.! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:33:01'!
+refactoringError: aMessage
+
+	Refactoring refactoringError: aMessage.! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:53:17'!
+refactoringErrorClass
+
+	^ RefactoringError.! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:53:04'!
+refactoringWarning: aMessageText
+
+	^ self refactoringWarningClass signal: aMessageText.! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:53:23'!
+refactoringWarningClass
+
+	^ RefactoringWarning.! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 16:27:44'!
+signalInvalidInstanceVariable: aName
+
+	^ self refactoringError: (self class errorMessageForInvalidInstanceVariable: aName).! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 16:28:33'!
+signalNewInstanceVariable: aName alreadyDefinedInAll: classes
+
+	^ self refactoringError: (self class errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes).! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 16:27:50'!
+signalNewVariableCanNotBeEmpty
+	
+	self refactoringError: self class newVariableCanNotBeEmptyErrorMessage! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:39:00'!
+value
+	
+	self assertIsNotEmpty.
+	self assertIsValidInstanceVariableName.
+	self assertIsNotAlreadyDefined.
+	
+	self warnIfIsDefinedInMethods.! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 15:49:07'!
+warnIfIsDefinedInMethods
+	
+	| methodsDefiningNewVariable |
+	
+	methodsDefiningNewVariable := self methodsDefiningNewVariable.
+	
+	methodsDefiningNewVariable 
+		notEmpty
+		ifTrue: [ self warnNewVariable: instVarName willBeHiddenAtAll: methodsDefiningNewVariable ].! !
+
+!NewInstanceVariablePrecondition methodsFor: 'as yet unclassified' stamp: 'FGJ 12/17/2018 16:29:18'!
+warnNewVariable: newVariable willBeHiddenAtAll: methods
+
+	^ self refactoringWarning: (self class warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods).! !
+
+!NewInstanceVariablePrecondition class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 16:27:09'!
+errorMessageForInvalidInstanceVariable: aName
+
+	^ '''' , aName , ''' is not a valid instance variable name'.! !
+
+!NewInstanceVariablePrecondition class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 16:28:18'!
+errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes
+
+	^ 'Instance variable ''' , aName , ''' is already defined in ' , classes asCommaStringAnd.! !
+
+!NewInstanceVariablePrecondition class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 16:05:38'!
+newVariableCanNotBeEmptyErrorMessage
+	
+	^'New variable can not be empty'! !
+
+!NewInstanceVariablePrecondition class methodsFor: 'instance creation' stamp: 'FGJ 12/17/2018 15:28:06'!
+of: anInstanceVariableName for: aClass
+
+	^self new of: anInstanceVariableName for: aClass ! !
+
+!NewInstanceVariablePrecondition class methodsFor: 'instance creation' stamp: 'FGJ 12/17/2018 18:19:10'!
+valueOf: anInstanceVariableName for: aClass
+
+	^(self new of: anInstanceVariableName for: aClass) value! !
+
+!NewInstanceVariablePrecondition class methodsFor: 'warning messages' stamp: 'FGJ 12/17/2018 16:29:03'!
+warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
+ 
+	^String streamContents: [ :stream |
+		stream 
+			nextPutAll: newVariable;
+			nextPutAll: ' will be hidden at '.
+		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
+
 !Refactoring methodsFor: 'applying' stamp: 'HAW 5/24/2017 21:08:11'!
 apply
 
@@ -5647,96 +6062,15 @@ initializeNamed: aNewVariable to: aClassToRefactor
 	newVariable := aNewVariable.
 	classToRefactor := aClassToRefactor ! !
 
-!AddInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/11/2017 18:18:22'!
-assert: aVariable isNotAlreadyDefinedIn: aClass
-	
-	^ aClass
-		withClassesThatDefineInHierarchyInstanceVariable: aVariable
-		do: [ :definingClasses | self signalNewInstanceVariable: aVariable alreadyDefinedInAll: definingClasses ]
-		ifNone: [ ].! !
-
-!AddInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/6/2017 10:02:29'!
-assertIsNotEmpty: aNewVariable
-
-	aNewVariable isEmpty ifTrue: [ self signalNewVariableCanNotBeEmpty]! !
-
-!AddInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/22/2017 17:21:30'!
-assertIsValidInstanceVariableName: aName
-
-	| scannedNames |
-
-	scannedNames _ Scanner new scanFieldNames: aName.
-	scannedNames size = 1 ifFalse: [ self signalInvalidInstanceVariable: aName ].
-	scannedNames first = aName ifFalse: [ self signalInvalidInstanceVariable: aName ].! !
-
-!AddInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/11/2017 18:30:18'!
-warnIf: newVariable isDefinedInMethodsOf: aClass 
-	
-	| methodsDefiningNewVariable |
-	
-	methodsDefiningNewVariable := OrderedCollection new.
-	aClass withAllSubclassesDo: [ :class | methodsDefiningNewVariable addAll: (class methodsSelect: [:aMethod | aMethod hasArgumentOrTemporary: newVariable ]) ].
-	
-	methodsDefiningNewVariable notEmpty ifTrue: [ self warnNewVariable: newVariable willBeHiddenAtAll: methodsDefiningNewVariable ].! !
-
-!AddInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/6/2017 10:06:55'!
-errorMessageForInvalidInstanceVariable: aName
-
-	^ '''' , aName , ''' is not a valid instance variable name'.! !
-
-!AddInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/11/2017 18:19:04'!
-errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes
-
-	^ 'Instance variable ''' , aName , ''' is already defined in ' , classes asCommaStringAnd.! !
-
-!AddInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/6/2017 10:03:03'!
-newVariableCanNotBeEmptyErrorMessage
-	
-	^'New variable can not be empty'! !
-
-!AddInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/6/2017 10:06:39'!
-signalInvalidInstanceVariable: aName
-
-	^ self refactoringError: (self errorMessageForInvalidInstanceVariable: aName).! !
-
-!AddInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/11/2017 18:18:45'!
-signalNewInstanceVariable: aName alreadyDefinedInAll: classes
-
-	^ self refactoringError: (self errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes).! !
-
-!AddInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/6/2017 10:02:45'!
-signalNewVariableCanNotBeEmpty
-	
-	self refactoringError: self newVariableCanNotBeEmptyErrorMessage! !
-
-!AddInstanceVariable class methodsFor: 'instance creation' stamp: 'HAW 6/23/2017 11:42:33'!
+!AddInstanceVariable class methodsFor: 'instance creation' stamp: 'FGJ 12/17/2018 15:54:19'!
 named: aVariable to: aClassToRefactor
 
 	| trimmedVariable |
 	
 	trimmedVariable := aVariable withBlanksTrimmed.
-	self assertIsNotEmpty: trimmedVariable.
-	self assertIsValidInstanceVariableName: trimmedVariable.
-	self assert: trimmedVariable isNotAlreadyDefinedIn: aClassToRefactor.
-	
-	self warnIf: trimmedVariable isDefinedInMethodsOf: aClassToRefactor.
-	
+	(NewInstanceVariablePrecondition of: trimmedVariable for: aClassToRefactor) value.	
 	^self new initializeNamed: trimmedVariable to: aClassToRefactor 
 	! !
-
-!AddInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/11/2017 18:32:10'!
-warnNewVariable: newVariable willBeHiddenAtAll: methods
-
-	^ self refactoringWarning: (self warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods).! !
-
-!AddInstanceVariable class methodsFor: 'warnings' stamp: 'HAW 6/11/2017 18:32:30'!
-warningMessageForNewVariable: newVariable willBeHiddenAtAll: methods
- 
-	^String streamContents: [ :stream |
-		stream 
-			nextPutAll: newVariable;
-			nextPutAll: ' will be hidden at '.
-		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
 !ChangeSelector methodsFor: 'applying' stamp: 'HAW 8/18/2018 11:59:02'!
 apply
@@ -7041,25 +7375,104 @@ replaceExtractedMethodWithMethodObjectInvocation
 					accum append: keywordToVarName key, ': ', keywordToVarName value]].
 	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' ', constructorMessage, ') ', methodObjectInvocationSelector asString.! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/17/2018 12:05:31'!
-assertAllVariablesToParametrizeFrom: aCompiledMethod HaveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariableNames
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 18:19:27'!
+assertAllInstanceVariableNamesAreValid: instanceVariableNames for: aClass
+
+	instanceVariableNames do: [
+		:anInstanceVariableName |
+		NewInstanceVariablePrecondition valueOf: anInstanceVariableName for: aClass].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 14:51:40'!
+assertAllInstanceVariableNamesIn: variablesToParametrizeToInstanceVariableNames
+haveACorrespondingVariableToParametrizeFrom: aCompiledMethod
 
 	| variablesToParametrize variablesWithNames |
 	
 	variablesToParametrize := VariablesToExtractFinder findIn: aCompiledMethod.
 	variablesWithNames := variablesToParametrizeToInstanceVariableNames keys asSet.
 	
-	variablesToParametrize = variablesWithNames
+	(variablesToParametrize includesAllOf: variablesWithNames)
+		ifFalse: [
+			| unknownVariableToParametrize |
+			unknownVariableToParametrize := variablesWithNames copyWithoutAll: variablesToParametrize.
+			self signaUnknownlVariablesToParametrize: unknownVariableToParametrize.]
+	! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 14:56:01'!
+assertAllVariablesToParametrizeFrom: aCompiledMethod
+haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariableNames
+
+	| variablesToParametrize variablesWithNames |
+	
+	variablesToParametrize := VariablesToExtractFinder findIn: aCompiledMethod.
+	variablesWithNames := variablesToParametrizeToInstanceVariableNames keys asSet.
+	
+	(variablesWithNames includesAllOf: variablesToParametrize)
 		ifFalse: [
 			| variablesWithoutNames |
 			variablesWithoutNames := variablesToParametrize copyWithoutAll: variablesWithNames.
 			self signalVariablesToParametrizeWithoutInstanceVariableName: variablesWithoutNames.]! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/11/2018 14:50:46'!
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/18/2018 11:45:20'!
+assertInstanceVariableNames: variableNames
+areNotNamedAsMethodTemporalsOf: aCompiledMethod
+
+	| temporariesNames temporariesNodes overlappingNames |
+
+	temporariesNodes := aCompiledMethod methodNode temporaries.
+	temporariesNames := temporariesNodes collect: [:tempNode | tempNode name].
+	
+	overlappingNames := temporariesNames intersection: variableNames.
+	
+	overlappingNames
+		isEmpty
+		ifFalse: [self signalInstanceVariableNamesSameAsTemporals: overlappingNames].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/11/2018 14:50:46'!
 assertItDoesNotReferenceSuper: aCompiledMethod
 
 	aCompiledMethod sendsToSuper
 		ifTrue: [self signalMethodReferencesSuper].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 19:20:59'!
+assertNoDuplicatedInstanceVariableNames: names
+
+	| duplicateNames |
+	duplicateNames := names select: [:aName | (names occurrencesOf: aName) > 1].
+	
+	duplicateNames 
+		isEmpty
+		ifFalse: [ self signalDuplicateInstanceVariableNames: duplicateNames asSet ].! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:33:50'!
+assertInstanceVariableNamesFrom: methodVariableNamesToInstanceVariableNames
+areNotNamedAsBlockTemporalsOf: aCompiledMethod
+		
+	| overlappingNames |
+	
+	overlappingNames := self 
+		overlappingNamesOnBlockNodesOf: aCompiledMethod
+		replacingWith: methodVariableNamesToInstanceVariableNames.
+	
+	overlappingNames
+		isEmpty
+		ifFalse: [self signalInstanceVariableNamesShadowedByBlockTemporals: overlappingNames].! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:13:34'!
+blockNodesFrom: aMethodNode
+		
+	| blockNodes |
+	
+	blockNodes := Set new.
+	aMethodNode
+		accept: (ParseNodeEnumerator
+			ofBlock: [
+				:aNode |
+				aNode 
+					isBlockNode
+					ifTrue: [blockNodes add: aNode.]]). 					
+	
+	^blockNodes! !
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/15/2018 16:20:58'!
 from: aCompiledMethod
@@ -7079,7 +7492,7 @@ evaluatedWith: anEvaluationSelector
 		evaluatedWith: anEvaluationSelector
 ! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/17/2018 11:29:46'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 14:35:34'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
@@ -7088,12 +7501,28 @@ withExtractedVariablesToInstanceVariables: methodVariableNamesToInstanceVariable
 withInstanceCreationMessageFrom: messageKeywordToInstanceVariableName
 evaluatedWith: anInvocationSelector
 	
+	| instanceVariableNames |
 	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
 	self assertItDoesNotReferenceSuper: aCompiledMethod.
 	self 
 		assertAllVariablesToParametrizeFrom: aCompiledMethod
-		HaveAnInstanceVariableNameIn: methodVariableNamesToInstanceVariableNames .
+		haveAnInstanceVariableNameIn: methodVariableNamesToInstanceVariableNames.
+	self 
+		assertAllInstanceVariableNamesIn: methodVariableNamesToInstanceVariableNames
+		haveACorrespondingVariableToParametrizeFrom: aCompiledMethod.
 	
+	instanceVariableNames := methodVariableNamesToInstanceVariableNames values.
+	self 
+		assertAllInstanceVariableNamesAreValid: instanceVariableNames
+		for: aClass.
+	self assertNoDuplicatedInstanceVariableNames: instanceVariableNames.
+	self 
+		assertInstanceVariableNames: instanceVariableNames
+		areNotNamedAsMethodTemporalsOf: aCompiledMethod.
+	self
+		assertInstanceVariableNamesFrom: methodVariableNamesToInstanceVariableNames
+		areNotNamedAsBlockTemporalsOf: aCompiledMethod.
+		
 	^self new 
 		from: aCompiledMethod
 		toMethodObjectClassNamed: aClassName
@@ -7104,9 +7533,18 @@ evaluatedWith: anInvocationSelector
 		evaluatedWith: anInvocationSelector
 ! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/11/2018 14:49:45'!
-methodCanNotReferenceSuperErrorMessage
-	^'The method to be extracted can not reference super pseudo variable'! !
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 16:02:47'!
+instanceVariableNamesShadowedByBlockTemporalsErrorMessageFor: overlappingNames
+
+	| methods newVariable |
+	'The following instance variable names will be shadowed by block temporals with the same name: ',
+		', ' join: overlappingNames.
+		
+		String streamContents: [ :stream |
+		stream 
+			nextPutAll: newVariable;
+			nextPutAll: ' will be hidden at '.
+		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/27/2018 15:46:47'!
 newClassPreconditionClass
@@ -7114,20 +7552,157 @@ newClassPreconditionClass
 	^NewClassPrecondition.	
 	! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/11/2018 14:51:12'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:30:13'!
+overlappingBlockTemporalNames: aBlockTemporalNames
+withTheCorrespondingInstVarName: methodVariableNamesToInstanceVariableNames
+consideringBlockVariables: variablesNames		
+
+	| methodVariableNames overlappingNames aBlockNode aBlockTemporalNamesss variablesNamesss |
+	
+	overlappingNames := Set new.
+	methodVariableNames := methodVariableNamesToInstanceVariableNames keys asSet.
+	variablesNamesss := (self variableNodesFrom: aBlockNode) collect: [:aNode | aNode name].
+	aBlockTemporalNamesss := aBlockNode temporaries collect: [:aNode | aNode name].
+			
+	variablesNames do: [
+		:aVariableName |
+		| blockTemporalOverlapsWithInstVarName |
+			blockTemporalOverlapsWithInstVarName := 
+				(methodVariableNames includes: aVariableName)
+					and: (aBlockTemporalNames includes: (methodVariableNamesToInstanceVariableNames at: aVariableName)).
+			blockTemporalOverlapsWithInstVarName ifTrue: [overlappingNames add: aVariableName]].
+		
+	^overlappingNames ! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:59:39'!
+overlappingNamesIn: aBlockNode
+consideringReplacingWith: methodVariableNamesToInstanceVariableNames
+
+	| overlappingNames aBlockTemporalNames aBlockVariablesNames |
+	
+	overlappingNames := Set new.
+	aBlockVariablesNames := (self variableNodesFrom: aBlockNode) collect: [:aNode | aNode name].
+	aBlockTemporalNames := aBlockNode temporaries collect: [:aNode | aNode name].
+			
+	aBlockVariablesNames do: [
+		:aVariableName |
+			(self 
+				overlaps: aVariableName
+				withAny: aBlockTemporalNames
+				replacingWith: methodVariableNamesToInstanceVariableNames)
+				ifTrue:[overlappingNames add: aVariableName]].
+		
+	^overlappingNames ! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:33:20'!
+overlappingNamesOnBlockNodesOf: aCompiledMethod
+replacingWith: methodVariableNamesToInstanceVariableNames		
+
+	| overlappingNames blockNodes |
+	
+	blockNodes := self blockNodesFrom: aCompiledMethod methodNode.
+	overlappingNames := Set new.
+	
+	blockNodes do: [
+		:aBlockNode |
+		|  aBlockNodeOverlappingNames |
+			aBlockNodeOverlappingNames := self
+				overlappingNamesIn: aBlockNode
+				consideringReplacingWith: methodVariableNamesToInstanceVariableNames.
+			
+			overlappingNames addAll: aBlockNodeOverlappingNames].
+	
+	^overlappingNames! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:58:09'!
+overlaps: aVariableName
+withAny: aBlockTemporalNames
+replacingWith: methodVariableNamesToInstanceVariableNames
+
+	| correspondingInstVarNameForVar methodVariableNames |
+	
+	correspondingInstVarNameForVar := methodVariableNamesToInstanceVariableNames at: aVariableName ifAbsent: [^false].
+	methodVariableNames := methodVariableNamesToInstanceVariableNames keys asSet.
+	
+	^(methodVariableNames includes: aVariableName)
+		and: (aBlockTemporalNames includes: correspondingInstVarNameForVar).
+			
+! !
+
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 12:35:38'!
+signalInstanceVariableNamesShadowedByBlockTemporals: overlappingNames
+
+	self refactoringError: (self instanceVariableNamesShadowedByBlockTemporalsErrorMessageFor: overlappingNames).! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 19:18:12'!
+duplicatedInstanceVariablesErrorMessageFor: duplicateNames
+
+	^'The following instance variables are duplicated: ', ', ' join: duplicateNames, '.'.! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 12:38:52'!
+inexistentVariableToParametrizeErrorMessage: inexistentVariables 
+	^'The variables to parametrize: ', (', ' join: inexistentVariables), ' have not been found.'! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/18/2018 11:47:44'!
+instanceVariableNamesSameAsTemporalsErrorMessageFor: overlappingNames
+
+	^'The following instance variable names overlap with the names of method temporals: ',
+		', ' join: overlappingNames.! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/11/2018 14:49:45'!
+methodCanNotReferenceSuperErrorMessage
+	^'The method to be extracted can not reference super pseudo variable'! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 14:53:33'!
+unknownVariablesToParametrizeErrorMessage: unknownVariablesToParametrize
+
+	^'The variables: ', (', ' join: unknownVariablesToParametrize), ' were given a corresponding instance variable name but they are not variables to parametrize.'! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 12:35:43'!
+variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesWithoutNames
+
+	^'The variables: ', (', ' join: variablesWithoutNames), ' do not have a corresponding Method Object instance variable name'! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/17/2018 14:52:22'!
+signaUnknownlVariablesToParametrize: unknownVariablesToParametrize
+
+	self refactoringError: (self unknownVariablesToParametrizeErrorMessage: unknownVariablesToParametrize).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/17/2018 19:17:08'!
+signalDuplicateInstanceVariableNames: duplicateNames
+
+	self refactoringError: (self duplicatedInstanceVariablesErrorMessageFor: duplicateNames).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/18/2018 11:46:09'!
+signalInstanceVariableNamesSameAsTemporals: overlappingNames
+
+	self refactoringError: (self instanceVariableNamesSameAsTemporalsErrorMessageFor: overlappingNames).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/11/2018 14:51:12'!
 signalMethodReferencesSuper
 	
 	self refactoringError: self methodCanNotReferenceSuperErrorMessage.! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/17/2018 12:08:53'!
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/17/2018 12:35:54'!
 signalVariablesToParametrizeWithoutInstanceVariableName: variablesWithoutNames
 
-	self refactoringError: (self variablesToParametrizedDoNotHaveInstanceVariableNames: variablesWithoutNames).! !
+	self refactoringError: (self variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesWithoutNames).! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/17/2018 12:10:11'!
-variablesToParametrizedDoNotHaveInstanceVariableNames: variablesWithoutNames
-
-	^'The variables: ', (', ' join: variablesWithoutNames), ' do not have a corresponding Method Object instance variable name'! !
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/18/2018 15:57:30'!
+variableNodesFrom: aBlockNode 
+		
+	| variableNodes |
+	
+	variableNodes := Set new.
+	aBlockNode
+		accept: (ParseNodeEnumerator
+			ofBlock: [
+				:aNode |
+				aNode 
+					isVariableNode 
+					ifTrue: [variableNodes add: aNode.]]). 					
+	
+	^variableNodes! !
 
 !ExtractToTemporary methodsFor: 'applying' stamp: 'HAW 10/18/2017 18:39:22'!
 apply

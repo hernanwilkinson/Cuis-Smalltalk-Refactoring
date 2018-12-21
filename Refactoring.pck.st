@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 18 December 2018 at 4:02:57 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 21 December 2018 at 4:10:28 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 121!
+!provides: 'Refactoring' 1 140!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2356,7 +2356,7 @@ test10MethodObjectInstanceVariableNamesCanNotContainInvalidCharacters
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
 		failsWithMessageText: [ NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: anInstVarNameWithInvalidCharacters].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:55:52'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 16:57:17'!
 test11MethodObjectInstanceVariableNamesCanNotBeDefinedInSuperclasses
 
 	| keywordToParametrizedVariable anInstVarName methodObjectSuperclass namesWithAlreadyDefinedInstanceVariable |
@@ -2384,47 +2384,39 @@ test11MethodObjectInstanceVariableNamesCanNotBeDefinedInSuperclasses
 				errorMessageForNewInstanceVariable: anInstVarName
 				alreadyDefinedInAll: {methodObjectSuperclass} ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 19:09:50'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 17:07:51'!
 test12MethodObjectInstanceVariableNamesCanNotBeDuplicated
 
-	| keywordToParametrizedVariable anInstVarName namesWithAlreadyDefinedInstanceVariable aClassToRefactor aDuplicatedInstVarName aCompiledMethodToRefactor |
+	| keywordToParametrizedVariable anInstVarName namesWithDuplicatedInstanceVariable aClassToRefactor aDuplicatedInstVarName aCompiledMethodToRefactor sourceCode |
 	
-	aDuplicatedInstVarName := 'aDuplicatedInstVarName'.
 	anInstVarName := 'anInstVar'.
-	aClassToRefactor := self
-		createClassNamed: #AClassToRefactor
-		instanceVariableNames: anInstVarName.	
-	aClassToRefactor compile: 'm1
+	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: anInstVarName.
+	sourceCode := 'm1
 		self isNil.
 		', anInstVarName ,' isNil.'.
+	aClassToRefactor compile: sourceCode.
 	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
 	
-	namesWithAlreadyDefinedInstanceVariable := {
+	aDuplicatedInstVarName := 'aDuplicatedInstVarName'.
+	namesWithDuplicatedInstanceVariable := {
 		'self' -> aDuplicatedInstVarName.
 		anInstVarName -> aDuplicatedInstVarName} asDictionary.
 	keywordToParametrizedVariable := {#with -> 'self'. #andWith -> anInstVarName }.
 	
-	self 
-		should: [
-			ExtractToMethodObject 
-				from: aCompiledMethodToRefactor
-				toMethodObjectClassNamed: self methodObjectClassName
-				subclassing: self methodObjectSuperclass
-				onCategory: self classCategoryOfTestData
-				withExtractedVariablesToInstanceVariables: namesWithAlreadyDefinedInstanceVariable
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
-				evaluatedWith: self defaultEvaluationSelector]
-		raise: RefactoringError
-		withMessageText: [ 
-			ExtractToMethodObject duplicatedInstanceVariablesErrorMessageFor: {aDuplicatedInstVarName} ].! !
+	self
+		creationFrom: aCompiledMethodToRefactor
+		withExtractedVariablesToInstanceVariables: namesWithDuplicatedInstanceVariable
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [
+			ExtractToMethodObject duplicatedInstanceVariablesErrorMessageFor: {aDuplicatedInstVarName} ].	! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 12:02:25'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 17:08:50'!
 test13MethodObjectInstanceVariableNamesCanNotBeNamedAsMethodTemporal
 
 	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor aTemporalName namesWithSameAsTemporal |
 	
 	aClassToRefactor := self createClassNamed: #AClassToRefactor.
-	aTemporalName	  := 'aTemporal'.
+	aTemporalName := 'aTemporal'.
 	aClassToRefactor compile: 'm1
 		| ', aTemporalName, ' |
 		
@@ -2438,27 +2430,20 @@ test13MethodObjectInstanceVariableNamesCanNotBeNamedAsMethodTemporal
 	namesWithSameAsTemporal := {'self' -> aTemporalName.} asDictionary.
 	keywordToParametrizedVariable := {#with -> 'self'.}.
 	
-	self 
-		should: [
-			ExtractToMethodObject 
-				from: aCompiledMethodToRefactor
-				toMethodObjectClassNamed: self methodObjectClassName
-				subclassing: self methodObjectSuperclass
-				onCategory: self classCategoryOfTestData
-				withExtractedVariablesToInstanceVariables: namesWithSameAsTemporal
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
-				evaluatedWith: self defaultEvaluationSelector]
-		raise: RefactoringError
-		withMessageText: [ 
+	self
+		creationFrom: aCompiledMethodToRefactor
+		withExtractedVariablesToInstanceVariables: namesWithSameAsTemporal
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ 
 			ExtractToMethodObject instanceVariableNamesSameAsTemporalsErrorMessageFor: {aTemporalName} ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 16:00:28'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 17:09:33'!
 test14MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockTemporal
 
 	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor namesWithSameAsTemporal aBlockTemporalName |
 	
 	aClassToRefactor := self createClassNamed: #AClassToRefactor.
-	aBlockTemporalName	  := 'aBlockTemporal'.
+	aBlockTemporalName := 'aBlockTemporal'.
 	aClassToRefactor compile: 'm1
 		^[
 			| ', aBlockTemporalName, ' |
@@ -2471,19 +2456,165 @@ test14MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockTemporal
 	namesWithSameAsTemporal := {'self' -> aBlockTemporalName.} asDictionary.
 	keywordToParametrizedVariable := {#with -> 'self'.}.
 	
+	self
+		creationFrom: aCompiledMethodToRefactor
+		withExtractedVariablesToInstanceVariables: namesWithSameAsTemporal
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ 
+			ExtractToMethodObject instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: {aBlockTemporalName} ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 17:10:19'!
+test15MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockArgument
+
+	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor aBlockArgumentName namesWithSameAsArgument |
+	
+	aClassToRefactor := self createClassNamed: #AClassToRefactor.
+	aBlockArgumentName := 'aBlockArgument'.
+	aClassToRefactor compile: 'm1
+		^[:', aBlockArgumentName, ' |
+			self isNil.
+			', aBlockArgumentName, '.]'.
+		
+	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
+	
+	namesWithSameAsArgument := {'self' -> aBlockArgumentName.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	self
+		creationFrom: aCompiledMethodToRefactor
+		withExtractedVariablesToInstanceVariables: namesWithSameAsArgument
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ 
+			ExtractToMethodObject instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: {aBlockArgumentName} ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 11:10:34'!
+test16MethodObjectInstanceCreationMessageMustHaveAKeywordForEveryVariableToParametrize
+
+	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordToParametrizedVariable := #().
+	
+	self
+		creationFrom: self compiledMethodReferencingSelf 
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ 
+			ExtractToMethodObject variablesToParametrizeHaveNoKeywordErrorMessage: #('self') ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 11:14:01'!
+test17MethodObjectInstanceCreationMessageMustHaveOnlyOneKeywordForEveryVariableToParametrize
+
+	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'. #andWith -> 'self'}.
+	
+	self
+		creationFrom: self compiledMethodReferencingSelf 
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ 
+			ExtractToMethodObject variablesToParametrizeHaveMultipleKeywordsErrorMessage: #('self') ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 11:30:12'!
+test18MethodObjectInstanceCreationMessageMustNotHaveKeywordForAnUnknownVariableToParametrize
+
+	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables anUnknownVariableToParametrize |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	anUnknownVariableToParametrize := 'anUnknownVariableToParametrize'.
+	keywordToParametrizedVariable := {#with -> 'self'. #andWith -> anUnknownVariableToParametrize}.
+	
+	self
+		creationFrom: self compiledMethodReferencingSelf 
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ 
+			ExtractToMethodObject keywordForUnknownVariablesToParametrizeErrorMessage: {anUnknownVariableToParametrize} ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 15:42:37'!
+test19MethodObjectInstanceCreationMessageKeywordsCanNotHaveInvalidCharacters
+
+	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables keywordWithInvalidCharacters |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordWithInvalidCharacters := 'wi(th' asSymbol.
+	keywordToParametrizedVariable := {keywordWithInvalidCharacters -> 'self'.}.
+	
+	self
+		creationFrom: self compiledMethodReferencingSelf 
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ 
+			ExtractToMethodObject keywordsContainInvalidCharactersErrorMessage: {keywordWithInvalidCharacters} ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 15:54:52'!
+test20MethodObjectInstanceCreationMessageSelectorStartsWithAnInvalidStartOfSelector
+
+	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables keyword |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keyword := '1with' asSymbol.
+	keywordToParametrizedVariable := {keyword -> 'self'.}.
+	
+	self
+		creationFrom: self compiledMethodReferencingSelf 
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ 
+			ExtractToMethodObject selectorStartsWithInvalidStartOfSelectorCharacterErrorMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 16:12:28'!
+test21MethodObjectInstanceCreationMessageKeywordsCannotBeEmpty
+
+	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables keyword |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keyword := '' asSymbol.
+	keywordToParametrizedVariable := {keyword -> 'self'.}.
+	
+	self
+		creationFrom: self compiledMethodReferencingSelf 
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		failsWithMessageText: [ 
+			ExtractToMethodObject instanceCreationMessageKeywordsCannotBeEmptyErrorMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/21/2018 15:40:01'!
+test22MethodObjectSuperclassCannotBeMeta
+
+	| aMetaClass |
+	
+	aMetaClass := (self createClassNamed: #MethodObjectSuperclass) class.
+	
 	self 
 		should: [
 			ExtractToMethodObject 
-				from: aCompiledMethodToRefactor
+				from: self emptyCompiledMethod 
 				toMethodObjectClassNamed: self methodObjectClassName
-				subclassing: self methodObjectSuperclass
+				subclassing: aMetaClass
 				onCategory: self classCategoryOfTestData
-				withExtractedVariablesToInstanceVariables: namesWithSameAsTemporal
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
 				evaluatedWith: self defaultEvaluationSelector]
 		raise: RefactoringError
-		withMessageText: [ 
-			ExtractToMethodObject instanceVariableNamesShadowedByBlockTemporalsErrorMessageFor: {aBlockTemporalName} ].! !
+		withMessageText: [ ExtractToMethodObject methodObjectSuperclassCannotBeMetaErrorMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/21/2018 16:10:15'!
+test23CreatesMethodObjectClass
+
+	| refactor |
+	
+	refactor :=
+		ExtractToMethodObject 
+			from: self emptyCompiledMethod 
+			toMethodObjectClassNamed: self methodObjectClassName
+			subclassing: self methodObjectSuperclass 
+			onCategory: self classCategoryOfTestData
+			evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	self assert: (Smalltalk hasClassNamed: self methodObjectClassName).! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/15/2018 16:06:36'!
 allClassCategoriesOfTestData
@@ -2502,6 +2633,25 @@ compiledMethodReferencingSelf
 	aClass compile: aMessageSourceCode.
 	
 	^aClass compiledMethodAt: aMessageSelector! !
+
+!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/18/2018 17:07:18'!
+creationFrom: aCompiledMethodToRefactor
+withExtractedVariablesToInstanceVariables: namesWithDuplicatedInstanceVariable
+withInstanceCreationMessageFrom: keywordToParametrizedVariable
+failsWithMessageText: aMessageTextBlock
+	
+	self 
+		should: [
+			ExtractToMethodObject 
+				from: aCompiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: namesWithDuplicatedInstanceVariable
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector]
+		raise: RefactoringError
+		withMessageText: aMessageTextBlock .! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/17/2018 11:21:23'!
 defaultEvaluationSelector
@@ -7309,42 +7459,6 @@ filter: rangesToStrings ofArgRangesOf: aMethodNode
 		:rangeToString |
 		rangeToString key first > endHeaderIndex].! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/15/2018 16:18:48'!
-from: aCompiledMethod
-toMethodObjectClassNamed: aClassName
-subclassing: aClass
-onCategory: aCategory
-evaluatedWith: anInvocationSelector
-
-	methodToExtract := aCompiledMethod.
-	methodObjectClassName := aClassName.
-	methodObjectSuperclass := aClass.
-	methodObjectCategory := aCategory.
-	methodVariableNamesToInstanceVariableNames := #() asDictionary.
-	selectorKeywordToVariableName := #().
-	methodObjectInstanceVariables := Set new.
-	methodObjectInvocationSelector := anInvocationSelector.
-! !
-
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/15/2018 16:17:56'!
-from: aCompiledMethod
-toMethodObjectClassNamed: aClassName
-subclassing: aClass
-onCategory: aCategory
-withExtractedVariablesToInstanceVariables: variablesToInstanceVariables
-withInstanceCreationMessageFrom: keywordsToVariables
-evaluatedWith: anInvocationSelector
-
-	methodToExtract := aCompiledMethod.
-	methodObjectClassName := aClassName.
-	methodObjectSuperclass := aClass.
-	methodObjectCategory := aCategory.
-	methodVariableNamesToInstanceVariableNames := variablesToInstanceVariables.
-	selectorKeywordToVariableName := keywordsToVariables.
-	methodObjectInstanceVariables := variablesToInstanceVariables values.
-	methodObjectInvocationSelector := anInvocationSelector.
-! !
-
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 14:58:42'!
 methodToExtractBodySourceCode
 
@@ -7375,6 +7489,25 @@ replaceExtractedMethodWithMethodObjectInvocation
 					accum append: keywordToVarName key, ': ', keywordToVarName value]].
 	classToRefactor compile: 'm1 ^(',methodObjectClassName, ' ', constructorMessage, ') ', methodObjectInvocationSelector asString.! !
 
+!ExtractToMethodObject methodsFor: 'initialization' stamp: 'FGJ 12/15/2018 16:17:56'!
+from: aCompiledMethod
+toMethodObjectClassNamed: aClassName
+subclassing: aClass
+onCategory: aCategory
+withExtractedVariablesToInstanceVariables: variablesToInstanceVariables
+withInstanceCreationMessageFrom: keywordsToVariables
+evaluatedWith: anInvocationSelector
+
+	methodToExtract := aCompiledMethod.
+	methodObjectClassName := aClassName.
+	methodObjectSuperclass := aClass.
+	methodObjectCategory := aCategory.
+	methodVariableNamesToInstanceVariableNames := variablesToInstanceVariables.
+	selectorKeywordToVariableName := keywordsToVariables.
+	methodObjectInstanceVariables := variablesToInstanceVariables values.
+	methodObjectInvocationSelector := anInvocationSelector.
+! !
+
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 18:19:27'!
 assertAllInstanceVariableNamesAreValid: instanceVariableNames for: aClass
 
@@ -7398,6 +7531,42 @@ haveACorrespondingVariableToParametrizeFrom: aCompiledMethod
 			self signaUnknownlVariablesToParametrize: unknownVariableToParametrize.]
 	! !
 
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/19/2018 11:38:26'!
+assertAllKeywords: keywordsToVariablesToParametrize 
+correspondToAVariableToParametrize: variablesToParametrize
+
+	| unknownVariablesWithKeyword variablesWithKeyword |
+	variablesWithKeyword := keywordsToVariablesToParametrize collect: [:keywordToVar | keywordToVar value].
+	unknownVariablesWithKeyword := variablesWithKeyword difference: variablesToParametrize.
+	
+	unknownVariablesWithKeyword
+		isEmpty
+		ifFalse: [
+			self signalUnknownVariablesWithKeyword: unknownVariablesWithKeyword].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/19/2018 11:26:51'!
+assertAllVariablesToParametrize: variablesToParametrize
+haveOneCorrespondingKeyword: keywordsToVariablesToParametrize
+
+	| variablesToParametrizeWithKeyword variablesToParametrizeWithoutKeyword variablesWithMultipleKeywords |
+	
+	variablesToParametrizeWithKeyword := keywordsToVariablesToParametrize collect: [:keywordToVar | keywordToVar value].
+	variablesToParametrizeWithoutKeyword := variablesToParametrize difference: variablesToParametrizeWithKeyword.
+	
+	variablesToParametrizeWithoutKeyword
+		isEmpty
+		ifFalse: [
+			self signalVariablesToParametrizeWithoutKeywordAssigned: variablesToParametrizeWithoutKeyword].
+	
+	variablesWithMultipleKeywords := variablesToParametrizeWithKeyword select: [
+		:aVar |
+		(variablesToParametrizeWithKeyword occurrencesOf: aVar) > 1].
+	
+	variablesWithMultipleKeywords
+		isEmpty
+		ifFalse: [
+			self signalVariablesToParametrizeHaveMultipleKeywords: variablesWithMultipleKeywords asSet].! !
+
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 14:56:01'!
 assertAllVariablesToParametrizeFrom: aCompiledMethod
 haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariableNames
@@ -7413,9 +7582,9 @@ haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariableNames
 			variablesWithoutNames := variablesToParametrize copyWithoutAll: variablesWithNames.
 			self signalVariablesToParametrizeWithoutInstanceVariableName: variablesWithoutNames.]! !
 
-!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/18/2018 11:45:20'!
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/19/2018 10:26:20'!
 assertInstanceVariableNames: variableNames
-areNotNamedAsMethodTemporalsOf: aCompiledMethod
+areNotNamedAsMethodTemporariesOf: aCompiledMethod
 
 	| temporariesNames temporariesNodes overlappingNames |
 
@@ -7428,11 +7597,49 @@ areNotNamedAsMethodTemporalsOf: aCompiledMethod
 		isEmpty
 		ifFalse: [self signalInstanceVariableNamesSameAsTemporals: overlappingNames].! !
 
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/18/2018 16:45:33'!
+assertInstanceVariableNamesFrom: methodVariableNamesToInstanceVariableNames
+areNotShadowedByBlockArgumentsOrTemporariesOf: aCompiledMethod
+		
+	| shadowedInstanceVariables |
+	
+	shadowedInstanceVariables := self 
+		shadowedInstanceVariablesByArgumentsOrTemporariesOfBlockNodesOf: aCompiledMethod
+		whenReplacingWith: methodVariableNamesToInstanceVariableNames.
+	
+	shadowedInstanceVariables
+		isEmpty
+		ifFalse: [self signalInstanceVariableNamesShadowedByBlockTemporals: shadowedInstanceVariables].! !
+
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/11/2018 14:50:46'!
 assertItDoesNotReferenceSuper: aCompiledMethod
 
 	aCompiledMethod sendsToSuper
 		ifTrue: [self signalMethodReferencesSuper].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/21/2018 15:33:21'!
+assertKeywordsAreNotEmpty: instanceCreationMessageKeywords
+
+	(instanceCreationMessageKeywords anySatisfy: [:aKeyword | aKeyword withBlanksTrimmed isEmpty])
+		ifTrue: [self signalInstanceCreationMessageKeywordsCannotBeEmpty].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/19/2018 15:51:17'!
+assertKeywordsHaveNoInvalidCharacters: keywords
+
+	| keywordsWithInvalidCharacters |
+	
+	keywordsWithInvalidCharacters := keywords select: [:keyword | self keywordHasInvalidCharacters: keyword].
+	
+	keywordsWithInvalidCharacters 
+		isEmpty
+		ifFalse: [self signalKeywordsContainInvalidCharacters: keywordsWithInvalidCharacters].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/21/2018 16:03:38'!
+assertMethodObjectSuperclassIsNotMeta: aClass
+
+	aClass
+		isMeta 
+		ifTrue: [self signalMethodObjectSuperclassCannotBeMeta].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 19:20:59'!
 assertNoDuplicatedInstanceVariableNames: names
@@ -7444,204 +7651,104 @@ assertNoDuplicatedInstanceVariableNames: names
 		isEmpty
 		ifFalse: [ self signalDuplicateInstanceVariableNames: duplicateNames asSet ].! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:33:50'!
-assertInstanceVariableNamesFrom: methodVariableNamesToInstanceVariableNames
-areNotNamedAsBlockTemporalsOf: aCompiledMethod
-		
-	| overlappingNames |
-	
-	overlappingNames := self 
-		overlappingNamesOnBlockNodesOf: aCompiledMethod
-		replacingWith: methodVariableNamesToInstanceVariableNames.
-	
-	overlappingNames
-		isEmpty
-		ifFalse: [self signalInstanceVariableNamesShadowedByBlockTemporals: overlappingNames].! !
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/21/2018 16:01:40'!
+assertSelectorFromKeywordsStartsWithValidStartOfSelector: instanceCreationMessageKeywords
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:13:34'!
-blockNodesFrom: aMethodNode
-		
-	| blockNodes |
+	| firstKeyword |
 	
-	blockNodes := Set new.
-	aMethodNode
-		accept: (ParseNodeEnumerator
-			ofBlock: [
-				:aNode |
-				aNode 
-					isBlockNode
-					ifTrue: [blockNodes add: aNode.]]). 					
+	instanceCreationMessageKeywords isEmpty ifTrue: [^true].
 	
-	^blockNodes! !
+	firstKeyword := instanceCreationMessageKeywords first.
+	
+	firstKeyword
+		first
+		isValidStartOfIdentifiers
+		ifFalse: [
+			self signalInstanceCreationMessageSelectorStartsWithInvalidStartOfSelector].
+		! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/15/2018 16:20:58'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/19/2018 10:08:21'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
 onCategory: aCategory
 evaluatedWith: anEvaluationSelector
-	
-	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
-	self assertItDoesNotReferenceSuper: aCompiledMethod.
-	
-	^self new 
+		
+	^self 
 		from: aCompiledMethod
 		toMethodObjectClassNamed: aClassName
 		subclassing: aClass
 		onCategory: aCategory
+		withExtractedVariablesToInstanceVariables: #() asDictionary
+		withInstanceCreationMessageFrom: #()
 		evaluatedWith: anEvaluationSelector
 ! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 14:35:34'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/21/2018 16:02:56'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
 onCategory: aCategory
-withExtractedVariablesToInstanceVariables: methodVariableNamesToInstanceVariableNames
-withInstanceCreationMessageFrom: messageKeywordToInstanceVariableName
+withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+withInstanceCreationMessageFrom: keywordsToVariablesToParametrize
 evaluatedWith: anInvocationSelector
 	
-	| instanceVariableNames |
+	| instanceVariableNames instanceCreationMessageKeywords |
+	
+	self assertMethodObjectSuperclassIsNotMeta: aClass.
 	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
 	self assertItDoesNotReferenceSuper: aCompiledMethod.
 	self 
 		assertAllVariablesToParametrizeFrom: aCompiledMethod
-		haveAnInstanceVariableNameIn: methodVariableNamesToInstanceVariableNames.
+		haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariables.
 	self 
-		assertAllInstanceVariableNamesIn: methodVariableNamesToInstanceVariableNames
+		assertAllInstanceVariableNamesIn: variablesToParametrizeToInstanceVariables
 		haveACorrespondingVariableToParametrizeFrom: aCompiledMethod.
 	
-	instanceVariableNames := methodVariableNamesToInstanceVariableNames values.
+	instanceVariableNames := variablesToParametrizeToInstanceVariables values.
 	self 
 		assertAllInstanceVariableNamesAreValid: instanceVariableNames
 		for: aClass.
 	self assertNoDuplicatedInstanceVariableNames: instanceVariableNames.
 	self 
 		assertInstanceVariableNames: instanceVariableNames
-		areNotNamedAsMethodTemporalsOf: aCompiledMethod.
+		areNotNamedAsMethodTemporariesOf: aCompiledMethod.
 	self
-		assertInstanceVariableNamesFrom: methodVariableNamesToInstanceVariableNames
-		areNotNamedAsBlockTemporalsOf: aCompiledMethod.
-		
+		assertInstanceVariableNamesFrom: variablesToParametrizeToInstanceVariables
+		areNotShadowedByBlockArgumentsOrTemporariesOf: aCompiledMethod.
+	self 
+		assertAllVariablesToParametrize: variablesToParametrizeToInstanceVariables keys
+		haveOneCorrespondingKeyword: keywordsToVariablesToParametrize.
+	self
+		assertAllKeywords: keywordsToVariablesToParametrize 
+		correspondToAVariableToParametrize: variablesToParametrizeToInstanceVariables keys.
+	
+	instanceCreationMessageKeywords := keywordsToVariablesToParametrize collect: [
+		:keywordToVar |
+		keywordToVar key].
+	self assertKeywordsHaveNoInvalidCharacters: instanceCreationMessageKeywords.
+	self assertKeywordsAreNotEmpty: instanceCreationMessageKeywords.
+	self assertSelectorFromKeywordsStartsWithValidStartOfSelector: instanceCreationMessageKeywords.
+	
 	^self new 
 		from: aCompiledMethod
 		toMethodObjectClassNamed: aClassName
 		subclassing: aClass
 		onCategory: aCategory
-		withExtractedVariablesToInstanceVariables: methodVariableNamesToInstanceVariableNames
-		withInstanceCreationMessageFrom: messageKeywordToInstanceVariableName
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordsToVariablesToParametrize
 		evaluatedWith: anInvocationSelector
 ! !
-
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 16:02:47'!
-instanceVariableNamesShadowedByBlockTemporalsErrorMessageFor: overlappingNames
-
-	| methods newVariable |
-	'The following instance variable names will be shadowed by block temporals with the same name: ',
-		', ' join: overlappingNames.
-		
-		String streamContents: [ :stream |
-		stream 
-			nextPutAll: newVariable;
-			nextPutAll: ' will be hidden at '.
-		methods asCommaStringAndPritingWith: [:aMethod | aMethod printClassAndSelectorOn: stream ] ]! !
-
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 11/27/2018 15:46:47'!
-newClassPreconditionClass
-	
-	^NewClassPrecondition.	
-	! !
-
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:30:13'!
-overlappingBlockTemporalNames: aBlockTemporalNames
-withTheCorrespondingInstVarName: methodVariableNamesToInstanceVariableNames
-consideringBlockVariables: variablesNames		
-
-	| methodVariableNames overlappingNames aBlockNode aBlockTemporalNamesss variablesNamesss |
-	
-	overlappingNames := Set new.
-	methodVariableNames := methodVariableNamesToInstanceVariableNames keys asSet.
-	variablesNamesss := (self variableNodesFrom: aBlockNode) collect: [:aNode | aNode name].
-	aBlockTemporalNamesss := aBlockNode temporaries collect: [:aNode | aNode name].
-			
-	variablesNames do: [
-		:aVariableName |
-		| blockTemporalOverlapsWithInstVarName |
-			blockTemporalOverlapsWithInstVarName := 
-				(methodVariableNames includes: aVariableName)
-					and: (aBlockTemporalNames includes: (methodVariableNamesToInstanceVariableNames at: aVariableName)).
-			blockTemporalOverlapsWithInstVarName ifTrue: [overlappingNames add: aVariableName]].
-		
-	^overlappingNames ! !
-
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:59:39'!
-overlappingNamesIn: aBlockNode
-consideringReplacingWith: methodVariableNamesToInstanceVariableNames
-
-	| overlappingNames aBlockTemporalNames aBlockVariablesNames |
-	
-	overlappingNames := Set new.
-	aBlockVariablesNames := (self variableNodesFrom: aBlockNode) collect: [:aNode | aNode name].
-	aBlockTemporalNames := aBlockNode temporaries collect: [:aNode | aNode name].
-			
-	aBlockVariablesNames do: [
-		:aVariableName |
-			(self 
-				overlaps: aVariableName
-				withAny: aBlockTemporalNames
-				replacingWith: methodVariableNamesToInstanceVariableNames)
-				ifTrue:[overlappingNames add: aVariableName]].
-		
-	^overlappingNames ! !
-
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:33:20'!
-overlappingNamesOnBlockNodesOf: aCompiledMethod
-replacingWith: methodVariableNamesToInstanceVariableNames		
-
-	| overlappingNames blockNodes |
-	
-	blockNodes := self blockNodesFrom: aCompiledMethod methodNode.
-	overlappingNames := Set new.
-	
-	blockNodes do: [
-		:aBlockNode |
-		|  aBlockNodeOverlappingNames |
-			aBlockNodeOverlappingNames := self
-				overlappingNamesIn: aBlockNode
-				consideringReplacingWith: methodVariableNamesToInstanceVariableNames.
-			
-			overlappingNames addAll: aBlockNodeOverlappingNames].
-	
-	^overlappingNames! !
-
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 15:58:09'!
-overlaps: aVariableName
-withAny: aBlockTemporalNames
-replacingWith: methodVariableNamesToInstanceVariableNames
-
-	| correspondingInstVarNameForVar methodVariableNames |
-	
-	correspondingInstVarNameForVar := methodVariableNamesToInstanceVariableNames at: aVariableName ifAbsent: [^false].
-	methodVariableNames := methodVariableNamesToInstanceVariableNames keys asSet.
-	
-	^(methodVariableNames includes: aVariableName)
-		and: (aBlockTemporalNames includes: correspondingInstVarNameForVar).
-			
-! !
-
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/18/2018 12:35:38'!
-signalInstanceVariableNamesShadowedByBlockTemporals: overlappingNames
-
-	self refactoringError: (self instanceVariableNamesShadowedByBlockTemporalsErrorMessageFor: overlappingNames).! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 19:18:12'!
 duplicatedInstanceVariablesErrorMessageFor: duplicateNames
 
 	^'The following instance variables are duplicated: ', ', ' join: duplicateNames, '.'.! !
 
-!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 12:38:52'!
-inexistentVariableToParametrizeErrorMessage: inexistentVariables 
-	^'The variables to parametrize: ', (', ' join: inexistentVariables), ' have not been found.'! !
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/21/2018 15:34:17'!
+instanceCreationMessageKeywordsCannotBeEmptyErrorMessage
+
+	^'Method Object instance creation message keywords cannot be empty'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/18/2018 11:47:44'!
 instanceVariableNamesSameAsTemporalsErrorMessageFor: overlappingNames
@@ -7649,14 +7756,53 @@ instanceVariableNamesSameAsTemporalsErrorMessageFor: overlappingNames
 	^'The following instance variable names overlap with the names of method temporals: ',
 		', ' join: overlappingNames.! !
 
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/18/2018 16:40:41'!
+instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: overlappingNames
+
+	'The following instance variable names will be shadowed by block temporals with the same name: ',
+		', ' join: overlappingNames! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/19/2018 11:37:21'!
+keywordForUnknownVariablesToParametrizeErrorMessage: unknownVariablesWithKeyword
+
+	^'The following variables have a keyword assigned in the Method Object instance creation message but they are not variables to parametrize: ',
+		', ' join: unknownVariablesWithKeyword ! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/19/2018 15:49:59'!
+keywordsContainInvalidCharactersErrorMessage: keywordsWithInvalidCharacters
+
+	^'The following keywords contain invalid characters: ', ', ' join: keywordsWithInvalidCharacters! !
+
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/11/2018 14:49:45'!
 methodCanNotReferenceSuperErrorMessage
 	^'The method to be extracted can not reference super pseudo variable'! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/21/2018 16:04:21'!
+methodObjectSuperclassCannotBeMetaErrorMessage
+
+	^'Method Object superclass cannot be a Meta Class'! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/19/2018 16:03:50'!
+selectorStartsWithInvalidStartOfSelectorCharacterErrorMessage
+
+	^'The selector choosed for the instance creation message of the Method Object starts with a character that is not alphanumeric'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 14:53:33'!
 unknownVariablesToParametrizeErrorMessage: unknownVariablesToParametrize
 
 	^'The variables: ', (', ' join: unknownVariablesToParametrize), ' were given a corresponding instance variable name but they are not variables to parametrize.'! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/19/2018 11:28:30'!
+variablesToParametrizeHaveMultipleKeywordsErrorMessage: variablesWithMultipleKeywords
+
+	^'The following variables to parametrize have multiple corresponding keywords in the Method Object instance creation message: ',
+		', ' join: variablesWithMultipleKeywords! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/19/2018 10:42:15'!
+variablesToParametrizeHaveNoKeywordErrorMessage: someVariablesNames
+
+	^'The following variables have no keyword assigned on the instance creation message of the Method Object ',
+		', ' join: someVariablesNames! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 12:35:43'!
 variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesWithoutNames
@@ -7673,20 +7819,128 @@ signalDuplicateInstanceVariableNames: duplicateNames
 
 	self refactoringError: (self duplicatedInstanceVariablesErrorMessageFor: duplicateNames).! !
 
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/21/2018 15:33:46'!
+signalInstanceCreationMessageKeywordsCannotBeEmpty
+
+	self refactoringError: (self instanceCreationMessageKeywordsCannotBeEmptyErrorMessage).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/19/2018 16:02:29'!
+signalInstanceCreationMessageSelectorStartsWithInvalidStartOfSelector
+
+	self refactoringError: (self selectorStartsWithInvalidStartOfSelectorCharacterErrorMessage).! !
+
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/18/2018 11:46:09'!
 signalInstanceVariableNamesSameAsTemporals: overlappingNames
 
 	self refactoringError: (self instanceVariableNamesSameAsTemporalsErrorMessageFor: overlappingNames).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/18/2018 16:40:41'!
+signalInstanceVariableNamesShadowedByBlockTemporals: overlappingNames
+
+	self refactoringError: (self instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: overlappingNames).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/19/2018 15:49:27'!
+signalKeywordsContainInvalidCharacters: keywordsWithInvalidCharacters
+
+	self refactoringError: (self keywordsContainInvalidCharactersErrorMessage:keywordsWithInvalidCharacters).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/21/2018 16:04:00'!
+signalMethodObjectSuperclassCannotBeMeta
+
+	self refactoringError: (self methodObjectSuperclassCannotBeMetaErrorMessage).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/11/2018 14:51:12'!
 signalMethodReferencesSuper
 	
 	self refactoringError: self methodCanNotReferenceSuperErrorMessage.! !
 
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/19/2018 11:36:25'!
+signalUnknownVariablesWithKeyword: unknownVariablesWithKeyword
+
+	self refactoringError:
+		(self keywordForUnknownVariablesToParametrizeErrorMessage: unknownVariablesWithKeyword).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/19/2018 11:27:21'!
+signalVariablesToParametrizeHaveMultipleKeywords: variablesWithMultipleKeywords
+
+	self refactoringError: (self variablesToParametrizeHaveMultipleKeywordsErrorMessage: variablesWithMultipleKeywords).! !
+
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/17/2018 12:35:54'!
 signalVariablesToParametrizeWithoutInstanceVariableName: variablesWithoutNames
 
 	self refactoringError: (self variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesWithoutNames).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/19/2018 10:41:14'!
+signalVariablesToParametrizeWithoutKeywordAssigned: someVariablesNames
+
+	self refactoringError: (self variablesToParametrizeHaveNoKeywordErrorMessage: someVariablesNames).! !
+
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/18/2018 15:13:34'!
+blockNodesFrom: aMethodNode
+		
+	| blockNodes |
+	
+	blockNodes := Set new.
+	aMethodNode
+		accept: (ParseNodeEnumerator
+			ofBlock: [
+				:aNode |
+				aNode 
+					isBlockNode
+					ifTrue: [blockNodes add: aNode.]]). 					
+	
+	^blockNodes! !
+
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/19/2018 15:48:36'!
+keywordHasInvalidCharacters: keyword
+
+	^keyword anySatisfy: [:c | c isValidInIdentifiers not]. ! !
+
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 15:46:47'!
+newClassPreconditionClass
+	
+	^NewClassPrecondition.	
+	! !
+
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/18/2018 16:42:39'!
+shadowedInstanceVariablesByArgumentsOrTemporariesOfBlockNodesOf: aCompiledMethod
+whenReplacingWith: methodVariableNamesToInstanceVariableNames		
+
+	| shadowedInstanceVariables blockNodes |
+	
+	blockNodes := self blockNodesFrom: aCompiledMethod methodNode.
+	shadowedInstanceVariables := Set new.
+	
+	blockNodes do: [
+		:aBlockNode |
+		|  aBlockNodeShadowedInstanceVaribles |
+			aBlockNodeShadowedInstanceVaribles := self
+				shadowedInstanceVariablesIn: aBlockNode
+				whenReplacingWith: methodVariableNamesToInstanceVariableNames.
+			
+			shadowedInstanceVariables addAll: aBlockNodeShadowedInstanceVaribles].
+	
+	^shadowedInstanceVariables! !
+
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/18/2018 16:44:54'!
+shadowedInstanceVariablesIn: aBlockNode
+whenReplacingWith: methodVariableNamesToInstanceVariableNames
+
+	| aBlockTemporariesNames aBlockVariablesNames blockVariablesToExtract variablesToExtract blockVariablesToExtractInstVarNames aBlockArgumentsNames |
+	
+	aBlockVariablesNames := (self variableNodesFrom: aBlockNode) collect: [:aNode | aNode name].
+	variablesToExtract := methodVariableNamesToInstanceVariableNames keys asSet.
+	blockVariablesToExtract := aBlockVariablesNames intersection: variablesToExtract.
+	
+	blockVariablesToExtractInstVarNames := blockVariablesToExtract collect: [
+		:aBlockVariableToExtract |
+		methodVariableNamesToInstanceVariableNames at: aBlockVariableToExtract].
+	
+	aBlockTemporariesNames := aBlockNode temporaries collect: [:aNode | aNode name].
+	aBlockArgumentsNames := aBlockNode arguments collect: [:anArgument | anArgument name].
+	
+	^(aBlockTemporariesNames union: aBlockArgumentsNames)
+		intersection: blockVariablesToExtractInstVarNames! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/18/2018 15:57:30'!
 variableNodesFrom: aBlockNode 

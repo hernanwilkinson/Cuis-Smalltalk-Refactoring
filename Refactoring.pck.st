@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 21 December 2018 at 4:10:28 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 23 December 2018 at 8:22:46 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 140!
+!provides: 'Refactoring' 1 141!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2616,6 +2616,43 @@ test23CreatesMethodObjectClass
 	
 	self assert: (Smalltalk hasClassNamed: self methodObjectClassName).! !
 
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/21/2018 18:05:14'!
+test23CreatesMethodObjectClassAsSubclassOfTheChosenSuperclass
+
+	| refactor methodObjectClass methodObjectSuperclass |
+	
+	methodObjectSuperclass :=  self methodObjectSuperclass.
+	refactor :=
+		ExtractToMethodObject 
+			from: self emptyCompiledMethod 
+			toMethodObjectClassNamed: self methodObjectClassName
+			subclassing: methodObjectSuperclass
+			onCategory: self classCategoryOfTestData
+			evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	self assert: methodObjectSuperclass equals: methodObjectClass superclass.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/21/2018 18:06:17'!
+test23CreatesMethodObjectClassIntTheChosenCategory
+
+	| refactor methodObjectClass |
+	
+	refactor :=
+		ExtractToMethodObject 
+			from: self emptyCompiledMethod 
+			toMethodObjectClassNamed: self methodObjectClassName
+			subclassing: self methodObjectSuperclass
+			onCategory: self classCategoryOfTestData
+			evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	self assert: self classCategoryOfTestData equals: methodObjectClass category.! !
+
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/15/2018 16:06:36'!
 allClassCategoriesOfTestData
 
@@ -2674,7 +2711,7 @@ methodObjectClassName
 
 	^#MethodObject! !
 
-!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/17/2018 11:20:17'!
+!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/21/2018 18:04:09'!
 methodObjectSuperclass
 
 	^self createClassNamed: #MethodObjectSuperclass! !

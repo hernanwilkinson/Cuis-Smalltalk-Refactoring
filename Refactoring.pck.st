@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 23 December 2018 at 8:22:46 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 4 January 2019 at 12:40:53 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 141!
+!provides: 'Refactoring' 1 143!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2616,8 +2616,8 @@ test23CreatesMethodObjectClass
 	
 	self assert: (Smalltalk hasClassNamed: self methodObjectClassName).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/21/2018 18:05:14'!
-test23CreatesMethodObjectClassAsSubclassOfTheChosenSuperclass
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/3/2019 16:04:04'!
+test24CreatesMethodObjectClassAsSubclassOfTheChosenSuperclass
 
 	| refactor methodObjectClass methodObjectSuperclass |
 	
@@ -2635,8 +2635,8 @@ test23CreatesMethodObjectClassAsSubclassOfTheChosenSuperclass
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: methodObjectSuperclass equals: methodObjectClass superclass.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/21/2018 18:06:17'!
-test23CreatesMethodObjectClassIntTheChosenCategory
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/3/2019 16:04:14'!
+test25CreatesMethodObjectClassInTheChosenCategory
 
 	| refactor methodObjectClass |
 	
@@ -2652,6 +2652,28 @@ test23CreatesMethodObjectClassIntTheChosenCategory
 	
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: self classCategoryOfTestData equals: methodObjectClass category.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/3/2019 16:04:32'!
+test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAsVariablesToParametrizeInMethodToExtract
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	refactor := ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	self assert: (methodObjectClass selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/15/2018 16:06:36'!
 allClassCategoriesOfTestData
@@ -7648,12 +7670,6 @@ areNotShadowedByBlockArgumentsOrTemporariesOf: aCompiledMethod
 		isEmpty
 		ifFalse: [self signalInstanceVariableNamesShadowedByBlockTemporals: shadowedInstanceVariables].! !
 
-!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/11/2018 14:50:46'!
-assertItDoesNotReferenceSuper: aCompiledMethod
-
-	aCompiledMethod sendsToSuper
-		ifTrue: [self signalMethodReferencesSuper].! !
-
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/21/2018 15:33:21'!
 assertKeywordsAreNotEmpty: instanceCreationMessageKeywords
 
@@ -7677,6 +7693,12 @@ assertMethodObjectSuperclassIsNotMeta: aClass
 	aClass
 		isMeta 
 		ifTrue: [self signalMethodObjectSuperclassCannotBeMeta].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 1/4/2019 12:40:32'!
+assertMethodToExtractDoesNotReferenceSuper: aCompiledMethod
+
+	aCompiledMethod sendsToSuper
+		ifTrue: [self signalMethodReferencesSuper].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 19:20:59'!
 assertNoDuplicatedInstanceVariableNames: names
@@ -7721,7 +7743,7 @@ evaluatedWith: anEvaluationSelector
 		evaluatedWith: anEvaluationSelector
 ! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/21/2018 16:02:56'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 1/4/2019 12:40:32'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
@@ -7734,7 +7756,7 @@ evaluatedWith: anInvocationSelector
 	
 	self assertMethodObjectSuperclassIsNotMeta: aClass.
 	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
-	self assertItDoesNotReferenceSuper: aCompiledMethod.
+	self assertMethodToExtractDoesNotReferenceSuper: aCompiledMethod.
 	self 
 		assertAllVariablesToParametrizeFrom: aCompiledMethod
 		haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariables.

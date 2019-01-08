@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3446] on 4 January 2019 at 3:32:00 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 8 January 2019 at 4:05:14 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 144!
+!provides: 'Refactoring' 1 149!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2539,7 +2539,7 @@ test19MethodObjectInstanceCreationMessageKeywordsCanNotHaveInvalidCharacters
 		failsWithMessageText: [ 
 			ExtractToMethodObject keywordsContainInvalidCharactersErrorMessage: {keywordWithInvalidCharacters} ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 15:54:52'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 12:50:30'!
 test20MethodObjectInstanceCreationMessageSelectorStartsWithAnInvalidStartOfSelector
 
 	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables keyword |
@@ -2553,7 +2553,7 @@ test20MethodObjectInstanceCreationMessageSelectorStartsWithAnInvalidStartOfSelec
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
 		failsWithMessageText: [ 
-			ExtractToMethodObject selectorStartsWithInvalidStartOfSelectorCharacterErrorMessage ].! !
+			ExtractToMethodObject selectorStartsWithInvalidStartOfSelectorCharacterErrorMessage].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 16:12:28'!
 test21MethodObjectInstanceCreationMessageKeywordsCannotBeEmpty
@@ -2643,7 +2643,7 @@ test25CreatesMethodObjectClassInTheChosenCategory
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: self classCategoryOfTestData equals: methodObjectClass category.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/3/2019 16:04:32'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:46:02'!
 test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAsVariablesToParametrizeInMethodToExtract
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
@@ -2663,7 +2663,121 @@ test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAs
 	refactor apply.
 	
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	self assert: (methodObjectClass class selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:46:23'!
+test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeywords
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	refactor := ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	self assert: (methodObjectClass class selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:47:02'!
+test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables newRefactoringSourceCode |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	refactor := ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	newRefactoringSourceCode := 'with: aThePreviousSelf
+		^self new with: aThePreviousSelf'.
+	self assert: newRefactoringSourceCode equals: (methodObjectClass class compiledMethodAt: #with:) sourceCode.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:56:19'!
+test29MethodObjectInitializationMessageReceivesTheSameNumberOfArgumentsAsVariablesToParametrizeInMethodToExtract
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	refactor := ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:56:04'!
+test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywords
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	refactor := ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	self assert: (methodObjectClass selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:57:07'!
+test31MethodObjectInitializationMessageAssignsTheInstanceVariables
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables intializationSourceCode |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	refactor := ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	intializationSourceCode := 'with: aThePreviousSelf
+		thePreviousSelf := aThePreviousSelf.'.
+	self assert: intializationSourceCode equals: (methodObjectClass compiledMethodAt: #with:) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/15/2018 16:06:36'!
 allClassCategoriesOfTestData
@@ -6735,25 +6849,29 @@ compileExtractedMethodAsInvocationMethodOn: aClass
 	sourceCodeWithSelectorReplaced := sourceCodeWithVariablesReplaced copyReplacing: { Interval from: 1 to: endHeaderIndex. } with: methodObjectInvocationSelector asString. 
 	aClass compile: sourceCodeWithSelectorReplaced.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 16:18:31'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/8/2019 16:04:54'!
 compileInstanceCreationMethodInto: aClass
 
-	| methodTitle methodBody |
+	| methodTitle methodBody keywordsWithParam instVarAssignments |
 	
 	methodObjectInstanceVariables isEmpty ifTrue: [^true].
 	
-	methodTitle := selectorKeywordToVariableName inject: '' into: [
-		:accum :keywordToVarName |
+	keywordsWithParam := selectorKeywordToVariableName collect: [
+		:keywordToVarName |
 		| instVarName | 
 		instVarName := methodVariableNamesToInstanceVariableNames at: keywordToVarName value. 
-		accum append: (keywordToVarName key, ': a', instVarName capitalized, ' ')].
+		keywordToVarName key, ': a', instVarName capitalized].
+	methodTitle := ' ' join: keywordsWithParam.
 	
-	methodBody := methodObjectInstanceVariables inject: '' into: [
-		:accum :instVarName |
-		accum append: (instVarName, ' := a', instVarName capitalized, '. ')]. 
+	instVarAssignments := methodObjectInstanceVariables collect: [
+		:instVarName |
+		Character tab asString, instVarName, ' := a', instVarName capitalized, '.'].
+	methodBody := Character newLineCharacter asString join: instVarAssignments.
 	
-	aClass compile: methodTitle, methodBody.
-	aClass class compile: methodTitle, ' ^self new ', methodTitle.
+	aClass compile: methodTitle, '
+	', methodBody.
+	aClass class compile: methodTitle, '
+		^self new ', methodTitle.
 	
 	^true.! !
 

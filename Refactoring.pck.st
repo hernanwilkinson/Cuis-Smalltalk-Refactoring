@@ -1,6 +1,7 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 7 January 2019 at 4:54:21 pm'!
-'Description Renames messages directly when no senders and one implementor. Fixes error when renaming on unsaved changes. Updates browser correctly on change selector. All appliers receive Browser now and not BrowserWindow or Browser'!
-!provides: 'Refactoring' 1 70!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 7 January 2019 at 10:53:19 pm'!
+'Description AddInstanceVariable verifies that new name is not reserved. Add req. to __Refactoring-TestData__'!
+!provides: 'Refactoring' 1 71!
+!requires: '__Refactoring-TestData__' 1 1 nil!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -1387,6 +1388,19 @@ test13WarnsWhenNewVariableIsHiddenInAnyMethodOfAnySubclass
 		warnsWith: [ AddInstanceVariable warningMessageForNewVariable: newVariable willBeHiddenAtAll: (Array with: (subclass>>selector)) ].
 	
 	! !
+
+!AddInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 1/7/2019 22:36:19'!
+test14NewVariableNameCanNotBeAReservedName
+
+	| classToRefactor |
+
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	
+	ClassBuilder reservedNames do: [ :aReservedName | 
+		self 
+			assertCreation: [AddInstanceVariable named: aReservedName to: classToRefactor ]
+			failsWith: [AddInstanceVariable errorMessageForNewInstanceVariableCanNotBeAReservedName: aReservedName ]]
+		! !
 
 !AddParameterTest methodsFor: 'tests' stamp: 'HAW 11/8/2018 15:28:03'!
 test01AddingParameterToUnaryMessageAddsColonAndParameter
@@ -4863,6 +4877,11 @@ assert: aVariable isNotAlreadyDefinedIn: aClass
 		do: [ :definingClasses | self signalNewInstanceVariable: aVariable alreadyDefinedInAll: definingClasses ]
 		ifNone: [ ].! !
 
+!AddInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 1/7/2019 22:50:20'!
+assertIsNotAReservedName: aName
+
+	(ClassBuilder reservedNames includes: aName) ifTrue: [ self signalNewInstanceVariableCanNotBeAReservedName: aName]! !
+
 !AddInstanceVariable class methodsFor: 'pre-conditions' stamp: 'HAW 6/6/2017 10:02:29'!
 assertIsNotEmpty: aNewVariable
 
@@ -4897,6 +4916,11 @@ errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes
 
 	^ 'Instance variable ''' , aName , ''' is already defined in ' , classes asCommaStringAnd.! !
 
+!AddInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 1/7/2019 22:52:44'!
+errorMessageForNewInstanceVariableCanNotBeAReservedName: aName
+
+	^'''', aName, ''' can not be used as instance variable name because it is a reserved name'! !
+
 !AddInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/6/2017 10:03:03'!
 newVariableCanNotBeEmptyErrorMessage
 	
@@ -4912,18 +4936,24 @@ signalNewInstanceVariable: aName alreadyDefinedInAll: classes
 
 	^ self refactoringError: (self errorMessageForNewInstanceVariable: aName alreadyDefinedInAll: classes).! !
 
+!AddInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 1/7/2019 22:52:55'!
+signalNewInstanceVariableCanNotBeAReservedName: aName
+
+	self refactoringError: (self errorMessageForNewInstanceVariableCanNotBeAReservedName: aName)! !
+
 !AddInstanceVariable class methodsFor: 'exceptions' stamp: 'HAW 6/6/2017 10:02:45'!
 signalNewVariableCanNotBeEmpty
 	
 	self refactoringError: self newVariableCanNotBeEmptyErrorMessage! !
 
-!AddInstanceVariable class methodsFor: 'instance creation' stamp: 'HAW 6/23/2017 11:42:33'!
+!AddInstanceVariable class methodsFor: 'instance creation' stamp: 'HAW 1/7/2019 22:39:38'!
 named: aVariable to: aClassToRefactor
 
 	| trimmedVariable |
 	
 	trimmedVariable := aVariable withBlanksTrimmed.
 	self assertIsNotEmpty: trimmedVariable.
+	self assertIsNotAReservedName: trimmedVariable.
 	self assertIsValidInstanceVariableName: trimmedVariable.
 	self assert: trimmedVariable isNotAlreadyDefinedIn: aClassToRefactor.
 	

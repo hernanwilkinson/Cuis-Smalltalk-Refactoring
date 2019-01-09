@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 8 January 2019 at 4:05:14 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 9 January 2019 at 3:49:41 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 149!
+!provides: 'Refactoring' 1 150!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -6796,7 +6796,7 @@ warningMessageForImplementationOf: aNewSelector in: aClass willOverrideImplement
 
 	^'Implemention of #', aNewSelector, ' in ', aClass name, ' will override implementation in ', aSuperclass name! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/12/2018 14:39:56'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/9/2019 15:46:56'!
 apply
 
 	| methodObjectClass |
@@ -6809,11 +6809,11 @@ apply
 		category: methodObjectCategory.
 	
 	self compileInstanceCreationMethodInto: methodObjectClass.
-	self compileExtractedMethodAsInvocationMethodOn: methodObjectClass.
-	self replaceExtractedMethodWithMethodObjectInvocation.! !
+	self compileExtractedMethodAsEvaluationMethodOn: methodObjectClass.
+	self replaceExtractedMethodWithMethodObjectEvaluation.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/12/2018 14:58:04'!
-compileExtractedMethodAsInvocationMethodOn: aClass
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/9/2019 15:46:16'!
+compileExtractedMethodAsEvaluationMethodOn: aClass
 
 	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced disregardType sourceCodeWithVariablesReplaced rangesToNewStrings rangesToNewStringsWithArgsFiltered |
 	
@@ -6901,8 +6901,8 @@ removeBlockEnclosingCharacters: aBlockSourceCode
 
 	^(aBlockSourceCode withoutPrefix: '[') withoutSuffix: ']'.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 17:11:09'!
-replaceExtractedMethodWithMethodObjectInvocation
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/9/2019 15:46:56'!
+replaceExtractedMethodWithMethodObjectEvaluation
 
 	| classToRefactor constructorMessage |
 	

@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 9 January 2019 at 3:49:41 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 14 January 2019 at 4:17:28 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 150!
+!provides: 'Refactoring' 1 161!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2665,7 +2665,7 @@ test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAs
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass class selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:46:23'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 10:56:44'!
 test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeywords
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
@@ -2685,7 +2685,7 @@ test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeyword
 	refactor apply.
 	
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
-	self assert: (methodObjectClass class selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
+	self assert: (methodObjectClass class includesSelector: #with:).! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:47:02'!
 test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
@@ -2733,7 +2733,7 @@ test29MethodObjectInitializationMessageReceivesTheSameNumberOfArgumentsAsVariabl
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:56:04'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 10:56:16'!
 test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywords
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
@@ -2753,7 +2753,7 @@ test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywords
 	refactor apply.
 	
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
-	self assert: (methodObjectClass selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
+	self assert: (methodObjectClass includesSelector: #with:).! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:57:07'!
 test31MethodObjectInitializationMessageAssignsTheInstanceVariables
@@ -2779,20 +2779,310 @@ test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 		thePreviousSelf := aThePreviousSelf.'.
 	self assert: intializationSourceCode equals: (methodObjectClass compiledMethodAt: #with:) sourceCode.! !
 
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 10:57:34'!
+test32MethodObjectEvaluationMessageHasTheChosenSelector
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables customEvaluationSelector |
+	
+	variablesToParametrizeToInstanceVariables := #() asDictionary.
+	keywordToParametrizedVariable := #().
+	customEvaluationSelector := #aCustomEvaluationSelector.
+	
+	refactor := ExtractToMethodObject 
+				from: self emptyCompiledMethod 
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: customEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	self assert: (methodObjectClass includesSelector: customEvaluationSelector).! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 11:59:28'!
+test33MethodObjectEvaluationMethodSourceCodeHasTheSameFormatAsTheExtractedMethod
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	methodToRefactorSourceCode := 'm1
+		self isNil.'.
+	compiledMethodToRefactor := self compiledMethodFrom: methodToRefactorSourceCode.
+	
+	refactor := ExtractToMethodObject 
+				from: compiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	evaluationSourceCode := self defaultEvaluationSelector asString, '
+		thePreviousSelf isNil.'.
+	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 12:09:15'!
+test34MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfSelf
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToExtractSourceCode |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	methodToExtractSourceCode := 'm1
+		self isNil.'.
+	compiledMethodToRefactor := self compiledMethodFrom: methodToExtractSourceCode.
+	
+	refactor := ExtractToMethodObject 
+				from: compiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	evaluationSourceCode := self defaultEvaluationSelector asString, '
+		thePreviousSelf isNil.'.
+	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 13:52:09'!
+test35MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorInstanceVariable
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode anInstVar correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass |
+	
+	anInstVar := 'anInstVar'.
+	correspondingInstVar := 'aCorrespondingInstVar'.
+	variablesToParametrizeToInstanceVariables := {anInstVar -> correspondingInstVar.} asDictionary.
+	keywordToParametrizedVariable := {#with -> anInstVar.}.
+	
+	aClass := self createClassNamed: #AClass instanceVariableNames: anInstVar.
+	methodToRefactorSourceCode := 'm1
+		', anInstVar, ' isNil.'.
+	aClass compile: methodToRefactorSourceCode.
+	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
+	
+	refactor := ExtractToMethodObject 
+				from: compiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	evaluationSourceCode := self defaultEvaluationSelector asString, '
+		', correspondingInstVar, ' isNil.'.
+	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 13:55:44'!
+test36MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfExtractedMethodArgument
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
+	
+	variablesToParametrizeToInstanceVariables := {'anArg' -> 'anArgReplacement'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'anArg'.}.
+	
+	methodToRefactorSourceCode := 'm1: anArg
+		anArg isNil.'.
+	compiledMethodToRefactor := self compiledMethodFrom: methodToRefactorSourceCode.
+	
+	refactor := ExtractToMethodObject 
+				from: compiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	evaluationSourceCode := self defaultEvaluationSelector asString, '
+		anArgReplacement isNil.'.
+	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 14:40:11'!
+test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorClassVariable
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass aPool aPoolVar |
+	
+	aPoolVar := 'APoolVar'.
+	correspondingInstVar := 'aCorrespondingInstVar'.
+	variablesToParametrizeToInstanceVariables := {aPoolVar -> correspondingInstVar.} asDictionary.
+	keywordToParametrizedVariable := {#with -> aPoolVar.}.
+	
+	aPool := self
+		createClassNamed: #APool
+		subclassOf: SharedPool
+		instanceVariableNames: ''
+		classVariableNames: aPoolVar
+		poolDictionaries: ''
+		category: self classCategoryOfTestData.
+	
+	aClass := self
+		createClassNamed: #AClass
+		subclassOf: Object
+		instanceVariableNames: ''
+		classVariableNames: aPoolVar
+		poolDictionaries: aPool name
+		category: self classCategoryOfTestData.
+	methodToRefactorSourceCode := 'm1
+		', aPoolVar, ' isNil.'.
+	aClass compile: methodToRefactorSourceCode.
+	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
+	
+	refactor := ExtractToMethodObject 
+				from: compiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	evaluationSourceCode := self defaultEvaluationSelector asString, '
+		', correspondingInstVar, ' isNil.'.
+	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 14:43:44'!
+test38MethodObjectEvaluationMethodSourceCodeCommentsReferencingParametrizedVariableAreNotReplaced
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'self'.}.
+	
+	methodToRefactorSourceCode := 'm1
+		"A comment talking about self"
+		self isNil.'.
+	compiledMethodToRefactor := self compiledMethodFrom: methodToRefactorSourceCode.
+	
+	refactor := ExtractToMethodObject 
+				from: compiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	evaluationSourceCode := self defaultEvaluationSelector asString, '
+		"A comment talking about self"
+		thePreviousSelf isNil.'.
+	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 16:06:39'!
+test39MethodObjectEvaluationMethodSourceCodePreservesBlockArgumentsShadowing
+	
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode aClass |
+	
+	variablesToParametrizeToInstanceVariables := {'anInstVar' -> 'correspondingToAnInstVar'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'anInstVar'.}.
+	
+	aClass := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
+	methodToRefactorSourceCode := 'm1
+		anInstVar isNil.
+		[:anInstVar | anInstVar isNil].'.
+	aClass compile: methodToRefactorSourceCode.
+	
+	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
+	
+	refactor := ExtractToMethodObject 
+				from: compiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	evaluationSourceCode := self defaultEvaluationSelector asString, '
+		[:anInstVar | anInstVar isNil].
+		correspondingToAnInstVar isNil.'.
+	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 16:17:11'!
+test40MethodObjectEvaluationMethodSourceCodePreservesBlockTemporalsShadowing
+	
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode aClass |
+	
+	variablesToParametrizeToInstanceVariables := {'anInstVar' -> 'correspondingToAnInstVar'.} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'anInstVar'.}.
+	
+	aClass := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
+	methodToRefactorSourceCode := 'm1
+		anInstVar isNil.
+		[ | anInstVar | anInstVar isNil].'.
+	aClass compile: methodToRefactorSourceCode.
+	
+	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
+	
+	refactor := ExtractToMethodObject 
+				from: compiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	evaluationSourceCode := self defaultEvaluationSelector asString, '
+		correspondingToAnInstVar isNil.
+		[:anInstVar | anInstVar isNil].'.
+	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
+
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/15/2018 16:06:36'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData! !
 
-!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/17/2018 11:23:22'!
+!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 1/14/2019 11:55:33'!
+compiledMethodFrom: aSourceCode
+
+	| aClass |
+	
+	aClass := self createClassNamed: #AClass.
+	aClass compile: aSourceCode.
+	
+	^aClass compiledMethodAt: (Parser selectorFrom: aSourceCode).! !
+
+!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 1/14/2019 11:04:52'!
 compiledMethodReferencingSelf
 
 	| aClass aMessageSelector aMessageSourceCode |
 
 	aClass := self createClassNamed: #AClass.
 	aMessageSelector := #m1.
-	aMessageSourceCode := aMessageSelector asString, '
-		self isNil.'.
+	aMessageSourceCode := aMessageSelector asString, self sourceCodeBodyOfMethodReferencingSelf.
 	aClass compile: aMessageSourceCode.
 	
 	^aClass compiledMethodAt: aMessageSelector! !
@@ -2841,6 +3131,12 @@ methodObjectClassName
 methodObjectSuperclass
 
 	^self createClassNamed: #MethodObjectSuperclass! !
+
+!ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 1/14/2019 11:05:30'!
+sourceCodeBodyOfMethodReferencingSelf
+
+	^'
+		self isNil.'! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -6812,7 +7108,7 @@ apply
 	self compileExtractedMethodAsEvaluationMethodOn: methodObjectClass.
 	self replaceExtractedMethodWithMethodObjectEvaluation.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/9/2019 15:46:16'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/14/2019 15:07:33'!
 compileExtractedMethodAsEvaluationMethodOn: aClass
 
 	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced disregardType sourceCodeWithVariablesReplaced rangesToNewStrings rangesToNewStringsWithArgsFiltered |

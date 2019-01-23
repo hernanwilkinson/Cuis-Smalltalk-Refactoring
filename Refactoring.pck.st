@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 15 January 2019 at 11:32:45 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 23 January 2019 at 4:18:12 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 170!
+!provides: 'Refactoring' 1 184!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -142,6 +142,16 @@ RefactoringTest subclass: #InsertSuperclassTest
 	category: 'Refactoring'!
 !classDefinition: 'InsertSuperclassTest class' category: #Refactoring!
 InsertSuperclassTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #NullObjectHierarchyCreatorTest category: #Refactoring!
+RefactoringTest subclass: #NullObjectHierarchyCreatorTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'NullObjectHierarchyCreatorTest class' category: #Refactoring!
+NullObjectHierarchyCreatorTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #RemoveAllUnreferencedInstanceVariablesTest category: #Refactoring!
@@ -342,6 +352,16 @@ Refactoring subclass: #InsertSuperclass
 	category: 'Refactoring'!
 !classDefinition: 'InsertSuperclass class' category: #Refactoring!
 InsertSuperclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #NullObjectHierarchyCreator category: #Refactoring!
+Refactoring subclass: #NullObjectHierarchyCreator
+	instanceVariableNames: 'concreteClass abstractClassName nullObjectClassName category'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'NullObjectHierarchyCreator class' category: #Refactoring!
+NullObjectHierarchyCreator class
 	instanceVariableNames: ''!
 
 !classDefinition: #PushUpMethod category: #Refactoring!
@@ -2219,7 +2239,7 @@ failsWithMessageText: aMessageTextBlock
 		raise: RefactoringError
 		withMessageText: aMessageTextBlock.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:05:06'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:29:26'!
 test01MethodObjectClassNameMustNotBeEmpty
 
 	| anEmptyClassName |
@@ -3875,6 +3895,257 @@ test10NewSuperclassNameCanNotHaveSpaces
 	self
 		assertCreation: [ InsertSuperclass to: self class named: 'With spaces' asSymbol ]
 		failsWith: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 1/23/2019 15:10:54'!
+abstractClassName
+
+	^#AnAbstractClassName! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 1/23/2019 14:29:37'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 1/23/2019 15:10:40'!
+concreteClass
+
+	^self createClassNamed: #AConcreteClass! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 1/23/2019 15:11:08'!
+nullObjectClassName
+
+	^#ANullObjectClassName! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:52:30'!
+test01AbstractClassClassNameMustNotBeEmpty
+
+	| emptyClassName |
+	
+	emptyClassName := '' asSymbol.
+	
+	self 
+		creationWithAbstractClassName: emptyClassName
+		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage ].! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:52:05'!
+test02AbstractClassClassNameMustBeASymbol
+
+	| stringClassName |
+	
+	stringClassName := 'AnAbstractClassName'.
+	
+	self 
+		creationWithAbstractClassName: stringClassName
+		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:51:50'!
+test03AbstractClassClassNameMustStartWithUppercaseLetter
+
+	| classNameNotCapitalized |
+	
+	classNameNotCapitalized := #anAbstractClassName.
+	
+	self 
+		creationWithAbstractClassName: classNameNotCapitalized
+		failsWithMessageText: [ NewClassPrecondition newNameMustStartWithUppercaseLetterErrorMessage ].! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:51:33'!
+test04AbstractClassClassNameMustNotHaveSeparators
+
+	| classNameWithSeparators |
+	
+	classNameWithSeparators := 'An abstract class name' asSymbol.
+	
+	self 
+		creationWithAbstractClassName: classNameWithSeparators
+		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:54:23'!
+test05AbstractClassClassNameMustNotExist
+
+	| existingClassName |
+	
+	existingClassName := #Object.
+	
+	self 
+		creationWithAbstractClassName: existingClassName
+		failsWithMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: existingClassName].! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:56:43'!
+test06NullObjectClassNameMustNotBeEmpty
+
+	| emptyClassName |
+	
+	emptyClassName := '' asSymbol.
+	
+	self 
+		creationWithNullObjectClassName: emptyClassName
+		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage ].! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 15:03:16'!
+test07NullObjectClassNameMustBeASymbol
+
+	| stringClassName |
+	
+	stringClassName := 'AStringClassName'.
+	
+	self 
+		creationWithNullObjectClassName: stringClassName
+		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 15:03:58'!
+test08NullObjectClassNameMustStartWithUppercaseLetter
+
+	| classNameNotCapitalized |
+	
+	classNameNotCapitalized := #aNullObjectClassName.
+	
+	self 
+		creationWithNullObjectClassName: classNameNotCapitalized
+		failsWithMessageText: [ NewClassPrecondition newNameMustStartWithUppercaseLetterErrorMessage ].! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 15:05:09'!
+test09NullObjectClassNameMustNotHaveSeparators
+
+	| classNameWithSeparators |
+	
+	classNameWithSeparators := 'A null object class name' asSymbol.
+	
+	self 
+		creationWithNullObjectClassName: classNameWithSeparators
+		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 15:05:35'!
+test10NullObjectClassNameMustNotExist
+
+	| existingClassName |
+	
+	existingClassName := #Object.
+	
+	self 
+		creationWithNullObjectClassName: existingClassName
+		failsWithMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: existingClassName].! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 15:48:00'!
+test11CreatesAbstractClass
+
+	| refactor |
+	
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: self concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	self assert: (Smalltalk hasClassNamed: self abstractClassName).! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 15:49:29'!
+test12CreatesAbstractClassInChosenCategory
+
+	| refactor abstractClass |
+	
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: self concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	abstractClass := Smalltalk classNamed: self abstractClassName.
+	self assert: self classCategoryOfTestData equals: abstractClass category.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 15:51:00'!
+test13CreatesAbstractClassAsSubclassOfConcreteClassPreviousSuperclass
+
+	| refactor abstractClass concreteClass |
+	
+	concreteClass := self concreteClass.
+	 
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	abstractClass := Smalltalk classNamed: self abstractClassName.
+	self assert: concreteClass superclass equals: abstractClass superclass.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:01:12'!
+test14AbstractClassDefinesAllTheSelectorOfConcreteClass
+
+	| refactor abstractClass concreteClass |
+	
+	concreteClass := self concreteClass.
+	concreteClass compile: 'm1'.
+	 
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	abstractClass := Smalltalk classNamed: self abstractClassName.
+	self assert: concreteClass selectors equals: abstractClass selectors.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:17:59'!
+test15AbstractClassMethodParametersNamesArePreservedFromConcreteClass
+	
+	| refactor abstractClass concreteClass compiledMethod |
+	
+	concreteClass := self concreteClass.
+	concreteClass compile: 'm1: anArg'.
+	 
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	abstractClass := Smalltalk classNamed: self abstractClassName.
+	compiledMethod := abstractClass compiledMethodAt: #m1:. 
+	self assert: 'anArg' equals: compiledMethod methodNode arguments first name.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'assertions' stamp: 'FGJ 1/23/2019 15:47:07'!
+creationWithAbstractClassName: anAbstractClassName
+failsWithMessageText: aMessageTextBlock
+
+	self
+		should: [
+			NullObjectHierarchyCreator 
+				from: self concreteClass 
+				withAbstractClassName: anAbstractClassName
+				withNullClassName: self nullObjectClassName
+				inCategory: self classCategoryOfTestData ]
+		raise: RefactoringError
+		withMessageText: aMessageTextBlock.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'assertions' stamp: 'FGJ 1/23/2019 15:47:24'!
+creationWithNullObjectClassName: aNullClassName
+failsWithMessageText: aMessageTextBlock
+
+	self
+		should: [
+			NullObjectHierarchyCreator 
+				from: self concreteClass 
+				withAbstractClassName: self abstractClassName 
+				withNullClassName: aNullClassName
+				inCategory: self classCategoryOfTestData ]
+		raise: RefactoringError
+		withMessageText: aMessageTextBlock.! !
 
 !RemoveAllUnreferencedInstanceVariablesTest methodsFor: 'tests' stamp: 'HAW 8/2/2018 16:15:11'!
 test01NoVariableIsRemovedWhenClassHasNoInstanceVariable
@@ -8245,6 +8516,59 @@ to: aClass named: aSuperclassName in: aSystem undeclared: anUndeclared
 	self newClassPreconditionClass valueFor: aSuperclassName in: aSystem undeclared: anUndeclared.
 	
 	^self new initializeTo: aClass theNonMetaClass named: aSuperclassName ! !
+
+!NullObjectHierarchyCreator methodsFor: 'evaluating' stamp: 'FGJ 1/23/2019 16:14:32'!
+apply
+	
+	| concreteClassSuperclass abstractClass |
+	
+	concreteClassSuperclass := concreteClass superclass.
+	
+	abstractClass := concreteClassSuperclass 
+		subclass: abstractClassName 
+		instanceVariableNames: ''
+		classVariableNames: ''
+		poolDictionaries: ''
+		category: category.
+	
+	concreteClass selectorsDo: [:aSelector |
+		| methodHeader |
+		
+		methodHeader := concreteClass methodHeaderFor: aSelector.
+		abstractClass compile: methodHeader, '
+			self subclassResponsibility.'].
+		! !
+
+!NullObjectHierarchyCreator methodsFor: 'evaluating' stamp: 'FGJ 1/23/2019 15:45:22'!
+from: aConcreteClass
+withAbstractClassName: anAbstractClassName
+withNullClassName: aNullObjectClassName
+inCategory: aCategory
+
+	concreteClass := aConcreteClass.
+	abstractClassName := anAbstractClassName.
+	nullObjectClassName := aNullObjectClassName.
+	category := aCategory.! !
+
+!NullObjectHierarchyCreator class methodsFor: 'instance creation' stamp: 'FGJ 1/23/2019 15:45:55'!
+from: aConcreteClass
+withAbstractClassName: anAbstractClassName
+withNullClassName: aNullClassName 
+inCategory: aCategory
+	
+	self newClassPreconditionClass valueFor: anAbstractClassName in: Smalltalk undeclared: Undeclared. 
+	self newClassPreconditionClass valueFor: aNullClassName in: Smalltalk undeclared: Undeclared.
+	
+	^self new 
+		from: aConcreteClass
+		withAbstractClassName: anAbstractClassName 
+		withNullClassName: aNullClassName
+		inCategory: aCategory! !
+
+!NullObjectHierarchyCreator class methodsFor: 'instance creation' stamp: 'FGJ 1/23/2019 14:34:12'!
+newClassPreconditionClass
+	
+	^NewClassPrecondition! !
 
 !PushUpMethod methodsFor: 'as yet unclassified' stamp: 'HAW 8/18/2018 11:46:09'!
 apply

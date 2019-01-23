@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 23 January 2019 at 5:11:59 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 23 January 2019 at 5:17:56 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 194!
+!provides: 'Refactoring' 1 195!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -4288,6 +4288,31 @@ test23ConcreteClassSubclassesTheAbstractClass
 	abstractClass := Smalltalk classNamed: self abstractClassName.
 		
 	self assert: abstractClass equals: concreteClass superclass.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 17:17:38'!
+test24ConcreteClassMethodsArePreserved
+	
+	| refactor concreteClass compiledMethod concreteClassName originalMethodSourceCode updatedConcreteClass |
+	
+	concreteClass := self concreteClass.
+	originalMethodSourceCode := 'm1: anArg
+		^1 + 2'.
+	concreteClass compile: originalMethodSourceCode.
+	 
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	concreteClassName := concreteClass name.
+	updatedConcreteClass := Smalltalk classNamed: concreteClassName.
+	compiledMethod := updatedConcreteClass compiledMethodAt: #m1:. 
+
+	self assert: originalMethodSourceCode equals: compiledMethod sourceCode.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'assertions' stamp: 'FGJ 1/23/2019 15:47:07'!
 creationWithAbstractClassName: anAbstractClassName

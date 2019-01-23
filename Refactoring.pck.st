@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 23 January 2019 at 4:18:12 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 23 January 2019 at 5:11:59 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 184!
+!provides: 'Refactoring' 1 194!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -4059,12 +4059,13 @@ test12CreatesAbstractClassInChosenCategory
 	abstractClass := Smalltalk classNamed: self abstractClassName.
 	self assert: self classCategoryOfTestData equals: abstractClass category.! !
 
-!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 15:51:00'!
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 17:11:50'!
 test13CreatesAbstractClassAsSubclassOfConcreteClassPreviousSuperclass
 
-	| refactor abstractClass concreteClass |
+	| refactor abstractClass concreteClass concreteClassOldSuperclass |
 	
 	concreteClass := self concreteClass.
+	concreteClassOldSuperclass := concreteClass superclass.
 	 
 	refactor := 
 		NullObjectHierarchyCreator 
@@ -4076,10 +4077,10 @@ test13CreatesAbstractClassAsSubclassOfConcreteClassPreviousSuperclass
 	refactor apply.
 	
 	abstractClass := Smalltalk classNamed: self abstractClassName.
-	self assert: concreteClass superclass equals: abstractClass superclass.! !
+	self assert: concreteClassOldSuperclass equals: abstractClass superclass.! !
 
-!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:01:12'!
-test14AbstractClassDefinesAllTheSelectorOfConcreteClass
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:36:39'!
+test14AbstractClassDefinesAllTheSelectorsOfConcreteClass
 
 	| refactor abstractClass concreteClass |
 	
@@ -4098,7 +4099,7 @@ test14AbstractClassDefinesAllTheSelectorOfConcreteClass
 	abstractClass := Smalltalk classNamed: self abstractClassName.
 	self assert: concreteClass selectors equals: abstractClass selectors.! !
 
-!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:17:59'!
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:41:22'!
 test15AbstractClassMethodParametersNamesArePreservedFromConcreteClass
 	
 	| refactor abstractClass concreteClass compiledMethod |
@@ -4117,7 +4118,176 @@ test15AbstractClassMethodParametersNamesArePreservedFromConcreteClass
 	
 	abstractClass := Smalltalk classNamed: self abstractClassName.
 	compiledMethod := abstractClass compiledMethodAt: #m1:. 
+		
 	self assert: 'anArg' equals: compiledMethod methodNode arguments first name.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:44:13'!
+test16AbstractClassMethodsDelegateResponsibility
+	
+	| refactor abstractClass concreteClass compiledMethod expectedMethodSourceCode |
+	
+	concreteClass := self concreteClass.
+	concreteClass compile: 'm1: anArg
+		^1 + 2'.
+	 
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	abstractClass := Smalltalk classNamed: self abstractClassName.
+	compiledMethod := abstractClass compiledMethodAt: #m1:. 
+	expectedMethodSourceCode := 'm1: anArg',
+		Character newLineCharacter asString,
+		Character tab asString,
+		'self subclassResponsibility.'.
+		
+	self assert: expectedMethodSourceCode equals: compiledMethod sourceCode.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:41:50'!
+test17CreatesNullObjectClass
+	
+| refactor |
+	
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: self concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	self assert: (Smalltalk hasClassNamed: self nullObjectClassName).! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:42:02'!
+test18CreatesNullObjectClassInChosenCategory
+
+	| refactor nullObjectClass |
+	
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: self concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	nullObjectClass := Smalltalk classNamed: self nullObjectClassName.
+	self assert: self classCategoryOfTestData equals: nullObjectClass category.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:42:13'!
+test19CreatesNullObjectClassClassAsSubclassOfAbstractClass
+
+	| refactor abstractClass concreteClass nullObjectClass |
+	
+	concreteClass := self concreteClass.
+	 
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	nullObjectClass := Smalltalk classNamed: self nullObjectClassName.
+	abstractClass := Smalltalk classNamed: self abstractClassName .
+	
+	self assert: abstractClass equals: nullObjectClass superclass.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:42:33'!
+test20NullObjectClassDefinesAllTheSelectorsOfConcreteClass
+
+	| refactor concreteClass nullObjectClass |
+	
+	concreteClass := self concreteClass.
+	concreteClass compile: 'm1'.
+	 
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	nullObjectClass := Smalltalk classNamed: self nullObjectClassName.
+	
+	self assert: concreteClass selectors equals: nullObjectClass selectors.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:43:12'!
+test21NullObjectClassMethodParametersNamesArePreservedFromConcreteClass
+	
+	| refactor concreteClass compiledMethod nullObjectClass |
+	
+	concreteClass := self concreteClass.
+	concreteClass compile: 'm1: anArg'.
+	 
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	nullObjectClass := Smalltalk classNamed: self nullObjectClassName.
+	compiledMethod := nullObjectClass compiledMethodAt: #m1:. 
+	
+	self assert: 'anArg' equals: compiledMethod methodNode arguments first name.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:44:54'!
+test22NullObjectClassMethodsAreEmpty
+	
+	| refactor concreteClass compiledMethod expectedMethodSourceCode nullObjectClass |
+	
+	concreteClass := self concreteClass.
+	concreteClass compile: 'm1: anArg
+		^1 + 2'.
+	 
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	nullObjectClass := Smalltalk classNamed: self nullObjectClassName.
+	compiledMethod := nullObjectClass compiledMethodAt: #m1:. 
+	expectedMethodSourceCode := 'm1: anArg'.
+		
+	self assert: expectedMethodSourceCode equals: compiledMethod sourceCode.! !
+
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:46:48'!
+test23ConcreteClassSubclassesTheAbstractClass
+	
+	| refactor concreteClass abstractClass |
+	
+	concreteClass := self concreteClass.
+	
+	refactor := 
+		NullObjectHierarchyCreator 
+			from: concreteClass
+			withAbstractClassName: self abstractClassName
+			withNullClassName: self nullObjectClassName
+			inCategory: self classCategoryOfTestData.
+			
+	refactor apply.
+	
+	abstractClass := Smalltalk classNamed: self abstractClassName.
+		
+	self assert: abstractClass equals: concreteClass superclass.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'assertions' stamp: 'FGJ 1/23/2019 15:47:07'!
 creationWithAbstractClassName: anAbstractClassName
@@ -8517,10 +8687,10 @@ to: aClass named: aSuperclassName in: aSystem undeclared: anUndeclared
 	
 	^self new initializeTo: aClass theNonMetaClass named: aSuperclassName ! !
 
-!NullObjectHierarchyCreator methodsFor: 'evaluating' stamp: 'FGJ 1/23/2019 16:14:32'!
+!NullObjectHierarchyCreator methodsFor: 'evaluating' stamp: 'FGJ 1/23/2019 17:10:26'!
 apply
 	
-	| concreteClassSuperclass abstractClass |
+	| concreteClassSuperclass abstractClass nullObjectClass |
 	
 	concreteClassSuperclass := concreteClass superclass.
 	
@@ -8530,16 +8700,29 @@ apply
 		classVariableNames: ''
 		poolDictionaries: ''
 		category: category.
+		
+	nullObjectClass := abstractClass 
+		subclass: nullObjectClassName
+		instanceVariableNames: ''
+		classVariableNames: ''
+		poolDictionaries: ''
+		category: category.
 	
 	concreteClass selectorsDo: [:aSelector |
 		| methodHeader |
 		
 		methodHeader := concreteClass methodHeaderFor: aSelector.
-		abstractClass compile: methodHeader, '
-			self subclassResponsibility.'].
-		! !
+		
+		abstractClass compile: 
+			methodHeader, 
+			Character newLineCharacter asString,
+			Character tab asString,
+			'self subclassResponsibility.'.
+		nullObjectClass compile: methodHeader].
+	
+	concreteClass superclass: abstractClass.! !
 
-!NullObjectHierarchyCreator methodsFor: 'evaluating' stamp: 'FGJ 1/23/2019 15:45:22'!
+!NullObjectHierarchyCreator methodsFor: 'initialization' stamp: 'FGJ 1/23/2019 15:45:22'!
 from: aConcreteClass
 withAbstractClassName: anAbstractClassName
 withNullClassName: aNullObjectClassName

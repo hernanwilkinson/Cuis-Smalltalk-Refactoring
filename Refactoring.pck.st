@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 23 January 2019 at 5:17:56 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 31 January 2019 at 5:59:10 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 195!
+!provides: 'Refactoring' 1 198!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -3204,7 +3204,7 @@ test45WhenKeywordsMethodIsRefactoredArgumentNamesArePreserved
 
 	self assert: 'anArg' equals: (aClass compiledMethodAt: #m1:) methodNode arguments first name.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/15/2019 11:18:50'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 13:31:39'!
 test46WhenThereAreNoVariablesToParametrizeTheRefactoredMethodUsesTheNewMessageToCreateTheMethodObjectInstance
 	
 	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
@@ -3226,7 +3226,7 @@ test46WhenThereAreNoVariablesToParametrizeTheRefactoredMethodUsesTheNewMessageTo
 	refactor apply.
 
 	expectedRefactoredSourceCode := 'm1
-		^(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
+		(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
 	self 
 		assert: expectedRefactoredSourceCode 
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
@@ -3291,7 +3291,7 @@ test48WhenThereAreMultipleVariablesToParametrizeTheRefactoredMethodPassesTheVari
 		assert: expectedRefactoredSourceCode 
 		equals: (aClass compiledMethodAt: #m1:) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/15/2019 11:32:26'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 13:30:44'!
 test49TheRefactoredMethodUsesTheChosenEvaluationSelectorToEvaluateTheMethodObjectInstance
 	
 	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
@@ -3313,7 +3313,37 @@ test49TheRefactoredMethodUsesTheChosenEvaluationSelectorToEvaluateTheMethodObjec
 	refactor apply.
 
 	expectedRefactoredSourceCode := 'm1
-		^(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
+		(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
+	self 
+		assert: expectedRefactoredSourceCode 
+		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 17:57:51'!
+test50TheRefactoredMethodPreservesTheImplicitReturn
+	
+	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
+	
+	variablesToParametrizeToInstanceVariables := #() asDictionary.
+	keywordToParametrizedVariable := #().
+	
+	aClass := self createClassNamed: #AClass.
+	aClass compile: 'm1
+		| a |
+		
+		a := 1 + 1.'.	
+	refactor := ExtractToMethodObject 
+				from: (aClass compiledMethodAt: #m1)
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+
+	expectedRefactoredSourceCode := 'm1
+		(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
 	self 
 		assert: expectedRefactoredSourceCode 
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
@@ -7907,15 +7937,24 @@ methodToExtractBodySourceCode
 	methodBodyAsBlock printOn: aStream indent: 0.
 	^self removeBlockEnclosingCharacters: aStream contents.! !
 
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/31/2019 13:28:42'!
+onlyReturnsSelf: aMethodNode
+	
+	aMethodNode 
+		accept: (ParseNodeEnumerator 
+			ofBlock: [:aNode | (aNode isReturn and: [aNode isReturnSelf not]) ifTrue: [^false]]).
+	
+	^true.! !
+
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 14:56:23'!
 removeBlockEnclosingCharacters: aBlockSourceCode
 
 	^(aBlockSourceCode withoutPrefix: '[') withoutSuffix: ']'.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/15/2019 11:28:12'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/31/2019 13:30:13'!
 replaceExtractedMethodWithMethodObjectEvaluation
 
-	| classToRefactor constructorMessage methodToExtractHeader refactoredSourceCode |
+	| classToRefactor constructorMessage methodToExtractHeader refactoredSourceCode optionalReturn |
 	
 	classToRefactor := methodToExtract methodClass.
 	constructorMessage := 'new'.
@@ -7927,8 +7966,12 @@ replaceExtractedMethodWithMethodObjectEvaluation
 			constructorMessage := ' ' join: keywordsWithVarNames.].
 	
 	methodToExtractHeader := self methodHeaderFrom: methodToExtract.
+	optionalReturn := (self onlyReturnsSelf: methodToExtract methodNode)
+		ifTrue: ['']
+		ifFalse: ['^'].
 	refactoredSourceCode := methodToExtractHeader, '
-		^(',methodObjectClassName, ' ', constructorMessage, ') ', methodObjectInvocationSelector asString.
+		', optionalReturn, '(',methodObjectClassName, ' ', constructorMessage, ') ', methodObjectInvocationSelector asString.
+		
 	classToRefactor compile: refactoredSourceCode.! !
 
 !ExtractToMethodObject methodsFor: 'initialization' stamp: 'FGJ 12/15/2018 16:17:56'!

@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 31 January 2019 at 5:59:10 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 1 February 2019 at 11:56:49 am'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 198!
+!provides: 'Refactoring' 1 203!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -2938,8 +2938,8 @@ test36MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 		anArgReplacement isNil.'.
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 14:40:11'!
-test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorClassVariable
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/1/2019 11:33:34'!
+test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorPoolVariable
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass aPool aPoolVar |
 	
@@ -2960,7 +2960,7 @@ test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 		createClassNamed: #AClass
 		subclassOf: Object
 		instanceVariableNames: ''
-		classVariableNames: aPoolVar
+		classVariableNames: ''
 		poolDictionaries: aPool name
 		category: self classCategoryOfTestData.
 	methodToRefactorSourceCode := 'm1
@@ -3347,6 +3347,167 @@ test50TheRefactoredMethodPreservesTheImplicitReturn
 	self 
 		assert: expectedRefactoredSourceCode 
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 18:13:06'!
+test51TheMethodToExtractMustNotReferenceSuper
+	
+	| keywordToParametrizedVariable variablesToParametrizeToInstVars aClass |
+	
+	variablesToParametrizeToInstVars := #().
+	keywordToParametrizedVariable := #().
+	aClass := self createClassNamed: #AClass.
+	aClass compile: 'm1 ^super isNil'.
+	
+	self 
+		should: [
+			ExtractToMethodObject 
+				from: (aClass compiledMethodAt: #m1)
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass 
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstVars
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector]
+		raise: RefactoringError
+		withMessageText: [ ExtractToMethodObject methodCanNotReferenceSuperErrorMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 20:01:13'!
+test52TheMethodToExtractMustNotContainInstVarAssignments
+	
+	| keywordToParametrizedVariable variablesToParametrizeToInstVars aClass |
+	
+	variablesToParametrizeToInstVars := {'anInstVar' -> 'correspondingInstVar'} asDictionary.
+	keywordToParametrizedVariable := {#with -> 'anInstVar' }.
+	aClass := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
+	aClass compile: 'm1
+		anInstVar := 2.'.
+	
+	self 
+		should: [
+			ExtractToMethodObject 
+				from: (aClass compiledMethodAt: #m1)
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass 
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstVars
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector]
+		raise: RefactoringError
+		withMessageText: [ ExtractToMethodObject methodCannotContainInstVarAssignmentsErrorMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 20:09:19'!
+test53TheMethodToExtractMustNotContainClassVarAssignments
+	
+	| keywordToParametrizedVariable variablesToParametrizeToInstVars aClass classVarName |
+	
+	classVarName := 'AClassVar'.
+	variablesToParametrizeToInstVars := {classVarName -> 'correspondingInstVar'} asDictionary.
+	keywordToParametrizedVariable := {#with -> classVarName}.
+	aClass := self 
+		createClassNamed: #AClass
+		subclassOf: Object
+		instanceVariableNames: ''
+		classVariableNames: classVarName
+		poolDictionaries: ''
+		category: self classCategoryOfTestData.
+
+	aClass compile: 'm1
+		', classVarName, ' := 2.'.
+	
+	self 
+		should: [
+			ExtractToMethodObject 
+				from: (aClass compiledMethodAt: #m1)
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass 
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstVars
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector]
+		raise: RefactoringError
+		withMessageText: [ ExtractToMethodObject methodCannotContainClassVarAssignmentsErrorMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/1/2019 11:38:22'!
+test54TheMethodToExtractMustNotContainPoolVarAssignments
+	
+	| keywordToParametrizedVariable aClass aPool aPoolVar compiledMethodToRefactor correspondingInstVar methodToRefactorSourceCode variablesToParametrizeToInstanceVariables |
+	
+	aPoolVar := 'APoolVar'.
+	correspondingInstVar := 'aCorrespondingInstVar'.
+	variablesToParametrizeToInstanceVariables := {aPoolVar -> correspondingInstVar.} asDictionary.
+	keywordToParametrizedVariable := {#with -> aPoolVar.}.
+	
+	aPool := self
+		createClassNamed: #APool
+		subclassOf: SharedPool
+		instanceVariableNames: ''
+		classVariableNames: aPoolVar
+		poolDictionaries: ''
+		category: self classCategoryOfTestData.
+	
+	aClass := self
+		createClassNamed: #AClass
+		subclassOf: Object
+		instanceVariableNames: ''
+		classVariableNames: ''
+		poolDictionaries: aPool name
+		category: self classCategoryOfTestData.
+	
+	methodToRefactorSourceCode := 'm1
+		', aPoolVar, ' := 2.'.
+	aClass compile: methodToRefactorSourceCode.
+	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
+	
+		self 
+		should: [
+			ExtractToMethodObject 
+				from: compiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass 
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector]
+		raise: RefactoringError
+		withMessageText: [ ExtractToMethodObject methodCannotContainPoolVarAssignmentsErrorMessage ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/1/2019 11:36:20'!
+test55MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorClassVariable
+
+	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass aClassVar |
+	
+	aClassVar := 'AClassVar'.
+	correspondingInstVar := 'aCorrespondingInstVar'.
+	variablesToParametrizeToInstanceVariables := {aClassVar -> correspondingInstVar.} asDictionary.
+	keywordToParametrizedVariable := {#with -> aClassVar.}.
+	
+	aClass := self
+		createClassNamed: #AClass
+		subclassOf: Object
+		instanceVariableNames: ''
+		classVariableNames: aClassVar
+		poolDictionaries: ''
+		category: self classCategoryOfTestData.
+	methodToRefactorSourceCode := 'm1
+		', aClassVar, ' isNil.'.
+	aClass compile: methodToRefactorSourceCode.
+	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
+	
+	refactor := ExtractToMethodObject 
+				from: compiledMethodToRefactor
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+
+	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
+	evaluationSourceCode := self defaultEvaluationSelector asString, '
+		', correspondingInstVar, ' isNil.'.
+	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/15/2018 16:06:36'!
 allClassCategoriesOfTestData
@@ -8113,6 +8274,24 @@ assertKeywordsHaveNoInvalidCharacters: keywords
 		isEmpty
 		ifFalse: [self signalKeywordsContainInvalidCharacters: keywordsWithInvalidCharacters].! !
 
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 1/31/2019 20:35:56'!
+assertMethodDoesNotContainClassVarAssignments: aCompiledMethod
+
+	(self doesMethodContainsClassVarAssignments: aCompiledMethod )
+		ifTrue: [self signalMethodContainsClassVarAssignments].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 1/31/2019 19:58:29'!
+assertMethodDoesNotContainInstVarAssignments: aCompiledMethod
+
+	(self doesMethodContainsInstVarAssignments: aCompiledMethod )
+		ifTrue: [self signalMethodContainsInstVarAssignments].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 2/1/2019 11:40:19'!
+assertMethodDoesNotContainPoolVarAssignments: aCompiledMethod
+
+	(self doesMethodContainsPoolVarAssignments: aCompiledMethod )
+		ifTrue: [self signalMethodContainsPoolVarAssignments].! !
+
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/21/2018 16:03:38'!
 assertMethodObjectSuperclassIsNotMeta: aClass
 
@@ -8169,7 +8348,7 @@ evaluatedWith: anEvaluationSelector
 		evaluatedWith: anEvaluationSelector
 ! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 1/4/2019 12:40:32'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 2/1/2019 11:39:26'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
@@ -8182,7 +8361,13 @@ evaluatedWith: anInvocationSelector
 	
 	self assertMethodObjectSuperclassIsNotMeta: aClass.
 	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
+	
 	self assertMethodToExtractDoesNotReferenceSuper: aCompiledMethod.
+	
+	self assertMethodDoesNotContainInstVarAssignments: aCompiledMethod.
+     self assertMethodDoesNotContainClassVarAssignments: aCompiledMethod.
+	self assertMethodDoesNotContainPoolVarAssignments: aCompiledMethod.
+	
 	self 
 		assertAllVariablesToParametrizeFrom: aCompiledMethod
 		haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariables.
@@ -8262,6 +8447,21 @@ keywordsContainInvalidCharactersErrorMessage: keywordsWithInvalidCharacters
 methodCanNotReferenceSuperErrorMessage
 	^'The method to be extracted can not reference super pseudo variable'! !
 
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 1/31/2019 20:37:09'!
+methodCannotContainClassVarAssignmentsErrorMessage
+
+	^'The method cannot contain assignments to class variables'! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 1/31/2019 20:00:08'!
+methodCannotContainInstVarAssignmentsErrorMessage
+
+	^'The method cannot contain assignments to instance variables'! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 2/1/2019 11:55:40'!
+methodCannotContainPoolVarAssignmentsErrorMessage
+
+	^'The method cannot contain assignments to pool variables'! !
+
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/21/2018 16:04:21'!
 methodObjectSuperclassCannotBeMetaErrorMessage
 
@@ -8329,6 +8529,21 @@ signalKeywordsContainInvalidCharacters: keywordsWithInvalidCharacters
 
 	self refactoringError: (self keywordsContainInvalidCharactersErrorMessage:keywordsWithInvalidCharacters).! !
 
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 1/31/2019 20:36:26'!
+signalMethodContainsClassVarAssignments
+
+	self refactoringError: (self methodCannotContainClassVarAssignmentsErrorMessage).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 1/31/2019 19:59:27'!
+signalMethodContainsInstVarAssignments
+
+	self refactoringError: (self methodCannotContainInstVarAssignmentsErrorMessage).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 2/1/2019 11:55:23'!
+signalMethodContainsPoolVarAssignments
+
+	self refactoringError: (self methodCannotContainPoolVarAssignmentsErrorMessage).! !
+
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/21/2018 16:04:00'!
 signalMethodObjectSuperclassCannotBeMeta
 
@@ -8375,6 +8590,55 @@ blockNodesFrom: aMethodNode
 					ifTrue: [blockNodes add: aNode.]]). 					
 	
 	^blockNodes! !
+
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 1/31/2019 20:35:33'!
+doesMethodContainsClassVarAssignments: aCompiledMethod
+
+	| methodClass |
+	
+	methodClass := aCompiledMethod methodNode methodClass.
+	aCompiledMethod methodNode
+		accept: (ParseNodeEnumerator
+			ofBlock: [:aNode | (self isNode: aNode anAssignmentToAClassVarFrom: methodClass) ifTrue: [^true]]).
+		
+	^false.
+! !
+
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 1/31/2019 19:56:24'!
+doesMethodContainsInstVarAssignments: aCompiledMethod
+
+	aCompiledMethod methodNode
+		accept: (ParseNodeEnumerator
+			ofBlock: [:aNode | (self isAssignmentToInstVarNode: aNode) ifTrue: [^true]]).
+		
+	^false.
+! !
+
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/1/2019 11:56:25'!
+doesMethodContainsPoolVarAssignments: aCompiledMethod
+
+	| poolVariablesNames methodNode |
+	
+	methodNode := aCompiledMethod methodNode.
+	poolVariablesNames := VariablesToExtractFinder poolVariablesReferencedBy: methodNode.
+	methodNode
+		accept: (ParseNodeEnumerator
+			ofBlock: [:aNode |
+				(aNode isAssignmentNode and: [poolVariablesNames includes: aNode variable name])
+					ifTrue: [^true]]).
+		
+	^false.
+! !
+
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 1/31/2019 19:57:30'!
+isAssignmentToInstVarNode: aNode
+
+	^aNode isAssignmentNode and: [aNode variable isInstanceVariableNode] ! !
+
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 1/31/2019 20:33:54'!
+isNode: aNode anAssignmentToAClassVarFrom: aClass
+
+	^aNode isAssignmentNode and: [aClass definesClassVariableNamedInHierarchy: aNode variable name] ! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/19/2018 15:48:36'!
 keywordHasInvalidCharacters: keyword

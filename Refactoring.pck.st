@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 7 January 2019 at 10:53:19 pm'!
-'Description AddInstanceVariable verifies that new name is not reserved. Add req. to __Refactoring-TestData__'!
-!provides: 'Refactoring' 1 71!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3597] on 4 February 2019 at 5:00:43 pm'!
+'Description Contextual rename shortcut now is added using #smalltalkEditorCmdShortcutsSpec'!
+!provides: 'Refactoring' 1 72!
 !requires: '__Refactoring-TestData__' 1 1 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -8202,6 +8202,13 @@ messsageRefactoringMenuOptions
 initialize 
 
 	Editor initialize! !
+
+!RefactoringMenues class methodsFor: 'shortcuts' stamp: 'HAW 2/4/2019 16:43:23'!
+smalltalkEditorCmdShortcutsSpec
+
+	^#(
+		#(		$R	#contextualRename:		'Renames what is under cursor'))
+! !
 
 !CodeProvider methodsFor: '*Refactoring' stamp: 'HAW 9/8/2018 19:16:43'!
 isEditingMethod

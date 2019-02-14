@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 1 February 2019 at 11:56:49 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 14 February 2019 at 8:02:52 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 203!
+!provides: 'Refactoring' 1 217!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -496,7 +496,7 @@ RenameSelectorApplier class
 
 !classDefinition: #ExtractToMethodObjectApplier category: #Refactoring!
 RefactoringApplier subclass: #ExtractToMethodObjectApplier
-	instanceVariableNames: 'smalltalkEditor classToRefactor methodNode'
+	instanceVariableNames: 'smalltalkEditor classToRefactor methodNode panel done compiledMethodToExtract extractToMethodObjectRequest'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -9806,10 +9806,10 @@ showChanges
 	self subclassResponsibility 	
 	! !
 
-!RefactoringApplier methodsFor: 'evaluating' stamp: 'HAW 6/5/2017 19:05:50'!
+!RefactoringApplier methodsFor: 'evaluating' stamp: 'FGJ 2/14/2019 18:56:18'!
 value
 
-	requestExitBlock := [ ^self ].
+	requestExitBlock := [ self halt. ^self ].
 	
 	self 
 		requestRefactoringParametersHandlingRefactoringExceptions;
@@ -10243,29 +10243,82 @@ assertCanApplyRefactoringFor: aSelector in: aClass
 	
 	! !
 
-!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 12:05:45'!
-chooseNameForTheInstanceCreationMessage
+!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:47:28'!
+createRefactoring
+	
+	^ExtractToMethodObject 
+		from: compiledMethodToExtract 
+		toMethodObjectClassNamed: extractToMethodObjectRequest methodObjectClassName
+		subclassing: (Smalltalk classNamed: extractToMethodObjectRequest methodObjectSuperclassName)
+		onCategory: extractToMethodObjectRequest methodObjectCategory
+		withExtractedVariablesToInstanceVariables: extractToMethodObjectRequest variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: extractToMethodObjectRequest keywordToParametrizedVariable
+		evaluatedWith: extractToMethodObjectRequest methodObjectEvaluationMessageSelector.! !
 
-	^{} asDictionary.! !
-
-!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 12:05:31'!
-chooseNamesForTheMethodObjectInstanceVariables
-
-	^{} asDictionary.! !
-
-!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 11:42:26'!
-initializeOn: aSmalltalkEditor
-
-	smalltalkEditor := aSmalltalkEditor.
-	classToRefactor := smalltalkEditor codeProvider selectedClassOrMetaClass.
-	methodNode := classToRefactor methodNodeFor: smalltalkEditor actualContents string.! !
-
-!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 11:48:41'!
+!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 10:51:35'!
 requestRefactoringParameters
 
-	self 
-		chooseNamesForTheMethodObjectInstanceVariables;
-		chooseNameForTheInstanceCreationMessage.! !
+	panel := ExtractToMethodObjectPanel open: self.
+	
+	self waitForUserResponse.
+	! !
+
+!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 19:56:45'!
+showChanges
+	
+	panel deleteDiscardingEdits.
+	Transcript log: 'Successfully applied the Extract Method To Method Object refactoring'.! !
+
+!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:09:20'!
+userSubmitted: anExtractToMethodObjectRequest
+
+	extractToMethodObjectRequest := anExtractToMethodObjectRequest.
+	self finishedRefactoringParametersRequest.! !
+
+!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 19:32:07'!
+waitForUserResponse
+
+	| w |
+
+	w := panel world.
+	done := false.
+	[done] whileFalse: [w doOneCycleNow ].
+	w doOneCycleNow.! !
+
+!ExtractToMethodObjectApplier methodsFor: 'initialization' stamp: 'FGJ 2/13/2019 15:24:32'!
+initializeToExtract: aCompiledMethod
+
+	compiledMethodToExtract := aCompiledMethod.! !
+
+!ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 2/14/2019 17:09:09'!
+cancel
+
+	self finishedRefactoringParametersRequest.
+	panel delete.
+	
+	self endRequest.! !
+
+!ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 2/14/2019 17:08:58'!
+finishedRefactoringParametersRequest
+
+	done := true.! !
+
+!ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 2/14/2019 19:24:27'!
+handleRefactoringError: aRefactoringError 
+
+	self inform: aRefactoringError messageText.
+	self waitForUserResponse.
+	self createRefactoringHandlingRefactoringExceptions.! !
+
+!ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 2/13/2019 16:00:37'!
+panelWasClosed
+
+	self cancel.! !
+
+!ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 2/13/2019 17:59:13'!
+variablesToParametrize
+
+	^OrderedCollection newFrom: (VariablesToExtractFinder findIn: compiledMethodToExtract)! !
 
 !ExtractToMethodObjectApplier class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 11:45:57'!
 errorMessageForCanNotParseMethod: anError
@@ -10276,10 +10329,10 @@ errorMessageForCanNotParseMethod: anError
 			newLine;
 			nextPutAll: anError messageText ]! !
 
-!ExtractToMethodObjectApplier class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 11:41:43'!
-on: aSmalltalkEditor
-	
-	^self new initializeOn: aSmalltalkEditor! !
+!ExtractToMethodObjectApplier class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 15:23:57'!
+extract: aCompiledMethod
+
+	^self new initializeToExtract: aCompiledMethod! !
 
 !InsertSuperclassApplier methodsFor: 'initialization' stamp: 'FJG 8/5/2018 22:31:03'!
 initializeOn: aBrowser for: aClass
@@ -10754,7 +10807,7 @@ messageListMenuOptions
 		}`.
 	! !
 
-!RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 9/4/2018 15:19:24'!
+!RefactoringMenues class methodsFor: 'browser menues' stamp: 'FGJ 2/13/2019 15:06:58'!
 messsageRefactoringMenuOptions
 
 	^ `{
@@ -10786,6 +10839,14 @@ messsageRefactoringMenuOptions
 				#selector 		-> 		#pushUpSelector.
 				#icon 			-> 		#goTopIcon
 			} asDictionary.
+			{
+				#itemGroup 	-> 		10.
+				#itemOrder 		-> 		50.
+				#label 			-> 		'extract to method object'.
+				#selector 		-> 		#extractMethodToMethodObject.
+				#icon 			-> 		#newFolderIcon
+			} asDictionary.
+
 	}`.
 	
 	! !
@@ -11639,13 +11700,14 @@ hasUnacceptedEdits: aBoolean
 
 	^morph hasUnacceptedEdits: aBoolean ! !
 
-!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'FGJ 12/10/2018 11:45:39'!
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'FGJ 2/14/2019 17:34:28'!
 extractToMethodObject
 	
-	self codeProvider isEditingMethod ifTrue: [ | applier |
-		[ applier := ExtractToMethodObjectApplier on: self ] 
-			on: SyntaxErrorNotification 
-			do: [:anError | ^self inform: (ExtractToMethodObjectApplier errorMessageForCanNotParseMethod: anError) ].
+	self codeProvider isEditingMethod ifTrue: [ | applier classToRefactor compiledMethodToExtract methodNode |
+		classToRefactor := self codeProvider selectedClassOrMetaClass.
+		methodNode := classToRefactor methodNodeFor: self actualContents string.
+		compiledMethodToExtract := classToRefactor compiledMethodAt: methodNode selector.
+		[ applier := ExtractToMethodObjectApplier extract: compiledMethodToExtract ] 			on: SyntaxErrorNotification 			do: [:anError | ^self inform: (ExtractToMethodObjectApplier errorMessageForCanNotParseMethod: anError) ].
 		applier value ].
 ! !
 
@@ -11665,7 +11727,7 @@ addInstVar
 	model selectedClassOrMetaClass ifNotNil: [ :aClass |
 		(AddInstanceVariableApplier on: self for: aClass) value ].! !
 
-!BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 8/25/2018 12:36:44'!
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'FGJ 2/13/2019 15:21:57'!
 addParameter
 	
 	model selectedMessageName ifNotNil: [ :oldSelector | | refactoring |
@@ -11678,6 +11740,19 @@ addParameter
 classRefactoringMenu
 
 	^DynamicMenuBuilder buildTitled: 'Refactorings' targeting: self collectingMenuOptionsWith: #classRefactoringMenuOptions.! !
+
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'FGJ 2/13/2019 15:26:45'!
+extractMethodToMethodObject
+
+	| classToRefactor messageName |
+	
+	messageName := model selectedMessageName.
+	classToRefactor := model selectedClassOrMetaClass.
+	
+	messageName ifNotNil: [ | compiledMethod|
+		compiledMethod := classToRefactor compiledMethodAt: messageName.
+	
+		(ExtractToMethodObjectApplier extract: compiledMethod) value.].! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'HAW 7/7/2018 19:38:51'!
 messageRefactoringMenu

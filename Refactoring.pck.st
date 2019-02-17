@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 14 February 2019 at 8:02:52 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 17 February 2019 at 3:26:58 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 217!
+!provides: 'Refactoring' 1 238!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -326,7 +326,7 @@ RenameSelector class
 
 !classDefinition: #ExtractToMethodObject category: #Refactoring!
 Refactoring subclass: #ExtractToMethodObject
-	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract methodVariableNamesToInstanceVariableNames methodObjectInstanceVariables selectorKeywordToVariableName methodObjectInvocationSelector'
+	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract methodVariableNamesToInstanceVariableNames methodObjectInstanceVariables methodObjectInvocationSelector keywordsDefinitions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -2292,13 +2292,13 @@ test05MethodObjectClassNameMustNotExist
 	self creationWithMethodObjectClassName: anExistingClassName 
 		  failsWithMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: anExistingClassName ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:44:32'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:45:17'!
 test06AllVariablesToParametrizeMustHaveACorrespondingMethodObjectInstanceVariableName
 
 	| namesForParametrizedMissingSelf keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName |
 	
 	namesForParametrizedMissingSelf := #() asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'}.
+	keywordToParametrizedVariable := { self keyword: #with varName: 'self' paramName: 'aParameterName'. }.
 	variablesToParametrizeWithoutInstVarName := Set with: 'self'.
 	
 	self 
@@ -2307,7 +2307,7 @@ test06AllVariablesToParametrizeMustHaveACorrespondingMethodObjectInstanceVariabl
 		failsWithMessageText: [ ExtractToMethodObject 
 			variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesToParametrizeWithoutInstVarName].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:45:28'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:47:31'!
 test07AllInstanceVariableNamesMustCorrespondToVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName namesForParametrizedVariables |
@@ -2316,7 +2316,7 @@ test07AllInstanceVariableNamesMustCorrespondToVariableToParametrize
 		'self' -> 'oldSelf'.
 		'inexistentVariableToParametrize' -> 'anInstVarName'
 	} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	variablesToParametrizeWithoutInstVarName := Set with: 'inexistentVariableToParametrize'.
 	
 	self 
@@ -2325,48 +2325,48 @@ test07AllInstanceVariableNamesMustCorrespondToVariableToParametrize
 		failsWithMessageText: [ ExtractToMethodObject 
 			unknownVariablesToParametrizeErrorMessage: variablesToParametrizeWithoutInstVarName].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:46:02'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:48:24'!
 test08MethodObjectInstanceVariableNamesMustNotBeEmpty
 
 	| keywordToParametrizedVariable namesWithEmptyInstanceVariable |
 	
 	namesWithEmptyInstanceVariable := {'self' -> ''.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	self 
 		creationWithExtractedVariablesToInstanceVariables: namesWithEmptyInstanceVariable
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
 		failsWithMessageText: [ NewInstanceVariablePrecondition newVariableCanNotBeEmptyErrorMessage].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:46:35'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:48:44'!
 test09MethodObjectInstanceVariableNamesCanNotContainBlanks
 
 	| keywordToParametrizedVariable namesWithBlanksInstanceVariable anInstVarNameWithBlanks |
 	
 	anInstVarNameWithBlanks := 'an Inst Var Name'.
 	namesWithBlanksInstanceVariable := {'self' -> anInstVarNameWithBlanks.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	self 
 		creationWithExtractedVariablesToInstanceVariables: namesWithBlanksInstanceVariable
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
 		failsWithMessageText: [ NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: anInstVarNameWithBlanks].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:49:55'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:48:54'!
 test10MethodObjectInstanceVariableNamesCanNotContainInvalidCharacters
 
 	| keywordToParametrizedVariable anInstVarNameWithInvalidCharacters namesWithInvalidCharsInstanceVariable |
 	
 	anInstVarNameWithInvalidCharacters := 'anInst2!!!!VarName'.
 	namesWithInvalidCharsInstanceVariable := {'self' -> anInstVarNameWithInvalidCharacters.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	self 
 		creationWithExtractedVariablesToInstanceVariables: namesWithInvalidCharsInstanceVariable
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
 		failsWithMessageText: [ NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: anInstVarNameWithInvalidCharacters].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 16:57:17'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:49:08'!
 test11MethodObjectInstanceVariableNamesCanNotBeDefinedInSuperclasses
 
 	| keywordToParametrizedVariable anInstVarName methodObjectSuperclass namesWithAlreadyDefinedInstanceVariable |
@@ -2376,7 +2376,7 @@ test11MethodObjectInstanceVariableNamesCanNotBeDefinedInSuperclasses
 		createClassNamed: #MethodObjectSuperclass
 		instanceVariableNames: anInstVarName.
 	namesWithAlreadyDefinedInstanceVariable := {'self' -> anInstVarName .} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	self 
 		should: [
@@ -2394,7 +2394,7 @@ test11MethodObjectInstanceVariableNamesCanNotBeDefinedInSuperclasses
 				errorMessageForNewInstanceVariable: anInstVarName
 				alreadyDefinedInAll: {methodObjectSuperclass} ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 17:07:51'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:49:57'!
 test12MethodObjectInstanceVariableNamesCanNotBeDuplicated
 
 	| keywordToParametrizedVariable anInstVarName namesWithDuplicatedInstanceVariable aClassToRefactor aDuplicatedInstVarName aCompiledMethodToRefactor sourceCode |
@@ -2411,7 +2411,9 @@ test12MethodObjectInstanceVariableNamesCanNotBeDuplicated
 	namesWithDuplicatedInstanceVariable := {
 		'self' -> aDuplicatedInstVarName.
 		anInstVarName -> aDuplicatedInstVarName} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'. #andWith -> anInstVarName }.
+	keywordToParametrizedVariable := {
+		self keyword: #with varName: 'self' paramName: 'aParamName'. 
+		self keyword: #andWith varName: anInstVarName paramName: 'aParamName2'.}.
 	
 	self
 		creationFrom: aCompiledMethodToRefactor
@@ -2420,7 +2422,7 @@ test12MethodObjectInstanceVariableNamesCanNotBeDuplicated
 		failsWithMessageText: [
 			ExtractToMethodObject duplicatedInstanceVariablesErrorMessageFor: {aDuplicatedInstVarName} ].	! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 17:08:50'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:50:12'!
 test13MethodObjectInstanceVariableNamesCanNotBeNamedAsMethodTemporal
 
 	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor aTemporalName namesWithSameAsTemporal |
@@ -2438,7 +2440,7 @@ test13MethodObjectInstanceVariableNamesCanNotBeNamedAsMethodTemporal
 	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
 	
 	namesWithSameAsTemporal := {'self' -> aTemporalName.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	self
 		creationFrom: aCompiledMethodToRefactor
@@ -2447,7 +2449,7 @@ test13MethodObjectInstanceVariableNamesCanNotBeNamedAsMethodTemporal
 		failsWithMessageText: [ 
 			ExtractToMethodObject instanceVariableNamesSameAsTemporalsErrorMessageFor: {aTemporalName} ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 17:09:33'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:50:23'!
 test14MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockTemporal
 
 	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor namesWithSameAsTemporal aBlockTemporalName |
@@ -2464,7 +2466,7 @@ test14MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockTemporal
 	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
 	
 	namesWithSameAsTemporal := {'self' -> aBlockTemporalName.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	self
 		creationFrom: aCompiledMethodToRefactor
@@ -2473,7 +2475,7 @@ test14MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockTemporal
 		failsWithMessageText: [ 
 			ExtractToMethodObject instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: {aBlockTemporalName} ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/18/2018 17:10:19'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:50:36'!
 test15MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockArgument
 
 	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor aBlockArgumentName namesWithSameAsArgument |
@@ -2488,7 +2490,7 @@ test15MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockArgument
 	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
 	
 	namesWithSameAsArgument := {'self' -> aBlockArgumentName.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'.}.
 	
 	self
 		creationFrom: aCompiledMethodToRefactor
@@ -2512,13 +2514,15 @@ test16MethodObjectInstanceCreationMessageMustHaveAKeywordForEveryVariableToParam
 		failsWithMessageText: [ 
 			ExtractToMethodObject variablesToParametrizeHaveNoKeywordErrorMessage: #('self') ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 11:14:01'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:51:37'!
 test17MethodObjectInstanceCreationMessageMustHaveOnlyOneKeywordForEveryVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'. #andWith -> 'self'}.
+	keywordToParametrizedVariable := {
+		self keyword: #with varName: 'self' paramName: 'aParamName'.
+		self keyword: #andWith varName: 'self' paramName: 'aParamName2'}.
 	
 	self
 		creationFrom: self compiledMethodReferencingSelf 
@@ -2527,14 +2531,16 @@ test17MethodObjectInstanceCreationMessageMustHaveOnlyOneKeywordForEveryVariableT
 		failsWithMessageText: [ 
 			ExtractToMethodObject variablesToParametrizeHaveMultipleKeywordsErrorMessage: #('self') ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 11:30:12'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:52:26'!
 test18MethodObjectInstanceCreationMessageMustNotHaveKeywordForAnUnknownVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables anUnknownVariableToParametrize |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	anUnknownVariableToParametrize := 'anUnknownVariableToParametrize'.
-	keywordToParametrizedVariable := {#with -> 'self'. #andWith -> anUnknownVariableToParametrize}.
+	keywordToParametrizedVariable := {
+		self keyword: #with varName: 'self' paramName: 'aParamName'.
+		self keyword: #andWith varName: anUnknownVariableToParametrize paramName: 'aParamName2'}.
 	
 	self
 		creationFrom: self compiledMethodReferencingSelf 
@@ -2543,51 +2549,52 @@ test18MethodObjectInstanceCreationMessageMustNotHaveKeywordForAnUnknownVariableT
 		failsWithMessageText: [ 
 			ExtractToMethodObject keywordForUnknownVariablesToParametrizeErrorMessage: {anUnknownVariableToParametrize} ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 15:42:37'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:04:55'!
 test19MethodObjectInstanceCreationMessageKeywordsCanNotHaveInvalidCharacters
 
-	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables keywordWithInvalidCharacters |
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables keywordWithInvalidCharacters |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordWithInvalidCharacters := 'wi(th' asSymbol.
-	keywordToParametrizedVariable := {keywordWithInvalidCharacters -> 'self'.}.
+	keywordsDefinitions := {
+		self keyword: keywordWithInvalidCharacters varName: 'self' paramName: 'aParamName'.}.
 	
 	self
 		creationFrom: self compiledMethodReferencingSelf 
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		withInstanceCreationMessageFrom: keywordsDefinitions
 		failsWithMessageText: [ 
 			ExtractToMethodObject keywordsContainInvalidCharactersErrorMessage: {keywordWithInvalidCharacters} ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 12:50:30'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:06:51'!
 test20MethodObjectInstanceCreationMessageSelectorStartsWithAnInvalidStartOfSelector
 
-	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables keyword |
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables keyword |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keyword := '1with' asSymbol.
-	keywordToParametrizedVariable := {keyword -> 'self'.}.
+	keywordsDefinitions := {self keyword: keyword varName: 'self' paramName: 'aParamName'.}.
 	
 	self
 		creationFrom: self compiledMethodReferencingSelf 
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		withInstanceCreationMessageFrom: keywordsDefinitions
 		failsWithMessageText: [ 
 			ExtractToMethodObject selectorStartsWithInvalidStartOfSelectorCharacterErrorMessage].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 16:12:28'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:07:32'!
 test21MethodObjectInstanceCreationMessageKeywordsCannotBeEmpty
 
-	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables keyword |
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables keyword |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keyword := '' asSymbol.
-	keywordToParametrizedVariable := {keyword -> 'self'.}.
+	keywordsDefinitions := {self keyword: keyword varName: 'self' paramName: 'aParamName'.}.
 	
 	self
 		creationFrom: self compiledMethodReferencingSelf 
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-		withInstanceCreationMessageFrom: keywordToParametrizedVariable
+		withInstanceCreationMessageFrom: keywordsDefinitions
 		failsWithMessageText: [ 
 			ExtractToMethodObject instanceCreationMessageKeywordsCannotBeEmptyErrorMessage ].! !
 
@@ -2663,13 +2670,13 @@ test25CreatesMethodObjectClassInTheChosenCategory
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: self classCategoryOfTestData equals: methodObjectClass category.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:46:02'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:08:47'!
 test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAsVariablesToParametrizeInMethodToExtract
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	refactor := ExtractToMethodObject 
 				from: self compiledMethodReferencingSelf
@@ -2685,13 +2692,13 @@ test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAs
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass class selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 10:56:44'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:13:35'!
 test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeywords
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	refactor := ExtractToMethodObject 
 				from: self compiledMethodReferencingSelf
@@ -2707,13 +2714,13 @@ test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeyword
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass class includesSelector: #with:).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:47:02'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:13:45'!
 test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables newRefactoringSourceCode |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	refactor := ExtractToMethodObject 
 				from: self compiledMethodReferencingSelf
@@ -2727,17 +2734,19 @@ test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 	refactor apply.
 	
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
-	newRefactoringSourceCode := 'with: aThePreviousSelf
-		^self new with: aThePreviousSelf'.
+	newRefactoringSourceCode := 'with: aThePreviousSelf',
+		String newLineString,
+		String tab,
+		'^self new with: aThePreviousSelf'.
 	self assert: newRefactoringSourceCode equals: (methodObjectClass class compiledMethodAt: #with:) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:56:19'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:13:55'!
 test29MethodObjectInitializationMessageReceivesTheSameNumberOfArgumentsAsVariablesToParametrizeInMethodToExtract
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	refactor := ExtractToMethodObject 
 				from: self compiledMethodReferencingSelf
@@ -2753,13 +2762,13 @@ test29MethodObjectInitializationMessageReceivesTheSameNumberOfArgumentsAsVariabl
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 10:56:16'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:14:16'!
 test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywords
 
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	refactor := ExtractToMethodObject 
 				from: self compiledMethodReferencingSelf
@@ -2767,7 +2776,7 @@ test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywords
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -2775,13 +2784,13 @@ test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywords
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass includesSelector: #with:).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/8/2019 15:57:07'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:14:37'!
 test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables intializationSourceCode |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables intializationSourceCode |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	refactor := ExtractToMethodObject 
 				from: self compiledMethodReferencingSelf
@@ -2789,7 +2798,7 @@ test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -2799,13 +2808,13 @@ test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 		thePreviousSelf := aThePreviousSelf.'.
 	self assert: intializationSourceCode equals: (methodObjectClass compiledMethodAt: #with:) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 10:57:34'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:14:51'!
 test32MethodObjectEvaluationMessageHasTheChosenSelector
 
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables customEvaluationSelector |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables customEvaluationSelector |
 	
 	variablesToParametrizeToInstanceVariables := #() asDictionary.
-	keywordToParametrizedVariable := #().
+	keywordsDefinitions := #().
 	customEvaluationSelector := #aCustomEvaluationSelector.
 	
 	refactor := ExtractToMethodObject 
@@ -2814,7 +2823,7 @@ test32MethodObjectEvaluationMessageHasTheChosenSelector
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: customEvaluationSelector.
 	
 	refactor apply.
@@ -2822,16 +2831,15 @@ test32MethodObjectEvaluationMessageHasTheChosenSelector
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass includesSelector: customEvaluationSelector).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 11:59:28'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:15:13'!
 test33MethodObjectEvaluationMethodSourceCodeHasTheSameFormatAsTheExtractedMethod
 
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
-	methodToRefactorSourceCode := 'm1
-		self isNil.'.
+	methodToRefactorSourceCode := 'm1', String newLineString, String tab, 'self isNil.'.
 	compiledMethodToRefactor := self compiledMethodFrom: methodToRefactorSourceCode.
 	
 	refactor := ExtractToMethodObject 
@@ -2840,23 +2848,22 @@ test33MethodObjectEvaluationMethodSourceCodeHasTheSameFormatAsTheExtractedMethod
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
 
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
-	evaluationSourceCode := self defaultEvaluationSelector asString, '
-		thePreviousSelf isNil.'.
+	evaluationSourceCode := self defaultEvaluationSelector asString, String newLineString, String tab, 'thePreviousSelf isNil.'.
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 12:09:15'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:15:41'!
 test34MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfSelf
 
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToExtractSourceCode |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToExtractSourceCode |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	methodToExtractSourceCode := 'm1
 		self isNil.'.
@@ -2868,7 +2875,7 @@ test34MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -2878,15 +2885,15 @@ test34MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 		thePreviousSelf isNil.'.
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 13:52:09'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:16:10'!
 test35MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorInstanceVariable
 
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode anInstVar correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode anInstVar correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass |
 	
 	anInstVar := 'anInstVar'.
 	correspondingInstVar := 'aCorrespondingInstVar'.
 	variablesToParametrizeToInstanceVariables := {anInstVar -> correspondingInstVar.} asDictionary.
-	keywordToParametrizedVariable := {#with -> anInstVar.}.
+	keywordsDefinitions := {self keyword: #with varName: anInstVar paramName: 'aParamName'}.
 	
 	aClass := self createClassNamed: #AClass instanceVariableNames: anInstVar.
 	methodToRefactorSourceCode := 'm1
@@ -2900,7 +2907,7 @@ test35MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -2910,13 +2917,13 @@ test35MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 		', correspondingInstVar, ' isNil.'.
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 13:55:44'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:16:40'!
 test36MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfExtractedMethodArgument
 
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
 	
 	variablesToParametrizeToInstanceVariables := {'anArg' -> 'anArgReplacement'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'anArg'.}.
+	keywordsDefinitions := {self keyword: #with varName: 'anArg' paramName: 'aParamName'}.
 	
 	methodToRefactorSourceCode := 'm1: anArg
 		anArg isNil.'.
@@ -2928,7 +2935,7 @@ test36MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -2938,15 +2945,15 @@ test36MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 		anArgReplacement isNil.'.
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/1/2019 11:33:34'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:19:21'!
 test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorPoolVariable
 
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass aPool aPoolVar |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass aPool aPoolVar |
 	
 	aPoolVar := 'APoolVar'.
 	correspondingInstVar := 'aCorrespondingInstVar'.
 	variablesToParametrizeToInstanceVariables := {aPoolVar -> correspondingInstVar.} asDictionary.
-	keywordToParametrizedVariable := {#with -> aPoolVar.}.
+	keywordsDefinitions := {self keyword: #with varName: aPoolVar paramName: 'aParamName'}.
 	
 	aPool := self
 		createClassNamed: #APool
@@ -2974,7 +2981,7 @@ test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -2984,13 +2991,13 @@ test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 		', correspondingInstVar, ' isNil.'.
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 14:43:44'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:19:41'!
 test38MethodObjectEvaluationMethodSourceCodeCommentsReferencingParametrizedVariableAreNotReplaced
 
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'.}.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	methodToRefactorSourceCode := 'm1
 		"A comment talking about self"
@@ -3003,7 +3010,7 @@ test38MethodObjectEvaluationMethodSourceCodeCommentsReferencingParametrizedVaria
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -3014,14 +3021,14 @@ test38MethodObjectEvaluationMethodSourceCodeCommentsReferencingParametrizedVaria
 		thePreviousSelf isNil.'.
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 16:30:24'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:20:13'!
 test39MethodObjectEvaluationMethodSourceCodePreservesBlockArgumentsShadowing
 	
 	self shouldFail: [
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode aClass |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode aClass |
 	
 	variablesToParametrizeToInstanceVariables := {'anInstVar' -> 'correspondingToAnInstVar'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'anInstVar'.}.
+	keywordsDefinitions := {self keyword: #with varName: 'anInstVar' paramName: 'aParamName'}.
 	
 	aClass := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
 	methodToRefactorSourceCode := 'm1
@@ -3037,7 +3044,7 @@ test39MethodObjectEvaluationMethodSourceCodePreservesBlockArgumentsShadowing
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -3049,14 +3056,14 @@ test39MethodObjectEvaluationMethodSourceCodePreservesBlockArgumentsShadowing
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.
 	]! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 16:30:35'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:20:52'!
 test40MethodObjectEvaluationMethodSourceCodePreservesBlockTemporalsShadowing
 	
 	self shouldFail: [
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode aClass |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode aClass |
 	
 	variablesToParametrizeToInstanceVariables := {'anInstVar' -> 'correspondingToAnInstVar'.} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'anInstVar'.}.
+	keywordsDefinitions := {self keyword: #with varName: 'anInstVar' paramName: 'aParamName'}.
 	
 	aClass := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
 	methodToRefactorSourceCode := 'm1
@@ -3072,7 +3079,7 @@ test40MethodObjectEvaluationMethodSourceCodePreservesBlockTemporalsShadowing
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -3084,13 +3091,13 @@ test40MethodObjectEvaluationMethodSourceCodePreservesBlockTemporalsShadowing
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.
 	]! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 16:25:49'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:21:04'!
 test41RefactoredMethodUnarySelectorIsPreserved
 	
-	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass |
+	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
 	
 	variablesToParametrizeToInstanceVariables := #() asDictionary.
-	keywordToParametrizedVariable := #().
+	keywordsDefinitions := #().
 	
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1'.
@@ -3100,7 +3107,7 @@ test41RefactoredMethodUnarySelectorIsPreserved
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -3108,13 +3115,13 @@ test41RefactoredMethodUnarySelectorIsPreserved
 	self assert: 1 equals: aClass selectors size.
 	self assert: (aClass includesSelector: #m1).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 18:33:51'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:21:38'!
 test42RefactoredMethodBinarySelectorIsPreserved
 	
-	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass |
+	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
 	
 	variablesToParametrizeToInstanceVariables := {'anArg' -> 'correspondingInstVar'.}  asDictionary.
-	keywordToParametrizedVariable := {#with -> 'anArg'}.
+	keywordsDefinitions := {self keyword: #with varName: 'anArg' paramName: 'aParamName'}.
 	
 	aClass := self createClassNamed: #AClass.
 	aClass compile: '!!@ anArg ^anArg.'.
@@ -3124,7 +3131,7 @@ test42RefactoredMethodBinarySelectorIsPreserved
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -3133,13 +3140,13 @@ test42RefactoredMethodBinarySelectorIsPreserved
 	self assert: (aClass includesSelector: #!!@).
 	self assert: 'anArg' equals: (aClass compiledMethodAt: #!!@) methodNode arguments first name.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/14/2019 18:36:55'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:22:07'!
 test43RefactoredMethodKeywordSelectorIsPreserved
 	
-	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass |
+	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
 	
 	variablesToParametrizeToInstanceVariables := {'anArg' -> 'correspondingInstVar'.}  asDictionary.
-	keywordToParametrizedVariable := {#with -> 'anArg'}.
+	keywordsDefinitions := {self keyword: #with varName: 'anArg' paramName: 'aParamName'}.
 	
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1: anArg ^anArg.'.
@@ -3149,7 +3156,7 @@ test43RefactoredMethodKeywordSelectorIsPreserved
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -3158,13 +3165,13 @@ test43RefactoredMethodKeywordSelectorIsPreserved
 	self assert: (aClass includesSelector: #m1:).
 	self assert: 'anArg' equals: (aClass compiledMethodAt: #m1:) methodNode arguments first name.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/15/2019 11:09:33'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:22:23'!
 test44WhenBinaryMethodIsRefactoredArgumentNameIsPreserved
 	
-	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass |
+	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
 	
 	variablesToParametrizeToInstanceVariables := {'anArg' -> 'correspondingInstVar'.}  asDictionary.
-	keywordToParametrizedVariable := {#with -> 'anArg'}.
+	keywordsDefinitions := {self keyword: #with varName: 'anArg' paramName: 'aParamName'}.
 	
 	aClass := self createClassNamed: #AClass.
 	aClass compile: '!!@ anArg ^anArg.'.
@@ -3174,20 +3181,20 @@ test44WhenBinaryMethodIsRefactoredArgumentNameIsPreserved
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
 
 	self assert: 'anArg' equals: (aClass compiledMethodAt: #!!@) methodNode arguments first name.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/15/2019 11:09:55'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:22:40'!
 test45WhenKeywordsMethodIsRefactoredArgumentNamesArePreserved
 	
-	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass |
+	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
 	
 	variablesToParametrizeToInstanceVariables := {'anArg' -> 'correspondingInstVar'.}  asDictionary.
-	keywordToParametrizedVariable := {#with -> 'anArg'}.
+	keywordsDefinitions := {self keyword: #with varName: 'anArg' paramName: 'aParamName'}.
 	
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1: anArg ^anArg.'.
@@ -3197,20 +3204,20 @@ test45WhenKeywordsMethodIsRefactoredArgumentNamesArePreserved
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
 
 	self assert: 'anArg' equals: (aClass compiledMethodAt: #m1:) methodNode arguments first name.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 13:31:39'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:22:52'!
 test46WhenThereAreNoVariablesToParametrizeTheRefactoredMethodUsesTheNewMessageToCreateTheMethodObjectInstance
 	
-	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
+	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
 	
 	variablesToParametrizeToInstanceVariables := #()  asDictionary.
-	keywordToParametrizedVariable := #().
+	keywordsDefinitions := #().
 
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1'.	
@@ -3220,24 +3227,26 @@ test46WhenThereAreNoVariablesToParametrizeTheRefactoredMethodUsesTheNewMessageTo
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
 
-	expectedRefactoredSourceCode := 'm1
-		(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
+	expectedRefactoredSourceCode := 'm1',
+		String newLineString,
+		String tab, 
+		'(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
 	self 
 		assert: expectedRefactoredSourceCode 
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/15/2019 11:21:21'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:23:24'!
 test47WhenThereAreVariablesToParametrizeTheRefactoredMethodUsesTheChosenMessageToCreateTheMethodObjectInstance
 	
-	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
+	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
 	
 	variablesToParametrizeToInstanceVariables := {'self' -> 'correspondingInstVar'.}  asDictionary.
-	keywordToParametrizedVariable := {#with -> 'self'}.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1 ^self isNil'.	
@@ -3247,29 +3256,31 @@ test47WhenThereAreVariablesToParametrizeTheRefactoredMethodUsesTheChosenMessageT
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
 
-	expectedRefactoredSourceCode := 'm1
-		^(', self methodObjectClassName, ' with: self) ', self defaultEvaluationSelector.
+	expectedRefactoredSourceCode := 'm1',
+		String newLineString,
+		String tab, 
+		'^(', self methodObjectClassName, ' with: self) ', self defaultEvaluationSelector.
 	self 
 		assert: expectedRefactoredSourceCode 
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/15/2019 11:30:25'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:24:01'!
 test48WhenThereAreMultipleVariablesToParametrizeTheRefactoredMethodPassesTheVariablesInTheChosenOrderToTheMessageToCreateTheMethodObjectInstance
 	
-	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
+	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
 	
 	variablesToParametrizeToInstanceVariables := {
 		'self' -> 'selfCorrespondingInstVar'.
 		'anArg' -> 'anArgCorrespondingInstVar'.
 	}  asDictionary.
-	keywordToParametrizedVariable := {
-		#with -> 'anArg'.
-		#andWith -> 'self'.
+	keywordsDefinitions := {
+		self keyword: #with varName: 'anArg' paramName: 'aParamName'.
+		self keyword: #andWith varName: 'self' paramName: 'aParamName'
 	}.
 	
 	aClass := self createClassNamed: #AClass.
@@ -3280,24 +3291,26 @@ test48WhenThereAreMultipleVariablesToParametrizeTheRefactoredMethodPassesTheVari
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
 
-	expectedRefactoredSourceCode := 'm1: anArg
-		^(', self methodObjectClassName, ' with: anArg andWith: self) ', self defaultEvaluationSelector.
+	expectedRefactoredSourceCode := 'm1: anArg',
+		String newLineString,
+		String tab, 
+		'^(', self methodObjectClassName, ' with: anArg andWith: self) ', self defaultEvaluationSelector.
 	self 
 		assert: expectedRefactoredSourceCode 
 		equals: (aClass compiledMethodAt: #m1:) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 13:30:44'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:24:19'!
 test49TheRefactoredMethodUsesTheChosenEvaluationSelectorToEvaluateTheMethodObjectInstance
 	
-	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
+	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
 	
 	variablesToParametrizeToInstanceVariables := #() asDictionary.
-	keywordToParametrizedVariable := #().
+	keywordsDefinitions := #().
 	
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1'.	
@@ -3307,24 +3320,26 @@ test49TheRefactoredMethodUsesTheChosenEvaluationSelectorToEvaluateTheMethodObjec
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
 
-	expectedRefactoredSourceCode := 'm1
-		(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
+	expectedRefactoredSourceCode := 'm1',
+		String newLineString,
+		String tab, 
+		'(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
 	self 
 		assert: expectedRefactoredSourceCode 
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 17:57:51'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:24:33'!
 test50TheRefactoredMethodPreservesTheImplicitReturn
 	
-	| refactor keywordToParametrizedVariable variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
+	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
 	
 	variablesToParametrizeToInstanceVariables := #() asDictionary.
-	keywordToParametrizedVariable := #().
+	keywordsDefinitions := #().
 	
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1
@@ -3337,24 +3352,26 @@ test50TheRefactoredMethodPreservesTheImplicitReturn
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
 
-	expectedRefactoredSourceCode := 'm1
-		(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
+	expectedRefactoredSourceCode := 'm1',
+		String newLineString,
+		String tab, 
+		'(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
 	self 
 		assert: expectedRefactoredSourceCode 
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 18:13:06'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:24:57'!
 test51TheMethodToExtractMustNotReferenceSuper
 	
-	| keywordToParametrizedVariable variablesToParametrizeToInstVars aClass |
+	| keywordsDefinitions variablesToParametrizeToInstVars aClass |
 	
 	variablesToParametrizeToInstVars := #().
-	keywordToParametrizedVariable := #().
+	keywordsDefinitions := #().
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1 ^super isNil'.
 	
@@ -3366,18 +3383,18 @@ test51TheMethodToExtractMustNotReferenceSuper
 				subclassing: self methodObjectSuperclass 
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstVars
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector]
 		raise: RefactoringError
 		withMessageText: [ ExtractToMethodObject methodCanNotReferenceSuperErrorMessage ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 20:01:13'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:25:34'!
 test52TheMethodToExtractMustNotContainInstVarAssignments
 	
-	| keywordToParametrizedVariable variablesToParametrizeToInstVars aClass |
+	| keywordsDefinitions variablesToParametrizeToInstVars aClass |
 	
 	variablesToParametrizeToInstVars := {'anInstVar' -> 'correspondingInstVar'} asDictionary.
-	keywordToParametrizedVariable := {#with -> 'anInstVar' }.
+	keywordsDefinitions := {self keyword: #with varName: 'anInstVar' paramName: 'aParamName'}.
 	aClass := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
 	aClass compile: 'm1
 		anInstVar := 2.'.
@@ -3390,19 +3407,19 @@ test52TheMethodToExtractMustNotContainInstVarAssignments
 				subclassing: self methodObjectSuperclass 
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstVars
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector]
 		raise: RefactoringError
 		withMessageText: [ ExtractToMethodObject methodCannotContainInstVarAssignmentsErrorMessage ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/31/2019 20:09:19'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:26:10'!
 test53TheMethodToExtractMustNotContainClassVarAssignments
 	
-	| keywordToParametrizedVariable variablesToParametrizeToInstVars aClass classVarName |
+	| keywordsDefinitions variablesToParametrizeToInstVars aClass classVarName |
 	
 	classVarName := 'AClassVar'.
 	variablesToParametrizeToInstVars := {classVarName -> 'correspondingInstVar'} asDictionary.
-	keywordToParametrizedVariable := {#with -> classVarName}.
+	keywordsDefinitions := {self keyword: #with varName: classVarName paramName: 'aParamName'}.
 	aClass := self 
 		createClassNamed: #AClass
 		subclassOf: Object
@@ -3422,20 +3439,20 @@ test53TheMethodToExtractMustNotContainClassVarAssignments
 				subclassing: self methodObjectSuperclass 
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstVars
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector]
 		raise: RefactoringError
 		withMessageText: [ ExtractToMethodObject methodCannotContainClassVarAssignmentsErrorMessage ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/1/2019 11:38:22'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:26:40'!
 test54TheMethodToExtractMustNotContainPoolVarAssignments
 	
-	| keywordToParametrizedVariable aClass aPool aPoolVar compiledMethodToRefactor correspondingInstVar methodToRefactorSourceCode variablesToParametrizeToInstanceVariables |
+	| keywordsDefinitions aClass aPool aPoolVar compiledMethodToRefactor correspondingInstVar methodToRefactorSourceCode variablesToParametrizeToInstanceVariables |
 	
 	aPoolVar := 'APoolVar'.
 	correspondingInstVar := 'aCorrespondingInstVar'.
 	variablesToParametrizeToInstanceVariables := {aPoolVar -> correspondingInstVar.} asDictionary.
-	keywordToParametrizedVariable := {#with -> aPoolVar.}.
+	keywordsDefinitions := {self keyword: #with varName: aPoolVar paramName: 'aParamName'}.
 	
 	aPool := self
 		createClassNamed: #APool
@@ -3466,20 +3483,20 @@ test54TheMethodToExtractMustNotContainPoolVarAssignments
 				subclassing: self methodObjectSuperclass 
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector]
 		raise: RefactoringError
 		withMessageText: [ ExtractToMethodObject methodCannotContainPoolVarAssignmentsErrorMessage ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/1/2019 11:36:20'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:27:08'!
 test55MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorClassVariable
 
-	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables evaluationSourceCode correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass aClassVar |
+	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass aClassVar |
 	
 	aClassVar := 'AClassVar'.
 	correspondingInstVar := 'aCorrespondingInstVar'.
 	variablesToParametrizeToInstanceVariables := {aClassVar -> correspondingInstVar.} asDictionary.
-	keywordToParametrizedVariable := {#with -> aClassVar.}.
+	keywordsDefinitions := {self keyword: #with varName: aClassVar paramName: 'aParamName'}.
 	
 	aClass := self
 		createClassNamed: #AClass
@@ -3499,7 +3516,7 @@ test55MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-				withInstanceCreationMessageFrom: keywordToParametrizedVariable
+				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
 	
 	refactor apply.
@@ -3508,6 +3525,121 @@ test55MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 	evaluationSourceCode := self defaultEvaluationSelector asString, '
 		', correspondingInstVar, ' isNil.'.
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 16:20:08'!
+test56MethodObjectInstanceCreationMessageParameterNamesMustNotRepeat
+
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables aClassToRefactor |
+	
+	variablesToParametrizeToInstanceVariables := {
+		'self' -> 'thePreviousSelf'.
+		'anInstVar' -> 'theInstVar'} asDictionary.
+	keywordsDefinitions := {
+		self keyword: #with varName: 'self' paramName: 'aParamName'.
+		self keyword: #with varName: 'anInstVar' paramName: 'aParamName'}.
+	
+	aClassToRefactor := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
+	aClassToRefactor compile: 'm1 self = anInstVar ifTrue: [^1] ifFalse: [^2]'.
+	
+	self
+		creationFrom: (aClassToRefactor compiledMethodAt: #m1)
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordsDefinitions
+		failsWithMessageText: [ 
+			ExtractToMethodObject instanceCreationMessageParameterNamesAreDuplicated: #('aParamName') ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 14:30:06'!
+test57MethodObjectInstanceCreationMessageParameterNamesMustNotBeEmpty
+
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'} asDictionary.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: ''.}.
+	
+	self
+		creationFrom: self compiledMethodReferencingSelf
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordsDefinitions
+		failsWithMessageText: [ 
+			ExtractToMethodObject invalidParameterNamesErrorMessage: #('') ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 14:35:05'!
+test58MethodObjectInstanceCreationMessageParameterNamesMustNotContainSeparators
+
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables aParameterName |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'} asDictionary.
+	aParameterName := 'a Parameter Name'.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: aParameterName.}.
+	
+	self
+		creationFrom: self compiledMethodReferencingSelf
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordsDefinitions
+		failsWithMessageText: [ 
+			ExtractToMethodObject invalidParameterNamesErrorMessage: (Array with: aParameterName) ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 14:36:08'!
+test59MethodObjectInstanceCreationMessageParameterNamesMustNotContainInvalidCharacters
+
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables aParameterName |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'} asDictionary.
+	aParameterName := 'a(Parameter!!Name'.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: aParameterName.}.
+	
+	self
+		creationFrom: self compiledMethodReferencingSelf
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordsDefinitions
+		failsWithMessageText: [ 
+			ExtractToMethodObject invalidParameterNamesErrorMessage: (Array with: aParameterName) ].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 14:48:32'!
+test60MethodObjectInstanceCreationMessageParameterNamesMustNotBeEqualToAMethodObjectInstanceVariable
+
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables aClassToRefactor |
+	
+	variablesToParametrizeToInstanceVariables := {
+		'self' -> 'thePreviousSelf'.
+		'anInstVar' -> 'theInstVar'} asDictionary.
+	keywordsDefinitions := {
+		self keyword: #with varName: 'self' paramName: 'theInstVar'.
+		self keyword: #with varName: 'anInstVar' paramName: 'aParamName'}.
+	
+	aClassToRefactor := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
+	aClassToRefactor compile: 'm1 self = anInstVar ifTrue: [^1] ifFalse: [^2]'.
+	
+	self
+		creationFrom: (aClassToRefactor compiledMethodAt: #m1)
+		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+		withInstanceCreationMessageFrom: keywordsDefinitions
+		failsWithMessageText: [ 
+			ExtractToMethodObject parameterNamesOverlapWithInstanceVariableNamesErrorMessage: #('theInstVar')].! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 15:01:31'!
+test61MethodObjectClassInstanceCreationMessageParameterNamesAreTheChosenOnes
+
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor methodObjectClass instanceCreationMethod |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
+	
+	refactor := ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordsDefinitions
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObjectClass := (Smalltalk classNamed: self methodObjectClassName) class.
+	instanceCreationMethod := methodObjectClass compiledMethodAt: #with:.
+	
+	self assert: 'aParamName' equals: instanceCreationMethod methodNode arguments first name.! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/15/2018 16:06:36'!
 allClassCategoriesOfTestData
@@ -3586,6 +3718,15 @@ sourceCodeBodyOfMethodReferencingSelf
 
 	^'
 		self isNil.'! !
+
+!ExtractToMethodObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 14:46:39'!
+keyword: aKeyword varName: aVariableName paramName: aParameterName
+
+	^{ 
+		#keyword -> aKeyword.
+		#variableName -> aVariableName .
+		#parameterName -> aParameterName
+	} asDictionary! !
 
 !ExtractToTemporaryTest methodsFor: 'as yet unclassified' stamp: 'HAW 6/26/2017 16:08:30'!
 allClassCategoriesOfTestData
@@ -8040,29 +8181,25 @@ compileExtractedMethodAsEvaluationMethodOn: aClass
 	sourceCodeWithSelectorReplaced := sourceCodeWithVariablesReplaced copyReplacing: { Interval from: 1 to: endHeaderIndex. } with: methodObjectInvocationSelector asString. 
 	aClass compile: sourceCodeWithSelectorReplaced.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/8/2019 16:04:54'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 2/17/2019 15:10:57'!
 compileInstanceCreationMethodInto: aClass
 
 	| methodTitle methodBody keywordsWithParam instVarAssignments |
 	
 	methodObjectInstanceVariables isEmpty ifTrue: [^true].
 	
-	keywordsWithParam := selectorKeywordToVariableName collect: [
-		:keywordToVarName |
-		| instVarName | 
-		instVarName := methodVariableNamesToInstanceVariableNames at: keywordToVarName value. 
-		keywordToVarName key, ': a', instVarName capitalized].
+	keywordsWithParam := keywordsDefinitions collect: [
+		:keywordDefinition | 
+		(keywordDefinition at: #keyword), ': ', (keywordDefinition at: #parameterName)].
 	methodTitle := ' ' join: keywordsWithParam.
 	
 	instVarAssignments := methodObjectInstanceVariables collect: [
 		:instVarName |
-		Character tab asString, instVarName, ' := a', instVarName capitalized, '.'].
-	methodBody := Character newLineCharacter asString join: instVarAssignments.
+		String tab, instVarName, ' := ', (self parameterNameForInstVarName: instVarName), '.'].
+	methodBody := String newLineString join: instVarAssignments.
 	
-	aClass compile: methodTitle, '
-	', methodBody.
-	aClass class compile: methodTitle, '
-		^self new ', methodTitle.
+	aClass compile: methodTitle, String newLineString, String tab, methodBody.
+	aClass class compile: methodTitle, String newLineString, String tab, '^self new ', methodTitle.
 	
 	^true.! !
 
@@ -8107,35 +8244,51 @@ onlyReturnsSelf: aMethodNode
 	
 	^true.! !
 
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 2/17/2019 15:26:45'!
+parameterNameForInstVarName: instVarName
+
+	| variableName keywordDefinitionForVariableName |
+	
+	variableName := methodVariableNamesToInstanceVariableNames keyAtValue: instVarName.
+	
+	keywordDefinitionForVariableName := keywordsDefinitions detect: [
+		:keywordDefinition |
+		(keywordDefinition at: #variableName) = variableName].
+	
+	^keywordDefinitionForVariableName at: #parameterName! !
+
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 14:56:23'!
 removeBlockEnclosingCharacters: aBlockSourceCode
 
 	^(aBlockSourceCode withoutPrefix: '[') withoutSuffix: ']'.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/31/2019 13:30:13'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 15:12:45'!
 replaceExtractedMethodWithMethodObjectEvaluation
 
 	| classToRefactor constructorMessage methodToExtractHeader refactoredSourceCode optionalReturn |
 	
 	classToRefactor := methodToExtract methodClass.
 	constructorMessage := 'new'.
-	methodObjectInstanceVariables isEmpty
-		ifFalse: [
-			| keywordsWithVarNames |
-			keywordsWithVarNames := selectorKeywordToVariableName 
-				collect: [:keywordToVarName | keywordToVarName key, ': ', keywordToVarName value].
-			constructorMessage := ' ' join: keywordsWithVarNames.].
+	methodObjectInstanceVariables isEmpty ifFalse: [
+		| keywordsWithVarNames |
+		keywordsWithVarNames := keywordsDefinitions collect: [
+			:keywordDefinition |
+			(keywordDefinition at: #keyword), ': ', (keywordDefinition at: #variableName)].
+		constructorMessage := ' ' join: keywordsWithVarNames.].
 	
 	methodToExtractHeader := self methodHeaderFrom: methodToExtract.
 	optionalReturn := (self onlyReturnsSelf: methodToExtract methodNode)
 		ifTrue: ['']
 		ifFalse: ['^'].
-	refactoredSourceCode := methodToExtractHeader, '
-		', optionalReturn, '(',methodObjectClassName, ' ', constructorMessage, ') ', methodObjectInvocationSelector asString.
+	refactoredSourceCode := methodToExtractHeader, 
+		String newLineString,
+		String tab,
+		optionalReturn, 
+		'(',methodObjectClassName, ' ', constructorMessage, ') ', methodObjectInvocationSelector asString.
 		
 	classToRefactor compile: refactoredSourceCode.! !
 
-!ExtractToMethodObject methodsFor: 'initialization' stamp: 'FGJ 12/15/2018 16:17:56'!
+!ExtractToMethodObject methodsFor: 'initialization' stamp: 'FGJ 2/16/2019 15:10:03'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
@@ -8149,7 +8302,7 @@ evaluatedWith: anInvocationSelector
 	methodObjectSuperclass := aClass.
 	methodObjectCategory := aCategory.
 	methodVariableNamesToInstanceVariableNames := variablesToInstanceVariables.
-	selectorKeywordToVariableName := keywordsToVariables.
+	keywordsDefinitions := keywordsToVariables.
 	methodObjectInstanceVariables := variablesToInstanceVariables values.
 	methodObjectInvocationSelector := anInvocationSelector.
 ! !
@@ -8177,12 +8330,12 @@ haveACorrespondingVariableToParametrizeFrom: aCompiledMethod
 			self signaUnknownlVariablesToParametrize: unknownVariableToParametrize.]
 	! !
 
-!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/19/2018 11:38:26'!
-assertAllKeywords: keywordsToVariablesToParametrize 
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 2/16/2019 14:59:07'!
+assertAllKeywords: keywordsDefinitions 
 correspondToAVariableToParametrize: variablesToParametrize
 
 	| unknownVariablesWithKeyword variablesWithKeyword |
-	variablesWithKeyword := keywordsToVariablesToParametrize collect: [:keywordToVar | keywordToVar value].
+	variablesWithKeyword := keywordsDefinitions collect: [:keywordDefinition | keywordDefinition at: #variableName].
 	unknownVariablesWithKeyword := variablesWithKeyword difference: variablesToParametrize.
 	
 	unknownVariablesWithKeyword
@@ -8190,13 +8343,13 @@ correspondToAVariableToParametrize: variablesToParametrize
 		ifFalse: [
 			self signalUnknownVariablesWithKeyword: unknownVariablesWithKeyword].! !
 
-!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/19/2018 11:26:51'!
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 2/16/2019 15:03:19'!
 assertAllVariablesToParametrize: variablesToParametrize
-haveOneCorrespondingKeyword: keywordsToVariablesToParametrize
+haveOneCorrespondingKeyword: keywordsDefinitions
 
 	| variablesToParametrizeWithKeyword variablesToParametrizeWithoutKeyword variablesWithMultipleKeywords |
 	
-	variablesToParametrizeWithKeyword := keywordsToVariablesToParametrize collect: [:keywordToVar | keywordToVar value].
+	variablesToParametrizeWithKeyword := keywordsDefinitions collect: [:keywordDefinition | keywordDefinition at: #variableName].
 	variablesToParametrizeWithoutKeyword := variablesToParametrize difference: variablesToParametrizeWithKeyword.
 	
 	variablesToParametrizeWithoutKeyword
@@ -8315,6 +8468,41 @@ assertNoDuplicatedInstanceVariableNames: names
 		isEmpty
 		ifFalse: [ self signalDuplicateInstanceVariableNames: duplicateNames asSet ].! !
 
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 2/17/2019 14:45:44'!
+assertParameterNames: parameterNames
+doNotOverlapWithMethodObjectInstanceVariableNames: instanceVariableNames
+
+	| overlappingParameterNames |
+	
+	overlappingParameterNames := parameterNames intersection: instanceVariableNames.
+	
+	overlappingParameterNames ifNotEmpty: [
+		self signalParameterNamesOverlapWithInstanceVariableNames: overlappingParameterNames].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 2/16/2019 16:43:18'!
+assertParameterNamesAreNotDuplicated: parameterNames
+
+	| duplicatedParameterNames |
+	
+	duplicatedParameterNames := parameterNames select: [
+		:aName |
+		(parameterNames occurrencesOf: aName) > 1].
+	
+	duplicatedParameterNames 
+		isEmpty
+		ifFalse: [ self signalDuplicateParameterNames: duplicatedParameterNames asSet ].! !
+
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 2/17/2019 14:25:31'!
+assertParameterNamesAreValid: parameterNames
+
+	| invalidParameterNames |
+	
+	invalidParameterNames := parameterNames select: [
+		:aParameterName |
+		self isInvalidParameterName: aParameterName].
+		
+	invalidParameterNames size > 0 ifTrue: [self signalInvalidParameterNames: invalidParameterNames].! !
+
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/21/2018 16:01:40'!
 assertSelectorFromKeywordsStartsWithValidStartOfSelector: instanceCreationMessageKeywords
 
@@ -8348,16 +8536,16 @@ evaluatedWith: anEvaluationSelector
 		evaluatedWith: anEvaluationSelector
 ! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 2/1/2019 11:39:26'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 2/17/2019 14:41:00'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
 onCategory: aCategory
 withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-withInstanceCreationMessageFrom: keywordsToVariablesToParametrize
+withInstanceCreationMessageFrom: keywordsDefinitions
 evaluatedWith: anInvocationSelector
 	
-	| instanceVariableNames instanceCreationMessageKeywords |
+	| instanceVariableNames instanceCreationMessageKeywords parameterNames |
 	
 	self assertMethodObjectSuperclassIsNotMeta: aClass.
 	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
@@ -8368,6 +8556,7 @@ evaluatedWith: anInvocationSelector
      self assertMethodDoesNotContainClassVarAssignments: aCompiledMethod.
 	self assertMethodDoesNotContainPoolVarAssignments: aCompiledMethod.
 	
+	"Instance variable names assertions"
 	self 
 		assertAllVariablesToParametrizeFrom: aCompiledMethod
 		haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariables.
@@ -8386,19 +8575,29 @@ evaluatedWith: anInvocationSelector
 	self
 		assertInstanceVariableNamesFrom: variablesToParametrizeToInstanceVariables
 		areNotShadowedByBlockArgumentsOrTemporariesOf: aCompiledMethod.
+	
+	"Keywords assertions"
 	self 
 		assertAllVariablesToParametrize: variablesToParametrizeToInstanceVariables keys
-		haveOneCorrespondingKeyword: keywordsToVariablesToParametrize.
+		haveOneCorrespondingKeyword: keywordsDefinitions.
 	self
-		assertAllKeywords: keywordsToVariablesToParametrize 
+		assertAllKeywords: keywordsDefinitions 
 		correspondToAVariableToParametrize: variablesToParametrizeToInstanceVariables keys.
 	
-	instanceCreationMessageKeywords := keywordsToVariablesToParametrize collect: [
-		:keywordToVar |
-		keywordToVar key].
+	instanceCreationMessageKeywords := keywordsDefinitions collect: [
+		:keywordDefinition |
+		keywordDefinition at: #keyword].
 	self assertKeywordsHaveNoInvalidCharacters: instanceCreationMessageKeywords.
 	self assertKeywordsAreNotEmpty: instanceCreationMessageKeywords.
 	self assertSelectorFromKeywordsStartsWithValidStartOfSelector: instanceCreationMessageKeywords.
+	
+	"Instance creation message parameters assertions"
+	parameterNames := keywordsDefinitions collect: [
+		:aKeywordDefinition |
+		aKeywordDefinition at: #parameterName].
+	self assertParameterNamesAreNotDuplicated: keywordsDefinitions.
+	self assertParameterNamesAreValid: parameterNames.
+	self assertParameterNames: parameterNames doNotOverlapWithMethodObjectInstanceVariableNames: instanceVariableNames. 
 	
 	^self new 
 		from: aCompiledMethod
@@ -8406,7 +8605,7 @@ evaluatedWith: anInvocationSelector
 		subclassing: aClass
 		onCategory: aCategory
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
-		withInstanceCreationMessageFrom: keywordsToVariablesToParametrize
+		withInstanceCreationMessageFrom: keywordsDefinitions
 		evaluatedWith: anInvocationSelector
 ! !
 
@@ -8420,6 +8619,12 @@ instanceCreationMessageKeywordsCannotBeEmptyErrorMessage
 
 	^'Method Object instance creation message keywords cannot be empty'! !
 
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 2/16/2019 16:28:04'!
+instanceCreationMessageParameterNamesAreDuplicated: duplicateParameterNames
+
+		^'The following instance creation message parameter names are duplicated: ',
+		(', ' join: duplicateParameterNames), '.'.! !
+
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/18/2018 11:47:44'!
 instanceVariableNamesSameAsTemporalsErrorMessageFor: overlappingNames
 
@@ -8431,6 +8636,11 @@ instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: overlap
 
 	'The following instance variable names will be shadowed by block temporals with the same name: ',
 		', ' join: overlappingNames! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 2/17/2019 14:29:35'!
+invalidParameterNamesErrorMessage: invalidParameterNames
+
+	^'The following parameter names are invalid: ', (', ' join: invalidParameterNames)! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/19/2018 11:37:21'!
 keywordForUnknownVariablesToParametrizeErrorMessage: unknownVariablesWithKeyword
@@ -8466,6 +8676,12 @@ methodCannotContainPoolVarAssignmentsErrorMessage
 methodObjectSuperclassCannotBeMetaErrorMessage
 
 	^'Method Object superclass cannot be a Meta Class'! !
+
+!ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 2/17/2019 14:47:30'!
+parameterNamesOverlapWithInstanceVariableNamesErrorMessage: overlappingParameterNames
+
+	^'The following parameter names overlap with the instance variable names: ',
+		(', ' join: overlappingParameterNames)! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/19/2018 16:03:50'!
 selectorStartsWithInvalidStartOfSelectorCharacterErrorMessage
@@ -8504,6 +8720,11 @@ signalDuplicateInstanceVariableNames: duplicateNames
 
 	self refactoringError: (self duplicatedInstanceVariablesErrorMessageFor: duplicateNames).! !
 
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 2/16/2019 16:19:14'!
+signalDuplicateParameterNames: duplicateParameterNames
+
+	self refactoringError: (self instanceCreationMessageParameterNamesAreDuplicated: duplicateParameterNames).! !
+
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/21/2018 15:33:46'!
 signalInstanceCreationMessageKeywordsCannotBeEmpty
 
@@ -8523,6 +8744,11 @@ signalInstanceVariableNamesSameAsTemporals: overlappingNames
 signalInstanceVariableNamesShadowedByBlockTemporals: overlappingNames
 
 	self refactoringError: (self instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: overlappingNames).! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 2/17/2019 14:28:30'!
+signalInvalidParameterNames: invalidParameterNames
+
+	self refactoringError: (self invalidParameterNamesErrorMessage: invalidParameterNames).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/19/2018 15:49:27'!
 signalKeywordsContainInvalidCharacters: keywordsWithInvalidCharacters
@@ -8553,6 +8779,12 @@ signalMethodObjectSuperclassCannotBeMeta
 signalMethodReferencesSuper
 	
 	self refactoringError: self methodCanNotReferenceSuperErrorMessage.! !
+
+!ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 2/17/2019 14:46:24'!
+signalParameterNamesOverlapWithInstanceVariableNames: overlappingParameterNames
+
+	self refactoringError: (
+		self parameterNamesOverlapWithInstanceVariableNamesErrorMessage: overlappingParameterNames).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/19/2018 11:36:25'!
 signalUnknownVariablesWithKeyword: unknownVariablesWithKeyword
@@ -8634,6 +8866,18 @@ doesMethodContainsPoolVarAssignments: aCompiledMethod
 isAssignmentToInstVarNode: aNode
 
 	^aNode isAssignmentNode and: [aNode variable isInstanceVariableNode] ! !
+
+!ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/17/2019 14:26:07'!
+isInvalidParameterName: aParameterName
+
+	| scannedNames |
+	
+	scannedNames _ Scanner new scanFieldNames: aParameterName.
+	scannedNames size = 1 ifFalse: [^true].
+	scannedNames first = aParameterName ifFalse: [^true].
+	
+	^false
+! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 1/31/2019 20:33:54'!
 isNode: aNode anAssignmentToAClassVarFrom: aClass
@@ -9806,10 +10050,10 @@ showChanges
 	self subclassResponsibility 	
 	! !
 
-!RefactoringApplier methodsFor: 'evaluating' stamp: 'FGJ 2/14/2019 18:56:18'!
+!RefactoringApplier methodsFor: 'evaluating' stamp: 'FGJ 2/16/2019 11:39:55'!
 value
 
-	requestExitBlock := [ self halt. ^self ].
+	requestExitBlock := [ ^self ].
 	
 	self 
 		requestRefactoringParametersHandlingRefactoringExceptions;
@@ -10255,10 +10499,10 @@ createRefactoring
 		withInstanceCreationMessageFrom: extractToMethodObjectRequest keywordToParametrizedVariable
 		evaluatedWith: extractToMethodObjectRequest methodObjectEvaluationMessageSelector.! !
 
-!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 10:51:35'!
+!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:35:56'!
 requestRefactoringParameters
 
-	panel := ExtractToMethodObjectPanel open: self.
+	panel := ExtractToMethodObjectForm open: self.
 	
 	self waitForUserResponse.
 	! !
@@ -10707,7 +10951,7 @@ on: aBrowser of: aClassToRemove
 	
 	^self new initializeOn: aBrowser of: aClassToRemove ! !
 
-!RefactoringMenues class methodsFor: 'editor menus' stamp: 'HAW 7/10/2018 19:18:45'!
+!RefactoringMenues class methodsFor: 'editor menus' stamp: 'FGJ 2/15/2019 10:59:24'!
 smalltalkEditorMenuOptions
 
 	^`{
@@ -10717,7 +10961,16 @@ smalltalkEditorMenuOptions
 				#label 			-> 		'Rename temporary'.
 				#selector 		-> 		#renameTemporary.
 				#icon 			-> 		#saveAsIcon
+		} asDictionary.
+		
+		{
+				#itemGroup 		-> 		35.
+				#itemOrder 		-> 		20.
+				#label 			-> 		'Extract To Method Object'.
+				#selector 		-> 		#extractToMethodObject.
+				#icon 			-> 		#newFolderIcon
 		} asDictionary 
+ 
 	}`! !
 
 !RefactoringMenues class methodsFor: 'browser menues' stamp: 'HAW 7/7/2018 19:25:26'!
@@ -11700,13 +11953,15 @@ hasUnacceptedEdits: aBoolean
 
 	^morph hasUnacceptedEdits: aBoolean ! !
 
-!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'FGJ 2/14/2019 17:34:28'!
+!SmalltalkEditor methodsFor: '*Refactoring' stamp: 'FGJ 2/15/2019 10:56:54'!
 extractToMethodObject
 	
 	self codeProvider isEditingMethod ifTrue: [ | applier classToRefactor compiledMethodToExtract methodNode |
+		
 		classToRefactor := self codeProvider selectedClassOrMetaClass.
 		methodNode := classToRefactor methodNodeFor: self actualContents string.
 		compiledMethodToExtract := classToRefactor compiledMethodAt: methodNode selector.
+		
 		[ applier := ExtractToMethodObjectApplier extract: compiledMethodToExtract ] 			on: SyntaxErrorNotification 			do: [:anError | ^self inform: (ExtractToMethodObjectApplier errorMessageForCanNotParseMethod: anError) ].
 		applier value ].
 ! !

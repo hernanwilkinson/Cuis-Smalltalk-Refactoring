@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 17 February 2019 at 3:26:58 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 19 February 2019 at 11:24:47 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 238!
+!provides: 'Refactoring' 1 265!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -32,6 +32,16 @@ Warning subclass: #RefactoringWarning
 	category: 'Refactoring'!
 !classDefinition: 'RefactoringWarning class' category: #Refactoring!
 RefactoringWarning class
+	instanceVariableNames: ''!
+
+!classDefinition: #EntranceExitBlockEnumerator category: #Refactoring!
+ParseNodeEnumerator subclass: #EntranceExitBlockEnumerator
+	instanceVariableNames: 'exitBlock'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'EntranceExitBlockEnumerator class' category: #Refactoring!
+EntranceExitBlockEnumerator class
 	instanceVariableNames: ''!
 
 !classDefinition: #ExtractToTemporaryRewriter category: #Refactoring!
@@ -142,6 +152,16 @@ RefactoringTest subclass: #InsertSuperclassTest
 	category: 'Refactoring'!
 !classDefinition: 'InsertSuperclassTest class' category: #Refactoring!
 InsertSuperclassTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #IntroduceNullObjectTest category: #Refactoring!
+RefactoringTest subclass: #IntroduceNullObjectTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'IntroduceNullObjectTest class' category: #Refactoring!
+IntroduceNullObjectTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #NullObjectHierarchyCreatorTest category: #Refactoring!
@@ -352,6 +372,16 @@ Refactoring subclass: #InsertSuperclass
 	category: 'Refactoring'!
 !classDefinition: 'InsertSuperclass class' category: #Refactoring!
 InsertSuperclass class
+	instanceVariableNames: ''!
+
+!classDefinition: #IntroduceNullObject category: #Refactoring!
+Refactoring subclass: #IntroduceNullObject
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'IntroduceNullObject class' category: #Refactoring!
+IntroduceNullObject class
 	instanceVariableNames: ''!
 
 !classDefinition: #NullObjectHierarchyCreator category: #Refactoring!
@@ -631,6 +661,26 @@ signal: aMessageText references: references to: aReferencee
 	self new 
 		initialize: aMessageText references: references to: aReferencee;
 		signal! !
+
+!EntranceExitBlockEnumerator methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 18:04:25'!
+atEntranceBlock: aBlock atExitBlock: anotherBlock
+
+	theBlock := aBlock.
+	exitBlock := anotherBlock.! !
+
+!EntranceExitBlockEnumerator methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 18:02:05'!
+visitBlockNode: aBlockNode
+
+	(theSelectBlock isNil or: [theSelectBlock value: aBlockNode]) ifFalse:
+		[^nil].
+	theBlock value: aBlockNode.
+	super visitBlockNode: aBlockNode.
+	exitBlock value: aBlockNode.! !
+
+!EntranceExitBlockEnumerator class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 18:03:58'!
+atEntranceBlock: aBlock atExitBlock: anotherBlock
+
+	^self new atEntranceBlock: aBlock atExitBlock: anotherBlock! !
 
 !ExtractToTemporaryRewriter methodsFor: 'initialization' stamp: 'HAW 10/18/2017 18:21:40'!
 initializeOf: anExtractToTemporary on: aParseNodeToReplaceFinder 
@@ -2714,7 +2764,7 @@ test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeyword
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass class includesSelector: #with:).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:13:45'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 15:34:04'!
 test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables newRefactoringSourceCode |
@@ -2734,10 +2784,10 @@ test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 	refactor apply.
 	
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
-	newRefactoringSourceCode := 'with: aThePreviousSelf',
+	newRefactoringSourceCode := 'with: aParamName',
 		String newLineString,
 		String tab,
-		'^self new with: aThePreviousSelf'.
+		'^self new with: aParamName'.
 	self assert: newRefactoringSourceCode equals: (methodObjectClass class compiledMethodAt: #with:) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:13:55'!
@@ -2784,7 +2834,7 @@ test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywords
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass includesSelector: #with:).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:14:37'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 15:34:15'!
 test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables intializationSourceCode |
@@ -2804,8 +2854,8 @@ test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 	refactor apply.
 	
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
-	intializationSourceCode := 'with: aThePreviousSelf
-		thePreviousSelf := aThePreviousSelf.'.
+	intializationSourceCode := 'with: aParamName
+		thePreviousSelf := aParamName.'.
 	self assert: intializationSourceCode equals: (methodObjectClass compiledMethodAt: #with:) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:14:51'!
@@ -3269,7 +3319,7 @@ test47WhenThereAreVariablesToParametrizeTheRefactoredMethodUsesTheChosenMessageT
 		assert: expectedRefactoredSourceCode 
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:24:01'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 15:33:39'!
 test48WhenThereAreMultipleVariablesToParametrizeTheRefactoredMethodPassesTheVariablesInTheChosenOrderToTheMessageToCreateTheMethodObjectInstance
 	
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
@@ -3279,8 +3329,8 @@ test48WhenThereAreMultipleVariablesToParametrizeTheRefactoredMethodPassesTheVari
 		'anArg' -> 'anArgCorrespondingInstVar'.
 	}  asDictionary.
 	keywordsDefinitions := {
-		self keyword: #with varName: 'anArg' paramName: 'aParamName'.
-		self keyword: #andWith varName: 'self' paramName: 'aParamName'
+		self keyword: #with varName: 'anArg' paramName: 'anArgParamName'.
+		self keyword: #andWith varName: 'self' paramName: 'aSelfParamName'
 	}.
 	
 	aClass := self createClassNamed: #AClass.
@@ -3638,6 +3688,30 @@ test61MethodObjectClassInstanceCreationMessageParameterNamesAreTheChosenOnes
 	
 	methodObjectClass := (Smalltalk classNamed: self methodObjectClassName) class.
 	instanceCreationMethod := methodObjectClass compiledMethodAt: #with:.
+	
+	self assert: 'aParamName' equals: instanceCreationMethod methodNode arguments first name.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 15:28:15'!
+test62MethodObjectInstanceCreationMessageParameterNamesAreTheChosenOnes
+
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor instanceCreationMethod methodObject |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
+	
+	refactor := ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordsDefinitions
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObject := Smalltalk classNamed: self methodObjectClassName.
+	instanceCreationMethod := methodObject compiledMethodAt: #with:.
 	
 	self assert: 'aParamName' equals: instanceCreationMethod methodNode arguments first name.! !
 
@@ -4227,6 +4301,241 @@ test10NewSuperclassNameCanNotHaveSpaces
 	self
 		assertCreation: [ InsertSuperclass to: self class named: 'With spaces' asSymbol ]
 		failsWith: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/17/2019 19:02:36'!
+test01BlocksToExtractMustNotContainReferencesToSuper
+
+	| instVarName aClassToRefactor sourceWithIf ifMessageNode replacementParameters |
+
+	instVarName := 'anInstVar'.
+	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: instVarName.
+	sourceWithIf := 'm1 ', instVarName, ' ifNil: [ super isNil ]'.
+	aClassToRefactor compile: sourceWithIf.
+	ifMessageNode := (aClassToRefactor compiledMethodAt: #m1) methodNode block statements first.
+	
+	replacementParameters := {
+		#selector -> 'polymorphismWins'.
+		#messageNode -> ifMessageNode
+	} asDictionary.
+		
+	
+	self 
+		should: [ 
+			IntroduceNullObject 
+				on: instVarName
+				of: aClassToRefactor
+				usingAsConcreteClass: (self createClassNamed: #ConcreteClass)
+				usingAsNullClass: (self createClassNamed: #NullClass)
+				for: {replacementParameters}]
+		raise: RefactoringError
+		withMessageText: [ IntroduceNullObject messageNodesReferenceSuperErrorMessage: {ifMessageNode}].! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/19/2019 22:57:50'!
+test02BlocksToExtractMustNotContainAssignmentsToVariablesThatAreNotTemporals
+
+	self
+		creationFromSourceCode: self defaultInstVarName, ' ifNil: [ ', self defaultInstVarName, ' := 1 ]'
+		failsWithMessageText: [ 
+			IntroduceNullObject blocksToExtractCannotContainAssignmentsToVariablesThatAreNotBlockTemporalsErrorMessage ].! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/19/2019 23:01:51'!
+test03BlocksToExtractCanAssignToTemporalsOfNestedBlocks
+
+	self
+		creationFromSourceCode: self defaultInstVarName, ' ifNil: [
+			1 = 2 ifFalse: [ |aTemp| aTemp := 3]]'
+		shouldntRaise: RefactoringError.! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/19/2019 23:05:01'!
+test04BlocksToExtractCanAssignToTemporalsOfBlocks
+
+	self
+		creationFromSourceCode: self defaultInstVarName, ' ifNil: [ |aTemp| aTemp := 2]'
+		shouldntRaise: RefactoringError.! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/19/2019 23:06:11'!
+test05BlocksToExtractCanAssignToTemporalsOfBlocksWhenShadowNonTemporals
+
+	self
+		creationFromSourceCode: self defaultInstVarName, ' ifNil: [ |anInstVar| anInstVar := 2]'
+		shouldntRaise: RefactoringError.! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/19/2019 23:08:41'!
+test06BlocksToExtractCanAssignToTemporalsOfBlocksWhenShadowNonTemporalsEvenIfNestedBlocksDefineThem
+
+	self shouldFail: [
+		self
+			creationFromSourceCode: self defaultInstVarName, ' ifNil: [ |anInstVar| 
+				1 = 2 ifFalse: [ |', self defaultInstVarName, ' | ', self defaultInstVarName , ' := 4].
+				', self defaultInstVarName , ' := 2]'
+			shouldntRaise: RefactoringError.]! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/19/2019 23:11:10'!
+test07BlocksToExtractMustNotContainReturnStatements
+
+	self
+		creationFromSourceCode: self defaultInstVarName, ' ifNil: [^true]'
+		failsWithMessageText: [ 
+			IntroduceNullObject blocksToExtractMustNotContainReturnStatementsErrorMessage ].! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/19/2019 23:13:01'!
+test08InstanceVariableMustBelongToTheClassToRefactor
+
+	| aClassToRefactor sourceWithIf ifMessageNode replacementParameters methodNode aClassToRefactorSuperclass |
+	
+	aClassToRefactorSuperclass := self 
+		createClassNamed: #AClassToRefactorSuperclass
+		instanceVariableNames: self defaultInstVarName.
+	aClassToRefactor := self
+		createClassNamed: #AClassToRefactor
+		subclassOf: aClassToRefactorSuperclass.
+	sourceWithIf := 'm1 ', 
+		self defaultInstVarName, ' ifNil: [ self isNil ]'.
+	aClassToRefactor compile: sourceWithIf.
+	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
+	ifMessageNode := methodNode block statements first.
+	
+	replacementParameters := {
+		#keywordDefinition -> {
+			self keyword: #with varName: self defaultInstVarName paramName: 'paramName'}.
+		#messageNode -> ifMessageNode.
+		#methodNode   -> methodNode
+	} asDictionary.
+		
+	self 
+		should: [ 
+			IntroduceNullObject 
+				on: self defaultInstVarName
+				of: aClassToRefactor
+				usingAsConcreteClass: (self createClassNamed: #ConcreteClass)
+				usingAsNullClass: (self createClassNamed: #NullClass)
+				for: {replacementParameters}]
+		raise: RefactoringError
+		withMessageText: [ IntroduceNullObject instVarMustBelongToTheClassToRefactorErrorMessage ].! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/19/2019 23:22:08'!
+test09ConcreteClassMustBeDifferentToNullClass
+
+	| aClassToRefactor sourceWithIf replacementParameters concreteAndNullClass |
+	
+	aClassToRefactor := self 
+		createClassNamed: #AClassToRefactor
+		instanceVariableNames: self defaultInstVarName.
+	
+	sourceWithIf := self defaultInstVarName, ' ifNil: [ self isNil ]'.	
+	replacementParameters := self 
+		replacementParametersFrom: sourceWithIf
+		usingAsClassToRefactor: aClassToRefactor.
+	
+	concreteAndNullClass := self createClassNamed: #AClass.
+	
+	self 
+		should: [ 
+			IntroduceNullObject 
+				on: self defaultInstVarName
+				of: aClassToRefactor
+				usingAsConcreteClass: concreteAndNullClass
+				usingAsNullClass: concreteAndNullClass
+				for: {replacementParameters}]
+		raise: RefactoringError
+		withMessageText: [ IntroduceNullObject concreteClassMustBeDifferentFromNullClassErrorMessage ].! !
+
+!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/17/2019 18:25:51'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
+!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 22:57:00'!
+defaultInstVarName
+
+	^'anInstVar'! !
+
+!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 23:20:35'!
+replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass	
+	
+	| messageNode methodNode |
+	
+	aClass compile: 'm1 ', aSourceCode.
+	methodNode := (aClass compiledMethodAt: #m1) methodNode.
+	messageNode := methodNode block statements first.
+	
+	^{
+		#keywordDefinition -> {
+			self keyword: #with varName: self defaultInstVarName paramName: 'paramName'}.
+		#messageNode -> messageNode.
+		#methodNode   -> methodNode
+	} asDictionary.
+	! !
+
+!IntroduceNullObjectTest methodsFor: 'assertions' stamp: 'FGJ 2/19/2019 22:56:37'!
+creationFromSourceCode: aSourceCodeBody failsWithMessageText: messageTextBlock
+
+	| aClassToRefactor ifMessageNode methodNode replacementParameters |
+	
+	aClassToRefactor := self 
+		createClassNamed: #AClassToRefactor 
+		instanceVariableNames: self defaultInstVarName.
+	aClassToRefactor compile: 'm1 ', aSourceCodeBody.
+	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
+	ifMessageNode := methodNode block statements first.
+	
+	replacementParameters := {
+		#keywordDefinition -> {
+			self keyword: #with varName: self defaultInstVarName paramName: 'paramName'}.
+		#messageNode -> ifMessageNode.
+		#methodNode   -> methodNode
+	} asDictionary.
+		
+	
+	self 
+		should: [ 
+			IntroduceNullObject 
+				on: self defaultInstVarName
+				of: aClassToRefactor
+				usingAsConcreteClass: (self createClassNamed: #ConcreteClass)
+				usingAsNullClass: (self createClassNamed: #NullClass)
+				for: {replacementParameters}]
+		raise: RefactoringError
+		withMessageText: messageTextBlock.! !
+
+!IntroduceNullObjectTest methodsFor: 'assertions' stamp: 'FGJ 2/19/2019 23:03:27'!
+creationFromSourceCode: aSourceCodeBody shouldntRaise: anException
+
+	| aClassToRefactor ifMessageNode methodNode replacementParameters |
+	
+	aClassToRefactor := self 
+		createClassNamed: #AClassToRefactor 
+		instanceVariableNames: self defaultInstVarName.
+	aClassToRefactor compile: 'm1 ', aSourceCodeBody.
+	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
+	ifMessageNode := methodNode block statements first.
+	
+	replacementParameters := {
+		#keywordDefinition -> {
+			self keyword: #with varName: self defaultInstVarName paramName: 'paramName'}.
+		#messageNode -> ifMessageNode.
+		#methodNode   -> methodNode
+	} asDictionary.
+		
+	
+	self 
+		shouldnt: [ 
+			IntroduceNullObject 
+				on: self defaultInstVarName
+				of: aClassToRefactor
+				usingAsConcreteClass: (self createClassNamed: #ConcreteClass)
+				usingAsNullClass: (self createClassNamed: #NullClass)
+				for: {replacementParameters}]
+		raise: anException.! !
+
+!IntroduceNullObjectTest methodsFor: 'class factory' stamp: 'FGJ 2/18/2019 18:52:13'!
+keyword: aKeyword varName: aVariableName paramName: aParameterName
+
+	^{ 
+		#keyword -> aKeyword.
+		#variableName -> aVariableName .
+		#parameterName -> aParameterName
+	} asDictionary! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 1/23/2019 15:10:54'!
 abstractClassName
@@ -8479,18 +8788,17 @@ doNotOverlapWithMethodObjectInstanceVariableNames: instanceVariableNames
 	overlappingParameterNames ifNotEmpty: [
 		self signalParameterNamesOverlapWithInstanceVariableNames: overlappingParameterNames].! !
 
-!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 2/16/2019 16:43:18'!
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 2/17/2019 15:38:05'!
 assertParameterNamesAreNotDuplicated: parameterNames
 
 	| duplicatedParameterNames |
-	
+
 	duplicatedParameterNames := parameterNames select: [
 		:aName |
 		(parameterNames occurrencesOf: aName) > 1].
 	
-	duplicatedParameterNames 
-		isEmpty
-		ifFalse: [ self signalDuplicateParameterNames: duplicatedParameterNames asSet ].! !
+	duplicatedParameterNames ifNotEmpty: [
+		self signalDuplicateParameterNames: duplicatedParameterNames asSet ].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 2/17/2019 14:25:31'!
 assertParameterNamesAreValid: parameterNames
@@ -8536,7 +8844,7 @@ evaluatedWith: anEvaluationSelector
 		evaluatedWith: anEvaluationSelector
 ! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 2/17/2019 14:41:00'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 2/17/2019 15:37:54'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
@@ -8595,7 +8903,7 @@ evaluatedWith: anInvocationSelector
 	parameterNames := keywordsDefinitions collect: [
 		:aKeywordDefinition |
 		aKeywordDefinition at: #parameterName].
-	self assertParameterNamesAreNotDuplicated: keywordsDefinitions.
+	self assertParameterNamesAreNotDuplicated: parameterNames.
 	self assertParameterNamesAreValid: parameterNames.
 	self assertParameterNames: parameterNames doNotOverlapWithMethodObjectInstanceVariableNames: instanceVariableNames. 
 	
@@ -9262,6 +9570,160 @@ to: aClass named: aSuperclassName in: aSystem undeclared: anUndeclared
 	self newClassPreconditionClass valueFor: aSuperclassName in: aSystem undeclared: anUndeclared.
 	
 	^self new initializeTo: aClass theNonMetaClass named: aSuperclassName ! !
+
+!IntroduceNullObject class methodsFor: 'instance creation' stamp: 'FGJ 2/19/2019 23:22:55'!
+on: anInstVarName
+of: aClassToRefactor
+usingAsConcreteClass: aConcreteClass
+usingAsNullClass: aNullClass
+for: replacementParameters
+
+	| messageNodes |
+	
+	messageNodes := replacementParameters collect: [
+		:aReplacementParameter |
+		aReplacementParameter at: #messageNode].
+	
+	self assertBlocksDoNotContainReferencesToSuper: messageNodes.
+	self assertBlocksDoNotContainAssignmentsToVariablesThatAreNotBlockTemporals: messageNodes.
+	self assertBlocksDoNotContainReturnStatements: messageNodes.
+	
+	self assert: anInstVarName belongsTo: aClassToRefactor.
+	
+	self assert: aConcreteClass isDifferentFrom: aNullClass.! !
+
+!IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 2/19/2019 21:52:26'!
+assert: anInstVarName belongsTo: aClass
+
+	(aClass instVarNames includes: anInstVarName) ifFalse: [
+		self signalInstVarMustBelongToClassToRefactor].! !
+
+!IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 2/19/2019 23:23:53'!
+assert: aConcreteClass isDifferentFrom: aNullClass
+
+	aConcreteClass = aNullClass ifTrue: [
+		self signalConcreteClassMustBeDifferentFromNullClass].! !
+
+!IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 2/19/2019 18:33:21'!
+assertBlocksDoNotContainAssignmentsToVariablesThatAreNotBlockTemporals: messageNodes
+
+	(messageNodes anySatisfy: [
+		:messageNode | self containsAssignmentToNotBlockTemporal: messageNode])
+		ifTrue: [ self signalBlocksCannotContainAssignmentsToVariablesThatAreNotBlockTemporals].! !
+
+!IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 2/18/2019 19:02:13'!
+assertBlocksDoNotContainReferencesToSuper: messageNodes
+
+	| nodesWithReferenceToSuper |
+	
+	nodesWithReferenceToSuper := messageNodes select: [
+		:aMessageNode |
+		self referencesSuper: aMessageNode].
+	
+	nodesWithReferenceToSuper ifNotEmpty: [
+		self signalMessageNodesReferenceSuper: nodesWithReferenceToSuper].! !
+
+!IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 2/19/2019 19:26:36'!
+assertBlocksDoNotContainReturnStatements: messageNodes
+
+	messageNodes do: [
+		:messageNode |
+		(self containsReturnStatement: messageNode) ifTrue: [self signalBlockMustNotContainReturnStatements]].! !
+
+!IntroduceNullObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 18:44:32'!
+containsAssignmentToNotBlockTemporal: messageNode
+
+	| assignableTemporals assignmentToNotBlockTemporalDetector |
+
+	assignableTemporals := Bag new.
+
+	assignmentToNotBlockTemporalDetector := EntranceExitBlockEnumerator 
+		atEntranceBlock: [
+			:aNode |
+			
+			(aNode isAssignmentNode and: [
+				(assignableTemporals includes: aNode variable name) not])
+			ifTrue: [^true].
+			
+			aNode isBlockNode ifTrue: [
+				assignableTemporals addAll: (aNode temporaries collect: [:variable | variable name]).] ]
+		atExitBlock: [
+			:aNode |
+		
+			aNode isBlockNode ifTrue: [
+				assignableTemporals removeAll: (aNode temporaries collect: [:variable | variable name])]].
+		
+	messageNode accept: assignmentToNotBlockTemporalDetector.
+	
+	^false! !
+
+!IntroduceNullObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 19:33:04'!
+containsReturnStatement: aMessageNode
+
+	aMessageNode accept: (ParseNodeEnumerator ofBlock: [
+		:aNode |
+		(aNode isBlockNode and: [aNode returns]) ifTrue: [^true]]).
+		
+	^false! !
+
+!IntroduceNullObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/18/2019 18:56:41'!
+referencesSuper: aParseNode
+
+	aParseNode accept: (ParseNodeEnumerator ofBlock: [
+		:aNode |
+		(aNode isVariableNode and: [aNode name = 'super']) ifTrue: [^true]]).
+	
+	^false! !
+
+!IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 2/19/2019 21:35:28'!
+signalBlockMustNotContainReturnStatements
+
+	self refactoringError: self blocksToExtractMustNotContainReturnStatementsErrorMessage! !
+
+!IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 2/19/2019 18:17:17'!
+signalBlocksCannotContainAssignmentsToVariablesThatAreNotBlockTemporals
+
+	self refactoringError: self blocksToExtractCannotContainAssignmentsToVariablesThatAreNotBlockTemporalsErrorMessage.! !
+
+!IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 2/19/2019 23:24:12'!
+signalConcreteClassMustBeDifferentFromNullClass
+
+	self refactoringError: self concreteClassMustBeDifferentFromNullClassErrorMessage.! !
+
+!IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 2/19/2019 21:52:50'!
+signalInstVarMustBelongToClassToRefactor
+
+	self refactoringError: self instVarMustBelongToTheClassToRefactorErrorMessage.! !
+
+!IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 2/17/2019 19:01:08'!
+signalMessageNodesReferenceSuper: nodesWithReferenceToSuper
+
+	self refactoringError: (self messageNodesReferenceSuperErrorMessage: nodesWithReferenceToSuper).! !
+
+!IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 2/19/2019 18:18:10'!
+blocksToExtractCannotContainAssignmentsToVariablesThatAreNotBlockTemporalsErrorMessage
+
+	^'Blocks to extract cannot contain assignments to variables that are not temporals of a block'! !
+
+!IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 2/19/2019 21:35:51'!
+blocksToExtractMustNotContainReturnStatementsErrorMessage
+
+	^'Blocks to extract must not contain return statements.'! !
+
+!IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 2/19/2019 23:24:36'!
+concreteClassMustBeDifferentFromNullClassErrorMessage
+
+	^'The concrete class must be different from the null class.'! !
+
+!IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 2/19/2019 21:53:29'!
+instVarMustBelongToTheClassToRefactorErrorMessage
+
+	^'The instance variable on which the Null Object will be introduced must belong to the class to refactor'! !
+
+!IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 2/17/2019 19:01:50'!
+messageNodesReferenceSuperErrorMessage: nodesWithReferenceToSuper
+
+	^'Blocks to extract cannot contain references to super.'! !
 
 !NullObjectHierarchyCreator methodsFor: 'evaluating' stamp: 'FGJ 1/23/2019 17:10:26'!
 apply
@@ -10487,7 +10949,7 @@ assertCanApplyRefactoringFor: aSelector in: aClass
 	
 	! !
 
-!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:47:28'!
+!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/17/2019 16:10:17'!
 createRefactoring
 	
 	^ExtractToMethodObject 
@@ -10496,7 +10958,7 @@ createRefactoring
 		subclassing: (Smalltalk classNamed: extractToMethodObjectRequest methodObjectSuperclassName)
 		onCategory: extractToMethodObjectRequest methodObjectCategory
 		withExtractedVariablesToInstanceVariables: extractToMethodObjectRequest variablesToParametrizeToInstanceVariables
-		withInstanceCreationMessageFrom: extractToMethodObjectRequest keywordToParametrizedVariable
+		withInstanceCreationMessageFrom: extractToMethodObjectRequest keywordsDefinitions
 		evaluatedWith: extractToMethodObjectRequest methodObjectEvaluationMessageSelector.! !
 
 !ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:35:56'!

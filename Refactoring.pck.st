@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3597] on 4 February 2019 at 5:00:43 pm'!
-'Description Contextual rename shortcut now is added using #smalltalkEditorCmdShortcutsSpec'!
-!provides: 'Refactoring' 1 72!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3636] on 1 March 2019 at 5:33:57 pm'!
+'Description Test for ParseNode'!
+!provides: 'Refactoring' 1 73!
 !requires: '__Refactoring-TestData__' 1 1 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -83,6 +83,16 @@ ChangeSelectorWizardStepWindow subclass: #ChangeSelectorSendersStepWindow
 	category: 'Refactoring'!
 !classDefinition: 'ChangeSelectorSendersStepWindow class' category: #Refactoring!
 ChangeSelectorSendersStepWindow class
+	instanceVariableNames: ''!
+
+!classDefinition: #MethodNodeTest category: #Refactoring!
+TestCase subclass: #MethodNodeTest
+	instanceVariableNames: 'anInstVar'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'MethodNodeTest class' category: #Refactoring!
+MethodNodeTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #RefactoringExtentionsToCollectionTest category: #Refactoring!
@@ -988,6 +998,30 @@ openFrom: aChangeSelectorRequest
 		openFrom: aChangeSelectorRequest 
 		methods: aChangeSelectorRequest senders 
 		label: 'Senders of #', aChangeSelectorRequest oldSelector, ' to Refactor' ! !
+
+!MethodNodeTest methodsFor: 'as yet unclassified' stamp: 'HAW 3/1/2019 13:58:08'!
+blockParameterNamedAsInstVar
+
+    anInstVar isNil.
+    [:anInstVar | anInstVar isNil].! !
+
+!MethodNodeTest methodsFor: 'as yet unclassified' stamp: 'HAW 3/1/2019 14:35:36'!
+test01PositionsForInstanceVariableWorksWhenThereAreLocalVarsWithSameName
+
+	| instVarName methodNode methodUnderTest positions startPosition expectedPosition |
+	
+	instVarName := 'anInstVar'.
+	methodUnderTest := self class >> #blockParameterNamedAsInstVar.
+	methodNode := methodUnderTest methodNode.
+	
+	positions := methodNode positionsForInstanceVariable: instVarName ifAbsent: [ self fail ].
+	"I assume the inst var is the first in the source code - Hernan"
+	startPosition := methodUnderTest sourceCode indexOfSubCollection: instVarName startingAt: 1.
+	expectedPosition := startPosition to: startPosition+instVarName size-1.
+	
+	self assert: 1 equals: positions size.
+	self assert: expectedPosition equals: positions first
+	! !
 
 !RefactoringExtentionsToCollectionTest methodsFor: 'as yet unclassified' stamp: 'HAW 1/7/2019 16:37:36'!
 test01AsCommaStringAndDoesNotAddAnythingWhenEmpty

@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3562] on 13 March 2019 at 5:15:24 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 14 March 2019 at 12:04:23 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 299!
+!provides: 'Refactoring' 1 300!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -10,6 +10,268 @@ ParseNodeEnumerator subclass: #EntranceExitBlockEnumerator
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
+!classDefinition: 'EntranceExitBlockEnumerator class' category: #Refactoring!
+EntranceExitBlockEnumerator class
+	instanceVariableNames: ''!
+
+!classDefinition: #VariablesToExtractFinder category: #Refactoring!
+ParseNodeVisitor subclass: #VariablesToExtractFinder
+	instanceVariableNames: 'methodNode variablesToExtract'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'VariablesToExtractFinder class' category: #Refactoring!
+VariablesToExtractFinder class
+	instanceVariableNames: ''!
+
+!classDefinition: #IndependentlyColoredButton category: #Refactoring!
+PluggableButtonMorph subclass: #IndependentlyColoredButton
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'IndependentlyColoredButton class' category: #Refactoring!
+IndependentlyColoredButton class
+	instanceVariableNames: ''!
+
+!classDefinition: #ImmutableTextModelMorph category: #Refactoring!
+TextModelMorph subclass: #ImmutableTextModelMorph
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ImmutableTextModelMorph class' category: #Refactoring!
+ImmutableTextModelMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #PreviewTextModelMorph category: #Refactoring!
+TextModelMorph subclass: #PreviewTextModelMorph
+	instanceVariableNames: 'previewModel'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'PreviewTextModelMorph class' category: #Refactoring!
+PreviewTextModelMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #ExtractToMethodObjectForm category: #Refactoring!
+SystemWindow subclass: #ExtractToMethodObjectForm
+	instanceVariableNames: 'scrollPane formLayout inputTable preview variablesToParametrize extractToMethodObjectRequest discardEdits'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ExtractToMethodObjectForm class' category: #Refactoring!
+ExtractToMethodObjectForm class
+	instanceVariableNames: ''!
+
+!classDefinition: #FormSection category: #Refactoring!
+LayoutMorph subclass: #FormSection
+	instanceVariableNames: 'title borderMorph titleContainer titleMorph titleContainerLayoutSpec explanation explanationMorph explanationContainer explanationContainerLayoutSpec'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'FormSection class' category: #Refactoring!
+FormSection class
+	instanceVariableNames: ''!
+
+!classDefinition: #InputTable category: #Refactoring!
+LayoutMorph subclass: #InputTable
+	instanceVariableNames: 'rowModels previewModel backgroundColor refactoringModel columnWidths'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'InputTable class' category: #Refactoring!
+InputTable class
+	instanceVariableNames: ''!
+
+!classDefinition: #LabeledInput category: #Refactoring!
+LayoutMorph subclass: #LabeledInput
+	instanceVariableNames: 'labelMorph inputMorph'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'LabeledInput class' category: #Refactoring!
+LabeledInput class
+	instanceVariableNames: ''!
+
+!classDefinition: #LabeledAutocompletedInput category: #Refactoring!
+LabeledInput subclass: #LabeledAutocompletedInput
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'LabeledAutocompletedInput class' category: #Refactoring!
+LabeledAutocompletedInput class
+	instanceVariableNames: ''!
+
+!classDefinition: #PreviewInnerTextMorph category: #Refactoring!
+InnerTextMorph subclass: #PreviewInnerTextMorph
+	instanceVariableNames: 'previewModel'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'PreviewInnerTextMorph class' category: #Refactoring!
+PreviewInnerTextMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #IntroduceNullObjectTest category: #Refactoring!
+RefactoringTest subclass: #IntroduceNullObjectTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'IntroduceNullObjectTest class' category: #Refactoring!
+IntroduceNullObjectTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #NullObjectHierarchyCreatorTest category: #Refactoring!
+RefactoringTest subclass: #NullObjectHierarchyCreatorTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'NullObjectHierarchyCreatorTest class' category: #Refactoring!
+NullObjectHierarchyCreatorTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: #Refactoring!
+RefactoringTest subclass: #ReplaceIfNilWithPolymorphismParametersTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParametersTest class' category: #Refactoring!
+ReplaceIfNilWithPolymorphismParametersTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #VariableToParametrizeKeywordDefinitionTest category: #Refactoring!
+RefactoringTest subclass: #VariableToParametrizeKeywordDefinitionTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'VariableToParametrizeKeywordDefinitionTest class' category: #Refactoring!
+VariableToParametrizeKeywordDefinitionTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: #Refactoring!
+RefactoringTest subclass: #VariablesToParametrizeKeywordsDefinitionsTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: #Refactoring!
+VariablesToParametrizeKeywordsDefinitionsTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #ExtractToMethodObject category: #Refactoring!
+Refactoring subclass: #ExtractToMethodObject
+	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract methodVariableNamesToInstanceVariableNames methodObjectInstanceVariables methodObjectInvocationSelector keywordsDefinitions'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ExtractToMethodObject class' category: #Refactoring!
+ExtractToMethodObject class
+	instanceVariableNames: ''!
+
+!classDefinition: #IntroduceNullObject category: #Refactoring!
+Refactoring subclass: #IntroduceNullObject
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'IntroduceNullObject class' category: #Refactoring!
+IntroduceNullObject class
+	instanceVariableNames: ''!
+
+!classDefinition: #NullObjectHierarchyCreator category: #Refactoring!
+Refactoring subclass: #NullObjectHierarchyCreator
+	instanceVariableNames: 'concreteClass abstractClassName nullObjectClassName category'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'NullObjectHierarchyCreator class' category: #Refactoring!
+NullObjectHierarchyCreator class
+	instanceVariableNames: ''!
+
+!classDefinition: #ExtractToMethodObjectApplier category: #Refactoring!
+RefactoringApplier subclass: #ExtractToMethodObjectApplier
+	instanceVariableNames: 'smalltalkEditor classToRefactor methodNode panel done compiledMethodToExtract extractToMethodObjectRequest'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ExtractToMethodObjectApplier class' category: #Refactoring!
+ExtractToMethodObjectApplier class
+	instanceVariableNames: ''!
+
+!classDefinition: #ExtractToMethodObjectRequest category: #Refactoring!
+Object subclass: #ExtractToMethodObjectRequest
+	instanceVariableNames: 'methodObjectClassNameModel methodObjectCategoryModel methodObjectSuperclassNameModel methodObjectEvaluationMessageSelectorModel variableToParametrizeToInstVarNameModel instanceCreationMessageModels'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ExtractToMethodObjectRequest class' category: #Refactoring!
+ExtractToMethodObjectRequest class
+	instanceVariableNames: ''!
+
+!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: #Refactoring!
+Object subclass: #ReplaceIfNilWithPolymorphismParameters
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: #Refactoring!
+ReplaceIfNilWithPolymorphismParameters class
+	instanceVariableNames: ''!
+
+!classDefinition: #VariableToParametrizeKeywordDefinition category: #Refactoring!
+Object subclass: #VariableToParametrizeKeywordDefinition
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: #Refactoring!
+VariableToParametrizeKeywordDefinition class
+	instanceVariableNames: ''!
+
+!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: #Refactoring!
+Object subclass: #VariablesToParametrizeKeywordsDefinitions
+	instanceVariableNames: 'selector'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: #Refactoring!
+VariablesToParametrizeKeywordsDefinitions class
+	instanceVariableNames: ''!
+
+!classDefinition: #ExtractToMethodObjectTest category: #Refactoring!
+ProtoObject subclass: #ExtractToMethodObjectTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ExtractToMethodObjectTest class' category: #Refactoring!
+ExtractToMethodObjectTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #VariablesToExtractFinderTest category: #Refactoring!
+ProtoObject subclass: #VariablesToExtractFinderTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'VariablesToExtractFinderTest class' category: #Refactoring!
+VariablesToExtractFinderTest class
+	instanceVariableNames: ''!
+
+
+!ExtractToMethodObject commentStamp: '<historical>' prior: 0!
+selectorKeywordToVariableName -> OrderedCollection of Associations (keyword -> variableName)!
+
+!ExtractToMethodObjectRequest class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:04:56'!
+initializedInstance
+
+	^self new initialize.! !
 
 !EntranceExitBlockEnumerator methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 18:04:25'!
 atEntranceBlock: aBlock atExitBlock: anotherBlock
@@ -26,24 +288,10 @@ visitBlockNode: aBlockNode
 	super visitBlockNode: aBlockNode.
 	exitBlock value: aBlockNode.! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'EntranceExitBlockEnumerator class' category: #Refactoring!
-EntranceExitBlockEnumerator class
-	instanceVariableNames: ''!
-
 !EntranceExitBlockEnumerator class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 18:03:58'!
 atEntranceBlock: aBlock atExitBlock: anotherBlock
 
 	^self new atEntranceBlock: aBlock atExitBlock: anotherBlock! !
-
-
-!classDefinition: #VariablesToExtractFinder category: #Refactoring!
-ParseNodeVisitor subclass: #VariablesToExtractFinder
-	instanceVariableNames: 'methodNode variablesToExtract'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !VariablesToExtractFinder methodsFor: 'initialization' stamp: 'HAW 3/4/2019 13:35:48'!
 initializeIn: aMethodNode
@@ -52,7 +300,6 @@ initializeIn: aMethodNode
 	variablesToExtract := Set new.
 	! !
 
-
 !VariablesToExtractFinder methodsFor: 'evaluating' stamp: 'HAW 3/4/2019 14:34:24'!
 value
 	
@@ -60,7 +307,6 @@ value
 	methodNode accept: self.
 	
 	^variablesToExtract! !
-
 
 !VariablesToExtractFinder methodsFor: 'visiting' stamp: 'HAW 3/4/2019 13:46:05'!
 visitInstanceVariableNode: anInstanceVariableNode
@@ -86,17 +332,10 @@ visitVariableNode: aVariableNode
 	super visitVariableNode: aVariableNode 
 	! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'VariablesToExtractFinder class' category: #Refactoring!
-VariablesToExtractFinder class
-	instanceVariableNames: ''!
-
 !VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'HAW 3/4/2019 14:36:12'!
 valueIn: aCompiledMethod 
 	
 	^(self in: aCompiledMethod) value! !
-
 
 !VariablesToExtractFinder class methodsFor: 'instance creation' stamp: 'HAW 3/4/2019 13:23:23'!
 in: aCompiledMethod 
@@ -105,30 +344,8 @@ in: aCompiledMethod
 	
 	! !
 
-
-!classDefinition: #IndependentlyColoredButton category: #Refactoring!
-PluggableButtonMorph subclass: #IndependentlyColoredButton
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-
 !IndependentlyColoredButton methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 12:38:30'!
 adoptWidgetsColor: paneColor! !
-
-
-!classDefinition: #ImmutableTextModelMorph category: #Refactoring!
-TextModelMorph subclass: #ImmutableTextModelMorph
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'ImmutableTextModelMorph class' category: #Refactoring!
-ImmutableTextModelMorph class
-	instanceVariableNames: ''!
 
 !ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 19:42:39'!
 minimumHeightToDisplay: aString on: aWidth
@@ -169,26 +386,10 @@ withText: aText withColor: aColor withWidth: aWidth
 	
 	^anInstance! !
 
-
-!classDefinition: #PreviewTextModelMorph category: #Refactoring!
-TextModelMorph subclass: #PreviewTextModelMorph
-	instanceVariableNames: 'previewModel'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-
 !PreviewTextModelMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 10:40:38'!
 innerMorphClass
 
 	^PreviewInnerTextMorph ! !
-
-
-!classDefinition: #ExtractToMethodObjectForm category: #Refactoring!
-SystemWindow subclass: #ExtractToMethodObjectForm
-	instanceVariableNames: 'scrollPane formLayout inputTable preview variablesToParametrize extractToMethodObjectRequest discardEdits'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 2/5/2019 16:25:41'!
 backgroundColor
@@ -242,7 +443,6 @@ textStylerClassFor: textGetter
 
 	^SHTextStylerST80 ! !
 
-
 !ExtractToMethodObjectForm methodsFor: 'open/close' stamp: 'FGJ 2/13/2019 16:00:39'!
 closeBoxHit
 
@@ -260,7 +460,6 @@ okToChange
 	discardEdits 
 		ifTrue: [^true]
 		ifFalse: [^super okToChange].! !
-
 
 !ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 2/13/2019 14:10:54'!
 buildActionButtonsSection
@@ -475,7 +674,6 @@ initializeScrollableContainer
 	scrollPane color: self backgroundColor. 
 	self layoutMorph addMorphUseAll: scrollPane.! !
 
-
 !ExtractToMethodObjectForm methodsFor: 'events' stamp: 'FGJ 2/13/2019 15:29:04'!
 cancelButtonClicked
 	
@@ -505,17 +703,10 @@ submitButtonClicked
 
 	model userSubmitted: extractToMethodObjectRequest.! !
 
-
 !ExtractToMethodObjectForm methodsFor: 'messages' stamp: 'FGJ 2/11/2019 16:47:48'!
 previewUnavailableMessage
 
 	^'All the keywords and parameter names must be filled for the preview to appear here'! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'ExtractToMethodObjectForm class' category: #Refactoring!
-ExtractToMethodObjectForm class
-	instanceVariableNames: ''!
 
 !ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 18:27:41'!
 fontProportionalUnitOfReferenceForHeight
@@ -531,14 +722,6 @@ fontProportionalUnitOfReferenceForWidth
 recommendedWidth
 
 	^self fontProportionalUnitOfReferenceForWidth * 70! !
-
-
-!classDefinition: #FormSection category: #Refactoring!
-LayoutMorph subclass: #FormSection
-	instanceVariableNames: 'title borderMorph titleContainer titleMorph titleContainerLayoutSpec explanation explanationMorph explanationContainer explanationContainerLayoutSpec'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !FormSection methodsFor: 'initialization' stamp: 'FGJ 2/13/2019 18:57:34'!
 initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
@@ -569,7 +752,6 @@ initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
 			withWidth: self fixedWidthForTexts.
 		self addMorph: explanationMorph.
 	].! !
-
 
 !FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/4/2019 12:53:57'!
 drawOn: aCanvas
@@ -605,12 +787,6 @@ verticalMargins
 
 	^20! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'FormSection class' category: #Refactoring!
-FormSection class
-	instanceVariableNames: ''!
-
 !FormSection class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/5/2019 17:01:17'!
 withTitle: aTitle withColor: aColor
 
@@ -620,14 +796,6 @@ withTitle: aTitle withColor: aColor
 withTitle: aTitle withExplanation: anExplanation withColor: aColor
 
 	^FormSection newColumn initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor.! !
-
-
-!classDefinition: #InputTable category: #Refactoring!
-LayoutMorph subclass: #InputTable
-	instanceVariableNames: 'rowModels previewModel backgroundColor refactoringModel columnWidths'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !InputTable methodsFor: 'as yet unclassified' stamp: 'FGJ 1/22/2019 15:30:47'!
 drawOn: aCanvas
@@ -694,7 +862,6 @@ swapRowSubmorph: aRowIndex with: anotherRowIndex
 	"It seems that the redraw isn't needed. Remove later if that's the case."
 	"self redrawNeeded."
 	self layoutSubmorphs.! !
-
 
 !InputTable methodsFor: 'initialization' stamp: 'FGJ 2/13/2019 14:16:02'!
 backgroundColor
@@ -854,7 +1021,6 @@ withColumns: inputColumnsTitles withRows: rowsTitles withColor: aColor withPrevi
 		self addMorph: aRow layoutSpec: self rowsLayoutSpec.
 	].! !
 
-
 !InputTable methodsFor: 'events' stamp: 'FGJ 2/9/2019 17:20:09'!
 rowWasMovedDown: aRowIndex
 
@@ -865,26 +1031,12 @@ rowWasMovedUp: aRowIndex
 
 	(rowModels at: aRowIndex) wasMovedUp.! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'InputTable class' category: #Refactoring!
-InputTable class
-	instanceVariableNames: ''!
-
 !InputTable class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 12:20:49'!
 withColumns: columnsTitles withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
 
 	^self newColumn withColumns: columnsTitles withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel. 
 	
 	! !
-
-
-!classDefinition: #LabeledInput category: #Refactoring!
-LayoutMorph subclass: #LabeledInput
-	instanceVariableNames: 'labelMorph inputMorph'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 1/22/2019 13:37:24'!
 drawOn: aCanvas
@@ -925,12 +1077,6 @@ withLabel: aLabel withWidth: aWidth
 	
 	! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'LabeledInput class' category: #Refactoring!
-LabeledInput class
-	instanceVariableNames: ''!
-
 !LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/6/2019 20:39:39'!
 recommendedHeight
 
@@ -941,25 +1087,9 @@ withLabel: aLabel withWidth: aWidth
 
 	^self newRow withLabel: aLabel withWidth: aWidth! !
 
-
-!classDefinition: #LabeledAutocompletedInput category: #Refactoring!
-LabeledInput subclass: #LabeledAutocompletedInput
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-
 !LabeledAutocompletedInput methodsFor: 'as yet unclassified' stamp: 'FGJ 2/1/2019 12:32:07'!
 autoCompleterClassFor: textGetter
 	^SmalltalkCompleter! !
-
-
-!classDefinition: #PreviewInnerTextMorph category: #Refactoring!
-InnerTextMorph subclass: #PreviewInnerTextMorph
-	instanceVariableNames: 'previewModel'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:37:10'!
 keyStroke: aKeyboardEvent
@@ -972,14 +1102,6 @@ keyStroke: aKeyboardEvent
 previewModel: aPreviewModel
 
 	previewModel := aPreviewModel.! !
-
-
-!classDefinition: #IntroduceNullObjectTest category: #Refactoring!
-RefactoringTest subclass: #IntroduceNullObjectTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/20/2019 11:03:38'!
 test01BlocksToExtractMustNotContainReferencesToSuper
@@ -1460,7 +1582,6 @@ test21AllMessageNodesWithVariablesToParametrizeMustSpecifyKeywordsDefinitions
 		withMessageText: [ 
 			IntroduceNullObject allMessageNodesWithVariablesToParametrizeMustSpecifyKeywordsDefinitionsErrorMessage ].! !
 
-
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/17/2019 18:25:51'!
 allClassCategoriesOfTestData
 
@@ -1507,7 +1628,6 @@ replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass
 		#methodNode   -> methodNode
 	} asDictionary.
 	! !
-
 
 !IntroduceNullObjectTest methodsFor: 'assertions' stamp: 'FGJ 2/20/2019 14:54:55'!
 creationFromSourceCode: aSourceCodeBody failsWithMessageText: messageTextBlock
@@ -1569,7 +1689,6 @@ creationFromSourceCode: aSourceCodeBody shouldntRaise: anException
 				for: {replacementParameters}]
 		raise: anException.! !
 
-
 !IntroduceNullObjectTest methodsFor: 'class factory' stamp: 'FGJ 2/20/2019 14:33:19'!
 defaultClassToRefactor
 
@@ -1591,14 +1710,6 @@ keyword: aKeyword varName: aVariableName paramName: aParameterName
 		#variableName -> aVariableName .
 		#parameterName -> aParameterName
 	} asDictionary! !
-
-
-!classDefinition: #NullObjectHierarchyCreatorTest category: #Refactoring!
-RefactoringTest subclass: #NullObjectHierarchyCreatorTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:52:30'!
 test01AbstractClassClassNameMustNotBeEmpty
@@ -1998,7 +2109,6 @@ test24ConcreteClassMethodsArePreserved
 
 	self assert: originalMethodSourceCode equals: compiledMethod sourceCode.! !
 
-
 !NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 1/23/2019 15:10:54'!
 abstractClassName
 
@@ -2018,7 +2128,6 @@ concreteClass
 nullObjectClassName
 
 	^#ANullObjectClassName! !
-
 
 !NullObjectHierarchyCreatorTest methodsFor: 'assertions' stamp: 'FGJ 1/23/2019 15:47:07'!
 creationWithAbstractClassName: anAbstractClassName
@@ -2047,14 +2156,6 @@ failsWithMessageText: aMessageTextBlock
 				inCategory: self classCategoryOfTestData ]
 		raise: RefactoringError
 		withMessageText: aMessageTextBlock.! !
-
-
-!classDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: #Refactoring!
-RefactoringTest subclass: #ReplaceIfNilWithPolymorphismParametersTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 15:52:48'!
 allClassCategoriesOfTestData
@@ -2138,14 +2239,6 @@ test03AllVariablesToParametrizeHaveACorrespondingKeyword
 		withMessageText: [
 			ReplaceIfNilWithPolymorphismParameters allVariablesToParametrizeMustHaveACorrespondingKeywordErrorMessage ].! !
 
-
-!classDefinition: #VariableToParametrizeKeywordDefinitionTest category: #Refactoring!
-RefactoringTest subclass: #VariableToParametrizeKeywordDefinitionTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 15:10:19'!
 allClassCategoriesOfTestData
 
@@ -2167,14 +2260,6 @@ test01ParameterNameMustNotBeEmpty
 		raise: RefactoringError
 		withMessageText: [
 			VariableToParametrizeKeywordDefinition parameterNameMustNotBeEmptyErrorMessage].! !
-
-
-!classDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: #Refactoring!
-RefactoringTest subclass: #VariablesToParametrizeKeywordsDefinitionsTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/13/2019 14:15:54'!
 creationWithSelector: aSelector failsWithMessageText: anErrorMessageBlock
@@ -2217,22 +2302,10 @@ test04CreatesVariablesToParametrizeKeywordsDefinitionsWithSelector
 	
 	self assert: #polymorphicSelector asString equals: variablesToParametrizeKeywordsDefinitions messageSending.! !
 
-
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 12:31:11'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
-
-
-!classDefinition: #ExtractToMethodObject category: #Refactoring!
-Refactoring subclass: #ExtractToMethodObject
-	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract methodVariableNamesToInstanceVariableNames methodObjectInstanceVariables methodObjectInvocationSelector keywordsDefinitions'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!ExtractToMethodObject commentStamp: '<historical>' prior: 0!
-selectorKeywordToVariableName -> OrderedCollection of Associations (keyword -> variableName)!
-
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/9/2019 15:46:56'!
 apply
@@ -2394,7 +2467,6 @@ replaceExtractedMethodWithMethodObjectEvaluation
 		
 	classToRefactor compile: refactoredSourceCode.! !
 
-
 !ExtractToMethodObject methodsFor: 'initialization' stamp: 'FGJ 2/16/2019 15:10:03'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
@@ -2413,12 +2485,6 @@ evaluatedWith: anInvocationSelector
 	methodObjectInstanceVariables := variablesToInstanceVariables values.
 	methodObjectInvocationSelector := anInvocationSelector.
 ! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'ExtractToMethodObject class' category: #Refactoring!
-ExtractToMethodObject class
-	instanceVariableNames: ''!
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/19/2018 10:08:21'!
 from: aCompiledMethod
@@ -2509,7 +2575,6 @@ from: aCompiledMethod
 		withInstanceCreationMessageFrom: keywordsDefinitions
 		evaluatedWith: anInvocationSelector
 ! !
-
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/17/2018 19:18:12'!
 duplicatedInstanceVariablesErrorMessageFor: duplicateNames
@@ -2612,7 +2677,6 @@ variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesWith
 
 	^'The variables: ', (', ' join: variablesWithoutNames), ' do not have a corresponding Method Object instance variable name'! !
 
-
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/17/2018 14:52:22'!
 signaUnknownlVariablesToParametrize: unknownVariablesToParametrize
 
@@ -2709,7 +2773,6 @@ signalVariablesToParametrizeWithoutInstanceVariableName: variablesWithoutNames
 signalVariablesToParametrizeWithoutKeywordAssigned: someVariablesNames
 
 	self refactoringError: (self variablesToParametrizeHaveNoKeywordErrorMessage: someVariablesNames).! !
-
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 3/4/2019 11:43:38'!
 assertAllInstanceVariableNamesAreValid: instanceVariableNames for: aClass
@@ -2920,7 +2983,6 @@ assertSelectorFromKeywordsStartsWithValidStartOfSelector: instanceCreationMessag
 			self signalInstanceCreationMessageSelectorStartsWithInvalidStartOfSelector].
 		! !
 
-
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/18/2018 15:13:34'!
 blockNodesFrom: aMethodNode
 		
@@ -3067,20 +3129,6 @@ variableNodesFrom: aBlockNode
 					ifTrue: [variableNodes add: aNode.]]). 					
 	
 	^variableNodes! !
-
-
-!classDefinition: #IntroduceNullObject category: #Refactoring!
-Refactoring subclass: #IntroduceNullObject
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'IntroduceNullObject class' category: #Refactoring!
-IntroduceNullObject class
-	instanceVariableNames: ''!
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 2/20/2019 11:01:56'!
 assert: methodNodes belongToTheHierarchyToRefactorRootedOn: aClass
@@ -3278,7 +3326,6 @@ assertSelectorStartsWithValisStartOfSelector: selector
 	selector first isValidStartOfIdentifiers ifFalse: [
 		self signalSelectorStartsWithInvalidStartOfSelector ].! !
 
-
 !IntroduceNullObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/20/2019 19:39:08'!
 buildMessageNodeToVariablesToParametrizeFrom: messageNodes
 excluding: aVarName
@@ -3376,7 +3423,6 @@ variablesToParametrizeFrom: messageNode excluding: aVarName
 	^variablesToParametrize
 	! !
 
-
 !IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 2/21/2019 10:22:11'!
 signalAllKeywordsMustHaveACorrespondingVariableToParametrize
 
@@ -3456,7 +3502,6 @@ signalSelectorMustNotContainInvalidCharacters
 signalSelectorStartsWithInvalidStartOfSelector
 
 	self refactoringError: self polymorphicSelectorMustNotStartWithInvalidStartOfSelectrErrorMessage.! !
-
 
 !IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 2/21/2019 10:22:41'!
 allKeywordsMustHaveACorrespondingVariableToParametrizeErrorMessage
@@ -3538,7 +3583,6 @@ polymorphicSelectorMustNotStartWithInvalidStartOfSelectrErrorMessage
 
 	^'Polymorphic selectors must not start with invalid start of selector'! !
 
-
 !IntroduceNullObject class methodsFor: 'instance creation' stamp: 'FGJ 3/13/2019 16:45:56'!
 on: anInstVarName
 of: aClassToRefactor
@@ -3603,14 +3647,6 @@ for: replacementParameters
 		
 		! !
 
-
-!classDefinition: #NullObjectHierarchyCreator category: #Refactoring!
-Refactoring subclass: #NullObjectHierarchyCreator
-	instanceVariableNames: 'concreteClass abstractClassName nullObjectClassName category'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-
 !NullObjectHierarchyCreator methodsFor: 'evaluating' stamp: 'FGJ 1/23/2019 17:10:26'!
 apply
 	
@@ -3646,7 +3682,6 @@ apply
 	
 	concreteClass superclass: abstractClass.! !
 
-
 !NullObjectHierarchyCreator methodsFor: 'initialization' stamp: 'FGJ 1/23/2019 15:45:22'!
 from: aConcreteClass
 withAbstractClassName: anAbstractClassName
@@ -3657,12 +3692,6 @@ inCategory: aCategory
 	abstractClassName := anAbstractClassName.
 	nullObjectClassName := aNullObjectClassName.
 	category := aCategory.! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'NullObjectHierarchyCreator class' category: #Refactoring!
-NullObjectHierarchyCreator class
-	instanceVariableNames: ''!
 
 !NullObjectHierarchyCreator class methodsFor: 'instance creation' stamp: 'FGJ 1/23/2019 15:45:55'!
 from: aConcreteClass
@@ -3683,14 +3712,6 @@ inCategory: aCategory
 newClassPreconditionClass
 	
 	^NewClassPrecondition! !
-
-
-!classDefinition: #ExtractToMethodObjectApplier category: #Refactoring!
-RefactoringApplier subclass: #ExtractToMethodObjectApplier
-	instanceVariableNames: 'smalltalkEditor classToRefactor methodNode panel done compiledMethodToExtract extractToMethodObjectRequest'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/17/2019 16:10:17'!
 createRefactoring
@@ -3734,7 +3755,6 @@ waitForUserResponse
 	[done] whileFalse: [w doOneCycleNow ].
 	w doOneCycleNow.! !
 
-
 !ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 2/14/2019 17:09:09'!
 cancel
 
@@ -3765,17 +3785,10 @@ variablesToParametrize
 
 	^OrderedCollection newFrom: (VariablesToExtractFinder valueIn: compiledMethodToExtract)! !
 
-
 !ExtractToMethodObjectApplier methodsFor: 'initialization' stamp: 'FGJ 2/13/2019 15:24:32'!
 initializeToExtract: aCompiledMethod
 
 	compiledMethodToExtract := aCompiledMethod.! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'ExtractToMethodObjectApplier class' category: #Refactoring!
-ExtractToMethodObjectApplier class
-	instanceVariableNames: ''!
 
 !ExtractToMethodObjectApplier class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/10/2018 11:45:57'!
 errorMessageForCanNotParseMethod: anError
@@ -3790,14 +3803,6 @@ errorMessageForCanNotParseMethod: anError
 extract: aCompiledMethod
 
 	^self new initializeToExtract: aCompiledMethod! !
-
-
-!classDefinition: #ExtractToMethodObjectRequest category: #Refactoring!
-Object subclass: #ExtractToMethodObjectRequest
-	instanceVariableNames: 'methodObjectClassNameModel methodObjectCategoryModel methodObjectSuperclassNameModel methodObjectEvaluationMessageSelectorModel variableToParametrizeToInstVarNameModel instanceCreationMessageModels'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 2/17/2019 16:22:39'!
 keywordsDefinitions
@@ -3833,7 +3838,6 @@ methodObjectSuperclassName
 variablesToParametrizeToInstanceVariables
 
 	^variableToParametrizeToInstVarNameModel collect: [:aInstVarNameModel | aInstVarNameModel actualContents string]! !
-
 
 !ExtractToMethodObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 14:19:54'!
 addToKeywords: keywordModel
@@ -3875,7 +3879,6 @@ methodObjectSuperclassNameModel: aModel
 	
 	methodObjectSuperclassNameModel := aModel.! !
 
-
 !ExtractToMethodObjectRequest methodsFor: 'initialization' stamp: 'FGJ 2/14/2019 17:25:45'!
 addKeyword: aKeywordModel for: aVariableName withParameterName: aParameterNameModel
 
@@ -3893,31 +3896,6 @@ initialize
 
 	variableToParametrizeToInstVarNameModel := Dictionary new.
 	instanceCreationMessageModels := OrderedCollection new.! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'ExtractToMethodObjectRequest class' category: #Refactoring!
-ExtractToMethodObjectRequest class
-	instanceVariableNames: ''!
-
-!ExtractToMethodObjectRequest class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:04:56'!
-initializedInstance
-
-	^self new initialize.! !
-
-
-!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: #Refactoring!
-Object subclass: #ReplaceIfNilWithPolymorphismParameters
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: #Refactoring!
-ReplaceIfNilWithPolymorphismParameters class
-	instanceVariableNames: ''!
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'instance creation' stamp: 'FGJ 3/13/2019 17:02:10'!
 assertVariablesToParametrizeFrom: aMessageNode haveACorrespondingKeywordOn: someVariablesToParametrizeKeywordsDefinitions
@@ -3964,7 +3942,6 @@ variablesToParametrizeFrom: aMessageNode
 	^variablesToParametrize
 	! !
 
-
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 16:13:32'!
 refactoringError: aMessage
 
@@ -3974,7 +3951,6 @@ refactoringError: aMessage
 refactoringErrorClass
 
 	^RefactoringError! !
-
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 3/13/2019 16:36:48'!
 assertMessageNodeRepresentsSupportedMessageSending: aMessageNode
@@ -4008,7 +3984,6 @@ assertMethodNode: methodNode includesMessageNode: messageNode
 	self signalMethodNodeMustIncludeMessageNode.
 	! !
 
-
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'error messages' stamp: 'FGJ 3/13/2019 16:37:10'!
 messageNodeMustRepresentSupportedMessageSendingErrorMessage
 
@@ -4018,7 +3993,6 @@ messageNodeMustRepresentSupportedMessageSendingErrorMessage
 methodNodeMustIncludeMessageNodeErrorMessage
 
 	^'Method node must include message node'! !
-
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'exceptions' stamp: 'FGJ 3/13/2019 16:36:26'!
 signalMessageNodeMustRepresentSupportedMessageSending
@@ -4030,25 +4004,10 @@ signalMethodNodeMustIncludeMessageNode
 
 	self refactoringError: self methodNodeMustIncludeMessageNodeErrorMessage.! !
 
-
-!classDefinition: #VariableToParametrizeKeywordDefinition category: #Refactoring!
-Object subclass: #VariableToParametrizeKeywordDefinition
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: #Refactoring!
-VariableToParametrizeKeywordDefinition class
-	instanceVariableNames: ''!
-
 !VariableToParametrizeKeywordDefinition class methodsFor: 'assertions' stamp: 'FGJ 3/13/2019 15:15:30'!
 assertParameterNameIsNotEmpty: aParameterName
 
 	aParameterName withBlanksTrimmed isEmpty ifTrue: [self signalParameterNameMustNotBeEmpty].! !
-
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 15:18:53'!
 refactoringError: anErrorMessage
@@ -4060,42 +4019,25 @@ refactoringErrorClass
 
 	^RefactoringError ! !
 
-
 !VariableToParametrizeKeywordDefinition class methodsFor: 'error messages' stamp: 'FGJ 3/13/2019 15:16:09'!
 parameterNameMustNotBeEmptyErrorMessage
 
 	^'Parameter name must not be empty'! !
-
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'instance creation' stamp: 'FGJ 3/13/2019 15:09:48'!
 forVariable: aVariableName useKeyword: aKeyword withParameterName: aParameterName
 
 	self assertParameterNameIsNotEmpty: aParameterName.! !
 
-
 !VariableToParametrizeKeywordDefinition class methodsFor: 'exceptions' stamp: 'FGJ 3/13/2019 15:15:57'!
 signalParameterNameMustNotBeEmpty
 
 	self refactoringError: self parameterNameMustNotBeEmptyErrorMessage.! !
 
-
-!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: #Refactoring!
-Object subclass: #VariablesToParametrizeKeywordsDefinitions
-	instanceVariableNames: 'selector'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 17:11:20'!
 withSelector: aSelector
 
 	selector := aSelector.! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: #Refactoring!
-VariablesToParametrizeKeywordsDefinitions class
-	instanceVariableNames: ''!
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 3/13/2019 14:03:36'!
 selectorMustNotBeEmptyErrorMessage
@@ -4111,7 +4053,6 @@ selectorMustNotContainInvalidCharactersErrorMessage
 selectorMustNotStartWithInvalidStartOfSelectorErrorMessage
 	
 	^'Selector must not start with invalid start of selector.'! !
-
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 3/13/2019 14:11:02'!
 assertDoesNotContainInvalidCharacters: aSelector
@@ -4130,7 +4071,6 @@ assertIsNotEmpty: aSymbol
 	
 	aSymbol withBlanksTrimmed isEmpty ifTrue: [ self signalSelectorMustNotBeEmpty ].! !
 
-
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 14:04:45'!
 refactoringError: aMessage 
 	
@@ -4141,7 +4081,6 @@ refactoringErrorClass
 	
 	^RefactoringError! !
 
-
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'instance creation' stamp: 'FGJ 3/13/2019 17:11:01'!
 withSelector: aSelector
 
@@ -4150,7 +4089,6 @@ withSelector: aSelector
 	self assertDoesNotStartWithInvalidStartOfSelector: aSelector.
 	
 	^self new withSelector: aSelector.! !
-
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'exceptions' stamp: 'FGJ 3/13/2019 14:03:04'!
 signalSelectorMustNotBeEmpty
@@ -4166,14 +4104,6 @@ signalSelectorMustNotContainInvalidCharacters
 signalSelectorMustNotStartWithInvalidStartOfSelector
 
 	self refactoringError: self selectorMustNotStartWithInvalidStartOfSelectorErrorMessage.! !
-
-
-!classDefinition: #ExtractToMethodObjectTest category: #Refactoring!
-ProtoObject subclass: #ExtractToMethodObjectTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:29:26'!
 test01MethodObjectClassNameMustNotBeEmpty
@@ -5601,7 +5531,6 @@ test62MethodObjectInstanceCreationMessageParameterNamesAreTheChosenOnes
 	
 	self assert: 'aParamName' equals: instanceCreationMethod methodNode arguments first name.! !
 
-
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 1/14/2019 11:55:33'!
 compiledMethodFrom: aSourceCode
 
@@ -5684,7 +5613,6 @@ sourceCodeBodyOfMethodReferencingSelf
 	^'
 		self isNil.'! !
 
-
 !ExtractToMethodObjectTest methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 18:44:40'!
 creationWithExtractedVariablesToInstanceVariables: parametrizedVariablesToInstanceVariables
 withInstanceCreationMessageFrom: keywordToParametrizedVariable
@@ -5718,14 +5646,6 @@ failsWithMessageText: aMessageTextBlock
 				evaluatedWith: self defaultEvaluationSelector ]
 		raise: RefactoringError
 		withMessageText: aMessageTextBlock.! !
-
-
-!classDefinition: #VariablesToExtractFinderTest category: #Refactoring!
-ProtoObject subclass: #VariablesToExtractFinderTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 3/4/2019 14:42:02'!
 test01WhenTheMethodHasNoVariablesItReturnsAnEmptySet
@@ -5909,7 +5829,6 @@ test11DoesNotFindGlobals
 	
 	self assert: variablesToExtract isEmpty! !
 
-
 !VariablesToExtractFinderTest methodsFor: 'variables to extract' stamp: 'HAW 3/4/2019 14:40:39'!
 variablesToExtractIn: aSourceCode at: aClass 
 	
@@ -5919,3 +5838,16 @@ variablesToExtractIn: aSourceCode at: aClass
 	
 	^VariablesToExtractFinder valueIn: (aClass>>selector)
 ! !
+
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'FGJ 3/14/2019 11:52:44'!
+extractMethodToMethodObject
+
+	| classToRefactor messageName |
+	
+	messageName := model selectedMessageName.
+	classToRefactor := model selectedClassOrMetaClass.
+	
+	messageName ifNotNil: [ | compiledMethod|
+		compiledMethod := classToRefactor compiledMethodAt: messageName.
+	
+		(ExtractToMethodObjectApplier extract: compiledMethod) value.].! !

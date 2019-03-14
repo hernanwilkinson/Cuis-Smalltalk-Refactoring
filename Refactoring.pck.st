@@ -2,6 +2,8 @@
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
 !provides: 'Refactoring' 1 299!
 SystemOrganization addCategory: #Refactoring!
+
+
 !classDefinition: #EntranceExitBlockEnumerator category: #Refactoring!
 ParseNodeEnumerator subclass: #EntranceExitBlockEnumerator
 	instanceVariableNames: 'exitBlock'

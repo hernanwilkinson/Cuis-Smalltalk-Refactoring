@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 14 March 2019 at 12:04:23 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 14 March 2019 at 12:31:02 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 300!
+!provides: 'Refactoring' 1 301!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -52,6 +52,16 @@ TextModelMorph subclass: #PreviewTextModelMorph
 	category: 'Refactoring'!
 !classDefinition: 'PreviewTextModelMorph class' category: #Refactoring!
 PreviewTextModelMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #ColoredScrollPane category: #Refactoring!
+PluggableScrollPane subclass: #ColoredScrollPane
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ColoredScrollPane class' category: #Refactoring!
+ColoredScrollPane class
 	instanceVariableNames: ''!
 
 !classDefinition: #ExtractToMethodObjectForm category: #Refactoring!
@@ -204,6 +214,16 @@ RefactoringApplier subclass: #ExtractToMethodObjectApplier
 ExtractToMethodObjectApplier class
 	instanceVariableNames: ''!
 
+!classDefinition: #ChangeRowOrderButtonModel category: #Refactoring!
+Object subclass: #ChangeRowOrderButtonModel
+	instanceVariableNames: 'tableModel rowPosition'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ChangeRowOrderButtonModel class' category: #Refactoring!
+ChangeRowOrderButtonModel class
+	instanceVariableNames: ''!
+
 !classDefinition: #ExtractToMethodObjectRequest category: #Refactoring!
 Object subclass: #ExtractToMethodObjectRequest
 	instanceVariableNames: 'methodObjectClassNameModel methodObjectCategoryModel methodObjectSuperclassNameModel methodObjectEvaluationMessageSelectorModel variableToParametrizeToInstVarNameModel instanceCreationMessageModels'
@@ -212,6 +232,16 @@ Object subclass: #ExtractToMethodObjectRequest
 	category: 'Refactoring'!
 !classDefinition: 'ExtractToMethodObjectRequest class' category: #Refactoring!
 ExtractToMethodObjectRequest class
+	instanceVariableNames: ''!
+
+!classDefinition: #RefactoringPackageRefactoringMenues category: #Refactoring!
+Object subclass: #RefactoringPackageRefactoringMenues
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'RefactoringPackageRefactoringMenues class' category: #Refactoring!
+RefactoringPackageRefactoringMenues class
 	instanceVariableNames: ''!
 
 !classDefinition: #ReplaceIfNilWithPolymorphismParameters category: #Refactoring!
@@ -390,6 +420,18 @@ withText: aText withColor: aColor withWidth: aWidth
 innerMorphClass
 
 	^PreviewInnerTextMorph ! !
+
+!ColoredScrollPane methodsFor: 'as yet unclassified' stamp: 'FGJ 2/5/2019 16:22:45'!
+drawOn: aCanvas
+
+	color := Color lightGray.
+	
+	super drawOn: aCanvas.! !
+
+!ColoredScrollPane methodsFor: 'as yet unclassified' stamp: 'FGJ 2/5/2019 16:24:51'!
+getMenu
+	
+	^nil! !
 
 !ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 2/5/2019 16:25:41'!
 backgroundColor
@@ -3804,6 +3846,37 @@ extract: aCompiledMethod
 
 	^self new initializeToExtract: aCompiledMethod! !
 
+!ChangeRowOrderButtonModel methodsFor: 'initialization' stamp: 'FGJ 2/9/2019 16:33:36'!
+for: aRowIndex notifying: aTableModel
+
+	rowPosition := aRowIndex.
+	tableModel := aTableModel.! !
+
+!ChangeRowOrderButtonModel methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 18:13:42'!
+moveDown
+
+	tableModel moveDownRow: rowPosition.! !
+
+!ChangeRowOrderButtonModel methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 17:21:03'!
+moveUp
+
+	tableModel moveUpRow: rowPosition.! !
+
+!ChangeRowOrderButtonModel methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 18:13:06'!
+wasMovedDown
+
+	rowPosition := rowPosition - 1.! !
+
+!ChangeRowOrderButtonModel methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 18:13:18'!
+wasMovedUp
+
+	rowPosition := rowPosition + 1.! !
+
+!ChangeRowOrderButtonModel class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/8/2019 16:27:13'!
+for: aRowIndex notifying: aTableModel
+
+	^self new for: aRowIndex notifying: aTableModel! !
+
 !ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 2/17/2019 16:22:39'!
 keywordsDefinitions
 
@@ -3896,6 +3969,20 @@ initialize
 
 	variableToParametrizeToInstVarNameModel := Dictionary new.
 	instanceCreationMessageModels := OrderedCollection new.! !
+
+!RefactoringPackageRefactoringMenues class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/14/2019 12:23:07'!
+messsageRefactoringMenuOptions
+
+	^ `{
+			{
+				#itemGroup 	-> 		10.
+				#itemOrder 		-> 		50.
+				#label 			-> 		'extract to method object'.
+				#selector 		-> 		#extractMethodToMethodObject.
+				#icon 			-> 		#newFolderIcon
+			} asDictionary.
+
+	}`! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'instance creation' stamp: 'FGJ 3/13/2019 17:02:10'!
 assertVariablesToParametrizeFrom: aMessageNode haveACorrespondingKeywordOn: someVariablesToParametrizeKeywordsDefinitions

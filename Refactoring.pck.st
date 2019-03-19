@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 19 March 2019 at 3:11:56 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 19 March 2019 at 7:24:42 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 321!
+!provides: 'Refactoring' 1 333!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -186,7 +186,7 @@ ExtractToMethodObject class
 
 !classDefinition: #IntroduceNullObject category: #Refactoring!
 Refactoring subclass: #IntroduceNullObject
-	instanceVariableNames: ''
+	instanceVariableNames: 'instVar classToRefactor concreteClass nullClass replacementParameters'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -1145,7 +1145,7 @@ previewModel: aPreviewModel
 
 	previewModel := aPreviewModel.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 16:19:09'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:25'!
 test01BlocksToExtractMustNotContainReferencesToSuper
 
 	| aClassToRefactor sourceWithIf ifMessageNode replacementParameters definitions methodNode |
@@ -1160,7 +1160,7 @@ test01BlocksToExtractMustNotContainReferencesToSuper
 	
 	definitions :=
 		VariablesToParametrizeKeywordsDefinitions
-			with: {VariableToParametrizeKeywordDefinition forVariable: 'super' useKeyword: #with withParameterName: 'p1'}.
+			initializeWith: {VariableToParametrizeKeywordDefinition forVariable: 'super' useKeyword: #with withParameterName: 'p1'}.
 	replacementParameters := 
 		ReplaceIfNilWithPolymorphismParameters
 			forIfNilMessageSending: ifMessageNode
@@ -1342,7 +1342,115 @@ test14MessageNodesReceiverMustBeTheInstVar
 		withMessageText: [ 
 			IntroduceNullObject messageNodeReceiverMustBeTheInstVarErrorMessage].! !
 
-!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/17/2019 18:25:51'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:49'!
+test15ConcreteClassMustNotContainAnyPolymorphicSelector
+
+	| aClassToRefactor sourceWithIf ifMessageNode replacementParameters definitions methodNode concreteClass |
+
+	aClassToRefactor := self 
+		createClassNamed: #AClassToRefactor
+		instanceVariableNames: self defaultInstVarName.
+	sourceWithIf := 'm1 ', self defaultInstVarName, ' ifNil: [ 1 + 1 ]'.
+	aClassToRefactor compile: sourceWithIf.
+	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
+	ifMessageNode :=  methodNode block statements first.
+	
+	definitions := VariablesToParametrizeKeywordsDefinitions
+		initializeWithSelector: #unaryPolymorphicSelector.
+	replacementParameters := 
+		ReplaceIfNilWithPolymorphismParameters
+			forIfNilMessageSending: ifMessageNode
+			onMethod: methodNode
+			useKeywordsDefinitions: definitions.
+	
+	concreteClass := self createClassNamed: #ConcreteClass.
+	concreteClass compile: 'unaryPolymorphicSelector'.
+	
+	self 
+		should: [ 
+			IntroduceNullObject 
+				on: self defaultInstVarName
+				of: aClassToRefactor
+				usingAsConcreteClass: concreteClass
+				usingAsNullClass: (self createClassNamed: #NullClass)
+				for: {replacementParameters}]
+		raise: RefactoringError
+		withMessageText: [
+			IntroduceNullObject polymorphicSelectorsMustNotBeDefinedInTheNullObjectClassesErrorMessage].! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:21:08'!
+test16NullClassMustNotContainAnyPolymorphicSelector
+
+	| aClassToRefactor sourceWithIf ifMessageNode replacementParameters definitions methodNode nullClass |
+
+	aClassToRefactor := self 
+		createClassNamed: #AClassToRefactor
+		instanceVariableNames: self defaultInstVarName.
+	sourceWithIf := 'm1 ', self defaultInstVarName, ' ifNil: [ 1 + 1 ]'.
+	aClassToRefactor compile: sourceWithIf.
+	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
+	ifMessageNode :=  methodNode block statements first.
+	
+	definitions := VariablesToParametrizeKeywordsDefinitions
+		initializeWithSelector: #unaryPolymorphicSelector.
+	replacementParameters := 
+		ReplaceIfNilWithPolymorphismParameters
+			forIfNilMessageSending: ifMessageNode
+			onMethod: methodNode
+			useKeywordsDefinitions: definitions.
+	
+	nullClass := self createClassNamed: #NullClass.
+	nullClass compile: 'unaryPolymorphicSelector'.
+	
+	self 
+		should: [ 
+			IntroduceNullObject 
+				on: self defaultInstVarName
+				of: aClassToRefactor
+				usingAsConcreteClass: (self createClassNamed: #ConcreteClass)
+				usingAsNullClass: nullClass
+				for: {replacementParameters}]
+		raise: RefactoringError
+		withMessageText: [
+			IntroduceNullObject polymorphicSelectorsMustNotBeDefinedInTheNullObjectClassesErrorMessage].! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:42:39'!
+test17WhenThereAreNoVariablesToParametrizeReplacesIfNilWithPolymorphicMessageSend
+
+	| aClassToRefactor sourceWithIf ifMessageNode replacementParameters definitions methodNode actualRefactoredSourceCode expectedRefactoredSourceCode refactoring selector |
+
+	aClassToRefactor := self 
+		createClassNamed: #AClassToRefactor
+		instanceVariableNames: self defaultInstVarName.
+	sourceWithIf := 'm1 ', self defaultInstVarName, ' ifNil: [ 1 + 1 ]'.
+	aClassToRefactor compile: sourceWithIf.
+	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
+	ifMessageNode :=  methodNode block statements first.
+	
+	selector := #unaryPolymorphicSelector.
+	definitions := VariablesToParametrizeKeywordsDefinitions
+		initializeWithSelector: selector.
+	replacementParameters := 
+		ReplaceIfNilWithPolymorphismParameters
+			forIfNilMessageSending: ifMessageNode
+			onMethod: methodNode
+			useKeywordsDefinitions: definitions.
+	
+	refactoring := IntroduceNullObject
+		on: self defaultInstVarName
+		of: aClassToRefactor
+		usingAsConcreteClass: (self createClassNamed: #ConcreteClass)
+		usingAsNullClass: (self createClassNamed: #NullClass)
+		for: {replacementParameters}.
+	
+	refactoring apply.
+	
+	expectedRefactoredSourceCode := 'm1 ',
+		self defaultInstVarName, ' ', selector asString.
+	actualRefactoredSourceCode := (aClassToRefactor compiledMethodAt: #m1) sourceCode.
+	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
+
+!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 17:16:59'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
@@ -1372,7 +1480,7 @@ defaultPolymorphicUnarySelector
 
 	^#polymorphismWins! !
 
-!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/18/2019 17:05:48'!
+!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 17:12:25'!
 replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass	
 	
 	| messageNode methodNode definitions |
@@ -1382,7 +1490,7 @@ replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass
 	messageNode := methodNode block statements first.
 	definitions := 
 		VariablesToParametrizeKeywordsDefinitions 
-			with: {VariableToParametrizeKeywordDefinition 
+			initializeWith: {VariableToParametrizeKeywordDefinition 
 				forVariable: self defaultInstVarName
 				useKeyword: #with
 				withParameterName: 'paramName'}.
@@ -1392,7 +1500,7 @@ replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass
 		onMethod: methodNode
 		useKeywordsDefinitions: definitions.! !
 
-!IntroduceNullObjectTest methodsFor: 'assertions' stamp: 'FGJ 3/18/2019 16:39:13'!
+!IntroduceNullObjectTest methodsFor: 'assertions' stamp: 'FGJ 3/19/2019 17:12:26'!
 creationFromSourceCode: aSourceCodeBody failsWithMessageText: messageTextBlock
 
 	| aClassToRefactor ifMessageNode methodNode replacementParameters definitions |
@@ -1406,7 +1514,7 @@ creationFromSourceCode: aSourceCodeBody failsWithMessageText: messageTextBlock
 	
 	definitions := 
 		VariablesToParametrizeKeywordsDefinitions 
-			with: {VariableToParametrizeKeywordDefinition 
+			initializeWith: {VariableToParametrizeKeywordDefinition 
 					forVariable: self defaultInstVarName
 					useKeyword:  #with
 					withParameterName: 'paramName'}.
@@ -1427,7 +1535,7 @@ creationFromSourceCode: aSourceCodeBody failsWithMessageText: messageTextBlock
 		raise: RefactoringError
 		withMessageText: messageTextBlock.! !
 
-!IntroduceNullObjectTest methodsFor: 'assertions' stamp: 'FGJ 3/18/2019 16:40:54'!
+!IntroduceNullObjectTest methodsFor: 'assertions' stamp: 'FGJ 3/19/2019 17:12:49'!
 creationFromSourceCode: aSourceCodeBody shouldntRaise: anException
 
 	| aClassToRefactor ifMessageNode methodNode replacementParameters definitions |
@@ -1441,7 +1549,7 @@ creationFromSourceCode: aSourceCodeBody shouldntRaise: anException
 	
 	definitions := 
 		VariablesToParametrizeKeywordsDefinitions 
-			withSelector: self defaultPolymorphicUnarySelector.
+			initializeWithSelector: self defaultPolymorphicUnarySelector.
 			 
 	replacementParameters := 
 		ReplaceIfNilWithPolymorphismParameters
@@ -1884,7 +1992,7 @@ abstractClassName
 
 	^#AnAbstractClassName! !
 
-!NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 1/23/2019 14:29:37'!
+!NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 3/19/2019 17:18:50'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData! !
@@ -1927,12 +2035,12 @@ failsWithMessageText: aMessageTextBlock
 		raise: RefactoringError
 		withMessageText: aMessageTextBlock.! !
 
-!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'accessing' stamp: 'FGJ 3/13/2019 15:52:48'!
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'accessing' stamp: 'FGJ 3/19/2019 17:18:36'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
-!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/13/2019 16:14:42'!
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:49'!
 test01MessageNodeMustBelongToTheMethodNode
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf |
@@ -1947,7 +2055,7 @@ test01MessageNodeMustBelongToTheMethodNode
 	methodNode := (aClassToRefactor compiledMethodAt: #m2) methodNode.
 	
 	variablesToParametrizeKeywordsDefinitions :=
-		VariablesToParametrizeKeywordsDefinitions withSelector: #polymorphicSelector.
+		VariablesToParametrizeKeywordsDefinitions initializeWithSelector: #polymorphicSelector.
 	
 	self
 		should: [
@@ -1959,7 +2067,7 @@ test01MessageNodeMustBelongToTheMethodNode
 		withMessageText: [
 			ReplaceIfNilWithPolymorphismParameters methodNodeMustIncludeMessageNodeErrorMessage].! !
 
-!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/13/2019 16:37:51'!
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:49'!
 test02MessageNodeMustRepresentASupportedMessageSent
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf |
@@ -1972,7 +2080,7 @@ test02MessageNodeMustRepresentASupportedMessageSent
 	messageNode := methodNode block statements first.
 	
 	variablesToParametrizeKeywordsDefinitions :=
-		VariablesToParametrizeKeywordsDefinitions withSelector: #polymorphicSelector.
+		VariablesToParametrizeKeywordsDefinitions initializeWithSelector: #polymorphicSelector.
 	
 	self
 		should: [
@@ -1984,7 +2092,7 @@ test02MessageNodeMustRepresentASupportedMessageSent
 		withMessageText: [
 			ReplaceIfNilWithPolymorphismParameters messageNodeMustRepresentSupportedMessageSendingErrorMessage].! !
 
-!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 15:22:04'!
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:49'!
 test03AllVariablesToParametrizeHaveACorrespondingKeyword
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf |
@@ -1997,7 +2105,7 @@ test03AllVariablesToParametrizeHaveACorrespondingKeyword
 	messageNode := methodNode block statements first.
 	
 	variablesToParametrizeKeywordsDefinitions :=
-		VariablesToParametrizeKeywordsDefinitions withSelector: #polymorphicSelector.
+		VariablesToParametrizeKeywordsDefinitions initializeWithSelector: #polymorphicSelector.
 	
 	self
 		should: [
@@ -2009,7 +2117,7 @@ test03AllVariablesToParametrizeHaveACorrespondingKeyword
 		withMessageText: [
 			ReplaceIfNilWithPolymorphismParameters allVariablesToParametrizeMustHaveAKeywordErrorMessage].! !
 
-!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 15:22:34'!
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:25'!
 test04AllKeywordsMustHaveACorrespondingVariableToParametrize
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf definitions |
@@ -2031,7 +2139,7 @@ test04AllKeywordsMustHaveACorrespondingVariableToParametrize
 			useKeyword: #with
 			withParameterName: 'pInexistentVar'}.
 	variablesToParametrizeKeywordsDefinitions :=
-		VariablesToParametrizeKeywordsDefinitions with: definitions.
+		VariablesToParametrizeKeywordsDefinitions initializeWith: definitions.
 	
 	self
 		should: [
@@ -2043,7 +2151,7 @@ test04AllKeywordsMustHaveACorrespondingVariableToParametrize
 		withMessageText: [
 			ReplaceIfNilWithPolymorphismParameters allKeywordsMustHaveACorrespondingVariableToParametrizeErrorMessage].! !
 
-!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 16:29:48'!
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:26'!
 test05CreatesReplaceIfNilWithPolymorphismParameters
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf definitions parameters |
@@ -2061,7 +2169,7 @@ test05CreatesReplaceIfNilWithPolymorphismParameters
 			useKeyword: #with
 			withParameterName: 'pSelf'}.
 	variablesToParametrizeKeywordsDefinitions :=
-		VariablesToParametrizeKeywordsDefinitions with: definitions.
+		VariablesToParametrizeKeywordsDefinitions initializeWith: definitions.
 	
 	parameters :=
 		ReplaceIfNilWithPolymorphismParameters 
@@ -2071,7 +2179,7 @@ test05CreatesReplaceIfNilWithPolymorphismParameters
 			
 	self assert: messageNode equals: parameters messageNode.! !
 
-!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 17:42:59'!
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:26'!
 test06ReplaceIfNilWithPolymorphismParametersOnBlocksWithBooleanConstants
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf definitions parameters |
@@ -2089,7 +2197,7 @@ test06ReplaceIfNilWithPolymorphismParametersOnBlocksWithBooleanConstants
 			useKeyword: #with
 			withParameterName: 'pSelf'}.
 	variablesToParametrizeKeywordsDefinitions :=
-		VariablesToParametrizeKeywordsDefinitions with: definitions.
+		VariablesToParametrizeKeywordsDefinitions initializeWith: definitions.
 	
 	parameters :=
 		ReplaceIfNilWithPolymorphismParameters 
@@ -2098,6 +2206,101 @@ test06ReplaceIfNilWithPolymorphismParametersOnBlocksWithBooleanConstants
 			useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions.
 			
 	self assert: messageNode equals: parameters messageNode.! !
+
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:26'!
+test07ParameterNamesMustNotBeEqualToABlockTemporal
+
+	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf definitions |
+	
+	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'anInstVar'.
+	sourceWithIf := 'm1 anInstVar ifNil: [ | tempVar | tempVar := 1 + 1. self isNil].'.
+	aClassToRefactor compile: sourceWithIf.
+	
+	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
+	messageNode := methodNode block statements first.
+	
+	definitions := {
+		VariableToParametrizeKeywordDefinition 
+			forVariable: 'self'
+			useKeyword: #with
+			withParameterName: 'tempVar'}.
+	variablesToParametrizeKeywordsDefinitions :=
+		VariablesToParametrizeKeywordsDefinitions initializeWith: definitions.
+	
+	self
+		should: [
+			ReplaceIfNilWithPolymorphismParameters 
+				forIfNilMessageSending: messageNode
+				onMethod: methodNode
+				useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions]
+		raise: RefactoringError
+		withMessageText: [
+			ReplaceIfNilWithPolymorphismParameters
+				parameterNameMustNotBeEqualToBlockTemporaryErrorMessage].! !
+
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:25'!
+test08ParameterNamesMustNotBeEqualToANestedBlockTemporal
+
+	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf definitions |
+	
+	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'anInstVar'.
+	sourceWithIf := 'm1 
+		anInstVar ifNil: [self ifNil: [ | tempVar | tempVar := 1 + 1]].'.
+	aClassToRefactor compile: sourceWithIf.
+	
+	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
+	messageNode := methodNode block statements first.
+	
+	definitions := {
+		VariableToParametrizeKeywordDefinition 
+			forVariable: 'self'
+			useKeyword: #with
+			withParameterName: 'tempVar'}.
+	variablesToParametrizeKeywordsDefinitions :=
+		VariablesToParametrizeKeywordsDefinitions initializeWith: definitions.
+	
+	self
+		should: [
+			ReplaceIfNilWithPolymorphismParameters 
+				forIfNilMessageSending: messageNode
+				onMethod: methodNode
+				useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions]
+		raise: RefactoringError
+		withMessageText: [
+			ReplaceIfNilWithPolymorphismParameters
+				parameterNameMustNotBeEqualToBlockTemporaryErrorMessage].! !
+
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:25'!
+test09ParameterNamesMustNotBeEqualToNestedBlocksArguments
+
+	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf definitions |
+	
+	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'anInstVar'.
+	sourceWithIf := 'm1 
+		anInstVar ifNil: [self allInstVarNames collect: [:arg | arg asSymbol]].'.
+	aClassToRefactor compile: sourceWithIf.
+	
+	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
+	messageNode := methodNode block statements first.
+	
+	definitions := {
+		VariableToParametrizeKeywordDefinition 
+			forVariable: 'self'
+			useKeyword: #with
+			withParameterName: 'arg'}.
+	variablesToParametrizeKeywordsDefinitions :=
+		VariablesToParametrizeKeywordsDefinitions initializeWith: definitions.
+	
+	self
+		should: [
+			ReplaceIfNilWithPolymorphismParameters 
+				forIfNilMessageSending: messageNode
+				onMethod: methodNode
+				useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions]
+		raise: RefactoringError
+		withMessageText: [
+			ReplaceIfNilWithPolymorphismParameters
+				parameterNameMustNotBeEqualToBlockTemporaryErrorMessage ].! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'assertions' stamp: 'FGJ 3/18/2019 12:31:43'!
 creationWithKeyword: aKeyword failsWithMessageText: anErrorMessageBlock 
@@ -2123,7 +2326,7 @@ creationWithParameterName: aParameterName failsWithMessageText: anErrorMessageBl
 		raise: RefactoringError
 		withMessageText: anErrorMessageBlock.! !
 
-!VariableToParametrizeKeywordDefinitionTest methodsFor: 'accessing' stamp: 'FGJ 3/13/2019 15:10:19'!
+!VariableToParametrizeKeywordDefinitionTest methodsFor: 'accessing' stamp: 'FGJ 3/19/2019 17:18:25'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
@@ -2200,11 +2403,11 @@ test06CreatesADefinition
 	self assert: variableName equals: definition variableName.
 	self assert: parameterName equals: definition parameterName.! !
 
-!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/13/2019 14:15:54'!
+!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:49'!
 creationWithSelector: aSelector failsWithMessageText: anErrorMessageBlock
 
 	self
-		should: [VariablesToParametrizeKeywordsDefinitions withSelector: aSelector]
+		should: [VariablesToParametrizeKeywordsDefinitions initializeWithSelector: aSelector]
 		raise: RefactoringError
 		withMessageText: anErrorMessageBlock.! !
 
@@ -2232,16 +2435,16 @@ test03SelectorMustNotStartWithInvalidStartOfSelector
 		failsWithMessageText: [
 			VariablesToParametrizeKeywordsDefinitions selectorMustNotStartWithInvalidStartOfSelectorErrorMessage].! !
 
-!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/13/2019 17:10:19'!
+!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:49'!
 test04CreatesVariablesToParametrizeKeywordsDefinitionsWithSelector
 
 	| variablesToParametrizeKeywordsDefinitions |
 	
-	variablesToParametrizeKeywordsDefinitions := VariablesToParametrizeKeywordsDefinitions withSelector: #polymorphicSelector.
+	variablesToParametrizeKeywordsDefinitions := VariablesToParametrizeKeywordsDefinitions initializeWithSelector: #polymorphicSelector.
 	
 	self assert: #polymorphicSelector asString equals: variablesToParametrizeKeywordsDefinitions messageSending.! !
 
-!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 12:52:28'!
+!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:25'!
 test05FirstKeywordMustNotStartWithAnInvalidStartOfSelector
 
 	| orderedDefinitions |
@@ -2252,11 +2455,11 @@ test05FirstKeywordMustNotStartWithAnInvalidStartOfSelector
 		withParameterName: 'parameterName'}.
 		
 	self 
-		should: [VariablesToParametrizeKeywordsDefinitions with: orderedDefinitions]
+		should: [VariablesToParametrizeKeywordsDefinitions initializeWith: orderedDefinitions]
 		raise: RefactoringError
 		withMessageText: [VariablesToParametrizeKeywordsDefinitions firstKeywordMustNoStartWithInvalidStartOfSelectorErrorMessage].! !
 
-!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 14:28:05'!
+!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:26'!
 test06ParameterNamesMustNotBeRepeated
 
 	| orderedDefinitionsWithRepeatedParameterNames |
@@ -2272,11 +2475,11 @@ test06ParameterNamesMustNotBeRepeated
 			withParameterName: 'parameterName'}.
 		
 	self 
-		should: [VariablesToParametrizeKeywordsDefinitions with: orderedDefinitionsWithRepeatedParameterNames]
+		should: [VariablesToParametrizeKeywordsDefinitions initializeWith: orderedDefinitionsWithRepeatedParameterNames]
 		raise: RefactoringError
 		withMessageText: [VariablesToParametrizeKeywordsDefinitions parameterNamesMustNotBeRepeatedErrorMessage].! !
 
-!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 14:28:57'!
+!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:26'!
 test07VariablesToParametrizeMustNotBeRepeated
 
 	| orderedDefinitionsWithRepeatedVariableNames |
@@ -2292,11 +2495,11 @@ test07VariablesToParametrizeMustNotBeRepeated
 			withParameterName: 'p2'}.
 		
 	self 
-		should: [VariablesToParametrizeKeywordsDefinitions with: orderedDefinitionsWithRepeatedVariableNames]
+		should: [VariablesToParametrizeKeywordsDefinitions initializeWith: orderedDefinitionsWithRepeatedVariableNames]
 		raise: RefactoringError
 		withMessageText: [VariablesToParametrizeKeywordsDefinitions variableNamesMustNotBeRepeatedErrorMessage].! !
 
-!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 15:14:43'!
+!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:26'!
 test08CreatesVariablesToParametrizeKeywordsDefinitionsWithDefinitions
 
 	| definitions orderedDefinitions |
@@ -2311,12 +2514,42 @@ test08CreatesVariablesToParametrizeKeywordsDefinitionsWithDefinitions
 			useKeyword: #k2
 			withParameterName: 'p2'}.
 		
-	definitions := VariablesToParametrizeKeywordsDefinitions with: orderedDefinitions.
+	definitions := VariablesToParametrizeKeywordsDefinitions initializeWith: orderedDefinitions.
 	
 	self assert: 2 equals: definitions variablesToParametrize size.
 	self assert: (definitions variablesToParametrize includesAllOf: #('v1' 'v2')).! !
 
-!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 12:31:11'!
+!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:49'!
+test09WhenNoVariablesToParametrizeBuildsSelector
+
+	| definitions |
+	
+	definitions := VariablesToParametrizeKeywordsDefinitions
+		initializeWithSelector: #theSelector.
+	
+	self assert: #theSelector equals: definitions selector.! !
+
+!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/19/2019 17:12:26'!
+test10WhenVariablesToParametrizeBuildsSelectorFromKeywordsInOrder
+
+	| definitions orderedDefinitions |
+	
+	orderedDefinitions := {
+		VariableToParametrizeKeywordDefinition 
+			forVariable: 'v1'
+			useKeyword: #k1
+			withParameterName: 'p1'.
+		VariableToParametrizeKeywordDefinition
+			forVariable: 'v2'
+			useKeyword: #k2
+			withParameterName: 'p2'}.
+		
+	definitions := VariablesToParametrizeKeywordsDefinitions
+		initializeWith: orderedDefinitions.
+	
+	self assert: #k1:k2: equals: definitions selector.! !
+
+!VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 17:16:19'!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
@@ -2418,12 +2651,12 @@ methodHeaderFrom: aCompiledMethod
 	^methodToExtractSourceCode first: headerLength.
 	! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 14:58:42'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 17:12:26'!
 methodToExtractBodySourceCode
 
 	| aStream methodBodyAsBlock |
 	
-	aStream := RWBinaryOrTextStream with: ''.
+	aStream := RWBinaryOrTextStream initializeWith: ''.
 	methodBodyAsBlock := methodToExtract methodNode block.
 	methodBodyAsBlock printOn: aStream indent: 0.
 	^self removeBlockEnclosingCharacters: aStream contents.! !
@@ -3144,6 +3377,28 @@ variableNodesFrom: aBlockNode
 	
 	^variableNodes! !
 
+!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/19/2019 17:54:43'!
+apply
+
+	replacementParameters do: [:parameter | self applyWith: parameter].! !
+
+!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/19/2019 17:55:00'!
+applyWith: replacementParameter
+! !
+
+!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/19/2019 17:52:48'!
+initializeOn: anInstVarName
+of: aClassToRefactor
+usingAsConcreteClass: aConcreteClass
+usingAsNullClass: aNullClass
+for: someReplacementParameters
+
+	instVar := anInstVarName.
+	classToRefactor := aClassToRefactor.
+	concreteClass := aConcreteClass.
+	nullClass := aNullClass.
+	replacementParameters := someReplacementParameters.! !
+
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 2/20/2019 11:01:56'!
 assert: methodNodes belongToTheHierarchyToRefactorRootedOn: aClass
 
@@ -3212,6 +3467,16 @@ assertMessageNodesAreNotDuplicated: messageNodes
 		:messageNode |
 		(messageNodes occurrencesOf: messageNode) > 1 ifTrue: [
 			self signalMessageNodesMustNotBeDuplicated ]].! !
+
+!IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 3/19/2019 17:06:00'!
+assertPolymorphicSelectorsFrom: replacementParameters areNotDefinedIn: aClass
+
+	| anySelectorAlreadyDefined |
+	anySelectorAlreadyDefined := replacementParameters anySatisfy: [:parameter |
+		aClass selectors includes: parameter polymorphicSelector].
+	
+	anySelectorAlreadyDefined ifTrue: [self signalPolymorphicSelectorsMustNotBeDefinedInTheNullObjectClasses].
+	! !
 
 !IntroduceNullObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 18:44:32'!
 containsAssignmentToNotBlockTemporal: messageNode
@@ -3298,6 +3563,11 @@ signalMethodNodesMustBelongToHierarchyToRefactor
 
 	self refactoringError: self methodsMustBelongToTheHierarchyToRefactorErrorMessage.! !
 
+!IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 3/19/2019 17:06:18'!
+signalPolymorphicSelectorsMustNotBeDefinedInTheNullObjectClasses
+
+	self refactoringError: self polymorphicSelectorsMustNotBeDefinedInTheNullObjectClassesErrorMessage.! !
+
 !IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 2/19/2019 18:18:10'!
 blocksToExtractCannotContainAssignmentsToVariablesThatAreNotBlockTemporalsErrorMessage
 
@@ -3338,7 +3608,12 @@ methodsMustBelongToTheHierarchyToRefactorErrorMessage
 
 	^'Methods must belong to the hierarchy to refactor'! !
 
-!IntroduceNullObject class methodsFor: 'instance creation' stamp: 'FGJ 3/18/2019 17:24:02'!
+!IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 3/19/2019 17:07:07'!
+polymorphicSelectorsMustNotBeDefinedInTheNullObjectClassesErrorMessage
+
+	^'Polymorphic selectors must not be defined neither in the concrete nor the null class.' ! !
+
+!IntroduceNullObject class methodsFor: 'instance creation' stamp: 'FGJ 3/19/2019 17:46:08'!
 on: anInstVarName
 of: aClassToRefactor
 usingAsConcreteClass: aConcreteClass
@@ -3348,7 +3623,6 @@ for: replacementParameters
 	| messageNodes methodNodes |
 	
 	messageNodes := replacementParameters collect: [:parameter | parameter messageNode].
-	
 	self assertBlocksDoNotContainReferencesToSuper: messageNodes.
 	self assertBlocksDoNotContainAssignmentsToVariablesThatAreNotBlockTemporals: messageNodes.
 	self assertBlocksDoNotContainReturnStatements: messageNodes.
@@ -3358,11 +3632,20 @@ for: replacementParameters
 	self assert: aConcreteClass isDifferentFrom: aNullClass.
 	
 	methodNodes := replacementParameters collect: [:parameter | parameter methodNode].
-	
 	self assert: methodNodes belongToTheHierarchyToRefactorRootedOn: aClassToRefactor.
 	self assertMessageNodesAreNotDuplicated: messageNodes.
+	self assertMessageNodes: messageNodes receiverIs: anInstVarName.
 	
-	self assertMessageNodes: messageNodes receiverIs: anInstVarName.! !
+	self assertPolymorphicSelectorsFrom: replacementParameters areNotDefinedIn: aConcreteClass.
+	self assertPolymorphicSelectorsFrom: replacementParameters areNotDefinedIn: aNullClass.
+	
+	^self new
+		initializeOn: anInstVarName
+		of: aClassToRefactor
+		usingAsConcreteClass: aConcreteClass
+		usingAsNullClass: aNullClass
+		for: replacementParameters
+! !
 
 !NullObjectHierarchyCreator methodsFor: 'evaluating' stamp: 'FGJ 1/23/2019 17:10:26'!
 apply
@@ -3678,7 +3961,12 @@ methodNode
 	
 	^methodNode! !
 
-!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'instance creation' stamp: 'FGJ 3/18/2019 17:02:53'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/19/2019 17:08:22'!
+polymorphicSelector
+
+	^definitions selector! !
+
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'instance creation' stamp: 'FGJ 3/19/2019 16:28:37'!
 forIfNilMessageSending: aMessageNode
 onMethod: aMethodNode
 useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
@@ -3695,12 +3983,35 @@ useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 	self
 		assertKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 		haveACorrespondingVariableToParametrizeFrom: variablesToParametrize.
-		
+	
+	self 
+		assertParameterNamesOf: variablesToParametrizeKeywordsDefinitions 
+		areNotEqualToBlockTemporariesOrArgumentsOn: aMessageNode.
+	
 	^self new 
 		initializeForIfNilMessageSending: aMessageNode
 		onMethod: aMethodNode
 		useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 ! !
+
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 16:30:07'!
+allTemporariesNamesAndArgumentsFrom: aBlockNode
+
+	| blocksTemporaries |
+	
+	blocksTemporaries := Set new.
+	
+	aBlockNode accept: (ParseNodeEnumerator ofBlock: [:node |
+		node isBlockNode ifTrue: [
+			blocksTemporaries addAll: (self temporariesNamesFrom: node).
+			blocksTemporaries addAll: (self argumentsNamesFrom: node)]]).
+	
+	^blocksTemporaries! !
+
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 16:30:29'!
+argumentsNamesFrom: aNode
+
+	^aNode arguments collect: [:arg | arg name]! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 16:13:32'!
 refactoringError: aMessage
@@ -3712,7 +4023,12 @@ refactoringErrorClass
 
 	^RefactoringError! !
 
-!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/18/2019 17:58:39'!
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 15:51:50'!
+temporariesNamesFrom: aNode
+
+	^aNode temporaries collect: [:temporary | temporary name]! !
+
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 16:22:36'!
 variablesToParametrizeFrom: aMessageNode
 
 	| currentScopeTemporaries variablesToParametrize variablesToParametrizeExtractor |
@@ -3723,10 +4039,11 @@ variablesToParametrizeFrom: aMessageNode
 		EntranceExitBlockEnumerator 
 			atEntranceBlock: [
 				:aNode |
-				aNode isBlockNode ifTrue: [ 
-					| temporariesNames |
+				aNode isBlockNode ifTrue: [ | temporariesNames argumentsNames |
 					temporariesNames := aNode temporaries collect: [:aTemp | aTemp name].
-					currentScopeTemporaries addAll: temporariesNames].
+					argumentsNames := aNode arguments collect: [:anArg | anArg name].
+					currentScopeTemporaries addAll: temporariesNames.
+					currentScopeTemporaries addAll: argumentsNames].
 				aNode isVariableNode ifTrue: [
 					(currentScopeTemporaries includes: aNode name) ifFalse: [
 						aNode name = 'nil' ifFalse: [variablesToParametrize add: aNode name]]]]
@@ -3788,6 +4105,22 @@ assertMethodNode: methodNode includesMessageNode: messageNode
 	self signalMethodNodeMustIncludeMessageNode.
 	! !
 
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 3/19/2019 16:29:34'!
+assertParameterNamesOf: variablesToParametrizeKeywordsDefinitions 
+areNotEqualToBlockTemporariesOrArgumentsOn: aMessageNode
+
+	| blocksTemporaries parameterNames |
+
+	blocksTemporaries := Set new.
+
+	aMessageNode arguments do: [:argument | 
+		blocksTemporaries addAll: (self allTemporariesNamesAndArgumentsFrom: argument)].
+	
+	parameterNames := variablesToParametrizeKeywordsDefinitions parameterNames.
+	
+	(blocksTemporaries intersection: parameterNames) ifNotEmpty: [
+		self signalParameterNamesMustNotBeEqualToBlocksTemporals].! !
+
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 3/18/2019 15:44:43'!
 assertVariablesToParametrizeFrom: someVariablesToParametrize haveACorrespondingKeywordOn: someVariablesToParametrizeKeywordsDefinitions
 
@@ -3817,6 +4150,11 @@ methodNodeMustIncludeMessageNodeErrorMessage
 
 	^'Method node must include message node'! !
 
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'error messages' stamp: 'FGJ 3/19/2019 16:31:46'!
+parameterNameMustNotBeEqualToBlockTemporaryErrorMessage
+
+	^'Parameter names must not be equal to block temporals'! !
+
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'exceptions' stamp: 'FGJ 3/18/2019 15:16:37'!
 signalAllVariablesToParametrizeMustHaveAKeyword
 	
@@ -3836,6 +4174,11 @@ signalMessageNodeMustRepresentSupportedMessageSending
 signalMethodNodeMustIncludeMessageNode
 
 	self refactoringError: self methodNodeMustIncludeMessageNodeErrorMessage.! !
+
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'exceptions' stamp: 'FGJ 3/19/2019 16:31:47'!
+signalParameterNamesMustNotBeEqualToBlocksTemporals
+
+	self refactoringError: self parameterNameMustNotBeEqualToBlockTemporaryErrorMessage.! !
 
 !VariableToParametrizeKeywordDefinition methodsFor: 'initialization' stamp: 'FGJ 3/18/2019 12:47:50'!
 initializeForVariable: aVariableName useKeyword: aKeyword withParameterName: aParameterName
@@ -3936,20 +4279,36 @@ signalKeywordMustNotContainInvalidCharacters
 
 	self refactoringError: self keywordMustNotContainInvalidCharactersErrorMessage.! !
 
-!VariablesToParametrizeKeywordsDefinitions methodsFor: 'as yet unclassified' stamp: 'FGJ 3/18/2019 09:44:06'!
+!VariablesToParametrizeKeywordsDefinitions methodsFor: 'initialization' stamp: 'FGJ 3/19/2019 17:12:25'!
+initializeWith: someDefinitions
+
+	definitions := someDefinitions.! !
+
+!VariablesToParametrizeKeywordsDefinitions methodsFor: 'initialization' stamp: 'FGJ 3/19/2019 17:12:49'!
+initializeWithSelector: aSelector
+
+	selector := aSelector.! !
+
+!VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 3/18/2019 09:44:06'!
 messageSending
 
 	^selector asString! !
 
-!VariablesToParametrizeKeywordsDefinitions methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 17:11:20'!
-withSelector: aSelector
+!VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 3/19/2019 15:54:08'!
+parameterNames
+	
+	definitions 
+		ifNil: [^#()]
+		ifNotNil: [^definitions collect: [:definition | definition parameterName]].
+		! !
 
-	selector := aSelector.! !
+!VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 3/19/2019 17:15:22'!
+selector
 
-!VariablesToParametrizeKeywordsDefinitions methodsFor: 'initialization' stamp: 'FGJ 3/18/2019 10:57:10'!
-with: someDefinitions
-
-	definitions := someDefinitions.! !
+	definitions 
+		ifNil: [^selector]
+		ifNotNil: [
+			^((':' join: (definitions collect: [:definition | definition keyword])), ':') asSymbol].! !
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 3/18/2019 15:21:07'!
 variablesToParametrize
@@ -4043,23 +4402,23 @@ refactoringErrorClass
 	
 	^RefactoringError! !
 
-!VariablesToParametrizeKeywordsDefinitions class methodsFor: 'instance creation' stamp: 'FGJ 3/18/2019 14:30:19'!
-with: someDefinitions 
+!VariablesToParametrizeKeywordsDefinitions class methodsFor: 'instance creation' stamp: 'FGJ 3/19/2019 17:12:26'!
+initializeWith: someDefinitions 
 	
 	self assertKeywordMustStartWithValidStartOfSelector: someDefinitions first keyword.
 	self assertParameterNamesAreNotRepeated: someDefinitions.
 	self assertVariableNamesAreNotRepeated: someDefinitions.
 	
-	^self new with: someDefinitions ! !
+	^self new initializeWith: someDefinitions ! !
 
-!VariablesToParametrizeKeywordsDefinitions class methodsFor: 'instance creation' stamp: 'FGJ 3/13/2019 17:11:01'!
-withSelector: aSelector
+!VariablesToParametrizeKeywordsDefinitions class methodsFor: 'instance creation' stamp: 'FGJ 3/19/2019 17:12:49'!
+initializeWithSelector: aSelector
 
 	self assertIsNotEmpty: aSelector.
 	self assertDoesNotContainInvalidCharacters: aSelector.
 	self assertDoesNotStartWithInvalidStartOfSelector: aSelector.
 	
-	^self new withSelector: aSelector.! !
+	^self new initializeWithSelector: aSelector.! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'exceptions' stamp: 'FGJ 3/18/2019 12:52:02'!
 signalFirstKeywordMustStartWithValidStartOfSelector
@@ -4144,14 +4503,14 @@ test05MethodObjectClassNameMustNotExist
 	self creationWithMethodObjectClassName: anExistingClassName 
 		  failsWithMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: anExistingClassName ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:45:17'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:25'!
 test06AllVariablesToParametrizeMustHaveACorrespondingMethodObjectInstanceVariableName
 
 	| namesForParametrizedMissingSelf keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName |
 	
 	namesForParametrizedMissingSelf := #() asDictionary.
 	keywordToParametrizedVariable := { self keyword: #with varName: 'self' paramName: 'aParameterName'. }.
-	variablesToParametrizeWithoutInstVarName := Set with: 'self'.
+	variablesToParametrizeWithoutInstVarName := Set initializeWith: 'self'.
 	
 	self 
 		creationWithExtractedVariablesToInstanceVariables: namesForParametrizedMissingSelf
@@ -4159,7 +4518,7 @@ test06AllVariablesToParametrizeMustHaveACorrespondingMethodObjectInstanceVariabl
 		failsWithMessageText: [ ExtractToMethodObject 
 			variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesToParametrizeWithoutInstVarName].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:47:31'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:25'!
 test07AllInstanceVariableNamesMustCorrespondToVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName namesForParametrizedVariables |
@@ -4169,7 +4528,7 @@ test07AllInstanceVariableNamesMustCorrespondToVariableToParametrize
 		'inexistentVariableToParametrize' -> 'anInstVarName'
 	} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	variablesToParametrizeWithoutInstVarName := Set with: 'inexistentVariableToParametrize'.
+	variablesToParametrizeWithoutInstVarName := Set initializeWith: 'inexistentVariableToParametrize'.
 	
 	self 
 		creationWithExtractedVariablesToInstanceVariables: namesForParametrizedVariables
@@ -4522,7 +4881,7 @@ test25CreatesMethodObjectClassInTheChosenCategory
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: self classCategoryOfTestData equals: methodObjectClass category.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:08:47'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:26'!
 test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAsVariablesToParametrizeInMethodToExtract
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
@@ -4542,9 +4901,9 @@ test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAs
 	refactor apply.
 	
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
-	self assert: (methodObjectClass class selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
+	self assert: (methodObjectClass class selectors anySatisfy: [:aSelector | aSelector = #initializeWith:]).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:13:35'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:25'!
 test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeywords
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
@@ -4564,9 +4923,9 @@ test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeyword
 	refactor apply.
 	
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
-	self assert: (methodObjectClass class includesSelector: #with:).! !
+	self assert: (methodObjectClass class includesSelector: #initializeWith:).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 15:34:04'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:26'!
 test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables newRefactoringSourceCode |
@@ -4590,9 +4949,9 @@ test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 		String newLineString,
 		String tab,
 		'^self new with: aParamName'.
-	self assert: newRefactoringSourceCode equals: (methodObjectClass class compiledMethodAt: #with:) sourceCode.! !
+	self assert: newRefactoringSourceCode equals: (methodObjectClass class compiledMethodAt: #initializeWith:) sourceCode.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:13:55'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:26'!
 test29MethodObjectInitializationMessageReceivesTheSameNumberOfArgumentsAsVariablesToParametrizeInMethodToExtract
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
@@ -4612,9 +4971,9 @@ test29MethodObjectInitializationMessageReceivesTheSameNumberOfArgumentsAsVariabl
 	refactor apply.
 	
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
-	self assert: (methodObjectClass selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
+	self assert: (methodObjectClass selectors anySatisfy: [:aSelector | aSelector = #initializeWith:]).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:14:16'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:25'!
 test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywords
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables |
@@ -4634,9 +4993,9 @@ test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywords
 	refactor apply.
 	
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
-	self assert: (methodObjectClass includesSelector: #with:).! !
+	self assert: (methodObjectClass includesSelector: #initializeWith:).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 15:34:15'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:25'!
 test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables intializationSourceCode |
@@ -4658,7 +5017,7 @@ test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	intializationSourceCode := 'with: aParamName
 		thePreviousSelf := aParamName.'.
-	self assert: intializationSourceCode equals: (methodObjectClass compiledMethodAt: #with:) sourceCode.! !
+	self assert: intializationSourceCode equals: (methodObjectClass compiledMethodAt: #initializeWith:) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:14:51'!
 test32MethodObjectEvaluationMessageHasTheChosenSelector
@@ -5415,7 +5774,7 @@ test57MethodObjectInstanceCreationMessageParameterNamesMustNotBeEmpty
 		failsWithMessageText: [ 
 			ExtractToMethodObject invalidParameterNamesErrorMessage: #('') ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 14:35:05'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:26'!
 test58MethodObjectInstanceCreationMessageParameterNamesMustNotContainSeparators
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables aParameterName |
@@ -5429,9 +5788,9 @@ test58MethodObjectInstanceCreationMessageParameterNamesMustNotContainSeparators
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordsDefinitions
 		failsWithMessageText: [ 
-			ExtractToMethodObject invalidParameterNamesErrorMessage: (Array with: aParameterName) ].! !
+			ExtractToMethodObject invalidParameterNamesErrorMessage: (Array initializeWith: aParameterName) ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 14:36:08'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:26'!
 test59MethodObjectInstanceCreationMessageParameterNamesMustNotContainInvalidCharacters
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables aParameterName |
@@ -5445,7 +5804,7 @@ test59MethodObjectInstanceCreationMessageParameterNamesMustNotContainInvalidChar
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordsDefinitions
 		failsWithMessageText: [ 
-			ExtractToMethodObject invalidParameterNamesErrorMessage: (Array with: aParameterName) ].! !
+			ExtractToMethodObject invalidParameterNamesErrorMessage: (Array initializeWith: aParameterName) ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 14:48:32'!
 test60MethodObjectInstanceCreationMessageParameterNamesMustNotBeEqualToAMethodObjectInstanceVariable
@@ -5469,7 +5828,7 @@ test60MethodObjectInstanceCreationMessageParameterNamesMustNotBeEqualToAMethodOb
 		failsWithMessageText: [ 
 			ExtractToMethodObject parameterNamesOverlapWithInstanceVariableNamesErrorMessage: #('theInstVar')].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 15:01:31'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:26'!
 test61MethodObjectClassInstanceCreationMessageParameterNamesAreTheChosenOnes
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor methodObjectClass instanceCreationMethod |
@@ -5489,11 +5848,11 @@ test61MethodObjectClassInstanceCreationMessageParameterNamesAreTheChosenOnes
 	refactor apply.
 	
 	methodObjectClass := (Smalltalk classNamed: self methodObjectClassName) class.
-	instanceCreationMethod := methodObjectClass compiledMethodAt: #with:.
+	instanceCreationMethod := methodObjectClass compiledMethodAt: #initializeWith:.
 	
 	self assert: 'aParamName' equals: instanceCreationMethod methodNode arguments first name.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 15:28:15'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/19/2019 17:12:25'!
 test62MethodObjectInstanceCreationMessageParameterNamesAreTheChosenOnes
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor instanceCreationMethod methodObject |
@@ -5513,7 +5872,7 @@ test62MethodObjectInstanceCreationMessageParameterNamesAreTheChosenOnes
 	refactor apply.
 	
 	methodObject := Smalltalk classNamed: self methodObjectClassName.
-	instanceCreationMethod := methodObject compiledMethodAt: #with:.
+	instanceCreationMethod := methodObject compiledMethodAt: #initializeWith:.
 	
 	self assert: 'aParamName' equals: instanceCreationMethod methodNode arguments first name.! !
 

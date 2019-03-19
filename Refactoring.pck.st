@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 18 March 2019 at 5:32:29 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 19 March 2019 at 3:11:56 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 319!
+!provides: 'Refactoring' 1 321!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -1201,25 +1201,6 @@ test04BlocksToExtractCanAssignToTemporalsOfBlocks
 		creationFromSourceCode: self defaultInstVarName, ' ifNil: [ |aTemp| aTemp := 2]'
 		shouldntRaise: RefactoringError.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/14/2019 11:09:33'!
-test05BlocksToExtractCanAssignToTemporalsOfBlocksWhenShadowNonTemporalsSHADOWINGDEPRECATED
-
-	self shouldFail: [
-		self
-			creationFromSourceCode:
-				self defaultInstVarName, ' ifNil: [ |', self defaultInstVarName, '| ', self defaultInstVarName, ' := 2]'
-			shouldntRaise: RefactoringError]! !
-
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/20/2019 11:10:08'!
-test06BlocksToExtractCanAssignToTemporalsOfBlocksWhenShadowNonTemporalsEvenIfNestedBlocksDefineThem
-
-	self shouldFail: [
-		self
-			creationFromSourceCode: self defaultInstVarName, ' ifNil: [ |', self defaultInstVarName, '| 
-				1 = 2 ifFalse: [ |', self defaultInstVarName, ' | ', self defaultInstVarName , ' := 4].
-				', self defaultInstVarName , ' := 2]'
-			shouldntRaise: RefactoringError.]! !
-
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 17:02:44'!
 test07BlocksToExtractMustNotContainReturnStatements
 
@@ -2069,6 +2050,34 @@ test05CreatesReplaceIfNilWithPolymorphismParameters
 	
 	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'anInstVar'.
 	sourceWithIf := 'm1 anInstVar ifNil: [self isNil].'.
+	aClassToRefactor compile: sourceWithIf.
+	
+	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
+	messageNode := methodNode block statements first.
+	
+	definitions := {
+		VariableToParametrizeKeywordDefinition 
+			forVariable: 'self'
+			useKeyword: #with
+			withParameterName: 'pSelf'}.
+	variablesToParametrizeKeywordsDefinitions :=
+		VariablesToParametrizeKeywordsDefinitions with: definitions.
+	
+	parameters :=
+		ReplaceIfNilWithPolymorphismParameters 
+			forIfNilMessageSending: messageNode
+			onMethod: methodNode
+			useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions.
+			
+	self assert: messageNode equals: parameters messageNode.! !
+
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 17:42:59'!
+test06ReplaceIfNilWithPolymorphismParametersOnBlocksWithBooleanConstants
+
+	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf definitions parameters |
+	
+	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'anInstVar'.
+	sourceWithIf := 'm1 anInstVar ifNil: [self or: [true]].'.
 	aClassToRefactor compile: sourceWithIf.
 	
 	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
@@ -3703,7 +3712,7 @@ refactoringErrorClass
 
 	^RefactoringError! !
 
-!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/18/2019 15:36:15'!
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/18/2019 17:58:39'!
 variablesToParametrizeFrom: aMessageNode
 
 	| currentScopeTemporaries variablesToParametrize variablesToParametrizeExtractor |
@@ -3730,6 +3739,9 @@ variablesToParametrizeFrom: aMessageNode
 	aMessageNode arguments do: [:argument |
 		currentScopeTemporaries := Bag new.
 		argument accept: variablesToParametrizeExtractor].
+	
+	variablesToParametrize remove: 'true' ifAbsent: [nil].
+	variablesToParametrize remove: 'false' ifAbsent: [nil].
 	
 	^variablesToParametrize
 	! !

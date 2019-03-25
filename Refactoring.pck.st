@@ -1,4 +1,4 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 25 March 2019 at 4:53:16 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 25 March 2019 at 5:26:47 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
 !provides: 'Refactoring' 1 375!
 SystemOrganization addCategory: #Refactoring!

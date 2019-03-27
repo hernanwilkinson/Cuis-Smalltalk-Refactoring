@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 25 March 2019 at 5:26:47 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 26 March 2019 at 5:47:54 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 375!
+!provides: 'Refactoring' 1 395!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -74,6 +74,16 @@ SystemWindow subclass: #ExtractToMethodObjectForm
 ExtractToMethodObjectForm class
 	instanceVariableNames: ''!
 
+!classDefinition: #IntroduceNullObjectClassesForm category: #Refactoring!
+SystemWindow subclass: #IntroduceNullObjectClassesForm
+	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'IntroduceNullObjectClassesForm class' category: #Refactoring!
+IntroduceNullObjectClassesForm class
+	instanceVariableNames: ''!
+
 !classDefinition: #FormSection category: #Refactoring!
 LayoutMorph subclass: #FormSection
 	instanceVariableNames: 'title borderMorph titleContainer titleMorph titleContainerLayoutSpec explanation explanationMorph explanationContainer explanationContainerLayoutSpec'
@@ -122,6 +132,16 @@ InnerTextMorph subclass: #PreviewInnerTextMorph
 	category: 'Refactoring'!
 !classDefinition: 'PreviewInnerTextMorph class' category: #Refactoring!
 PreviewInnerTextMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #IfNilChecksFinderTest category: #Refactoring!
+RefactoringTest subclass: #IfNilChecksFinderTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'IfNilChecksFinderTest class' category: #Refactoring!
+IfNilChecksFinderTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #IntroduceNullObjectTest category: #Refactoring!
@@ -214,6 +234,16 @@ RefactoringApplier subclass: #ExtractToMethodObjectApplier
 ExtractToMethodObjectApplier class
 	instanceVariableNames: ''!
 
+!classDefinition: #IntroduceNullObjectApplier category: #Refactoring!
+RefactoringApplier subclass: #IntroduceNullObjectApplier
+	instanceVariableNames: 'classToRefactor instanceVariable form'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'IntroduceNullObjectApplier class' category: #Refactoring!
+IntroduceNullObjectApplier class
+	instanceVariableNames: ''!
+
 !classDefinition: #ChangeRowOrderButtonModel category: #Refactoring!
 Object subclass: #ChangeRowOrderButtonModel
 	instanceVariableNames: 'tableModel rowPosition'
@@ -232,6 +262,36 @@ Object subclass: #ExtractToMethodObjectRequest
 	category: 'Refactoring'!
 !classDefinition: 'ExtractToMethodObjectRequest class' category: #Refactoring!
 ExtractToMethodObjectRequest class
+	instanceVariableNames: ''!
+
+!classDefinition: #IfNilCheck category: #Refactoring!
+Object subclass: #IfNilCheck
+	instanceVariableNames: 'selector messageNode'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'IfNilCheck class' category: #Refactoring!
+IfNilCheck class
+	instanceVariableNames: ''!
+
+!classDefinition: #IfNilChecksFinder category: #Refactoring!
+Object subclass: #IfNilChecksFinder
+	instanceVariableNames: 'contextClass instanceVariable'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'IfNilChecksFinder class' category: #Refactoring!
+IfNilChecksFinder class
+	instanceVariableNames: ''!
+
+!classDefinition: #IntroduceNullObjectRequest category: #Refactoring!
+Object subclass: #IntroduceNullObjectRequest
+	instanceVariableNames: 'nullClassNameModel concreteClassNameModel'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'IntroduceNullObjectRequest class' category: #Refactoring!
+IntroduceNullObjectRequest class
 	instanceVariableNames: ''!
 
 !classDefinition: #RefactoringPackageRefactoringMenues category: #Refactoring!
@@ -302,6 +362,11 @@ selectorKeywordToVariableName -> OrderedCollection of Associations (keyword -> v
 initializedInstance
 
 	^self new initialize.! !
+
+!IntroduceNullObjectRequest class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:40:04'!
+initializedInstance
+
+	^self new! !
 
 !EntranceExitBlockEnumerator methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 18:04:25'!
 atEntranceBlock: aBlock atExitBlock: anotherBlock
@@ -765,6 +830,100 @@ recommendedWidth
 
 	^self fontProportionalUnitOfReferenceForWidth * 70! !
 
+!IntroduceNullObjectClassesForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:42:50'!
+backgroundColor
+
+	^Color lightGray! !
+
+!IntroduceNullObjectClassesForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:46:31'!
+buildMorphicWindow
+
+	| hierarchySection sections requiredExtent requiredHeight requiredWidth windowElementsExtent |
+	
+	self setLabel: 'Introduce Null Object'.
+	
+	self initializeScrollableContainer.
+	self initializeFormLayout.
+	scrollPane scroller addMorph: formLayout.
+
+	introduceNullObjectRequest := IntroduceNullObjectRequest initializedInstance.
+	
+	sections := Set new.
+	
+	hierarchySection := self buildNullObjectHierarchyClassesSection.
+	formLayout addMorph: hierarchySection.
+	sections add: hierarchySection.
+	
+	requiredHeight := (sections collect: [:aSection | aSection recommendedHeight]) sum 
+		+ (formLayout ySeparation * 2).
+	requiredWidth := (sections collect: [:aSection | aSection recommendedWidth]) max + (formLayout xSeparation * 2).
+
+	requiredExtent := requiredWidth@requiredHeight.
+	formLayout morphExtent: requiredExtent.
+	scrollPane scroller morphExtent: requiredExtent.
+	windowElementsExtent := (self class fontProportionalUnitOfReferenceForWidth * 1.5)@(Preferences windowTitleFont height * 1.7).
+	initialExtent := requiredExtent + windowElementsExtent.! !
+
+!IntroduceNullObjectClassesForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:45:19'!
+buildNullObjectHierarchyClassesSection
+
+	| section maxLabelWidth nullClassInput concreteClassInput |
+
+	section := FormSection withTitle: 'Null Object Hierarchy' withColor: self backgroundColor.
+
+	maxLabelWidth := self recommendedWidthForLabels: #('Null Class' 'Concrete Class').
+
+	nullClassInput := LabeledAutocompletedInput withLabel: 'Null Class' withWidth: maxLabelWidth.
+	introduceNullObjectRequest nullClassNameModel: nullClassInput textModel.
+	section addMorph: nullClassInput.
+	
+	concreteClassInput := LabeledAutocompletedInput withLabel: 'Concrete Class' withWidth: maxLabelWidth.
+	introduceNullObjectRequest concreteClassNameModel: concreteClassInput textModel.
+	section addMorph: concreteClassInput.
+	
+	section layoutSpec: (self layoutSpecForSection: section).
+	
+	^section
+! !
+
+!IntroduceNullObjectClassesForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:24:13'!
+initialExtent
+	
+	^initialExtent! !
+
+!IntroduceNullObjectClassesForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:27:29'!
+initializeFormLayout
+
+	formLayout := LayoutMorph newColumn.
+	formLayout separation: 10; color: self backgroundColor.! !
+
+!IntroduceNullObjectClassesForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:26:44'!
+initializeScrollableContainer
+
+	scrollPane := ColoredScrollPane initializedInstance.
+	scrollPane scroller color: self backgroundColor.
+	scrollPane scroller layoutSpec: LayoutSpec useAll.
+	scrollPane color: self backgroundColor. 
+	self layoutMorph addMorphUseAll: scrollPane.! !
+
+!IntroduceNullObjectClassesForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:44:02'!
+layoutSpecForSection: aSection
+
+	^LayoutSpec proportionalWidth: 1.0 fixedHeight: aSection recommendedHeight! !
+
+!IntroduceNullObjectClassesForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:43:16'!
+recommendedWidthForLabels: labels
+
+	| rightMargin |
+	
+	rightMargin := 20.
+	^(labels collect: [:aLabel | AbstractFont default widthOfString: aLabel]) max + rightMargin! !
+
+!IntroduceNullObjectClassesForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:32:21'!
+fontProportionalUnitOfReferenceForWidth
+
+	^AbstractFont default widthOf: $A! !
+
 !FormSection methodsFor: 'initialization' stamp: 'FGJ 2/13/2019 18:57:34'!
 initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
 
@@ -1145,6 +1304,75 @@ previewModel: aPreviewModel
 
 	previewModel := aPreviewModel.! !
 
+!IfNilChecksFinderTest methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 15:09:26'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
+!IfNilChecksFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 15:27:56'!
+test01InstanceVariableMustBelongToTheClass
+
+	| contextClass nonExistentInstVar |
+	
+	nonExistentInstVar := 'randomInstVar'.
+	contextClass := self createClassNamed: #ContextClass instanceVariableNames: ''.
+	
+	self
+		should: [IfNilChecksFinder on: contextClass for: nonExistentInstVar]
+		raise: RefactoringError
+		withMessageText: [IfNilChecksFinder instVarMustBelongToClassErrorMessage].! !
+
+!IfNilChecksFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 15:26:59'!
+test02WhenThereAreNoIfNilChecksTheResultIsEmpty
+
+	| contextClass instVar |
+	
+	instVar := 'randomInstVar'.
+	contextClass := self createClassNamed: #ContextClass instanceVariableNames: instVar.
+	
+	self assert: (IfNilChecksFinder on: contextClass for: instVar) value isEmpty.! !
+
+!IfNilChecksFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 16:37:38'!
+test03ResultIncludesIfNilMessageSending
+
+	| contextClass instVar source methodNode result |
+	
+	instVar := 'randomInstVar'.
+	contextClass := self createClassNamed: #ContextClass instanceVariableNames: instVar.
+	
+	source := 'm1 ', instVar, ' ifNil: [1 + 1]'.
+	contextClass compile: source.
+	
+	result := (IfNilChecksFinder on: contextClass for: instVar) value.
+	
+	self assert: 1 equals: result size.
+	methodNode := (contextClass compiledMethodAt: #m1) methodNode.
+	self assert: methodNode block statements first equals: result first messageNode.
+	self assert: #m1 equals: result first selector.! !
+
+!IfNilChecksFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 16:34:13'!
+test99WhenThereAreMultipleIfNilChecksInTheSameMethodTheResultIncludesAllOfThem
+
+	| contextClass instVar anIfNilCheckStatement anotherIfNilCheckStatement methodHeader source methodNode result |
+	
+	instVar := 'randomInstVar'.
+	contextClass := self createClassNamed: #ContextClass instanceVariableNames: instVar.
+	
+	methodHeader := 'm1 '.
+	anIfNilCheckStatement := instVar, ' ifNil: [1 + 1].'.
+	anotherIfNilCheckStatement := instVar, ' ifNotNil: [1 + 1].'.
+	source := methodHeader, anIfNilCheckStatement, anotherIfNilCheckStatement.
+	contextClass compile: source.
+	
+	result := (IfNilChecksFinder on: contextClass for: instVar) value.
+	
+	self assert: 2 equals: result size.
+	
+	methodNode := (contextClass compiledMethodAt: #m1) methodNode.
+	self assert: (result includes: methodNode block statements first).
+	self assert: (result includes: methodNode block statements second).
+	self assert: false.! !
+
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/20/2019 11:42:29'!
 test01BlocksToExtractMustNotContainReferencesToSuper
 
@@ -1265,7 +1493,7 @@ test09ConcreteClassMustBeDifferentToNullClass
 		raise: RefactoringError
 		withMessageText: [ IntroduceNullObject concreteClassMustBeDifferentFromNullClassErrorMessage ].! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 17:19:34'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 18:31:08'!
 test10MethodsMustBelongToTheHierarchyToRefactor
 
 	| aClassToRefactor sourceWithIf replacementParameters aClasOutsideTheHierarchy |
@@ -1287,13 +1515,13 @@ test10MethodsMustBelongToTheHierarchyToRefactor
 			IntroduceNullObject 
 				on: self defaultInstVarName
 				of: aClassToRefactor
-				usingAsConcreteClass: (self createClassNamed: #AConcreteClass)
-				usingAsNullClass: (self createClassNamed: #ANullClass)
+				usingAsConcreteClass: self concreteClass
+				usingAsNullClass: self nullClass
 				for: {replacementParameters}]
 		raise: RefactoringError
 		withMessageText: [ IntroduceNullObject methodsMustBelongToTheHierarchyToRefactorErrorMessage ].! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 17:20:00'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 18:31:25'!
 test13MessageNodesMustNotBeDuplicated
 
 	| aClassToRefactor replacementParameters replacementParametersWithDuplicatedMessageNode sourceWithIf |
@@ -1312,8 +1540,8 @@ test13MessageNodesMustNotBeDuplicated
 			IntroduceNullObject 
 				on: self defaultInstVarName
 				of: aClassToRefactor
-				usingAsConcreteClass: (self createClassNamed: #AConcreteClass)
-				usingAsNullClass: (self createClassNamed: #ANullClass)
+				usingAsConcreteClass: self concreteClass
+				usingAsNullClass: self nullClass
 				for: {replacementParameters. replacementParametersWithDuplicatedMessageNode}]
 		raise: RefactoringError
 		withMessageText: [ 
@@ -1757,7 +1985,7 @@ compiledMethodToRefactor
 
 	^self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector ! !
 
-!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/25/2019 14:26:33'!
+!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/25/2019 18:30:14'!
 concreteClass
 
 	^self findOrCreateEmptyClassNamed: #AConcreteClass! !
@@ -1786,7 +2014,7 @@ methodToRefactorSelector
 
 	^#m1! !
 
-!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/25/2019 14:25:33'!
+!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/25/2019 18:31:11'!
 nullClass
 
 	^self findOrCreateEmptyClassNamed: #ANullClass! !
@@ -2308,7 +2536,7 @@ allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData! !
 
-!NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 1/23/2019 15:10:40'!
+!NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 3/25/2019 18:30:24'!
 concreteClass
 
 	^self createClassNamed: #AConcreteClass! !
@@ -4402,6 +4630,37 @@ extract: aCompiledMethod
 
 	^self new initializeToExtract: aCompiledMethod! !
 
+!IntroduceNullObjectApplier methodsFor: 'initialization' stamp: 'FGJ 3/26/2019 11:35:25'!
+initializeToApplyOn: aClass
+
+	classToRefactor := aClass.! !
+
+!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:58:59'!
+chooseInstanceVariable
+	
+	instanceVariable ifNotNil: [ ^self ].
+		
+	classToRefactor 
+		chooseDefiningInstanceVariableAlphabeticallyWith: self selectVariableLabel
+		thenDo: [ :anInstanceVariable | ^instanceVariable := anInstanceVariable ].! !
+
+!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 15:02:58'!
+requestRefactoringParameters
+
+	self chooseInstanceVariable.
+
+	form := IntroduceNullObjectClassesForm open: self.! !
+
+!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:58:00'!
+selectVariableLabel
+	
+	^'Select instance variable to introduce null object on'! !
+
+!IntroduceNullObjectApplier class methodsFor: 'instance creation' stamp: 'FGJ 3/26/2019 11:34:57'!
+applyOn: aClass
+
+	^self new initializeToApplyOn: aClass! !
+
 !ChangeRowOrderButtonModel methodsFor: 'initialization' stamp: 'FGJ 2/9/2019 16:33:36'!
 for: aRowIndex notifying: aTableModel
 
@@ -4526,6 +4785,164 @@ initialize
 	variableToParametrizeToInstVarNameModel := Dictionary new.
 	instanceCreationMessageModels := OrderedCollection new.! !
 
+!IfNilCheck methodsFor: 'initialization' stamp: 'FGJ 3/26/2019 17:15:11'!
+initializeIn: aSelector representedBy: aMessageNode
+
+	selector := aSelector.
+	messageNode := aMessageNode.! !
+
+!IfNilCheck methodsFor: 'initialization' stamp: 'FGJ 3/26/2019 17:15:54'!
+messageNode
+
+	^messageNode! !
+
+!IfNilCheck methodsFor: 'initialization' stamp: 'FGJ 3/26/2019 17:15:45'!
+selector
+
+	^selector! !
+
+!IfNilCheck class methodsFor: 'instance creation' stamp: 'FGJ 3/26/2019 17:14:51'!
+in: aSelector representedBy: aMessageNode
+
+	^self new initializeIn: aSelector representedBy: aMessageNode.! !
+
+!IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 3/26/2019 17:42:49'!
+ifNilChecksIn: aSelector
+
+	| methodNode ifNilChecks |
+
+	methodNode := (contextClass compiledMethodAt: aSelector) methodNode.
+	
+	ifNilChecks := OrderedCollection new.
+	methodNode accept: (ParseNodeEnumerator ofBlock: [:node |
+		(node isMessageNode and: [self isIfNilCheck: node]) ifTrue:[ifNilChecks add: (IfNilCheck in: aSelector representedBy: node)]]).
+	
+	^ifNilChecks! !
+
+!IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 3/26/2019 15:35:31'!
+initializeOn: aContextClass for: anInstanceVariable
+
+	contextClass := aContextClass.
+	instanceVariable := anInstanceVariable.! !
+
+!IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 3/26/2019 17:37:05'!
+isIfNilCheck: aMessageNode
+
+	| checkReceiverIsInstanceVariableBlock |
+	
+	checkReceiverIsInstanceVariableBlock := [:receiver | receiver name = instanceVariable].
+	^{
+		"var == nil ifNil: [] ifNotNil: []"
+		self class isIfNilWithModifications: aMessageNode withReceiver: checkReceiverIsInstanceVariableBlock.
+		"var ifNil: []"
+		self class isIfNil: aMessageNode  withReceiver: checkReceiverIsInstanceVariableBlock.
+		"var isNil ifTrue: [] ifFalse: []"
+		self class isIsNilWithBooleanCheck: aMessageNode  withReceiver: checkReceiverIsInstanceVariableBlock} reduce: [:a :b | a or: [b]]! !
+
+!IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 3/26/2019 16:38:42'!
+value
+
+	| selectors |
+	
+	selectors := contextClass whichSelectorsAccess: instanceVariable.
+	
+	^selectors inject: Set new into: [:ifNilChecks :selector | ifNilChecks add: (self ifNilChecksIn: selector)].! !
+
+!IfNilChecksFinder class methodsFor: 'instance creation' stamp: 'FGJ 3/26/2019 15:35:04'!
+on: aContextClass for: anInstanceVariable
+	
+	self assertInstanceVariable: anInstanceVariable belongsTo: aContextClass.
+	
+	^self new initializeOn: aContextClass for: anInstanceVariable.! !
+
+!IfNilChecksFinder class methodsFor: 'error handling' stamp: 'FGJ 3/26/2019 15:21:40'!
+refactoringError: anErrorMessage 
+	
+	self refactoringErrorClass signal: anErrorMessage.! !
+
+!IfNilChecksFinder class methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 15:22:00'!
+refactoringErrorClass
+	
+	^RefactoringError! !
+
+!IfNilChecksFinder class methodsFor: 'error messages' stamp: 'FGJ 3/26/2019 15:22:35'!
+instVarMustBelongToClassErrorMessage
+	
+	^'The instance variable must belong to the context class.'! !
+
+!IfNilChecksFinder class methodsFor: 'exceptions' stamp: 'FGJ 3/26/2019 15:33:56'!
+signalInstVarMustBelongToClass
+
+	 self refactoringError: self instVarMustBelongToClassErrorMessage.! !
+
+!IfNilChecksFinder class methodsFor: 'assertions' stamp: 'FGJ 3/26/2019 15:33:40'!
+assertInstanceVariable: anInstanceVariable belongsTo: aContextClass
+	
+	(aContextClass instVarNames includes: anInstanceVariable) ifFalse: [self signalInstVarMustBelongToClass].! !
+
+!IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 17:31:29'!
+isIfNil: aMessageNode
+
+	^self isIfNil: aMessageNode withReceiver: [:r | true].! !
+
+!IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 17:31:41'!
+isIfNil: aMessageNode withReceiver: aBlockToValidateReceiver
+
+	^aMessageNode isMessage: #ifNil: receiver: [:receiver | receiver isVariableNode and: [aBlockToValidateReceiver value: receiver]] arguments: nil! !
+
+!IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 17:31:51'!
+isIfNilWithModifications: aMessageNode
+
+	^self isIfNilWithModifications: aMessageNode withReceiver: [:r | true].! !
+
+!IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 17:32:01'!
+isIfNilWithModifications: aMessageNode withReceiver: aBlockToValidateReceiver
+
+	^(aMessageNode selector key = #ifTrue:ifFalse:) and: [
+		aMessageNode receiver
+			isMessage: #==
+			receiver: [:r | r isVariableNode and: [aBlockToValidateReceiver value: r]]
+			arguments: [:arg | arg isVariableNode and: [arg name = 'nil']]].! !
+
+!IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 17:32:11'!
+isIsNilWithBooleanCheck: aMessageNode
+
+	^self isIsNilWithBooleanCheck: aMessageNode withReceiver: [:r | true].! !
+
+!IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 17:32:22'!
+isIsNilWithBooleanCheck: aMessageNode withReceiver: aBlockToValidateReceiver
+
+	| booleanSupportedMessages |
+	
+	booleanSupportedMessages := #( ifTrue: ifTrue:ifFalse: ifFalse: ifFalse:ifTrue: ).
+	
+	^(booleanSupportedMessages includes: aMessageNode selector key) and: [
+		aMessageNode receiver isMessage: #isNil receiver: [:r | r isVariableNode and: [aBlockToValidateReceiver value: r]] arguments: nil]! !
+
+!IntroduceNullObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:42:20'!
+concreteClassNameModel: aTextModel
+
+	concreteClassNameModel := aTextModel.! !
+
+!IntroduceNullObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:42:02'!
+nullClassNameModel: aTextModel
+
+	nullClassNameModel := aTextModel.! !
+
+!RefactoringPackageRefactoringMenues class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 11:30:10'!
+classRefactoringMenuOptions
+
+	^ `{
+			{
+				#itemGroup 	-> 		10.
+				#itemOrder 		-> 		50.
+				#label 			-> 		'introduce null object'.
+				#selector 		-> 		#introduceNullObject.
+				#icon 			-> 		#newFolderIcon
+			} asDictionary.
+
+	}`! !
+
 !RefactoringPackageRefactoringMenues class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/14/2019 12:23:07'!
 messsageRefactoringMenuOptions
 
@@ -4578,33 +4995,33 @@ extractSourceCodeOfBlock: aBlockNode fromMethod: aMethodNode
 	
 	! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 14:52:04'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 17:34:29'!
 isConcreteBlockFirstBlock
 	
-	^(self class isIsNilWithBooleanCheck: messageNode) and: [#ifFalse:ifTrue: = messageNode selector key]! !
+	^(IfNilChecksFinder isIsNilWithBooleanCheck: messageNode) and: [#ifFalse:ifTrue: = messageNode selector key]! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 14:50:10'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 17:34:06'!
 isConcreteBlockSecondBlock
 	
 	^{
 		"var == nil ifTrue: [] ifFalse: [] --> always the second block" 
-		self class isIfNilWithModifications: messageNode.
+		IfNilChecksFinder isIfNilWithModifications: messageNode.
 		"ifFalse: is included here because is compiled specially making the block the second argument"
-		(self class isIsNilWithBooleanCheck: messageNode)
+		(IfNilChecksFinder isIsNilWithBooleanCheck: messageNode)
 			and: [#(ifTrue:ifFalse: ifFalse:) includes: messageNode selector key ]} reduce: [:a1 :a2 | a1 or: [a2]]! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 16:38:49'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 17:33:17'!
 isNullBlockFirstBlock
 
 	^{
-		(self class isIfNilWithModifications: messageNode) and: [self messageNodeFirstArgumentIsEmptyBlock not].
-		self class isIfNil: messageNode.
-		(self class isIsNilWithBooleanCheck: messageNode) and: [#(ifTrue: ifTrue:ifFalse:) includes: messageNode selector key]} reduce: [:a1 :a2 | a1 or: [a2]]! !
+		(IfNilChecksFinder isIfNilWithModifications: messageNode) and: [self messageNodeFirstArgumentIsEmptyBlock not].
+		IfNilChecksFinder isIfNil: messageNode.
+		(IfNilChecksFinder isIsNilWithBooleanCheck: messageNode) and: [#(ifTrue: ifTrue:ifFalse:) includes: messageNode selector key]} reduce: [:a1 :a2 | a1 or: [a2]]! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 14:53:16'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 17:34:37'!
 isNullBlockSecondBlock
 		
-	^(self class isIsNilWithBooleanCheck: messageNode)
+	^(IfNilChecksFinder isIsNilWithBooleanCheck: messageNode)
 		and: [messageNode selector key = #ifFalse:ifTrue:]! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/18/2019 16:29:29'!
@@ -4667,7 +5084,7 @@ polymorphicSelector
 
 	^definitions selector! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/20/2019 15:32:14'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 17:34:44'!
 rangeOfMessageSend
 	
 	| encoder keywordsRange variableNode variableNodeRange |
@@ -4675,9 +5092,9 @@ rangeOfMessageSend
 	encoder := methodNode encoder.
 	keywordsRange := encoder sourceRangeFor: messageNode.
 
-	((self class isIfNilWithModifications: messageNode) or: [self class isIsNilWithBooleanCheck: messageNode])
+	((IfNilChecksFinder isIfNilWithModifications: messageNode) or: [IfNilChecksFinder isIsNilWithBooleanCheck: messageNode])
 		ifTrue: [variableNode := messageNode receiver receiver].
-	(self class isIfNil: messageNode) ifTrue: [variableNode := messageNode receiver].
+	(IfNilChecksFinder isIfNil: messageNode) ifTrue: [variableNode := messageNode receiver].
 	
 	variableNodeRange := ((encoder sourceRangeFor: variableNode) select: [:range | range first < keywordsRange first]) last.
 	
@@ -4760,30 +5177,6 @@ argumentsNamesFrom: aNode
 
 	^aNode arguments collect: [:arg | arg name]! !
 
-!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/20/2019 13:15:20'!
-isIfNil: aMessageNode
-
-	^aMessageNode isMessage: #ifNil: receiver: [:receiver | receiver isVariableNode] arguments: nil! !
-
-!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/20/2019 14:57:20'!
-isIfNilWithModifications: aMessageNode
-
-	^(aMessageNode selector key = #ifTrue:ifFalse:) and: [
-		aMessageNode receiver
-			isMessage: #==
-			receiver: [:r | r isVariableNode]
-			arguments: [:arg | arg isVariableNode and: [arg name = 'nil']]].! !
-
-!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/20/2019 13:16:53'!
-isIsNilWithBooleanCheck: aMessageNode
-
-	| booleanSupportedMessages |
-	
-	booleanSupportedMessages := #( ifTrue: ifTrue:ifFalse: ifFalse: ifFalse:ifTrue: ).
-	
-	^(booleanSupportedMessages includes: aMessageNode selector key) and: [
-		aMessageNode receiver isMessage: #isNil receiver: [:r | r isVariableNode] arguments: nil]! !
-
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 16:13:32'!
 refactoringError: aMessage
 
@@ -4844,18 +5237,18 @@ haveACorrespondingVariableToParametrizeFrom: variablesToParametrize
 	
 	(variablesToParametrize includesAllOf: variablesWithKeywords) ifFalse: [self signalKeywordsMustHaveAVariableToParametrize].	! !
 
-!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 3/20/2019 13:22:18'!
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 3/26/2019 17:30:03'!
 assertMessageNodeRepresentsSupportedMessageSending: aMessageNode
 
 	| isSupportedMessageSending |
 
 	isSupportedMessageSending := {
 		"var == nil ifNil: [] ifNotNil: []"
-		self isIfNilWithModifications: aMessageNode.
+		IfNilChecksFinder isIfNilWithModifications: aMessageNode.
 		"var ifNil: []"
-		self isIfNil: aMessageNode.
+		IfNilChecksFinder isIfNil: aMessageNode.
 		"var isNil ifTrue: [] ifFalse: []"
-		self isIsNilWithBooleanCheck: aMessageNode} inject: false into: [:accum :val | accum or: [val]].
+		IfNilChecksFinder isIsNilWithBooleanCheck: aMessageNode} reduce: [:a :b | a or: [b]].
 	
 	isSupportedMessageSending ifFalse: [self signalMessageNodeMustRepresentSupportedMessageSending].! !
 
@@ -6973,3 +7366,12 @@ extractMethodToMethodObject
 		compiledMethod := classToRefactor compiledMethodAt: messageName.
 	
 		(ExtractToMethodObjectApplier extract: compiledMethod) value.].! !
+
+!BrowserWindow methodsFor: '*Refactoring' stamp: 'FGJ 3/26/2019 11:33:13'!
+introduceNullObject
+
+	| classToRefactor |
+	
+	classToRefactor := model selectedClassOrMetaClass.
+	
+	classToRefactor ifNotNil: [(IntroduceNullObjectApplier applyOn: classToRefactor) value.].! !

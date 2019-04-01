@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 29 March 2019 at 6:05:18 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 1 April 2019 at 4:18:45 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 444!
+!provides: 'Refactoring' 1 458!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -86,7 +86,7 @@ ExtractToMethodObjectForm class
 
 !classDefinition: #IntroduceNullObjectForm category: #Refactoring!
 SystemWindow subclass: #IntroduceNullObjectForm
-	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms currentlyShownTable currentlyShownPreview discardEdits'
+	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms currentlyShownTable currentlyShownPreview discardEdits firstTimeBuild'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -947,9 +947,9 @@ ifNilChecks: someMessageSendings
 
 	messageSendingList := someMessageSendings. ! !
 
-!IntroduceNullObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:24:13'!
+!IntroduceNullObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 4/1/2019 16:15:51'!
 initialExtent
-	
+
 	^initialExtent! !
 
 !IntroduceNullObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:44:02'!
@@ -1004,7 +1004,7 @@ buildCancelButton
 	
 	^button! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/29/2019 17:00:02'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:01:32'!
 buildCodePaneFor: anIfNilCheck
 
 	| codePane |
@@ -1016,24 +1016,33 @@ buildCodePaneFor: anIfNilCheck
 	codePane drawKeyboardFocusIndicator: false.
 	codePane selectFrom: anIfNilCheck messageNodeIndex to: anIfNilCheck messageNodeIndex + 10.
 	
+	codePane layoutSpec: (LayoutSpec proportionalWidth: 1.0 fixedHeight: (IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight * 7)).
+	
 	^codePane! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/29/2019 17:37:07'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:09:56'!
 buildIfNilCheckFormFor: anIfNilCheck
 
-	| layout variablesToExtract |
+	| layout variablesToExtract polymorphicSelectorSection codePane |
 	
 	layout := LayoutMorph newColumn.
-	layout morphExtent: 100@300.
+	layout separation: 0@10.
 	
-	layout addMorph: (self buildCodePaneFor: anIfNilCheck).
+	codePane := self buildCodePaneFor: anIfNilCheck.
+	layout addMorph: codePane.
 	
 	variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: anIfNilCheck messageNode.
 	variablesToExtract 
-		ifEmpty: [layout addMorph: (self buildPolymorphicSelectorInputFor: anIfNilCheck)]
-		ifNotEmpty: [layout addMorph: (self buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor: variablesToExtract)].
+		ifEmpty: [polymorphicSelectorSection := self buildPolymorphicSelectorInputFor: anIfNilCheck]
+		ifNotEmpty: [polymorphicSelectorSection := self buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor: variablesToExtract].
+	layout addMorph: polymorphicSelectorSection.
+	
+	layout layoutSpec: (LayoutSpec
+		proportionalWidth: 1.0
+		fixedHeight: (codePane layoutSpec fixedHeight + polymorphicSelectorSection layoutSpec fixedHeight+ (layout ySeparation * 3))).
 	
 	formLayout addMorph: layout.	
+	
 	layout hide.
 	
 	^layout.! !
@@ -1043,61 +1052,68 @@ buildIfNilChecksFormsFor: someIfNilChecks
 
 	ifNilChecksForms := someIfNilChecks collect: [:ifNilCheck | self buildIfNilCheckFormFor: ifNilCheck].! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/27/2019 17:27:50'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:01:48'!
 buildMessageSendingListSection
 
-	^PluggableListMorph
+	| list |
+	
+	list := PluggableListMorph
 		model: messageListModel 
 		listGetter: #messageList
 		indexGetter: #messageListIndex
 		indexSetter: #messageListIndex:
 		mainView: self
 		menuGetter: #messageListMenu
-		keystrokeAction: #messageListKey:from:! !
+		keystrokeAction: #messageListKey:from:.
+	
+	list layoutSpec: (LayoutSpec proportionalWidth: 1.0 fixedHeight: IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight * 7).
+	
+	^list! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/29/2019 17:43:07'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:17:38'!
 buildMorphicWindow
 
-	| hierarchySection sections requiredExtent requiredHeight requiredWidth windowElementsExtent messageSendingListSection ifNilChecks actionButtonsSection |
+	| hierarchySection requiredExtent requiredHeight requiredWidth windowElementsExtent messageSendingListSection ifNilChecks actionButtonsSection |
 	
 	self setLabel: 'Introduce Null Object'.
 	
 	discardEdits := false.
+	firstTimeBuild := true.
 	
 	self initializeScrollableContainer.
 	self initializeFormLayout.
 	scrollPane scroller addMorph: formLayout.
+	formLayout padding: #top.
 
 	introduceNullObjectRequest := IntroduceNullObjectRequest initializedInstance.
 	ifNilChecks := model ifNilChecks.
 	messageListModel := IfNilMessageListModel with: ifNilChecks withForm: self.
 	
-	sections := Set new.
-	
 	hierarchySection := self buildNullObjectHierarchyClassesSection.
 	formLayout addMorph: hierarchySection.
-	sections add: hierarchySection.
 	
 	messageSendingListSection := self buildMessageSendingListSection.
 	formLayout addMorph: messageSendingListSection.
 	
 	self buildIfNilChecksFormsFor: ifNilChecks.
-	self showFormForMessage: 1.
+	self showFormForMessage: messageListModel messageListIndex.
 	
 	actionButtonsSection := self buildActionButtonsSection.
 	formLayout addMorph: actionButtonsSection.
 	
 	
-	requiredHeight := (sections collect: [:aSection | aSection recommendedHeight]) sum 
-		+ (formLayout ySeparation * 2)
-		+ 600.
-	requiredWidth := (sections collect: [:aSection | aSection recommendedWidth]) max + (formLayout xSeparation * 2).
+	requiredHeight := hierarchySection recommendedHeight
+		+ messageSendingListSection layoutSpec fixedHeight
+		+ (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedHeight
+		+ actionButtonsSection layoutSpec fixedHeight
+		+ (formLayout ySeparation * (formLayout submorphs size + 1)).
+	requiredWidth := 1200.
 
 	requiredExtent := requiredWidth@requiredHeight.
 	formLayout morphExtent: requiredExtent.
 	scrollPane scroller morphExtent: requiredExtent.
 	windowElementsExtent := (self class fontProportionalUnitOfReferenceForWidth * 1.5)@(Preferences windowTitleFont height * 1.7).
-	initialExtent := requiredExtent + windowElementsExtent.! !
+	firstTimeBuild ifTrue: [initialExtent := requiredExtent + windowElementsExtent. firstTimeBuild := false].! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/26/2019 12:45:19'!
 buildNullObjectHierarchyClassesSection
@@ -1121,7 +1137,7 @@ buildNullObjectHierarchyClassesSection
 	^section
 ! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/29/2019 17:31:51'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:02:02'!
 buildPolymorphicSelectorInputFor: anIfNilCheck
 
 	| selectorInput selectorModel |
@@ -1130,15 +1146,17 @@ buildPolymorphicSelectorInputFor: anIfNilCheck
 	selectorModel := introduceNullObjectRequest messgeKeywordsAndParametersModelFor: anIfNilCheck.
 	selectorModel selectorModel: selectorInput textModel.
 	
+	selectorInput layoutSpec: (LayoutSpec proportionalWidth: 1.0 fixedHeight: IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight  * 2).
+	
 	^selectorInput ! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/29/2019 17:35:14'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:10:09'!
 buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor: someVariablesToExtract
 
-	| parametersTable preview layout |
+	| parametersTable preview layout previewLayoutSpec |
 	
 	layout := LayoutMorph newColumn.
-	layout morphExtent: 100@100.
+	layout separation: 0@10.
 		
 	parametersTable := MessageKeywordsAndParametersTable 
 		withColumns: #('Keyword' 'Parameter name')
@@ -1154,11 +1172,21 @@ buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor:
 	preview disableEditing.
 	preview drawKeyboardFocusIndicator: false.
 	preview lock: true.
+	
+	previewLayoutSpec := LayoutSpec 
+		proportionalWidth: 1.0
+		fixedHeight: IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight * 3.
+	previewLayoutSpec minorDirectionPadding: 0.3.
+	preview layoutSpec: previewLayoutSpec. 
+	
 	layout addMorph: preview.
 	
-	^layout
+	layoutSpec := LayoutSpec
+		proportionalWidth: 1.0
+		fixedHeight: (preview layoutSpec fixedHeight + parametersTable layoutSpec fixedHeight + (layout ySeparation * 3)).
+	layout layoutSpec: layoutSpec.
 	
-	! !
+	^layout! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/28/2019 18:47:18'!
 buildPreview
@@ -1236,15 +1264,15 @@ row: aRowIndex wasSwappedWith: anotherRowIndex
 
 	self buildPreview.! !
 
-!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 3/28/2019 19:18:41'!
+!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/1/2019 15:52:28'!
 showFormForMessage: anIndex
 
 	| form |
 	
 	form := ifNilChecksForms at: anIndex.
 	form show.
-	currentlyShownTable := form submorphs at: 2.
-	currentlyShownPreview := form submorphs at: 1.! !
+	currentlyShownTable := (form submorphs at: 1) submorphs at: 2.
+	currentlyShownPreview := (form submorphs at: 1) submorphs at: 1.! !
 
 !IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 3/29/2019 14:26:42'!
 submitButtonClicked
@@ -1276,6 +1304,11 @@ okToChange
 	discardEdits 
 		ifTrue: [^true]
 		ifFalse: [^super okToChange].! !
+
+!IntroduceNullObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/1/2019 14:39:26'!
+fontProportionalUnitOfReferenceForHeight
+
+	^AbstractFont default height! !
 
 !IntroduceNullObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:32:21'!
 fontProportionalUnitOfReferenceForWidth
@@ -1572,7 +1605,7 @@ rowsLayoutSpec
 
 	^LayoutSpec fixedHeight: self rowHeight! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 2/14/2019 17:23:02'!
+!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 4/1/2019 15:09:06'!
 withColumns: inputColumnsTitles withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
 
 	| rowsSeparation recommendedHeight numberOfRows columnsTitlesRow changeOrderButtons tableWidth |
@@ -1596,7 +1629,6 @@ withColumns: inputColumnsTitles withRows: rowsTitles withColor: aColor withPrevi
 	tableWidth := columnWidths sum + (self columnSeparation * (columnWidths size + 1)).
 	
 	self layoutSpec: (LayoutSpec fixedWidth: tableWidth fixedHeight: recommendedHeight).
-	
 	
 	"Buid the columns titles row"
 	columnsTitlesRow := self buildColumnTitlesRowFor: inputColumnsTitles.

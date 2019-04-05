@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 4 April 2019 at 7:03:15 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 5 April 2019 at 5:57:58 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 464!
+!provides: 'Refactoring' 1 486!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -86,7 +86,7 @@ ExtractToMethodObjectForm class
 
 !classDefinition: #IntroduceNullObjectForm category: #Refactoring!
 SystemWindow subclass: #IntroduceNullObjectForm
-	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms currentlyShownTable currentlyShownPreview discardEdits firstTimeBuild hierarchySection messageSendingListSection actionButtonsSection'
+	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms currentlyShownTable currentlyShownPreview discardEdits firstTimeBuild hierarchySection messageSendingListSection actionButtonsSection ifNilChecks'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -403,11 +403,6 @@ initializedInstance
 
 	^self new initialize.! !
 
-!IntroduceNullObjectRequest class methodsFor: 'instance creation' stamp: 'FGJ 3/28/2019 18:32:33'!
-initializedInstance
-
-	^self new initialize! !
-
 !MessageKeywordsAndParametersModel class methodsFor: 'instance creation' stamp: 'FGJ 3/28/2019 18:38:33'!
 initializedInstance
 
@@ -586,6 +581,11 @@ withText: aText withColor: aColor withWidth: aWidth
 innerMorphClass
 
 	^PreviewInnerTextMorph ! !
+
+!ColoredScrollPane methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 12:49:00'!
+bordersExtent
+
+	^extent - self viewableExtent! !
 
 !ColoredScrollPane methodsFor: 'as yet unclassified' stamp: 'FGJ 2/5/2019 16:22:45'!
 drawOn: aCanvas
@@ -947,11 +947,6 @@ ifNilChecks: someMessageSendings
 
 	messageSendingList := someMessageSendings. ! !
 
-!IntroduceNullObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 17:41:18'!
-initialExtent
-
-	^initialExtent! !
-
 !IntroduceNullObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:44:02'!
 layoutSpecForSection: aSection
 
@@ -1020,12 +1015,13 @@ buildCodePaneFor: anIfNilCheck
 	
 	^codePane! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/4/2019 18:09:32'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 15:24:13'!
 buildIfNilCheckFormFor: anIfNilCheck
 
 	| layout variablesToExtract polymorphicSelectorSection codePane |
 	
 	layout := LayoutMorph newColumn.
+	layout color: self backgroundColor.
 	layout separation: 0@10.
 	
 	codePane := self buildCodePaneFor: anIfNilCheck.
@@ -1052,7 +1048,7 @@ buildIfNilChecksFormsFor: someIfNilChecks
 
 	ifNilChecksForms := someIfNilChecks collect: [:ifNilCheck | self buildIfNilCheckFormFor: ifNilCheck].! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:01:48'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 15:34:42'!
 buildMessageSendingListSection
 
 	| list |
@@ -1065,29 +1061,20 @@ buildMessageSendingListSection
 		mainView: self
 		menuGetter: #messageListMenu
 		keystrokeAction: #messageListKey:from:.
-	
+	list color: Color white.
 	list layoutSpec: (LayoutSpec proportionalWidth: 1.0 fixedHeight: IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight * 7).
 	
 	^list! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/4/2019 18:23:41'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 16:22:49'!
 buildMorphicWindow
 
-	| ifNilChecks |
-	
-	self setLabel: 'Introduce Null Object'.
-	
-	discardEdits := false.
 	firstTimeBuild := true.
-	
+
 	self initializeScrollableContainer.
 	self initializeFormLayout.
 	scrollPane scroller addMorph: formLayout.
 	formLayout padding: #top.
-
-	introduceNullObjectRequest := IntroduceNullObjectRequest initializedInstance.
-	ifNilChecks := model ifNilChecks.
-	messageListModel := IfNilMessageListModel with: ifNilChecks withForm: self.
 	
 	hierarchySection := self buildNullObjectHierarchyClassesSection.
 	formLayout addMorph: hierarchySection.
@@ -1104,7 +1091,7 @@ buildMorphicWindow
 	
 	self showFormForMessage: messageListModel messageListIndex.! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/26/2019 12:45:19'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 16:24:37'!
 buildNullObjectHierarchyClassesSection
 
 	| section maxLabelWidth nullClassInput concreteClassInput |
@@ -1113,39 +1100,36 @@ buildNullObjectHierarchyClassesSection
 
 	maxLabelWidth := self recommendedWidthForLabels: #('Null Class' 'Concrete Class').
 
-	nullClassInput := LabeledAutocompletedInput withLabel: 'Null Class' withWidth: maxLabelWidth.
-	introduceNullObjectRequest nullClassNameModel: nullClassInput textModel.
+	nullClassInput := LabeledAutocompletedInput withLabel: 'Null Class' withWidth: maxLabelWidth withModel: introduceNullObjectRequest nullClassNameModel.
 	section addMorph: nullClassInput.
 	
-	concreteClassInput := LabeledAutocompletedInput withLabel: 'Concrete Class' withWidth: maxLabelWidth.
-	introduceNullObjectRequest concreteClassNameModel: concreteClassInput textModel.
-	section addMorph: concreteClassInput.
+	concreteClassInput := LabeledAutocompletedInput withLabel: 'Concrete Class' withWidth: maxLabelWidth withModel: introduceNullObjectRequest concreteClassNameModel. 	section addMorph: concreteClassInput.
 	
 	section layoutSpec: (self layoutSpecForSection: section).
 	
 	^section
 ! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/4/2019 18:12:32'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 16:31:41'!
 buildPolymorphicSelectorInputFor: anIfNilCheck
 
-	| selectorInput selectorModel inputWidth |
+	| selectorInput inputWidth ifNilCheckModel |
 	
 	inputWidth := self recommendedWidthForLabels: #('Polymorphic Selector').
-	selectorInput := LabeledInput withLabel: 'Polymorphic Selector' withWidth: inputWidth.
-	selectorModel := introduceNullObjectRequest messgeKeywordsAndParametersModelFor: anIfNilCheck.
-	selectorModel selectorModel: selectorInput textModel.
+	ifNilCheckModel := introduceNullObjectRequest messgeKeywordsAndParametersModelFor: anIfNilCheck.
+	selectorInput := LabeledInput withLabel: 'Polymorphic Selector' withWidth: inputWidth withModel: ifNilCheckModel selectorModel.
 	
 	selectorInput layoutSpec: (LayoutSpec fixedWidth: LabeledInput inputWidth fixedHeight: IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight  * 2).
 	
 	^selectorInput ! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/4/2019 18:03:31'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 15:27:28'!
 buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor: someVariablesToExtract
 
 	| parametersTable preview layout previewLayoutSpec |
 	
 	layout := LayoutMorph newColumn.
+	layout color: self backgroundColor.
 	layout separation: 0@10.
 		
 	parametersTable := MessageKeywordsAndParametersTable 
@@ -1229,11 +1213,11 @@ initializeScrollableContainer
 	scrollPane color: self backgroundColor. 
 	self layoutMorph addMorphUseAll: scrollPane.! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/4/2019 18:21:32'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 14:54:50'!
 setExtents
 
 	
-	| requiredExtent requiredHeight requiredWidth windowElementsExtent |
+	| requiredExtent requiredHeight requiredWidth windowElementsExtent xtraBorderToAvoidScrollbars |
 	
 	requiredHeight := hierarchySection recommendedHeight
 		+ messageSendingListSection layoutSpec fixedHeight
@@ -1241,15 +1225,19 @@ setExtents
 		+ actionButtonsSection layoutSpec fixedHeight
 		+ (formLayout ySeparation * (formLayout submorphs size + 1)).
 	requiredWidth := {hierarchySection recommendedWidth. (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedWidth} max.
+	(ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedWidth: requiredWidth.
 	requiredWidth := requiredWidth + (formLayout xSeparation * 2).
 	
-	(ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedWidth: requiredWidth.
-
 	requiredExtent := requiredWidth@requiredHeight.
 	formLayout morphExtent: requiredExtent.
 	scrollPane scroller morphExtent: requiredExtent.
-	windowElementsExtent := (self class fontProportionalUnitOfReferenceForWidth * 1.5)@(Preferences windowTitleFont height * 1.7).
-	firstTimeBuild ifTrue: [initialExtent := requiredExtent + windowElementsExtent. firstTimeBuild := false].! !
+	
+	windowElementsExtent := (borderWidth * 2)@(borderWidth * 2 + self labelHeight).
+	xtraBorderToAvoidScrollbars := 4@4.
+	windowElementsExtent := windowElementsExtent + scrollPane bordersExtent + xtraBorderToAvoidScrollbars.
+	firstTimeBuild ifTrue: [initialExtent := requiredExtent + windowElementsExtent. firstTimeBuild := false].
+	
+	self layoutSubmorphs.! !
 
 !IntroduceNullObjectForm methodsFor: 'open/close' stamp: 'FGJ 3/27/2019 17:41:06'!
 closeBoxHit
@@ -1260,6 +1248,15 @@ closeBoxHit
 cancelButtonClicked
 	
 	model cancel.! !
+
+!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/5/2019 15:19:11'!
+fontPreferenceChanged
+	"Copied from CodePackageListWindow"
+	"System fonts have changed; rebuild myself"
+	self layoutMorph removeAllMorphs.
+	super fontPreferenceChanged.
+	self buildMorphicWindow.
+! !
 
 !IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 3/28/2019 16:39:03'!
 hideFormForMessage: anIndex
@@ -1294,6 +1291,11 @@ submitButtonClicked
 
 	model userSubmitted: introduceNullObjectRequest.! !
 
+!IntroduceNullObjectForm methodsFor: 'accessing' stamp: 'FGJ 4/4/2019 17:41:18'!
+initialExtent
+
+	^initialExtent! !
+
 !IntroduceNullObjectForm methodsFor: 'accessing' stamp: 'FGJ 3/28/2019 19:01:20'!
 previewUnavailableMessage
 
@@ -1320,6 +1322,21 @@ okToChange
 		ifTrue: [^true]
 		ifFalse: [^super okToChange].! !
 
+!IntroduceNullObjectForm methodsFor: 'initialization' stamp: 'FGJ 4/5/2019 16:52:46'!
+initializeWithModel: aModel
+
+	super model: aModel.
+	
+	self setLabel: 'Introduce Null Object'.
+	
+	discardEdits := false.
+	
+	ifNilChecks := model ifNilChecks.
+	introduceNullObjectRequest := IntroduceNullObjectRequest for: ifNilChecks.
+	messageListModel := IfNilMessageListModel with: ifNilChecks withForm: self.
+	
+! !
+
 !IntroduceNullObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/1/2019 14:39:26'!
 fontProportionalUnitOfReferenceForHeight
 
@@ -1329,6 +1346,22 @@ fontProportionalUnitOfReferenceForHeight
 fontProportionalUnitOfReferenceForWidth
 
 	^AbstractFont default widthOf: $A! !
+
+!IntroduceNullObjectForm class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 16:13:58'!
+open: aModel label: aString
+
+	|  window |
+
+	window _ self withModel: aModel.
+	window buildMorphicWindow.
+	aString ifNotNil: [ window setLabel: aString ].
+	window openInWorld.
+	^window! !
+
+!IntroduceNullObjectForm class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 16:14:16'!
+withModel: aModel
+
+	^self new initializeWithModel: aModel! !
 
 !FormSection methodsFor: 'initialization' stamp: 'FGJ 2/13/2019 18:57:34'!
 initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
@@ -1415,6 +1448,11 @@ textModel
 
 	^inputMorph model! !
 
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 15:43:39'!
+textModel: aTextModel
+	
+	inputMorph model: aTextModel.! !
+
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 18:08:18'!
 withLabel: aLabel withWidth: aWidth
 
@@ -1443,6 +1481,34 @@ withLabel: aLabel withWidth: aWidth
 	
 	! !
 
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 15:46:45'!
+withLabel: aLabel withWidth: aWidth withModel: aTextModel
+
+	| labelLayoutSpec inputMorphLayoutSpec |
+	
+	self separation: 5.
+	layoutSpec := LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight.
+	self layoutSpec: layoutSpec.
+	
+	labelMorph := StringMorph contents: aLabel.
+	labelLayoutSpec := LayoutSpec 
+		fixedWidth: aWidth
+		fixedHeight: labelMorph morphHeight
+		minorDirectionPadding: #center.
+	self addMorph: labelMorph layoutSpec: labelLayoutSpec.
+	
+	inputMorph := TextModelMorph withModel: aTextModel.
+	inputMorph hideScrollBarsIndefinitely.
+	inputMorphLayoutSpec := 
+		LayoutSpec 
+			fixedWidth: LabeledInput inputWidth
+			fixedHeight: labelMorph morphHeight + 2.
+	self addMorph: inputMorph layoutSpec: inputMorphLayoutSpec.
+	
+	
+	
+	! !
+
 !LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 18:08:29'!
 inputWidth
 
@@ -1453,10 +1519,15 @@ recommendedHeight
 
 	^AbstractFont default height * 1.8! !
 
-!LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/7/2019 11:50:57'!
+!LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 2/7/2019 11:50:57'!
 withLabel: aLabel withWidth: aWidth
 
 	^self newRow withLabel: aLabel withWidth: aWidth! !
+
+!LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 16:32:52'!
+withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel 
+	
+	^self newRow withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel! !
 
 !LabeledAutocompletedInput methodsFor: 'as yet unclassified' stamp: 'FGJ 2/1/2019 12:32:07'!
 autoCompleterClassFor: textGetter
@@ -1533,69 +1604,6 @@ backgroundColor
 
 	^backgroundColor ! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 2/13/2019 14:14:52'!
-buildChangeOrderButtonsWith: aModel
-
-	| downButton layoutButtons upButton |
-	
-	upButton := PluggableButtonMorph new.
-	upButton icon: Theme current goUpIcon.
-	upButton model: aModel.
-	upButton action: #moveUp.
-			
-	downButton := PluggableButtonMorph new.
-	downButton icon: Theme current goDownIcon.
-	downButton model: aModel.
-	downButton action: #moveDown.
-	
-	layoutButtons := LayoutMorph newRow.
-	layoutButtons padding: #center; color: self backgroundColor.
-	layoutButtons addMorph: downButton; addMorph: upButton.	
-	
-	^layoutButtons! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 2/14/2019 12:19:23'!
-buildColumnTitlesRowFor: inputColumnsTitles
-
-	| columnsTitles row |
-	
-	row := LayoutMorph newRow.
-	row color: self backgroundColor.
-	row separation: self columnSeparation.
-	
-	columnsTitles := OrderedCollection newFrom: inputColumnsTitles.
-	columnsTitles addFirst: ''; addLast: 'Change order'.
-	columnsTitles withIndexDo: [:aColumnTitle :columnIndex | | columnTitleLayoutSpec titleLayout |
-		titleLayout := LayoutMorph newRow.
-		titleLayout color: self backgroundColor .
-		titleLayout padding: #center.
-		titleLayout addMorph: (StringMorph contents: aColumnTitle).
-		columnTitleLayoutSpec := LayoutSpec fixedWidth: (columnWidths at: columnIndex).
-		row 
-			addMorph: titleLayout
-			layoutSpec: columnTitleLayoutSpec].
-		
-	^row
-	
-	! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 2/14/2019 14:14:16'!
-buildInputMorph
-
-	| inputMorph |
-	
-	inputMorph := PreviewTextModelMorph textProvider: self.
-	inputMorph textMorph previewModel: previewModel.
-			
-	inputMorph hideScrollBarsIndefinitely.
-	
-	^inputMorph! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 2/14/2019 12:14:23'!
-columnSeparation
-
-	^4! !
-
 !MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 3/14/2019 10:24:16'!
 columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: numberOfInputColumns
 
@@ -1615,17 +1623,12 @@ columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: numberOfInputColum
 	
 	! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 2/14/2019 12:09:59'!
-rowHeight
-
-	^AbstractFont default height * 1.6! !
-
 !MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 2/14/2019 12:11:01'!
 rowsLayoutSpec
 
 	^LayoutSpec fixedHeight: self rowHeight! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 4/1/2019 15:09:06'!
+!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 4/5/2019 17:10:11'!
 withColumns: inputColumnsTitles withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
 
 	| rowsSeparation recommendedHeight numberOfRows columnsTitlesRow changeOrderButtons tableWidth |
@@ -1665,16 +1668,11 @@ withColumns: inputColumnsTitles withRows: rowsTitles withColor: aColor withPrevi
 			
 		inputMorphLayoutSpec := LayoutSpec fixedWidth: (columnWidths at: 2) fixedHeight: self rowHeight.
 		
-		keywordInputMorph := self buildInputMorph.
+		keywordInputMorph := self buildInputMorphWith: (aRefactoringModel keywordModelOf: aRowTitle).
 		aRow addMorph: keywordInputMorph layoutSpec: inputMorphLayoutSpec.
 		
-		parameternameInputMorph := self buildInputMorph.
+		parameternameInputMorph := self buildInputMorphWith: (aRefactoringModel parameterModelOf: aRowTitle).
 		aRow addMorph: parameternameInputMorph layoutSpec: inputMorphLayoutSpec.
-		
-		aRefactoringModel 
-			addKeyword: keywordInputMorph model 
-			for: aRowTitle
-			withParameterName: parameternameInputMorph model.
 				
 		changeOrderModel := ChangeRowOrderButtonModel for: (rowsTitles size - (index - 1)) notifying: self.
 		rowModels addFirst: changeOrderModel.
@@ -1694,6 +1692,86 @@ rowWasMovedDown: aRowIndex
 rowWasMovedUp: aRowIndex
 
 	(rowModels at: aRowIndex) wasMovedUp.! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 2/13/2019 14:14:52'!
+buildChangeOrderButtonsWith: aModel
+
+	| downButton layoutButtons upButton |
+	
+	upButton := PluggableButtonMorph new.
+	upButton icon: Theme current goUpIcon.
+	upButton model: aModel.
+	upButton action: #moveUp.
+			
+	downButton := PluggableButtonMorph new.
+	downButton icon: Theme current goDownIcon.
+	downButton model: aModel.
+	downButton action: #moveDown.
+	
+	layoutButtons := LayoutMorph newRow.
+	layoutButtons padding: #center; color: self backgroundColor.
+	layoutButtons addMorph: downButton; addMorph: upButton.	
+	
+	^layoutButtons! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 2/14/2019 12:19:23'!
+buildColumnTitlesRowFor: inputColumnsTitles
+
+	| columnsTitles row |
+	
+	row := LayoutMorph newRow.
+	row color: self backgroundColor.
+	row separation: self columnSeparation.
+	
+	columnsTitles := OrderedCollection newFrom: inputColumnsTitles.
+	columnsTitles addFirst: ''; addLast: 'Change order'.
+	columnsTitles withIndexDo: [:aColumnTitle :columnIndex | | columnTitleLayoutSpec titleLayout |
+		titleLayout := LayoutMorph newRow.
+		titleLayout color: self backgroundColor .
+		titleLayout padding: #center.
+		titleLayout addMorph: (StringMorph contents: aColumnTitle).
+		columnTitleLayoutSpec := LayoutSpec fixedWidth: (columnWidths at: columnIndex).
+		row 
+			addMorph: titleLayout
+			layoutSpec: columnTitleLayoutSpec].
+		
+	^row
+	
+	! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 2/14/2019 14:14:16'!
+buildInputMorph
+
+	| inputMorph |
+	
+	inputMorph := PreviewTextModelMorph textProvider: self.
+	inputMorph textMorph previewModel: previewModel.
+			
+	inputMorph hideScrollBarsIndefinitely.
+	
+	^inputMorph! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 17:08:23'!
+buildInputMorphWith: aModel
+
+	| inputMorph |
+	
+	inputMorph := PreviewTextModelMorph withModel: aModel.
+	inputMorph textMorph previewModel: previewModel.
+			
+	inputMorph hideScrollBarsIndefinitely.
+	
+	^inputMorph! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'accessing' stamp: 'FGJ 2/14/2019 12:14:23'!
+columnSeparation
+
+	^4! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'accessing' stamp: 'FGJ 2/14/2019 12:09:59'!
+rowHeight
+
+	^AbstractFont default height * 1.6! !
 
 !MessageKeywordsAndParametersTable class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 12:20:49'!
 withColumns: columnsTitles withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
@@ -5457,12 +5535,17 @@ ifNilChecks
 
 	^ifNilChecks! !
 
-!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 13:05:30'!
+!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 15:15:24'!
 requestRefactoringParameters
 
 	self chooseInstanceVariable.
 	
+	instanceVariable ifNil: [^self].
+	
 	ifNilChecks := (IfNilChecksFinder on: classToRefactor for: instanceVariable) value.
+	
+	ifNilChecks ifEmpty: [^self inform: ('There are no ifNil checks on ', instanceVariable)].
+	
 	form := IntroduceNullObjectForm open: self.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:58:00'!
@@ -5782,13 +5865,19 @@ messageListIndex
 	^listIndex
 	! !
 
-!IfNilMessageListModel methodsFor: 'accessing' stamp: 'FGJ 3/28/2019 16:29:07'!
+!IfNilMessageListModel methodsFor: 'accessing' stamp: 'FGJ 4/5/2019 15:07:00'!
 messageListIndex: anIndex
 	
-	introduceNullObjectForm hideFormForMessage: listIndex.
-	introduceNullObjectForm showFormForMessage: anIndex.
+	| doNothing |
 	
-	listIndex := anIndex.! !
+	doNothing := [^self].
+	anIndex = 0 ifTrue: doNothing.
+	anIndex > ifNilChecks size ifTrue: doNothing.
+	
+	introduceNullObjectForm hideFormForMessage: listIndex.
+	listIndex := anIndex.
+	introduceNullObjectForm showFormForMessage: listIndex.
+! !
 
 !IfNilMessageListModel methodsFor: 'initialization' stamp: 'FGJ 3/28/2019 16:28:36'!
 initializeWith: someIfNilChecks withForm: anIntroduceNullObjectForm
@@ -5802,41 +5891,47 @@ with: someIfNilChecks withForm: anIntroduceNullObjectForm
 
 	^self new initializeWith: someIfNilChecks withForm: anIntroduceNullObjectForm! !
 
-!IntroduceNullObjectRequest methodsFor: 'initialization' stamp: 'FGJ 3/28/2019 18:33:03'!
-initialize
+!IntroduceNullObjectRequest methodsFor: 'initialization' stamp: 'FGJ 4/5/2019 17:55:57'!
+initializeFor: someIfNilChecks
 
-	messageKeywordsAndParametersModels := Dictionary new.! !
+	messageKeywordsAndParametersModels := Dictionary new.
+	someIfNilChecks do: [:anIfNilCheck | | messageKeywordsAndParametersModel variablesToExtract |
+		variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: anIfNilCheck messageNode.
+		messageKeywordsAndParametersModel := MessageKeywordsAndParametersModel for: variablesToExtract.
+		messageKeywordsAndParametersModels at: anIfNilCheck put: messageKeywordsAndParametersModel].
+	
+	nullClassNameModel := PluggableTextModel on: self.
+	concreteClassNameModel := PluggableTextModel on: self.! !
 
 !IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 3/29/2019 14:56:01'!
 concreteClassName
 
 	^concreteClassNameModel actualContents string! !
 
+!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/5/2019 15:44:23'!
+concreteClassNameModel
+
+	^concreteClassNameModel! !
+
 !IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 12:42:20'!
 concreteClassNameModel: aTextModel
 
 	concreteClassNameModel := aTextModel.! !
 
-!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 3/28/2019 18:39:24'!
+!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/5/2019 16:56:22'!
 messgeKeywordsAndParametersModelFor: anIfNilCheck
 
-	| messageKeywordsAndParametersModel |
-	
-	messageKeywordsAndParametersModel := MessageKeywordsAndParametersModel initializedInstance.
-	
-	messageKeywordsAndParametersModels at: anIfNilCheck put: messageKeywordsAndParametersModel.
-	
-	^messageKeywordsAndParametersModel! !
+	^messageKeywordsAndParametersModels at: anIfNilCheck! !
 
 !IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 3/29/2019 14:56:09'!
 nullClassName
 
 	^nullClassNameModel actualContents string! !
 
-!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 12:42:02'!
-nullClassNameModel: aTextModel
+!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/5/2019 15:56:36'!
+nullClassNameModel
 
-	nullClassNameModel := aTextModel.! !
+	^nullClassNameModel! !
 
 !IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 3/29/2019 16:29:58'!
 replacementParameters
@@ -5852,7 +5947,12 @@ replacementParameters
 		
 	^parameters! !
 
-!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 3/28/2019 18:38:03'!
+!IntroduceNullObjectRequest class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 16:53:19'!
+for: someIfNilChecks
+
+	^self new initializeFor: someIfNilChecks! !
+
+!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 17:11:21'!
 addKeyword: aKeywordModel for: aVariableName withParameterName: aParameterNameModel
 
 	| keywordModel |
@@ -5875,20 +5975,56 @@ definitions
 				useKeyword: (model at: #keyword) actualContents string
 				withParameterName: (model at: #parameterName) actualContents string])]! !
 
-!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 3/28/2019 18:38:57'!
+!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 16:30:23'!
 initialize
 
-	models := OrderedCollection new.! !
+	models := OrderedCollection new.
+	
+	selectorModel := PluggableTextModel on: self.! !
+
+!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 17:56:26'!
+initializeFor: someVariablesToExtract
+
+	models := OrderedCollection new.
+	someVariablesToExtract do: [:variableToExtract | | keywordModel |
+		keywordModel := Dictionary new.
+		keywordModel at: #variableName put: variableToExtract.
+		keywordModel at: #keyword put: (PluggableTextModel on:  self).
+		keywordModel at: #parameterName put: (PluggableTextModel on: self).
+		
+		models add: keywordModel].
+			
+	selectorModel := PluggableTextModel on: self.! !
+
+!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 17:20:56'!
+keywordModelOf: aVariableName
+
+	^(models detect: [:model | (model at: #variableName) = aVariableName]) at: #keyword! !
 
 !MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 3/28/2019 18:40:59'!
 keywordOfIndex: aKeywordIndex wasSwappedWithKeywordOfIndex: anotherKeywordIndex
 
 	models swap: aKeywordIndex with: anotherKeywordIndex.! !
 
+!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 17:21:09'!
+parameterModelOf: aVariableName
+
+	^(models detect: [:model | (model at: #variableName) = aVariableName]) at: #parameterName! !
+
+!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 16:29:31'!
+selectorModel
+
+	^selectorModel! !
+
 !MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 3/29/2019 16:27:16'!
 selectorModel: aTextModel
 
 	selectorModel := aTextModel.! !
+
+!MessageKeywordsAndParametersModel class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 17:54:59'!
+for: someVariablesToExtract
+
+	^self new initializeFor: someVariablesToExtract! !
 
 !RefactoringPackageRefactoringMenues class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 11:30:10'!
 classRefactoringMenuOptions

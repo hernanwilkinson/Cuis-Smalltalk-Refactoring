@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 1 April 2019 at 4:18:45 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 4 April 2019 at 7:03:15 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 458!
+!provides: 'Refactoring' 1 464!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -86,7 +86,7 @@ ExtractToMethodObjectForm class
 
 !classDefinition: #IntroduceNullObjectForm category: #Refactoring!
 SystemWindow subclass: #IntroduceNullObjectForm
-	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms currentlyShownTable currentlyShownPreview discardEdits firstTimeBuild'
+	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms currentlyShownTable currentlyShownPreview discardEdits firstTimeBuild hierarchySection messageSendingListSection actionButtonsSection'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -947,7 +947,7 @@ ifNilChecks: someMessageSendings
 
 	messageSendingList := someMessageSendings. ! !
 
-!IntroduceNullObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 4/1/2019 16:15:51'!
+!IntroduceNullObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 17:41:18'!
 initialExtent
 
 	^initialExtent! !
@@ -1020,7 +1020,7 @@ buildCodePaneFor: anIfNilCheck
 	
 	^codePane! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:09:56'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/4/2019 18:09:32'!
 buildIfNilCheckFormFor: anIfNilCheck
 
 	| layout variablesToExtract polymorphicSelectorSection codePane |
@@ -1038,7 +1038,7 @@ buildIfNilCheckFormFor: anIfNilCheck
 	layout addMorph: polymorphicSelectorSection.
 	
 	layout layoutSpec: (LayoutSpec
-		proportionalWidth: 1.0
+		fixedWidth: polymorphicSelectorSection layoutSpec fixedWidth
 		fixedHeight: (codePane layoutSpec fixedHeight + polymorphicSelectorSection layoutSpec fixedHeight+ (layout ySeparation * 3))).
 	
 	formLayout addMorph: layout.	
@@ -1070,10 +1070,10 @@ buildMessageSendingListSection
 	
 	^list! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:17:38'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/4/2019 18:23:41'!
 buildMorphicWindow
 
-	| hierarchySection requiredExtent requiredHeight requiredWidth windowElementsExtent messageSendingListSection ifNilChecks actionButtonsSection |
+	| ifNilChecks |
 	
 	self setLabel: 'Introduce Null Object'.
 	
@@ -1096,24 +1096,13 @@ buildMorphicWindow
 	formLayout addMorph: messageSendingListSection.
 	
 	self buildIfNilChecksFormsFor: ifNilChecks.
-	self showFormForMessage: messageListModel messageListIndex.
 	
 	actionButtonsSection := self buildActionButtonsSection.
 	formLayout addMorph: actionButtonsSection.
 	
+	self setExtents.
 	
-	requiredHeight := hierarchySection recommendedHeight
-		+ messageSendingListSection layoutSpec fixedHeight
-		+ (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedHeight
-		+ actionButtonsSection layoutSpec fixedHeight
-		+ (formLayout ySeparation * (formLayout submorphs size + 1)).
-	requiredWidth := 1200.
-
-	requiredExtent := requiredWidth@requiredHeight.
-	formLayout morphExtent: requiredExtent.
-	scrollPane scroller morphExtent: requiredExtent.
-	windowElementsExtent := (self class fontProportionalUnitOfReferenceForWidth * 1.5)@(Preferences windowTitleFont height * 1.7).
-	firstTimeBuild ifTrue: [initialExtent := requiredExtent + windowElementsExtent. firstTimeBuild := false].! !
+	self showFormForMessage: messageListModel messageListIndex.! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/26/2019 12:45:19'!
 buildNullObjectHierarchyClassesSection
@@ -1137,20 +1126,21 @@ buildNullObjectHierarchyClassesSection
 	^section
 ! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:02:02'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/4/2019 18:12:32'!
 buildPolymorphicSelectorInputFor: anIfNilCheck
 
-	| selectorInput selectorModel |
+	| selectorInput selectorModel inputWidth |
 	
-	selectorInput := LabeledInput withLabel: 'Polymorphic Selector' withWidth: 50.
+	inputWidth := self recommendedWidthForLabels: #('Polymorphic Selector').
+	selectorInput := LabeledInput withLabel: 'Polymorphic Selector' withWidth: inputWidth.
 	selectorModel := introduceNullObjectRequest messgeKeywordsAndParametersModelFor: anIfNilCheck.
 	selectorModel selectorModel: selectorInput textModel.
 	
-	selectorInput layoutSpec: (LayoutSpec proportionalWidth: 1.0 fixedHeight: IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight  * 2).
+	selectorInput layoutSpec: (LayoutSpec fixedWidth: LabeledInput inputWidth fixedHeight: IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight  * 2).
 	
 	^selectorInput ! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:10:09'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/4/2019 18:03:31'!
 buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor: someVariablesToExtract
 
 	| parametersTable preview layout previewLayoutSpec |
@@ -1182,7 +1172,7 @@ buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor:
 	layout addMorph: preview.
 	
 	layoutSpec := LayoutSpec
-		proportionalWidth: 1.0
+		fixedWidth: parametersTable layoutSpec fixedWidth
 		fixedHeight: (preview layoutSpec fixedHeight + parametersTable layoutSpec fixedHeight + (layout ySeparation * 3)).
 	layout layoutSpec: layoutSpec.
 	
@@ -1239,6 +1229,28 @@ initializeScrollableContainer
 	scrollPane color: self backgroundColor. 
 	self layoutMorph addMorphUseAll: scrollPane.! !
 
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/4/2019 18:21:32'!
+setExtents
+
+	
+	| requiredExtent requiredHeight requiredWidth windowElementsExtent |
+	
+	requiredHeight := hierarchySection recommendedHeight
+		+ messageSendingListSection layoutSpec fixedHeight
+		+ (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedHeight
+		+ actionButtonsSection layoutSpec fixedHeight
+		+ (formLayout ySeparation * (formLayout submorphs size + 1)).
+	requiredWidth := {hierarchySection recommendedWidth. (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedWidth} max.
+	requiredWidth := requiredWidth + (formLayout xSeparation * 2).
+	
+	(ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedWidth: requiredWidth.
+
+	requiredExtent := requiredWidth@requiredHeight.
+	formLayout morphExtent: requiredExtent.
+	scrollPane scroller morphExtent: requiredExtent.
+	windowElementsExtent := (self class fontProportionalUnitOfReferenceForWidth * 1.5)@(Preferences windowTitleFont height * 1.7).
+	firstTimeBuild ifTrue: [initialExtent := requiredExtent + windowElementsExtent. firstTimeBuild := false].! !
+
 !IntroduceNullObjectForm methodsFor: 'open/close' stamp: 'FGJ 3/27/2019 17:41:06'!
 closeBoxHit
 
@@ -1264,13 +1276,16 @@ row: aRowIndex wasSwappedWith: anotherRowIndex
 
 	self buildPreview.! !
 
-!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/1/2019 15:52:28'!
+!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/4/2019 18:22:49'!
 showFormForMessage: anIndex
 
 	| form |
 	
 	form := ifNilChecksForms at: anIndex.
 	form show.
+	
+	self setExtents.
+	
 	currentlyShownTable := (form submorphs at: 1) submorphs at: 2.
 	currentlyShownPreview := (form submorphs at: 1) submorphs at: 1.! !
 
@@ -1400,7 +1415,7 @@ textModel
 
 	^inputMorph model! !
 
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:35:56'!
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 18:08:18'!
 withLabel: aLabel withWidth: aWidth
 
 	| labelLayoutSpec inputMorphLayoutSpec |
@@ -1420,13 +1435,18 @@ withLabel: aLabel withWidth: aWidth
 	inputMorph hideScrollBarsIndefinitely.
 	inputMorphLayoutSpec := 
 		LayoutSpec 
-			fixedWidth: ExtractToMethodObjectForm fontProportionalUnitOfReferenceForWidth * 30
+			fixedWidth: LabeledInput inputWidth
 			fixedHeight: labelMorph morphHeight + 2.
 	self addMorph: inputMorph layoutSpec: inputMorphLayoutSpec.
 	
 	
 	
 	! !
+
+!LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 18:08:29'!
+inputWidth
+
+	^ExtractToMethodObjectForm fontProportionalUnitOfReferenceForWidth * 30! !
 
 !LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/6/2019 20:39:39'!
 recommendedHeight
@@ -5327,12 +5347,10 @@ createRefactoring
 		withInstanceCreationMessageFrom: extractToMethodObjectRequest keywordsDefinitions
 		evaluatedWith: extractToMethodObjectRequest methodObjectEvaluationMessageSelector.! !
 
-!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:35:56'!
+!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 17:33:49'!
 requestRefactoringParameters
 
 	panel := ExtractToMethodObjectForm open: self.
-	
-	self waitForUserResponse.
 	! !
 
 !ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 19:56:45'!
@@ -5341,41 +5359,28 @@ showChanges
 	panel deleteDiscardingEdits.
 	Transcript log: 'Successfully applied the Extract Method To Method Object refactoring'.! !
 
-!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:09:20'!
+!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 17:34:16'!
 userSubmitted: anExtractToMethodObjectRequest
 
 	extractToMethodObjectRequest := anExtractToMethodObjectRequest.
-	self finishedRefactoringParametersRequest.! !
+	self createRefactoringHandlingRefactoringExceptions.
+	
+	refactoring ifNotNil: [self applyRefactoring; showChanges].! !
 
-!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 19:32:07'!
-waitForUserResponse
+!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 17:35:17'!
+value
 
-	| w |
+	self requestRefactoringParametersHandlingRefactoringExceptions.! !
 
-	w := panel world.
-	done := false.
-	[done] whileFalse: [w doOneCycleNow ].
-	w doOneCycleNow.! !
-
-!ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 2/14/2019 17:09:09'!
+!ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 4/4/2019 17:32:47'!
 cancel
 
-	self finishedRefactoringParametersRequest.
-	panel delete.
-	
-	self endRequest.! !
+	panel delete.! !
 
-!ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 2/14/2019 17:08:58'!
-finishedRefactoringParametersRequest
-
-	done := true.! !
-
-!ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 2/14/2019 19:24:27'!
+!ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 4/4/2019 17:33:21'!
 handleRefactoringError: aRefactoringError 
 
-	self inform: aRefactoringError messageText.
-	self waitForUserResponse.
-	self createRefactoringHandlingRefactoringExceptions.! !
+	self inform: aRefactoringError messageText.! !
 
 !ExtractToMethodObjectApplier methodsFor: 'events-triggering' stamp: 'FGJ 2/13/2019 16:00:37'!
 panelWasClosed
@@ -5411,13 +5416,10 @@ initializeToApplyOn: aClass
 
 	classToRefactor := aClass.! !
 
-!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/27/2019 17:36:49'!
+!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 13:05:04'!
 cancel
 
-	self finishedRefactoringParametersRequest.
-	form delete.
-	
-	self endRequest.! !
+	form delete.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:58:59'!
 chooseInstanceVariable
@@ -5440,37 +5442,28 @@ createRefactoring
 
 		! !
 
-!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/27/2019 17:37:01'!
-finishedRefactoringParametersRequest
-
-	done := true.! !
-
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/27/2019 17:41:30'!
 formWasClosed
 
 	self cancel.! !
 
-!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/29/2019 14:31:14'!
+!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 13:07:17'!
 handleRefactoringError: aRefactoringError 
 
-	self inform: aRefactoringError messageText.
-	self waitForUserResponse.
-	self createRefactoringHandlingRefactoringExceptions.! !
+	self inform: aRefactoringError messageText.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/27/2019 17:47:08'!
 ifNilChecks
 
 	^ifNilChecks! !
 
-!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/27/2019 17:46:47'!
+!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 13:05:30'!
 requestRefactoringParameters
 
 	self chooseInstanceVariable.
 	
 	ifNilChecks := (IfNilChecksFinder on: classToRefactor for: instanceVariable) value.
-	form := IntroduceNullObjectForm open: self.
-	
-	self waitForUserResponse.! !
+	form := IntroduceNullObjectForm open: self.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:58:00'!
 selectVariableLabel
@@ -5483,26 +5476,23 @@ showChanges
 	form deleteDiscardingEdits.
 	Transcript log: 'Successfully applied the Introduce Null Object refactoring'.! !
 
-!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/29/2019 14:30:20'!
+!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 13:10:03'!
 userSubmitted: anIntroduceNullObjectRequest
 
 	introduceNullObjectRequest := anIntroduceNullObjectRequest.
-	self finishedRefactoringParametersRequest.! !
-
-!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/27/2019 17:36:24'!
-waitForUserResponse
-
-	| w |
-
-	w := form world.
-	done := false.
-	[done] whileFalse: [w doOneCycleNow ].
-	w doOneCycleNow.! !
+	self createRefactoringHandlingRefactoringExceptions.
+	
+	refactoring ifNotNil: [self applyRefactoring; showChanges].! !
 
 !IntroduceNullObjectApplier methodsFor: 'accessing' stamp: 'FGJ 3/28/2019 13:22:43'!
 classToRefactor
 	
 	^classToRefactor! !
+
+!IntroduceNullObjectApplier methodsFor: 'evaluating' stamp: 'FGJ 4/4/2019 17:34:24'!
+value
+
+	self requestRefactoringParametersHandlingRefactoringExceptions.! !
 
 !IntroduceNullObjectApplier class methodsFor: 'instance creation' stamp: 'FGJ 3/26/2019 11:34:57'!
 applyOn: aClass

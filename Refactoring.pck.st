@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 5 April 2019 at 5:57:58 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 8 April 2019 at 6:00:51 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 486!
+!provides: 'Refactoring' 1 509!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -76,7 +76,7 @@ ColoredScrollPane class
 
 !classDefinition: #ExtractToMethodObjectForm category: #Refactoring!
 SystemWindow subclass: #ExtractToMethodObjectForm
-	instanceVariableNames: 'scrollPane formLayout inputTable preview variablesToParametrize extractToMethodObjectRequest discardEdits'
+	instanceVariableNames: 'scrollPane formLayout inputTable preview variablesToParametrize extractToMethodObjectRequest discardEdits firstTimeBuild initialExtent'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -86,7 +86,7 @@ ExtractToMethodObjectForm class
 
 !classDefinition: #IntroduceNullObjectForm category: #Refactoring!
 SystemWindow subclass: #IntroduceNullObjectForm
-	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms currentlyShownTable currentlyShownPreview discardEdits firstTimeBuild hierarchySection messageSendingListSection actionButtonsSection ifNilChecks'
+	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms discardEdits firstTimeBuild hierarchySection messageSendingListSection actionButtonsSection ifNilChecks'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -112,16 +112,6 @@ LayoutMorph subclass: #LabeledInput
 	category: 'Refactoring'!
 !classDefinition: 'LabeledInput class' category: #Refactoring!
 LabeledInput class
-	instanceVariableNames: ''!
-
-!classDefinition: #LabeledAutocompletedInput category: #Refactoring!
-LabeledInput subclass: #LabeledAutocompletedInput
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'LabeledAutocompletedInput class' category: #Refactoring!
-LabeledAutocompletedInput class
 	instanceVariableNames: ''!
 
 !classDefinition: #MessageKeywordsAndParametersTable category: #Refactoring!
@@ -274,6 +264,16 @@ RefactoringApplier subclass: #IntroduceNullObjectApplier
 IntroduceNullObjectApplier class
 	instanceVariableNames: ''!
 
+!classDefinition: #AutocompletedTextProvider category: #Refactoring!
+Object subclass: #AutocompletedTextProvider
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'AutocompletedTextProvider class' category: #Refactoring!
+AutocompletedTextProvider class
+	instanceVariableNames: ''!
+
 !classDefinition: #ChangeRowOrderButtonModel category: #Refactoring!
 Object subclass: #ChangeRowOrderButtonModel
 	instanceVariableNames: 'tableModel rowPosition'
@@ -402,11 +402,6 @@ selectorKeywordToVariableName -> OrderedCollection of Associations (keyword -> v
 initializedInstance
 
 	^self new initialize.! !
-
-!MessageKeywordsAndParametersModel class methodsFor: 'instance creation' stamp: 'FGJ 3/28/2019 18:38:33'!
-initializedInstance
-
-	^self new initialize! !
 
 !EntranceExitBlockEnumerator methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 18:04:25'!
 atEntranceBlock: aBlock atExitBlock: anotherBlock
@@ -604,25 +599,10 @@ backgroundColor
 
 	^Color lightGray! !
 
-!ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 16:59:29'!
-buildPreview
+!ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 17:16:23'!
+initialExtent
 
-	| keywordParamStrings previewContent |
-	
-	keywordParamStrings := OrderedCollection new.
-	inputTable submorphs allButLast do: [:aSubmorph | | keyword parameterName |
-		keyword := (aSubmorph submorphs at: 3) model actualContents string withBlanksTrimmed.
-		parameterName := (aSubmorph submorphs at: 2) model actualContents string withBlanksTrimmed.
-		
-		(keyword isEmpty or: [parameterName isEmpty]) ifTrue: [
-			preview model actualContents: self previewUnavailableMessage.
-			^self].
-		
-		keywordParamStrings addFirst: '', keyword, ': ', parameterName.].
-	
-	previewContent := ' ' join: keywordParamStrings.
-	
-	preview model actualContents: previewContent.! !
+	^initialExtent! !
 
 !ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 20:07:25'!
 layoutSpecForSection: aSection
@@ -708,7 +688,7 @@ buildCancelButton
 	
 	^button! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/28/2019 16:58:46'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 17:32:14'!
 buildInstanceCreationMessageSection	
 	
 	| columnsNames section previewExplanation previewLayoutSpec |
@@ -739,6 +719,7 @@ buildInstanceCreationMessageSection
 	preview disableEditing.
 	preview drawKeyboardFocusIndicator: false.
 	preview lock: true.
+	self buildPreview.
 	
 	previewLayoutSpec := LayoutSpec 
 		proportionalWidth: 0.95
@@ -752,7 +733,7 @@ buildInstanceCreationMessageSection
 	
 	^section! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 2/16/2019 11:36:16'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 15:59:55'!
 buildInstanceVariablesSection
 
 	| maxLabelWidth section |
@@ -765,8 +746,7 @@ buildInstanceVariablesSection
 	maxLabelWidth := self recommendedWidthForLabels: variablesToParametrize.
 	
 	variablesToParametrize do: [ :aVariable | | labeledInput |
-		labeledInput := LabeledInput withLabel: aVariable withWidth: maxLabelWidth.
-		extractToMethodObjectRequest forVariableToParametrize: aVariable nameModel: labeledInput textModel.
+		labeledInput := LabeledInput withLabel: aVariable withWidth: maxLabelWidth withModel: (extractToMethodObjectRequest nameModelForVariableToParametrize: aVariable).
 		section addMorph: labeledInput].
 	
 	section layoutSpec: (self layoutSpecForSection: section).
@@ -774,7 +754,7 @@ buildInstanceVariablesSection
 	^section
 ! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 2/16/2019 11:36:16'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 16:25:35'!
 buildMethodObjectClassSection
 
 	| section maxLabelWidth nameInput superclassNameInput categoryInput evaluationMessageSelectorInput |
@@ -783,21 +763,16 @@ buildMethodObjectClassSection
 
 	maxLabelWidth := self recommendedWidthForLabels: #( 'Name' 'Superclass name' 'Category' 'Evaluation message selector').
 
-	nameInput := LabeledInput withLabel: 'Name' withWidth: maxLabelWidth.
-	extractToMethodObjectRequest methodObjectClassNameModel: nameInput textModel.
+	nameInput := LabeledInput withLabel: 'Name' withWidth: maxLabelWidth withModel: extractToMethodObjectRequest methodObjectClassNameModel.
 	section addMorph: nameInput.
 	
-	superclassNameInput := LabeledAutocompletedInput withLabel: 'Superclass name' withWidth: maxLabelWidth.
-	extractToMethodObjectRequest methodObjectSuperclassNameModel: superclassNameInput textModel.
+	superclassNameInput := LabeledInput withLabel: 'Superclass name' withWidth: maxLabelWidth withModel: extractToMethodObjectRequest methodObjectSuperclassNameModel.
 	section addMorph: superclassNameInput.
 	
-	categoryInput := LabeledInput withLabel: 'Category' withWidth: maxLabelWidth.
-	extractToMethodObjectRequest methodObjectCategoryModel: categoryInput textModel.
+	categoryInput := LabeledInput withLabel: 'Category' withWidth: maxLabelWidth withModel: extractToMethodObjectRequest methodObjectCategoryModel.
 	section addMorph: categoryInput.
 	
-	evaluationMessageSelectorInput := LabeledInput withLabel: 'Evaluation message selector' withWidth: maxLabelWidth.
-	extractToMethodObjectRequest 
-		methodObjectEvaluationMessageSelectorModel: evaluationMessageSelectorInput textModel.
+	evaluationMessageSelectorInput := LabeledInput withLabel: 'Evaluation message selector' withWidth: maxLabelWidth withModel: extractToMethodObjectRequest methodObjectEvaluationMessageSelectorModel.
 	section addMorph: evaluationMessageSelectorInput.
 	
 	section layoutSpec: (self layoutSpecForSection: section).
@@ -805,16 +780,12 @@ buildMethodObjectClassSection
 	^section
 ! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 2/16/2019 11:50:59'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 17:27:35'!
 buildMorphicWindow
 
-	| requiredExtent instanceCreationMessageSection requiredHeight methodObjectClassSection instanceVariablesSection actionButtonsSection requiredWidth sections |
+	| requiredExtent instanceCreationMessageSection requiredHeight methodObjectClassSection instanceVariablesSection actionButtonsSection requiredWidth sections windowElementsExtent xtraBorderToAvoidScrollbars |
 	
-	discardEdits := false.
-	self setLabel: 'Extract Method to Method Object'.
-	variablesToParametrize := model variablesToParametrize.
-	
-	extractToMethodObjectRequest := ExtractToMethodObjectRequest initializedInstance.
+	firstTimeBuild := true.
 	
 	self initializeScrollableContainer.
 	self initializeFormLayout.
@@ -849,7 +820,32 @@ buildMorphicWindow
 
 	requiredExtent := requiredWidth@requiredHeight.
 	formLayout morphExtent: requiredExtent.
-	scrollPane scroller morphExtent: requiredExtent.! !
+	scrollPane scroller morphExtent: requiredExtent.
+	
+	windowElementsExtent := (borderWidth * 2)@(borderWidth * 2 + self labelHeight).
+	xtraBorderToAvoidScrollbars := 4@4.
+	windowElementsExtent := windowElementsExtent + scrollPane bordersExtent + xtraBorderToAvoidScrollbars.
+	firstTimeBuild ifTrue: [initialExtent := requiredExtent + windowElementsExtent. firstTimeBuild := false].! !
+
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 2/11/2019 16:59:29'!
+buildPreview
+
+	| keywordParamStrings previewContent |
+	
+	keywordParamStrings := OrderedCollection new.
+	inputTable submorphs allButLast do: [:aSubmorph | | keyword parameterName |
+		keyword := (aSubmorph submorphs at: 3) model actualContents string withBlanksTrimmed.
+		parameterName := (aSubmorph submorphs at: 2) model actualContents string withBlanksTrimmed.
+		
+		(keyword isEmpty or: [parameterName isEmpty]) ifTrue: [
+			preview model actualContents: self previewUnavailableMessage.
+			^self].
+		
+		keywordParamStrings addFirst: '', keyword, ': ', parameterName.].
+	
+	previewContent := ' ' join: keywordParamStrings.
+	
+	preview model actualContents: previewContent.! !
 
 !ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 2/16/2019 11:35:56'!
 buildSubmitButton
@@ -896,7 +892,7 @@ fontPreferenceChanged
 	self buildMorphicWindow.
 ! !
 
-!ExtractToMethodObjectForm methodsFor: 'events' stamp: 'FGJ 2/14/2019 11:37:10'!
+!ExtractToMethodObjectForm methodsFor: 'events' stamp: 'FGJ 4/8/2019 12:39:00'!
 previewTextInputReceivedKeyStroke
 
 	self buildPreview.! !
@@ -916,6 +912,21 @@ previewUnavailableMessage
 
 	^'All the keywords and parameter names must be filled for the preview to appear here'! !
 
+!ExtractToMethodObjectForm methodsFor: 'initialization' stamp: 'FGJ 4/8/2019 17:28:44'!
+initializeWithModel: aModel
+
+	super model: aModel.
+	
+	self setLabel: 'Extract Method to Method Object'.
+	
+	discardEdits := false.
+	
+	variablesToParametrize := model variablesToParametrize.
+	
+	extractToMethodObjectRequest := ExtractToMethodObjectRequest initializedInstance.
+	
+! !
+
 !ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 18:27:41'!
 fontProportionalUnitOfReferenceForHeight
 
@@ -926,10 +937,26 @@ fontProportionalUnitOfReferenceForWidth
 
 	^AbstractFont default widthOf: $A! !
 
+!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 17:26:06'!
+open: aModel label: aString
+
+	|  window |
+
+	window _ self withModel: aModel.
+	window buildMorphicWindow.
+	aString ifNotNil: [ window setLabel: aString ].
+	window openInWorld.
+	^window! !
+
 !ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 18:27:24'!
 recommendedWidth
 
 	^self fontProportionalUnitOfReferenceForWidth * 70! !
+
+!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 17:26:21'!
+withModel: aModel
+
+	^self new initializeWithModel: aModel! !
 
 !IntroduceNullObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:42:50'!
 backgroundColor
@@ -999,7 +1026,7 @@ buildCancelButton
 	
 	^button! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/1/2019 16:01:32'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 14:52:57'!
 buildCodePaneFor: anIfNilCheck
 
 	| codePane |
@@ -1009,13 +1036,13 @@ buildCodePaneFor: anIfNilCheck
 	codePane color: Color white.
 	codePane disableEditing.
 	codePane drawKeyboardFocusIndicator: false.
-	codePane selectFrom: anIfNilCheck messageNodeIndex to: anIfNilCheck messageNodeIndex + 10.
+	codePane selectFrom: anIfNilCheck messageNodeIndex to: (anIfNilCheck methodNode encoder sourceRangeFor: anIfNilCheck messageNode) last.
 	
 	codePane layoutSpec: (LayoutSpec proportionalWidth: 1.0 fixedHeight: (IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight * 7)).
 	
 	^codePane! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 15:24:13'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 12:42:52'!
 buildIfNilCheckFormFor: anIfNilCheck
 
 	| layout variablesToExtract polymorphicSelectorSection codePane |
@@ -1040,6 +1067,8 @@ buildIfNilCheckFormFor: anIfNilCheck
 	formLayout addMorph: layout.	
 	
 	layout hide.
+	
+	variablesToExtract ifNotEmpty: [self buildPreviewOf: layout].
 	
 	^layout.! !
 
@@ -1091,7 +1120,7 @@ buildMorphicWindow
 	
 	self showFormForMessage: messageListModel messageListIndex.! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 16:24:37'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 14:41:12'!
 buildNullObjectHierarchyClassesSection
 
 	| section maxLabelWidth nullClassInput concreteClassInput |
@@ -1100,10 +1129,10 @@ buildNullObjectHierarchyClassesSection
 
 	maxLabelWidth := self recommendedWidthForLabels: #('Null Class' 'Concrete Class').
 
-	nullClassInput := LabeledAutocompletedInput withLabel: 'Null Class' withWidth: maxLabelWidth withModel: introduceNullObjectRequest nullClassNameModel.
+	nullClassInput := LabeledInput withLabel: 'Null Class' withWidth: maxLabelWidth withModel: introduceNullObjectRequest nullClassNameModel.
 	section addMorph: nullClassInput.
 	
-	concreteClassInput := LabeledAutocompletedInput withLabel: 'Concrete Class' withWidth: maxLabelWidth withModel: introduceNullObjectRequest concreteClassNameModel. 	section addMorph: concreteClassInput.
+	concreteClassInput := LabeledInput withLabel: 'Concrete Class' withWidth: maxLabelWidth withModel: introduceNullObjectRequest concreteClassNameModel. 	section addMorph: concreteClassInput.
 	
 	section layoutSpec: (self layoutSpecForSection: section).
 	
@@ -1162,10 +1191,13 @@ buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor:
 	
 	^layout! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/28/2019 18:47:18'!
-buildPreview
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 12:45:59'!
+buildPreviewOf: anIfNilCheckForm
 
-	| keywordParamStrings previewContent |
+	| keywordParamStrings previewContent currentlyShownPreview currentlyShownTable |
+	
+	currentlyShownTable := (anIfNilCheckForm submorphs at: 1) submorphs at: 2.
+	currentlyShownPreview := (anIfNilCheckForm submorphs at: 1) submorphs at: 1.
 	
 	keywordParamStrings := OrderedCollection new.
 	currentlyShownTable submorphs allButLast do: [:aSubmorph | | keyword parameterName |
@@ -1213,7 +1245,7 @@ initializeScrollableContainer
 	scrollPane color: self backgroundColor. 
 	self layoutMorph addMorphUseAll: scrollPane.! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 14:54:50'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 17:13:01'!
 setExtents
 
 	
@@ -1235,9 +1267,7 @@ setExtents
 	windowElementsExtent := (borderWidth * 2)@(borderWidth * 2 + self labelHeight).
 	xtraBorderToAvoidScrollbars := 4@4.
 	windowElementsExtent := windowElementsExtent + scrollPane bordersExtent + xtraBorderToAvoidScrollbars.
-	firstTimeBuild ifTrue: [initialExtent := requiredExtent + windowElementsExtent. firstTimeBuild := false].
-	
-	self layoutSubmorphs.! !
+	firstTimeBuild ifTrue: [initialExtent := requiredExtent + windowElementsExtent. firstTimeBuild := false].! !
 
 !IntroduceNullObjectForm methodsFor: 'open/close' stamp: 'FGJ 3/27/2019 17:41:06'!
 closeBoxHit
@@ -1248,6 +1278,11 @@ closeBoxHit
 cancelButtonClicked
 	
 	model cancel.! !
+
+!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/8/2019 12:40:02'!
+currentlyShownIfNilCheckForm
+
+	^ifNilChecksForms at: messageListModel messageListIndex! !
 
 !IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/5/2019 15:19:11'!
 fontPreferenceChanged
@@ -1263,17 +1298,24 @@ hideFormForMessage: anIndex
 
 	(ifNilChecksForms at: anIndex) hide.! !
 
-!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 3/28/2019 19:03:23'!
+!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/8/2019 15:25:57'!
+okToChangeDueTo: aMorph
+
+	aMorph = messageSendingListSection ifTrue: [^true].
+	
+	^self okToChange.! !
+
+!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/8/2019 12:39:44'!
 previewTextInputReceivedKeyStroke
 
-	self buildPreview.! !
+	self buildPreviewOf: self currentlyShownIfNilCheckForm.! !
 
-!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 3/28/2019 18:45:25'!
+!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/8/2019 12:40:16'!
 row: aRowIndex wasSwappedWith: anotherRowIndex
 
-	self buildPreview.! !
+	self buildPreviewOf: self currentlyShownIfNilCheckForm.! !
 
-!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/4/2019 18:22:49'!
+!IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/8/2019 12:44:18'!
 showFormForMessage: anIndex
 
 	| form |
@@ -1281,10 +1323,7 @@ showFormForMessage: anIndex
 	form := ifNilChecksForms at: anIndex.
 	form show.
 	
-	self setExtents.
-	
-	currentlyShownTable := (form submorphs at: 1) submorphs at: 2.
-	currentlyShownPreview := (form submorphs at: 1) submorphs at: 1.! !
+	self setExtents.! !
 
 !IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 3/29/2019 14:26:42'!
 submitButtonClicked
@@ -1443,43 +1482,10 @@ drawOn: aCanvas
 		fillRectangle: self morphLocalBounds
 		color: Color lightGray.! !
 
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 17:11:46'!
-textModel
-
-	^inputMorph model! !
-
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 15:43:39'!
 textModel: aTextModel
 	
 	inputMorph model: aTextModel.! !
-
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 18:08:18'!
-withLabel: aLabel withWidth: aWidth
-
-	| labelLayoutSpec inputMorphLayoutSpec |
-	
-	self separation: 5.
-	layoutSpec := LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight.
-	self layoutSpec: layoutSpec.
-	
-	labelMorph := StringMorph contents: aLabel.
-	labelLayoutSpec := LayoutSpec 
-		fixedWidth: aWidth
-		fixedHeight: labelMorph morphHeight
-		minorDirectionPadding: #center.
-	self addMorph: labelMorph layoutSpec: labelLayoutSpec.
-	
-	inputMorph := TextModelMorph textProvider: self.
-	inputMorph hideScrollBarsIndefinitely.
-	inputMorphLayoutSpec := 
-		LayoutSpec 
-			fixedWidth: LabeledInput inputWidth
-			fixedHeight: labelMorph morphHeight + 2.
-	self addMorph: inputMorph layoutSpec: inputMorphLayoutSpec.
-	
-	
-	
-	! !
 
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 15:46:45'!
 withLabel: aLabel withWidth: aWidth withModel: aTextModel
@@ -1519,19 +1525,10 @@ recommendedHeight
 
 	^AbstractFont default height * 1.8! !
 
-!LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 2/7/2019 11:50:57'!
-withLabel: aLabel withWidth: aWidth
-
-	^self newRow withLabel: aLabel withWidth: aWidth! !
-
 !LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 16:32:52'!
 withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel 
 	
 	^self newRow withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel! !
-
-!LabeledAutocompletedInput methodsFor: 'as yet unclassified' stamp: 'FGJ 2/1/2019 12:32:07'!
-autoCompleterClassFor: textGetter
-	^SmalltalkCompleter! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 1/22/2019 15:30:47'!
 drawOn: aCanvas
@@ -5413,13 +5410,13 @@ newClassPreconditionClass
 	
 	^NewClassPrecondition! !
 
-!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/17/2019 16:10:17'!
+!ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 17:56:19'!
 createRefactoring
 	
 	^ExtractToMethodObject 
 		from: compiledMethodToExtract 
 		toMethodObjectClassNamed: extractToMethodObjectRequest methodObjectClassName
-		subclassing: (Smalltalk classNamed: extractToMethodObjectRequest methodObjectSuperclassName)
+		subclassing: extractToMethodObjectRequest methodObjectSuperclass
 		onCategory: extractToMethodObjectRequest methodObjectCategory
 		withExtractedVariablesToInstanceVariables: extractToMethodObjectRequest variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: extractToMethodObjectRequest keywordsDefinitions
@@ -5508,14 +5505,14 @@ chooseInstanceVariable
 		chooseDefiningInstanceVariableAlphabeticallyWith: self selectVariableLabel
 		thenDo: [ :anInstanceVariable | ^instanceVariable := anInstanceVariable ].! !
 
-!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/29/2019 15:35:50'!
+!IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 17:46:44'!
 createRefactoring
 	
 	^IntroduceNullObject
 		on: instanceVariable 
 		of: classToRefactor 
-		usingAsConcreteClass: (Smalltalk classNamed: introduceNullObjectRequest concreteClassName asSymbol)
-		usingAsNullClass: (Smalltalk classNamed: introduceNullObjectRequest nullClassName asSymbol)
+		usingAsConcreteClass: introduceNullObjectRequest concreteClass
+		usingAsNullClass: introduceNullObjectRequest nullClass
 		for: introduceNullObjectRequest replacementParameters
 
 		! !
@@ -5582,6 +5579,11 @@ applyOn: aClass
 
 	^self new initializeToApplyOn: aClass! !
 
+!AutocompletedTextProvider methodsFor: 'user interface support' stamp: 'FGJ 4/8/2019 17:09:38'!
+autoCompleterClassFor: aTextGetter
+	
+	^SmalltalkCompleter! !
+
 !ChangeRowOrderButtonModel methodsFor: 'initialization' stamp: 'FGJ 2/9/2019 16:33:36'!
 for: aRowIndex notifying: aTableModel
 
@@ -5628,30 +5630,48 @@ methodObjectCategory
 
 	^methodObjectCategoryModel actualContents string! !
 
+!ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/8/2019 15:55:08'!
+methodObjectCategoryModel
+
+	^methodObjectCategoryModel! !
+
 !ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 2/14/2019 17:55:15'!
 methodObjectClassName
 
 	^methodObjectClassNameModel actualContents string asSymbol ! !
+
+!ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/8/2019 15:54:45'!
+methodObjectClassNameModel
+
+	^methodObjectClassNameModel! !
 
 !ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 2/14/2019 17:49:10'!
 methodObjectEvaluationMessageSelector
 
 	^methodObjectEvaluationMessageSelectorModel actualContents string! !
 
-!ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 2/14/2019 17:49:16'!
-methodObjectSuperclassName
+!ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/8/2019 15:55:17'!
+methodObjectEvaluationMessageSelectorModel
 
-	^methodObjectSuperclassNameModel actualContents string! !
+	^methodObjectEvaluationMessageSelectorModel! !
+
+!ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/8/2019 17:58:10'!
+methodObjectSuperclass
+
+	| methodObjectSuperclass |
+	
+	methodObjectSuperclass := Smalltalk classNamed: methodObjectSuperclassNameModel actualContents string asSymbol.
+	methodObjectSuperclass ifNil: [self signalMethodObjectSuperclassNameDoesNotExist] ifNotNil: [^methodObjectSuperclass].! !
+
+!ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/8/2019 15:54:58'!
+methodObjectSuperclassNameModel
+
+	^methodObjectSuperclassNameModel! !
 
 !ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 2/14/2019 17:49:23'!
 variablesToParametrizeToInstanceVariables
 
 	^variableToParametrizeToInstVarNameModel collect: [:aInstVarNameModel | aInstVarNameModel actualContents string]! !
-
-!ExtractToMethodObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 14:19:54'!
-addToKeywords: keywordModel
-
-	instanceCreationMessageModels add: keywordModel.! !
 
 !ExtractToMethodObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:02:18'!
 forVariableToParametrize: aVariable nameModel: aModel
@@ -5668,43 +5688,63 @@ keywordOfIndex: aKeywordIndex wasSwappedWithKeywordOfIndex: anotherKeywordIndex
 
 	instanceCreationMessageModels swap: aKeywordIndex with: anotherKeywordIndex.! !
 
-!ExtractToMethodObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 10:59:26'!
-methodObjectCategoryModel: aModel
+!ExtractToMethodObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 16:03:28'!
+nameModelForVariableToParametrize: aVariable
 
-	methodObjectCategoryModel := aModel.! !
+	^variableToParametrizeToInstVarNameModel at: aVariable ifAbsentPut: [PluggableTextModel on: self].! !
 
-!ExtractToMethodObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 10:58:55'!
-methodObjectClassNameModel: aModel
-	
-	methodObjectClassNameModel := aModel.! !
-
-!ExtractToMethodObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:00:19'!
-methodObjectEvaluationMessageSelectorModel: aModel
-	
-	methodObjectEvaluationMessageSelectorModel := aModel.! !
-
-!ExtractToMethodObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 10:59:54'!
-methodObjectSuperclassNameModel: aModel
-	
-	methodObjectSuperclassNameModel := aModel.! !
-
-!ExtractToMethodObjectRequest methodsFor: 'initialization' stamp: 'FGJ 2/14/2019 17:25:45'!
-addKeyword: aKeywordModel for: aVariableName withParameterName: aParameterNameModel
-
-	| keywordModel |
-	
-	keywordModel := Dictionary new.
-	keywordModel at: #variableName put: aVariableName.
-	keywordModel at: #keyword put: aKeywordModel.
-	keywordModel at: #parameterName put: aParameterNameModel.
-	
-	instanceCreationMessageModels add: keywordModel.! !
-
-!ExtractToMethodObjectRequest methodsFor: 'initialization' stamp: 'FGJ 2/14/2019 11:14:55'!
+!ExtractToMethodObjectRequest methodsFor: 'initialization' stamp: 'FGJ 4/8/2019 17:09:21'!
 initialize
 
 	variableToParametrizeToInstVarNameModel := Dictionary new.
-	instanceCreationMessageModels := OrderedCollection new.! !
+	instanceCreationMessageModels := OrderedCollection new.
+	
+	methodObjectClassNameModel := PluggableTextModel on: self.
+	methodObjectCategoryModel := PluggableTextModel on: self.
+	methodObjectSuperclassNameModel := PluggableTextModel on: AutocompletedTextProvider new.
+	methodObjectEvaluationMessageSelectorModel := PluggableTextModel on: self.! !
+
+!ExtractToMethodObjectRequest methodsFor: 'initialization' stamp: 'FGJ 4/8/2019 16:24:31'!
+keywordModelOf: aVariableName
+
+	| variableModel |
+	
+	variableModel := instanceCreationMessageModels
+		detect: [:model | (model at: #variableName) = aVariableName]
+		ifNone: [ | keywordModel | 
+			keywordModel := Dictionary new.
+			keywordModel at: #variableName put: aVariableName.
+			keywordModel at: #keyword put: (PluggableTextModel on: self).
+			keywordModel at: #parameterName put: (PluggableTextModel on: self).
+			instanceCreationMessageModels add: keywordModel.
+			keywordModel].
+	
+	^variableModel at: #keyword.! !
+
+!ExtractToMethodObjectRequest methodsFor: 'initialization' stamp: 'FGJ 4/8/2019 16:24:25'!
+parameterModelOf: aVariableName
+
+	^(instanceCreationMessageModels detect: [:model | (model at: #variableName) = aVariableName]) at: #parameterName! !
+
+!ExtractToMethodObjectRequest methodsFor: 'exceptions' stamp: 'FGJ 4/8/2019 17:59:08'!
+methodObjectSuperclassNameDoesNotExistErrorMessage
+
+	^'Method object superclass name does not belong to a class in the system.'! !
+
+!ExtractToMethodObjectRequest methodsFor: 'exceptions' stamp: 'FGJ 4/8/2019 17:59:31'!
+refactoringError: anErrorMessage
+
+	self refactoringErrorClass signal: anErrorMessage.! !
+
+!ExtractToMethodObjectRequest methodsFor: 'exceptions' stamp: 'FGJ 4/8/2019 17:59:21'!
+refactoringErrorClass
+
+	^RefactoringError! !
+
+!ExtractToMethodObjectRequest methodsFor: 'exceptions' stamp: 'FGJ 4/8/2019 17:58:44'!
+signalMethodObjectSuperclassNameDoesNotExist
+
+	self refactoringError: self methodObjectSuperclassNameDoesNotExistErrorMessage.! !
 
 !IfNilCheck methodsFor: 'initialization' stamp: 'FGJ 3/29/2019 15:28:42'!
 initializeIn: aMethodNode representedBy: aMessageNode atIndex: anIndex
@@ -5891,17 +5931,27 @@ with: someIfNilChecks withForm: anIntroduceNullObjectForm
 
 	^self new initializeWith: someIfNilChecks withForm: anIntroduceNullObjectForm! !
 
-!IntroduceNullObjectRequest methodsFor: 'initialization' stamp: 'FGJ 4/5/2019 17:55:57'!
+!IntroduceNullObjectRequest methodsFor: 'initialization' stamp: 'FGJ 4/8/2019 14:32:32'!
 initializeFor: someIfNilChecks
 
 	messageKeywordsAndParametersModels := Dictionary new.
 	someIfNilChecks do: [:anIfNilCheck | | messageKeywordsAndParametersModel variablesToExtract |
 		variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: anIfNilCheck messageNode.
-		messageKeywordsAndParametersModel := MessageKeywordsAndParametersModel for: variablesToExtract.
+		variablesToExtract 
+			ifEmpty: [messageKeywordsAndParametersModel := MessageKeywordsAndParametersModel initializedForSelector]
+			ifNotEmpty: [messageKeywordsAndParametersModel := MessageKeywordsAndParametersModel for: variablesToExtract].
 		messageKeywordsAndParametersModels at: anIfNilCheck put: messageKeywordsAndParametersModel].
 	
 	nullClassNameModel := PluggableTextModel on: self.
 	concreteClassNameModel := PluggableTextModel on: self.! !
+
+!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/8/2019 17:51:46'!
+concreteClass
+
+	| concreteClass |
+	
+	concreteClass := Smalltalk classNamed: concreteClassNameModel actualContents string asSymbol.
+	concreteClass ifNil: [self signalConcreteClassNameDoesNotExist] ifNotNil: [^concreteClass].! !
 
 !IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 3/29/2019 14:56:01'!
 concreteClassName
@@ -5912,11 +5962,6 @@ concreteClassName
 concreteClassNameModel
 
 	^concreteClassNameModel! !
-
-!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 12:42:20'!
-concreteClassNameModel: aTextModel
-
-	concreteClassNameModel := aTextModel.! !
 
 !IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/5/2019 16:56:22'!
 messgeKeywordsAndParametersModelFor: anIfNilCheck
@@ -5947,24 +5992,36 @@ replacementParameters
 		
 	^parameters! !
 
+!IntroduceNullObjectRequest methodsFor: 'user interface support' stamp: 'FGJ 4/8/2019 14:38:47'!
+autoCompleterClassFor: textGetter
+	^SmalltalkCompleter! !
+
+!IntroduceNullObjectRequest methodsFor: 'exceptions' stamp: 'FGJ 4/8/2019 17:51:22'!
+concreteClassNameDoesNotExistErrorMessage
+
+	^'The concrete class name does not belong to any class in the system.'! !
+
+!IntroduceNullObjectRequest methodsFor: 'exceptions' stamp: 'FGJ 4/8/2019 17:52:28'!
+refactoringError: anErrorMessage
+
+	self refactoringErrorClass signal: anErrorMessage.! !
+
+!IntroduceNullObjectRequest methodsFor: 'exceptions' stamp: 'FGJ 4/8/2019 17:52:47'!
+refactoringErrorClass
+
+	^RefactoringError! !
+
+!IntroduceNullObjectRequest methodsFor: 'exceptions' stamp: 'FGJ 4/8/2019 17:51:46'!
+signalConcreteClassNameDoesNotExist
+
+	self refactoringError: self concreteClassNameDoesNotExistErrorMessage.! !
+
 !IntroduceNullObjectRequest class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 16:53:19'!
 for: someIfNilChecks
 
 	^self new initializeFor: someIfNilChecks! !
 
-!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 17:11:21'!
-addKeyword: aKeywordModel for: aVariableName withParameterName: aParameterNameModel
-
-	| keywordModel |
-	
-	keywordModel := Dictionary new.
-	keywordModel at: #variableName put: aVariableName.
-	keywordModel at: #keyword put: aKeywordModel.
-	keywordModel at: #parameterName put: aParameterNameModel.
-	
-	models add: keywordModel.! !
-
-!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 3/29/2019 16:29:37'!
+!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 14:21:45'!
 definitions
 
 	^selectorModel 
@@ -5975,14 +6032,7 @@ definitions
 				useKeyword: (model at: #keyword) actualContents string
 				withParameterName: (model at: #parameterName) actualContents string])]! !
 
-!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 16:30:23'!
-initialize
-
-	models := OrderedCollection new.
-	
-	selectorModel := PluggableTextModel on: self.! !
-
-!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 17:56:26'!
+!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 14:16:17'!
 initializeFor: someVariablesToExtract
 
 	models := OrderedCollection new.
@@ -5992,8 +6042,11 @@ initializeFor: someVariablesToExtract
 		keywordModel at: #keyword put: (PluggableTextModel on:  self).
 		keywordModel at: #parameterName put: (PluggableTextModel on: self).
 		
-		models add: keywordModel].
-			
+		models add: keywordModel].! !
+
+!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 14:26:15'!
+initializeForSelector
+
 	selectorModel := PluggableTextModel on: self.! !
 
 !MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 17:20:56'!
@@ -6016,15 +6069,15 @@ selectorModel
 
 	^selectorModel! !
 
-!MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 3/29/2019 16:27:16'!
-selectorModel: aTextModel
-
-	selectorModel := aTextModel.! !
-
 !MessageKeywordsAndParametersModel class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 17:54:59'!
 for: someVariablesToExtract
 
 	^self new initializeFor: someVariablesToExtract! !
+
+!MessageKeywordsAndParametersModel class methodsFor: 'instance creation' stamp: 'FGJ 4/8/2019 14:26:42'!
+initializedForSelector
+
+	^self new initializeForSelector! !
 
 !RefactoringPackageRefactoringMenues class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 11:30:10'!
 classRefactoringMenuOptions
@@ -6606,9 +6659,9 @@ assertDoesNotStartWithInvalidStartOfSelector: aSelector
 	aSelector first isValidStartOfIdentifiers ifFalse: [
 		self signalSelectorMustNotStartWithInvalidStartOfSelector ].! !
 
-!VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 3/13/2019 14:02:15'!
+!VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 4/8/2019 14:33:01'!
 assertIsNotEmpty: aSymbol 
-	
+
 	aSymbol withBlanksTrimmed isEmpty ifTrue: [ self signalSelectorMustNotBeEmpty ].! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 3/18/2019 12:51:12'!

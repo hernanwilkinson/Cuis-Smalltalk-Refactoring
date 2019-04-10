@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 9 April 2019 at 6:03:35 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 10 April 2019 at 4:21:13 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 514!
+!provides: 'Refactoring' 1 516!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -226,7 +226,7 @@ VariablesToParametrizeKeywordsDefinitionsTest class
 
 !classDefinition: #ExtractToMethodObject category: #Refactoring!
 Refactoring subclass: #ExtractToMethodObject
-	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract methodVariableNamesToInstanceVariableNames methodObjectInstanceVariables methodObjectInvocationSelector keywordsDefinitions'
+	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract methodVariableNamesToInstanceVariableNames methodObjectInstanceVariables keywordsDefinitions methodObjectEvaluationSelector'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -2264,7 +2264,7 @@ test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeyword
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass class includesSelector: #with:).! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/9/2019 12:16:02'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/10/2019 16:13:47'!
 test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables newRefactoringSourceCode |
@@ -2287,7 +2287,7 @@ test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 	newRefactoringSourceCode := 'with: aParamName',
 		String newLineString,
 		String tab,
-		'^self new with: aParamName'.
+		'^self new initializeWith: aParamName'.
 	self assert: newRefactoringSourceCode equals: (methodObjectClass class compiledMethodAt: #with:) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/9/2019 12:26:02'!
@@ -3215,8 +3215,32 @@ test62MethodObjectInstanceCreationMessageParameterNamesAreTheChosenOnes
 	
 	self assert: 'aParamName' equals: instanceCreationMethod methodNode arguments first name.! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/9/2019 12:40:07'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/10/2019 16:16:32'!
 test63MethodObjectInstanceInitializationMessageIsCategorizedAsInitialization
+
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor instanceInitializationMethod methodObject |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
+	
+	refactor := ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordsDefinitions
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObject := Smalltalk classNamed: self methodObjectClassName.
+	instanceInitializationMethod := methodObject compiledMethodAt: #initializeWith:.
+	
+	self assert: #initialization equals: instanceInitializationMethod category.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/10/2019 16:16:54'!
+test64MethodObjectInstanceCreationMessageIsCategorizedAsInstanceCreation
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor instanceCreationMethod methodObject |
 	
@@ -3235,9 +3259,33 @@ test63MethodObjectInstanceInitializationMessageIsCategorizedAsInitialization
 	refactor apply.
 	
 	methodObject := Smalltalk classNamed: self methodObjectClassName.
-	instanceCreationMethod := methodObject compiledMethodAt: #initializeWith:.
+	instanceCreationMethod := methodObject class compiledMethodAt: #with:.
 	
-	self assert: #initialization equals: instanceCreationMethod category.! !
+	self assert: #'instance creation' equals: instanceCreationMethod category.! !
+
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/10/2019 16:19:03'!
+test65MethodObjectEvaluationMessageIsCategorizedAsEvaluating
+
+	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor evaluationMethod methodObject |
+	
+	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
+	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
+	
+	refactor := ExtractToMethodObject 
+				from: self compiledMethodReferencingSelf
+				toMethodObjectClassNamed: self methodObjectClassName
+				subclassing: self methodObjectSuperclass
+				onCategory: self classCategoryOfTestData
+				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
+				withInstanceCreationMessageFrom: keywordsDefinitions
+				evaluatedWith: self defaultEvaluationSelector.
+	
+	refactor apply.
+	
+	methodObject := Smalltalk classNamed: self methodObjectClassName.
+	evaluationMethod := methodObject compiledMethodAt: self defaultEvaluationSelector.
+	
+	self assert: #'evaluating' equals: evaluationMethod category.! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 1/14/2019 11:55:33'!
 compiledMethodFrom: aSourceCode
@@ -5784,7 +5832,7 @@ apply
 	self compileExtractedMethodAsEvaluationMethodOn: methodObjectClass.
 	self replaceExtractedMethodWithMethodObjectEvaluation.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/14/2019 15:07:33'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 4/10/2019 16:20:43'!
 compileExtractedMethodAsEvaluationMethodOn: aClass
 
 	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced disregardType sourceCodeWithVariablesReplaced rangesToNewStrings rangesToNewStringsWithArgsFiltered |
@@ -5818,13 +5866,14 @@ compileExtractedMethodAsEvaluationMethodOn: aClass
 	sourceCodeWithVariablesReplaced := originalSourceCode copyReplacing: rangesToNewStringsWithArgsFiltered.
 	
 	endHeaderIndex := Parser methodHeaderLengthFrom: methodNode sourceText.
-	sourceCodeWithSelectorReplaced := sourceCodeWithVariablesReplaced copyReplacing: { Interval from: 1 to: endHeaderIndex. } with: methodObjectInvocationSelector asString. 
-	aClass compile: sourceCodeWithSelectorReplaced.! !
+	sourceCodeWithSelectorReplaced := sourceCodeWithVariablesReplaced copyReplacing: { Interval from: 1 to: endHeaderIndex. } with: methodObjectEvaluationSelector asString. 
+	aClass compile: sourceCodeWithSelectorReplaced.
+	aClass organization classify: methodObjectEvaluationSelector under: #evaluating! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 4/9/2019 12:48:19'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 4/10/2019 16:12:49'!
 compileInstanceCreationMethodInto: aClass
 
-	| methodTitle methodBody keywordsWithParam instVarAssignments instanceInitializationSelector instanceCreationSelector |
+	| methodTitle methodBody keywordsWithParam instVarAssignments instanceInitializationSelector instanceCreationSelector keywords |
 	
 	methodObjectInstanceVariables isEmpty ifTrue: [^true].
 	
@@ -5838,8 +5887,9 @@ compileInstanceCreationMethodInto: aClass
 		String tab, instVarName, ' := ', (self parameterNameForInstVarName: instVarName), '.'].
 	methodBody := String newLineString join: instVarAssignments.
 	
-	aClass class compile: methodTitle, String newLineString, String tab, '^self new ', methodTitle.
-	instanceCreationSelector := (':' join: (keywordsDefinitions collect: [:kd | kd at: #keyword])) asSymbol.
+	aClass class compile: methodTitle, String newLineString, String tab, '^self new initialize', methodTitle capitalized.
+	keywords := keywordsDefinitions collect: [:kd | (kd at: #keyword), ':'].
+	instanceCreationSelector := ('' join: keywords) asSymbol.
 	aClass class organization classify: instanceCreationSelector under: #'instance creation'.
 	
 	aClass compile: 'initialize', methodTitle capitalized, String newLineString, methodBody.
@@ -5907,7 +5957,7 @@ removeBlockEnclosingCharacters: aBlockSourceCode
 
 	^(aBlockSourceCode withoutPrefix: '[') withoutSuffix: ']'.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 15:12:45'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 4/10/2019 16:20:27'!
 replaceExtractedMethodWithMethodObjectEvaluation
 
 	| classToRefactor constructorMessage methodToExtractHeader refactoredSourceCode optionalReturn |
@@ -5929,11 +5979,11 @@ replaceExtractedMethodWithMethodObjectEvaluation
 		String newLineString,
 		String tab,
 		optionalReturn, 
-		'(',methodObjectClassName, ' ', constructorMessage, ') ', methodObjectInvocationSelector asString.
+		'(',methodObjectClassName, ' ', constructorMessage, ') ', methodObjectEvaluationSelector asString.
 		
 	classToRefactor compile: refactoredSourceCode.! !
 
-!ExtractToMethodObject methodsFor: 'initialization' stamp: 'FGJ 2/16/2019 15:10:03'!
+!ExtractToMethodObject methodsFor: 'initialization' stamp: 'FGJ 4/10/2019 16:20:27'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
@@ -5949,7 +5999,7 @@ evaluatedWith: anInvocationSelector
 	methodVariableNamesToInstanceVariableNames := variablesToInstanceVariables.
 	keywordsDefinitions := keywordsToVariables.
 	methodObjectInstanceVariables := variablesToInstanceVariables values.
-	methodObjectInvocationSelector := anInvocationSelector.
+	methodObjectEvaluationSelector := anInvocationSelector.
 ! !
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 12/19/2018 10:08:21'!

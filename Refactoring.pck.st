@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 11 April 2019 at 5:28:03 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 16 April 2019 at 8:40:58 pm'!
 'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 530!
+!provides: 'Refactoring' 1 536!
 SystemOrganization addCategory: #Refactoring!
 
 
@@ -3668,7 +3668,7 @@ test10ResultIncludesIsNilIfFalseIfTrueMessageSending
 	nilCheckIndex := source findString: 'if'.
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
 
-!IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 3/29/2019 17:40:52'!
+!IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 20:36:04'!
 test11WhenThereAreMultipleIfNilChecksInTheSameMethodTheResultIncludesAllOfThem
 
 	| contextClass anIfNilCheckStatement methodHeader source result anIfNotNilCheckStatement |
@@ -3684,10 +3684,10 @@ test11WhenThereAreMultipleIfNilChecksInTheSameMethodTheResultIncludesAllOfThem
 	result := (IfNilChecksFinder on: contextClass for: self instVar) value.
 	
 	self assert: 2 equals: result size.
-	self assert: (source findString: 'ifNil') equals: result first messageNodeIndex.
-	self assert: #m1 equals: result first methodNode selector.
-	self assert: (source findString: 'ifNotNil') equals: result second messageNodeIndex.
-	self assert: #m1 equals: result second methodNode selector.! !
+	self assert: (source findString: 'ifNotNil') equals: result first messageNodeIndex.
+	self assert: #m1 equals: result second methodNode selector.
+	self assert: (source findString: 'ifNil') equals: result second messageNodeIndex.
+	self assert: #m1 equals: result first methodNode selector.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 3/29/2019 17:41:15'!
 test12WhenThereAreIfNilChecksInMultipleMethodsTheResultIncludesAllOfThem
@@ -3707,7 +3707,7 @@ test12WhenThereAreIfNilChecksInMultipleMethodsTheResultIncludesAllOfThem
 	self assert: #m1 equals: result first methodNode selector.
 	self assert: #m2 equals: result second methodNode selector.! !
 
-!IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 3/29/2019 17:41:29'!
+!IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 20:36:52'!
 test13WhenThereAreMultipleIfNilChecksInTheSameMethodWithTheSameCodeTheResultIncludesAllOfThem
 
 	| contextClass anIfNilCheckStatement methodHeader source result firstIfNilIndex |
@@ -3723,10 +3723,11 @@ test13WhenThereAreMultipleIfNilChecksInTheSameMethodWithTheSameCodeTheResultIncl
 	
 	self assert: 2 equals: result size.
 	firstIfNilIndex := source findString: 'ifNil'. 
-	self assert: firstIfNilIndex equals: result first messageNodeIndex.
+	self assert: (source findString: 'ifNil' startingAt: firstIfNilIndex + 1) equals: result first messageNodeIndex.
 	self assert: #m1 equals: result first methodNode selector.
-	self assert: (source findString: 'ifNil' startingAt: firstIfNilIndex + 1) equals: result second messageNodeIndex.
-	self assert: #m1 equals: result second methodNode selector.! !
+	self assert: firstIfNilIndex equals: result second messageNodeIndex.
+	self assert: #m1 equals: result second methodNode selector.
+	! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/20/2019 11:42:29'!
 test01BlocksToExtractMustNotContainReferencesToSuper
@@ -4302,6 +4303,21 @@ test37WhenNoConcreteBlockIsPresentEmptyPolymorphicMessageIsAddedToTheConcreteCla
 	
 	expectedSourceCode := 'with: p1'.
 	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
+	! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 20:18:42'!
+test38WhenThereAreMultipleStatementsPolymorphicMessageIsAddedToTheNullClass
+
+	| sourceWithIf definitions expectedSourceCode |
+
+	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ifNil: [1+1. 2+2]'.
+	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unaryPolymorphicSelector.
+	
+	self applyRefactoringOn: sourceWithIf using: definitions.
+	
+	expectedSourceCode := 'unaryPolymorphicSelector
+	1+1. 2+2'.
+	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #unaryPolymorphicSelector) sourceCode.
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 17:16:59'!
@@ -5467,6 +5483,66 @@ test28NullBlockSourceCodeForIfNotNil
 	parameters := self parametersForSourceCode: sourceWithIf.
 	
 	self assert: '' equals: parameters nullBlockSourceCode.! !
+
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:35:38'!
+test29WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIfNilIfNotNil
+
+	| sourceWithIf parameters |
+	
+	sourceWithIf := 'm1 anInstVar ifNil: [1] ifNotNil: [2+2. 1+1.]'.
+	parameters := self parametersForSourceCode: sourceWithIf.
+	
+	self assert: '2+2. 1+1.' equals: parameters concreteBlockSourceCode.! !
+
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:51:55'!
+test30WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIfNotNil
+	
+	| sourceWithIf parameters |
+	
+	sourceWithIf := 'm1 anInstVar ifNotNil: [2+2. 1+1.]'.
+	parameters := self parametersForSourceCode: sourceWithIf.
+	
+	self assert: '2+2. 1+1.' equals: parameters concreteBlockSourceCode.! !
+
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:52:41'!
+test31WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIsNilIfFalse
+
+	| sourceWithIf parameters |
+	
+	sourceWithIf := 'm1 anInstVar isNil ifFalse: [2+2. 1+1.]'.
+	parameters := self parametersForSourceCode: sourceWithIf.
+	
+	self assert: '2+2. 1+1.' equals: parameters concreteBlockSourceCode.! !
+
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:59:03'!
+test32WhenThereAreMultipleStatementsNullBlockSourceCodeForIfNilIfNotNil
+	
+	| sourceWithIf parameters |
+	
+	sourceWithIf := 'm1 anInstVar ifNil: [1+1. 2+2.] ifNotNil: [2+2]'.
+	parameters := self parametersForSourceCode: sourceWithIf.
+	
+	self assert: '1+1. 2+2.' equals: parameters nullBlockSourceCode.! !
+
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:59:30'!
+test33WhenThereAreMultipleStatementsNullBlockSourceCodeForIfNil
+
+	| sourceWithIf parameters |
+	
+	sourceWithIf := 'm1 anInstVar ifNil: [1+1. 2+2.]'.
+	parameters := self parametersForSourceCode: sourceWithIf.
+	
+	self assert: '1+1. 2+2.' equals: parameters nullBlockSourceCode.! !
+
+!ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:59:55'!
+test34WhenThereAreMultipleStatementsNullBlockSourceCodeForIsNilIfTrue
+	
+	| sourceWithIf parameters |
+	
+	sourceWithIf := 'm1 anInstVar isNil ifTrue: [1+1. 2+2.]'.
+	parameters := self parametersForSourceCode: sourceWithIf.
+	
+	self assert: '1+1. 2+2.' equals: parameters nullBlockSourceCode.! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'assertions' stamp: 'FGJ 3/18/2019 12:31:43'!
 creationWithKeyword: aKeyword failsWithMessageText: anErrorMessageBlock 
@@ -6849,7 +6925,7 @@ apply
 
 	replacementParameters do: [:parameter | self applyWith: parameter].! !
 
-!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/25/2019 14:57:52'!
+!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 4/16/2019 15:37:36'!
 applyWith: replacementParameter
 	
 	self 
@@ -6866,27 +6942,19 @@ applyWith: replacementParameter
 	self replaceNilCheckWithPolymorphicMessageSendUsing: replacementParameter.
 	! !
 
-!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/25/2019 16:52:00'!
+!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 4/16/2019 20:31:13'!
 compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass using: replacementParameter
 
-	| polymorphicMessageSourceCode rangesInsideBlockRange rangesOffsetToBlock refactoredBlockSourceCode variableToParametrizeRangeToReplacingParameter |
-	
+	| polymorphicMessageSourceCode refactoredBlockSourceCode rangesToReplacingParameter |
+
 	aBlockRange ifEmpty: [^aClass compile: replacementParameter polymorphicMessageHeader].
 
-	variableToParametrizeRangeToReplacingParameter := replacementParameter rangesOfVariablesToParametrizeToReplacingParameter.
-	rangesInsideBlockRange := variableToParametrizeRangeToReplacingParameter select: [:rangeToReplacement |
-		rangeToReplacement key first >= aBlockRange first and: [rangeToReplacement key last <= aBlockRange last]].
-	rangesOffsetToBlock := rangesInsideBlockRange collect: [:rangeToReplacement | | range offsetRange offset |
-		range := rangeToReplacement key.
-		offset := aBlockRange first - 1.
-		offsetRange := Interval from: range first - offset to: range last - offset.
-		Association key: offsetRange value: rangeToReplacement value].
-	
-	refactoredBlockSourceCode := (aBlockSourceCode copyReplacing: rangesOffsetToBlock) withoutTrailingBlanks.
+	rangesToReplacingParameter := self rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter.
+	refactoredBlockSourceCode := (aBlockSourceCode copyReplacing: rangesToReplacingParameter) withBlanksTrimmed.
 	polymorphicMessageSourceCode  := replacementParameter polymorphicMessageHeader.
 	refactoredBlockSourceCode ifNotEmpty: [
 		polymorphicMessageSourceCode  := polymorphicMessageSourceCode, String newLineString, String tab, refactoredBlockSourceCode].
-		
+
 	aClass compile: polymorphicMessageSourceCode.! !
 
 !IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/19/2019 17:52:48'!
@@ -6901,6 +6969,20 @@ for: someReplacementParameters
 	concreteClass := aConcreteClass.
 	nullClass := aNullClass.
 	replacementParameters := someReplacementParameters.! !
+
+!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 4/16/2019 20:29:06'!
+rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter
+
+	| rangesInsideBlockRange rangesOffsetToBlock variableToParametrizeRangeToReplacingParameter offset |
+
+	variableToParametrizeRangeToReplacingParameter := replacementParameter rangesOfVariablesToParametrizeToReplacingParameter.
+	rangesInsideBlockRange := variableToParametrizeRangeToReplacingParameter select: [:rangeToReplacement |
+		aBlockRange includes: rangeToReplacement key first].
+	offset := aBlockRange first - 1.
+	rangesOffsetToBlock := rangesInsideBlockRange collect: [:rangeToReplacement |
+		Association key: rangeToReplacement key - offset value: rangeToReplacement value].
+	
+	^rangesOffsetToBlock! !
 
 !IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/20/2019 15:47:21'!
 replaceNilCheckWithPolymorphicMessageSendUsing: replacementParameter
@@ -7605,7 +7687,7 @@ in: aMethodNode representedBy: aMessageNode atIndex: anIndex
 
 	^self new initializeIn: aMethodNode representedBy: aMessageNode atIndex: anIndex.! !
 
-!IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 3/29/2019 15:28:17'!
+!IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 4/16/2019 15:00:16'!
 ifNilChecksIn: aSelector
 
 	| methodNode ifNilChecks |
@@ -7618,7 +7700,7 @@ ifNilChecksIn: aSelector
 			nodeIndex := (methodNode encoder sourceRangeFor: node) first.
 			ifNilChecks add: (IfNilCheck in: methodNode representedBy: node atIndex: nodeIndex)]]).
 	
-	^ifNilChecks! !
+	^ifNilChecks reverse! !
 
 !IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 3/26/2019 15:35:31'!
 initializeOn: aContextClass for: anInstanceVariable
@@ -7959,11 +8041,11 @@ useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 	methodNode := aMethodNode.
 	definitions := variablesToParametrizeKeywordsDefinitions.! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 14:52:19'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 4/16/2019 20:08:36'!
 concreteBlockRange
 	
-	self isConcreteBlockFirstBlock ifTrue: [^methodNode encoder sourceRangeFor: messageNode arguments first].
-	self isConcreteBlockSecondBlock ifTrue: [^methodNode encoder sourceRangeFor: messageNode arguments second].
+	self isConcreteBlockFirstBlock ifTrue: [^self sourceRangeFor: messageNode arguments first in: methodNode].
+	self isConcreteBlockSecondBlock ifTrue: [^self sourceRangeFor: messageNode arguments second in: methodNode].
 	
 	^Interval newFrom: #()! !
 
@@ -7975,14 +8057,13 @@ concreteBlockSourceCode
 	
 	^''! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/20/2019 17:00:34'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 4/16/2019 19:43:45'!
 extractSourceCodeOfBlock: aBlockNode fromMethod: aMethodNode
 
-	| blockRange encoder methodSourceCode |
+	| blockRange methodSourceCode |
 	
-	encoder := aMethodNode encoder.
-	blockRange := encoder sourceRangeFor: aBlockNode.
 	methodSourceCode := (aMethodNode methodClass compiledMethodAt: aMethodNode selector) sourceCode.
+	blockRange := self sourceRangeFor: aBlockNode in: aMethodNode.
 	
 	^methodSourceCode copyFrom: blockRange first to: blockRange last
 	
@@ -8041,11 +8122,11 @@ methodSourceCode
 	
 	^(methodNode methodClass compiledMethodAt: methodNode selector) sourceCode! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 14:57:14'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 4/16/2019 20:06:13'!
 nullBlockRange
 	
-	self isNullBlockFirstBlock ifTrue: [^methodNode encoder sourceRangeFor: messageNode arguments first].
-	self isNullBlockSecondBlock ifTrue: [^methodNode encoder sourceRangeFor: messageNode arguments second].
+	self isNullBlockFirstBlock ifTrue: [^self sourceRangeFor: messageNode arguments first in: methodNode].
+	self isNullBlockSecondBlock ifTrue: [^self sourceRangeFor: messageNode arguments first in: methodNode].
 	
 	^Interval newFrom: #()! !
 
@@ -8117,6 +8198,18 @@ rangesOfVariablesToParametrizeToReplacingParameter
 	
 	^rangeToReplacementParameter
 ! !
+
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 4/16/2019 19:42:31'!
+sourceRangeFor: aBlockNode in: aMethodNode
+
+	| blockRange encoder |
+	
+	encoder := aMethodNode encoder.
+	blockRange := encoder sourceRangeFor: aBlockNode closureCreationNode.
+	
+	^Interval from: blockRange first + 1 to: blockRange last - 1
+	
+	! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/21/2019 12:46:30'!
 variablesToParametrize

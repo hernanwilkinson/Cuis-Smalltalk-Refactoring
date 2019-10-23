@@ -1,416 +1,416 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3656] on 16 April 2019 at 8:40:58 pm'!
-'Description Moved some method to Cuis core to look for senders/implementors based on cursor position'!
-!provides: 'Refactoring' 1 536!
+'From Cuis 5.0 [latest update: #3924] on 23 October 2019 at 8:57:35 am'!
+'Description Alignment with version 3924'!
+!provides: 'Refactoring' 1 537!
 SystemOrganization addCategory: #Refactoring!
 
 
-!classDefinition: #EntranceExitBlockEnumerator category: #Refactoring!
+!classDefinition: #EntranceExitBlockEnumerator category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ParseNodeEnumerator subclass: #EntranceExitBlockEnumerator
 	instanceVariableNames: 'exitBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'EntranceExitBlockEnumerator class' category: #Refactoring!
+!classDefinition: 'EntranceExitBlockEnumerator class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 EntranceExitBlockEnumerator class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageSendingBlocksVariablesToExtractFinder category: #Refactoring!
+!classDefinition: #MessageSendingBlocksVariablesToExtractFinder category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ParseNodeVisitor subclass: #MessageSendingBlocksVariablesToExtractFinder
 	instanceVariableNames: 'messageNode variablesToExtract currentScopeTemporaries'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageSendingBlocksVariablesToExtractFinder class' category: #Refactoring!
+!classDefinition: 'MessageSendingBlocksVariablesToExtractFinder class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 MessageSendingBlocksVariablesToExtractFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToExtractFinder category: #Refactoring!
+!classDefinition: #VariablesToExtractFinder category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ParseNodeVisitor subclass: #VariablesToExtractFinder
 	instanceVariableNames: 'methodNode variablesToExtract'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToExtractFinder class' category: #Refactoring!
+!classDefinition: 'VariablesToExtractFinder class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 VariablesToExtractFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #IndependentlyColoredButton category: #Refactoring!
+!classDefinition: #IndependentlyColoredButton category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 PluggableButtonMorph subclass: #IndependentlyColoredButton
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IndependentlyColoredButton class' category: #Refactoring!
+!classDefinition: 'IndependentlyColoredButton class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 IndependentlyColoredButton class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImmutableTextModelMorph category: #Refactoring!
+!classDefinition: #ImmutableTextModelMorph category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 TextModelMorph subclass: #ImmutableTextModelMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ImmutableTextModelMorph class' category: #Refactoring!
+!classDefinition: 'ImmutableTextModelMorph class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ImmutableTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreviewTextModelMorph category: #Refactoring!
+!classDefinition: #PreviewTextModelMorph category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 TextModelMorph subclass: #PreviewTextModelMorph
 	instanceVariableNames: 'previewModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'PreviewTextModelMorph class' category: #Refactoring!
+!classDefinition: 'PreviewTextModelMorph class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 PreviewTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #TabPassingTextModelMorph category: #Refactoring!
+!classDefinition: #TabPassingTextModelMorph category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 TextModelMorph subclass: #TabPassingTextModelMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'TabPassingTextModelMorph class' category: #Refactoring!
+!classDefinition: 'TabPassingTextModelMorph class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 TabPassingTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #ColoredScrollPane category: #Refactoring!
+!classDefinition: #ColoredScrollPane category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 PluggableScrollPane subclass: #ColoredScrollPane
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ColoredScrollPane class' category: #Refactoring!
+!classDefinition: 'ColoredScrollPane class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ColoredScrollPane class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectForm category: #Refactoring!
+!classDefinition: #ExtractToMethodObjectForm category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 SystemWindow subclass: #ExtractToMethodObjectForm
 	instanceVariableNames: 'scrollPane formLayout inputTable preview variablesToParametrize extractToMethodObjectRequest discardEdits firstTimeBuild initialExtent focusMorphs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectForm class' category: #Refactoring!
+!classDefinition: 'ExtractToMethodObjectForm class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ExtractToMethodObjectForm class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectForm category: #Refactoring!
+!classDefinition: #IntroduceNullObjectForm category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 SystemWindow subclass: #IntroduceNullObjectForm
 	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms discardEdits firstTimeBuild hierarchySection messageSendingListSection actionButtonsSection ifNilChecks focusMorphs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectForm class' category: #Refactoring!
+!classDefinition: 'IntroduceNullObjectForm class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 IntroduceNullObjectForm class
 	instanceVariableNames: ''!
 
-!classDefinition: #FormSection category: #Refactoring!
+!classDefinition: #FormSection category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 LayoutMorph subclass: #FormSection
 	instanceVariableNames: 'title borderMorph titleContainer titleMorph titleContainerLayoutSpec explanation explanationMorph explanationContainer explanationContainerLayoutSpec'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'FormSection class' category: #Refactoring!
+!classDefinition: 'FormSection class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 FormSection class
 	instanceVariableNames: ''!
 
-!classDefinition: #LabeledInput category: #Refactoring!
+!classDefinition: #LabeledInput category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 LayoutMorph subclass: #LabeledInput
 	instanceVariableNames: 'labelMorph inputMorph'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'LabeledInput class' category: #Refactoring!
+!classDefinition: 'LabeledInput class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 LabeledInput class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageKeywordsAndParametersTable category: #Refactoring!
+!classDefinition: #MessageKeywordsAndParametersTable category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 LayoutMorph subclass: #MessageKeywordsAndParametersTable
 	instanceVariableNames: 'rowModels previewModel backgroundColor refactoringModel columnWidths variablesToParametrize'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageKeywordsAndParametersTable class' category: #Refactoring!
+!classDefinition: 'MessageKeywordsAndParametersTable class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 MessageKeywordsAndParametersTable class
 	instanceVariableNames: ''!
 
-!classDefinition: #TabPassingInnerTextMorph category: #Refactoring!
+!classDefinition: #TabPassingInnerTextMorph category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 InnerTextMorph subclass: #TabPassingInnerTextMorph
 	instanceVariableNames: 'focusMover'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'TabPassingInnerTextMorph class' category: #Refactoring!
+!classDefinition: 'TabPassingInnerTextMorph class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 TabPassingInnerTextMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreviewInnerTextMorph category: #Refactoring!
+!classDefinition: #PreviewInnerTextMorph category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 TabPassingInnerTextMorph subclass: #PreviewInnerTextMorph
 	instanceVariableNames: 'previewModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'PreviewInnerTextMorph class' category: #Refactoring!
+!classDefinition: 'PreviewInnerTextMorph class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 PreviewInnerTextMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectTest category: #Refactoring!
+!testClassDefinition: #ExtractToMethodObjectTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringTest subclass: #ExtractToMethodObjectTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectTest class' category: #Refactoring!
+!classDefinition: 'ExtractToMethodObjectTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ExtractToMethodObjectTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilChecksFinderTest category: #Refactoring!
+!testClassDefinition: #IfNilChecksFinderTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringTest subclass: #IfNilChecksFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilChecksFinderTest class' category: #Refactoring!
+!classDefinition: 'IfNilChecksFinderTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 IfNilChecksFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectTest category: #Refactoring!
+!testClassDefinition: #IntroduceNullObjectTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringTest subclass: #IntroduceNullObjectTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectTest class' category: #Refactoring!
+!classDefinition: 'IntroduceNullObjectTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 IntroduceNullObjectTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageSendingBlocksVariablesToExtractFinderTest category: #Refactoring!
+!testClassDefinition: #MessageSendingBlocksVariablesToExtractFinderTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringTest subclass: #MessageSendingBlocksVariablesToExtractFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageSendingBlocksVariablesToExtractFinderTest class' category: #Refactoring!
+!classDefinition: 'MessageSendingBlocksVariablesToExtractFinderTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 MessageSendingBlocksVariablesToExtractFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #NullObjectHierarchyCreatorTest category: #Refactoring!
+!testClassDefinition: #NullObjectHierarchyCreatorTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringTest subclass: #NullObjectHierarchyCreatorTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'NullObjectHierarchyCreatorTest class' category: #Refactoring!
+!classDefinition: 'NullObjectHierarchyCreatorTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 NullObjectHierarchyCreatorTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: #Refactoring!
+!testClassDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringTest subclass: #ReplaceIfNilWithPolymorphismParametersTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ReplaceIfNilWithPolymorphismParametersTest class' category: #Refactoring!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParametersTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ReplaceIfNilWithPolymorphismParametersTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariableToParametrizeKeywordDefinitionTest category: #Refactoring!
+!testClassDefinition: #VariableToParametrizeKeywordDefinitionTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringTest subclass: #VariableToParametrizeKeywordDefinitionTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariableToParametrizeKeywordDefinitionTest class' category: #Refactoring!
+!classDefinition: 'VariableToParametrizeKeywordDefinitionTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 VariableToParametrizeKeywordDefinitionTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToExtractFinderTest category: #Refactoring!
+!testClassDefinition: #VariablesToExtractFinderTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringTest subclass: #VariablesToExtractFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToExtractFinderTest class' category: #Refactoring!
+!classDefinition: 'VariablesToExtractFinderTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 VariablesToExtractFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: #Refactoring!
+!testClassDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringTest subclass: #VariablesToParametrizeKeywordsDefinitionsTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: #Refactoring!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 VariablesToParametrizeKeywordsDefinitionsTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObject category: #Refactoring!
+!classDefinition: #ExtractToMethodObject category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Refactoring subclass: #ExtractToMethodObject
 	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract methodVariableNamesToInstanceVariableNames methodObjectInstanceVariables keywordsDefinitions methodObjectEvaluationSelector'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObject class' category: #Refactoring!
+!classDefinition: 'ExtractToMethodObject class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ExtractToMethodObject class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObject category: #Refactoring!
+!classDefinition: #IntroduceNullObject category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Refactoring subclass: #IntroduceNullObject
 	instanceVariableNames: 'instVar classToRefactor concreteClass nullClass replacementParameters'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObject class' category: #Refactoring!
+!classDefinition: 'IntroduceNullObject class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 IntroduceNullObject class
 	instanceVariableNames: ''!
 
-!classDefinition: #NullObjectHierarchyCreator category: #Refactoring!
+!classDefinition: #NullObjectHierarchyCreator category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Refactoring subclass: #NullObjectHierarchyCreator
 	instanceVariableNames: 'concreteClass abstractClassName nullObjectClassName category'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'NullObjectHierarchyCreator class' category: #Refactoring!
+!classDefinition: 'NullObjectHierarchyCreator class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 NullObjectHierarchyCreator class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectApplier category: #Refactoring!
+!classDefinition: #ExtractToMethodObjectApplier category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringApplier subclass: #ExtractToMethodObjectApplier
 	instanceVariableNames: 'smalltalkEditor classToRefactor methodNode panel done compiledMethodToExtract extractToMethodObjectRequest'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectApplier class' category: #Refactoring!
+!classDefinition: 'ExtractToMethodObjectApplier class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ExtractToMethodObjectApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectApplier category: #Refactoring!
+!classDefinition: #IntroduceNullObjectApplier category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringApplier subclass: #IntroduceNullObjectApplier
 	instanceVariableNames: 'classToRefactor instanceVariable form done ifNilChecks introduceNullObjectRequest'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectApplier class' category: #Refactoring!
+!classDefinition: 'IntroduceNullObjectApplier class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 IntroduceNullObjectApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #AutocompletedTextProvider category: #Refactoring!
+!classDefinition: #AutocompletedTextProvider category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #AutocompletedTextProvider
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'AutocompletedTextProvider class' category: #Refactoring!
+!classDefinition: 'AutocompletedTextProvider class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 AutocompletedTextProvider class
 	instanceVariableNames: ''!
 
-!classDefinition: #ChangeRowOrderButtonModel category: #Refactoring!
+!classDefinition: #ChangeRowOrderButtonModel category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #ChangeRowOrderButtonModel
 	instanceVariableNames: 'tableModel rowPosition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ChangeRowOrderButtonModel class' category: #Refactoring!
+!classDefinition: 'ChangeRowOrderButtonModel class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ChangeRowOrderButtonModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectRequest category: #Refactoring!
+!classDefinition: #ExtractToMethodObjectRequest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #ExtractToMethodObjectRequest
 	instanceVariableNames: 'methodObjectClassNameModel methodObjectCategoryModel methodObjectSuperclassNameModel methodObjectEvaluationMessageSelectorModel variableToParametrizeToInstVarNameModel instanceCreationMessageModels'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectRequest class' category: #Refactoring!
+!classDefinition: 'ExtractToMethodObjectRequest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ExtractToMethodObjectRequest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilCheck category: #Refactoring!
+!classDefinition: #IfNilCheck category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #IfNilCheck
 	instanceVariableNames: 'messageNode index methodNode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilCheck class' category: #Refactoring!
+!classDefinition: 'IfNilCheck class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 IfNilCheck class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilChecksFinder category: #Refactoring!
+!classDefinition: #IfNilChecksFinder category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #IfNilChecksFinder
 	instanceVariableNames: 'contextClass instanceVariable'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilChecksFinder class' category: #Refactoring!
+!classDefinition: 'IfNilChecksFinder class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 IfNilChecksFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilMessageListModel category: #Refactoring!
+!classDefinition: #IfNilMessageListModel category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #IfNilMessageListModel
 	instanceVariableNames: 'listIndex ifNilChecks introduceNullObjectForm'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilMessageListModel class' category: #Refactoring!
+!classDefinition: 'IfNilMessageListModel class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 IfNilMessageListModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectRequest category: #Refactoring!
+!classDefinition: #IntroduceNullObjectRequest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #IntroduceNullObjectRequest
 	instanceVariableNames: 'nullClassNameModel concreteClassNameModel messageKeywordsAndParametersModels'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectRequest class' category: #Refactoring!
+!classDefinition: 'IntroduceNullObjectRequest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 IntroduceNullObjectRequest class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageKeywordsAndParametersModel category: #Refactoring!
+!classDefinition: #MessageKeywordsAndParametersModel category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #MessageKeywordsAndParametersModel
 	instanceVariableNames: 'models selectorModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageKeywordsAndParametersModel class' category: #Refactoring!
+!classDefinition: 'MessageKeywordsAndParametersModel class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 MessageKeywordsAndParametersModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #RefactoringPackageRefactoringMenues category: #Refactoring!
+!classDefinition: #RefactoringPackageRefactoringMenues category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #RefactoringPackageRefactoringMenues
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RefactoringPackageRefactoringMenues class' category: #Refactoring!
+!classDefinition: 'RefactoringPackageRefactoringMenues class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 RefactoringPackageRefactoringMenues class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: #Refactoring!
+!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #ReplaceIfNilWithPolymorphismParameters
 	instanceVariableNames: 'messageNode methodNode definitions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: #Refactoring!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 ReplaceIfNilWithPolymorphismParameters class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariableToParametrizeKeywordDefinition category: #Refactoring!
+!classDefinition: #VariableToParametrizeKeywordDefinition category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #VariableToParametrizeKeywordDefinition
 	instanceVariableNames: 'variableName keyword parameterName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: #Refactoring!
+!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 VariableToParametrizeKeywordDefinition class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: #Refactoring!
+!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 Object subclass: #VariablesToParametrizeKeywordsDefinitions
 	instanceVariableNames: 'selector definitions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: #Refactoring!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
 VariablesToParametrizeKeywordsDefinitions class
 	instanceVariableNames: ''!
 
@@ -1053,7 +1053,7 @@ buildCancelButton
 	
 	^button! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 14:52:57'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'HAW 10/23/2019 08:15:03'!
 buildCodePaneFor: anIfNilCheck
 
 	| codePane |
@@ -1063,7 +1063,7 @@ buildCodePaneFor: anIfNilCheck
 	codePane color: Color white.
 	codePane disableEditing.
 	codePane drawKeyboardFocusIndicator: false.
-	codePane selectFrom: anIfNilCheck messageNodeIndex to: (anIfNilCheck methodNode encoder sourceRangeFor: anIfNilCheck messageNode) last.
+	codePane selectFrom: anIfNilCheck messageNodeIndex to: (anIfNilCheck methodNode encoder rangeForNode: anIfNilCheck messageNode ifAbsent: [self shouldNotHappen ]) last.
 	
 	codePane layoutSpec: (LayoutSpec proportionalWidth: 1.0 fixedHeight: (IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight * 7)).
 	
@@ -1908,7 +1908,7 @@ test02MethodObjectClassNameMustBeASymbol
 		creationWithMethodObjectClassName: aStringClassName
 		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:04:32'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'HAW 10/22/2019 12:23:07'!
 test03MethodObjectClassNameMustStartWithUppercaseLetter
 
 	| nonCapitalizedClassName |
@@ -1917,7 +1917,7 @@ test03MethodObjectClassNameMustStartWithUppercaseLetter
 	
 	self 
 		creationWithMethodObjectClassName: nonCapitalizedClassName
-		failsWithMessageText:[ NewClassPrecondition newNameMustStartWithUppercaseLetterErrorMessage ].! !
+		failsWithMessageText:[ NewClassPrecondition newNameMustStartWithRightLetterErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:01:52'!
 test04MethodObjectClassNameMustNotHaveSeparators
@@ -4604,7 +4604,7 @@ test02AbstractClassClassNameMustBeASymbol
 		creationWithAbstractClassName: stringClassName
 		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
 
-!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:51:50'!
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'HAW 10/22/2019 12:33:39'!
 test03AbstractClassClassNameMustStartWithUppercaseLetter
 
 	| classNameNotCapitalized |
@@ -4613,7 +4613,7 @@ test03AbstractClassClassNameMustStartWithUppercaseLetter
 	
 	self 
 		creationWithAbstractClassName: classNameNotCapitalized
-		failsWithMessageText: [ NewClassPrecondition newNameMustStartWithUppercaseLetterErrorMessage ].! !
+		failsWithMessageText: [ NewClassPrecondition newNameMustStartWithRightLetterErrorMessage ].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:51:33'!
 test04AbstractClassClassNameMustNotHaveSeparators
@@ -4659,7 +4659,7 @@ test07NullObjectClassNameMustBeASymbol
 		creationWithNullObjectClassName: stringClassName
 		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
 
-!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 15:03:58'!
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'HAW 10/22/2019 12:34:04'!
 test08NullObjectClassNameMustStartWithUppercaseLetter
 
 	| classNameNotCapitalized |
@@ -4668,7 +4668,7 @@ test08NullObjectClassNameMustStartWithUppercaseLetter
 	
 	self 
 		creationWithNullObjectClassName: classNameNotCapitalized
-		failsWithMessageText: [ NewClassPrecondition newNameMustStartWithUppercaseLetterErrorMessage ].! !
+		failsWithMessageText: [ NewClassPrecondition newNameMustStartWithRightLetterErrorMessage ].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 15:05:09'!
 test09NullObjectClassNameMustNotHaveSeparators
@@ -7687,7 +7687,7 @@ in: aMethodNode representedBy: aMessageNode atIndex: anIndex
 
 	^self new initializeIn: aMethodNode representedBy: aMessageNode atIndex: anIndex.! !
 
-!IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 4/16/2019 15:00:16'!
+!IfNilChecksFinder methodsFor: 'initialization' stamp: 'HAW 10/22/2019 12:30:46'!
 ifNilChecksIn: aSelector
 
 	| methodNode ifNilChecks |
@@ -7697,7 +7697,7 @@ ifNilChecksIn: aSelector
 	ifNilChecks := OrderedCollection new.
 	methodNode accept: (ParseNodeEnumerator ofBlock: [:node |
 		(self isIfNilCheckNode: node) ifTrue:[ | nodeIndex |
-			nodeIndex := (methodNode encoder sourceRangeFor: node) first.
+			nodeIndex := (methodNode encoder rangeForNode: node ifAbsent: [self fail ]) first.
 			ifNilChecks add: (IfNilCheck in: methodNode representedBy: node atIndex: nodeIndex)]]).
 	
 	^ifNilChecks reverse! !
@@ -8158,19 +8158,19 @@ polymorphicSelector
 
 	^definitions selector! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 17:34:44'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 10/23/2019 08:13:53'!
 rangeOfMessageSend
 	
 	| encoder keywordsRange variableNode variableNodeRange |
 	
 	encoder := methodNode encoder.
-	keywordsRange := encoder sourceRangeFor: messageNode.
+	keywordsRange := encoder rangeForNode: messageNode ifAbsent: [self shouldNotHappen ].
 
 	((IfNilChecksFinder isIfNilWithModifications: messageNode) or: [IfNilChecksFinder isIsNilWithBooleanCheck: messageNode])
 		ifTrue: [variableNode := messageNode receiver receiver].
 	(IfNilChecksFinder isIfNil: messageNode) ifTrue: [variableNode := messageNode receiver].
 	
-	variableNodeRange := ((encoder sourceRangeFor: variableNode) select: [:range | range first < keywordsRange first]) last.
+	variableNodeRange := ((encoder rangeForNode: variableNode ifAbsent: [ self shouldNotHappen ]) select: [:range | range first < keywordsRange first]) last.
 	
 	^Interval from: variableNodeRange first to: keywordsRange last! !
 
@@ -8199,13 +8199,13 @@ rangesOfVariablesToParametrizeToReplacingParameter
 	^rangeToReplacementParameter
 ! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 4/16/2019 19:42:31'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 10/23/2019 08:13:36'!
 sourceRangeFor: aBlockNode in: aMethodNode
 
 	| blockRange encoder |
 	
 	encoder := aMethodNode encoder.
-	blockRange := encoder sourceRangeFor: aBlockNode closureCreationNode.
+	blockRange := encoder rangeForNode: aBlockNode closureCreationNode ifAbsent: [ self shouldNotHappen ].
 	
 	^Interval from: blockRange first + 1 to: blockRange last - 1
 	

@@ -1,416 +1,416 @@
-'From Cuis 5.0 [latest update: #3924] on 23 October 2019 at 8:57:35 am'!
-'Description Alignment with version 3924'!
+'From Cuis 5.0 [latest update: #3926] on 23 October 2019 at 9:55:24 am'!
+'Description Lineup with 3926'!
 !provides: 'Refactoring' 1 537!
 SystemOrganization addCategory: #Refactoring!
 
 
-!classDefinition: #EntranceExitBlockEnumerator category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #EntranceExitBlockEnumerator category: #Refactoring!
 ParseNodeEnumerator subclass: #EntranceExitBlockEnumerator
 	instanceVariableNames: 'exitBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'EntranceExitBlockEnumerator class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'EntranceExitBlockEnumerator class' category: #Refactoring!
 EntranceExitBlockEnumerator class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageSendingBlocksVariablesToExtractFinder category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #MessageSendingBlocksVariablesToExtractFinder category: #Refactoring!
 ParseNodeVisitor subclass: #MessageSendingBlocksVariablesToExtractFinder
 	instanceVariableNames: 'messageNode variablesToExtract currentScopeTemporaries'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageSendingBlocksVariablesToExtractFinder class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'MessageSendingBlocksVariablesToExtractFinder class' category: #Refactoring!
 MessageSendingBlocksVariablesToExtractFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToExtractFinder category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #VariablesToExtractFinder category: #Refactoring!
 ParseNodeVisitor subclass: #VariablesToExtractFinder
 	instanceVariableNames: 'methodNode variablesToExtract'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToExtractFinder class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'VariablesToExtractFinder class' category: #Refactoring!
 VariablesToExtractFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #IndependentlyColoredButton category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #IndependentlyColoredButton category: #Refactoring!
 PluggableButtonMorph subclass: #IndependentlyColoredButton
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IndependentlyColoredButton class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'IndependentlyColoredButton class' category: #Refactoring!
 IndependentlyColoredButton class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImmutableTextModelMorph category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #ImmutableTextModelMorph category: #Refactoring!
 TextModelMorph subclass: #ImmutableTextModelMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ImmutableTextModelMorph class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'ImmutableTextModelMorph class' category: #Refactoring!
 ImmutableTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreviewTextModelMorph category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #PreviewTextModelMorph category: #Refactoring!
 TextModelMorph subclass: #PreviewTextModelMorph
 	instanceVariableNames: 'previewModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'PreviewTextModelMorph class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'PreviewTextModelMorph class' category: #Refactoring!
 PreviewTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #TabPassingTextModelMorph category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #TabPassingTextModelMorph category: #Refactoring!
 TextModelMorph subclass: #TabPassingTextModelMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'TabPassingTextModelMorph class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'TabPassingTextModelMorph class' category: #Refactoring!
 TabPassingTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #ColoredScrollPane category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #ColoredScrollPane category: #Refactoring!
 PluggableScrollPane subclass: #ColoredScrollPane
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ColoredScrollPane class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'ColoredScrollPane class' category: #Refactoring!
 ColoredScrollPane class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectForm category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #ExtractToMethodObjectForm category: #Refactoring!
 SystemWindow subclass: #ExtractToMethodObjectForm
 	instanceVariableNames: 'scrollPane formLayout inputTable preview variablesToParametrize extractToMethodObjectRequest discardEdits firstTimeBuild initialExtent focusMorphs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectForm class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'ExtractToMethodObjectForm class' category: #Refactoring!
 ExtractToMethodObjectForm class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectForm category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #IntroduceNullObjectForm category: #Refactoring!
 SystemWindow subclass: #IntroduceNullObjectForm
 	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms discardEdits firstTimeBuild hierarchySection messageSendingListSection actionButtonsSection ifNilChecks focusMorphs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectForm class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'IntroduceNullObjectForm class' category: #Refactoring!
 IntroduceNullObjectForm class
 	instanceVariableNames: ''!
 
-!classDefinition: #FormSection category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #FormSection category: #Refactoring!
 LayoutMorph subclass: #FormSection
 	instanceVariableNames: 'title borderMorph titleContainer titleMorph titleContainerLayoutSpec explanation explanationMorph explanationContainer explanationContainerLayoutSpec'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'FormSection class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'FormSection class' category: #Refactoring!
 FormSection class
 	instanceVariableNames: ''!
 
-!classDefinition: #LabeledInput category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #LabeledInput category: #Refactoring!
 LayoutMorph subclass: #LabeledInput
 	instanceVariableNames: 'labelMorph inputMorph'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'LabeledInput class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'LabeledInput class' category: #Refactoring!
 LabeledInput class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageKeywordsAndParametersTable category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #MessageKeywordsAndParametersTable category: #Refactoring!
 LayoutMorph subclass: #MessageKeywordsAndParametersTable
 	instanceVariableNames: 'rowModels previewModel backgroundColor refactoringModel columnWidths variablesToParametrize'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageKeywordsAndParametersTable class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'MessageKeywordsAndParametersTable class' category: #Refactoring!
 MessageKeywordsAndParametersTable class
 	instanceVariableNames: ''!
 
-!classDefinition: #TabPassingInnerTextMorph category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #TabPassingInnerTextMorph category: #Refactoring!
 InnerTextMorph subclass: #TabPassingInnerTextMorph
 	instanceVariableNames: 'focusMover'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'TabPassingInnerTextMorph class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'TabPassingInnerTextMorph class' category: #Refactoring!
 TabPassingInnerTextMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreviewInnerTextMorph category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #PreviewInnerTextMorph category: #Refactoring!
 TabPassingInnerTextMorph subclass: #PreviewInnerTextMorph
 	instanceVariableNames: 'previewModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'PreviewInnerTextMorph class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'PreviewInnerTextMorph class' category: #Refactoring!
 PreviewInnerTextMorph class
 	instanceVariableNames: ''!
 
-!testClassDefinition: #ExtractToMethodObjectTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #ExtractToMethodObjectTest category: #Refactoring!
 RefactoringTest subclass: #ExtractToMethodObjectTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'ExtractToMethodObjectTest class' category: #Refactoring!
 ExtractToMethodObjectTest class
 	instanceVariableNames: ''!
 
-!testClassDefinition: #IfNilChecksFinderTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #IfNilChecksFinderTest category: #Refactoring!
 RefactoringTest subclass: #IfNilChecksFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilChecksFinderTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'IfNilChecksFinderTest class' category: #Refactoring!
 IfNilChecksFinderTest class
 	instanceVariableNames: ''!
 
-!testClassDefinition: #IntroduceNullObjectTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #IntroduceNullObjectTest category: #Refactoring!
 RefactoringTest subclass: #IntroduceNullObjectTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'IntroduceNullObjectTest class' category: #Refactoring!
 IntroduceNullObjectTest class
 	instanceVariableNames: ''!
 
-!testClassDefinition: #MessageSendingBlocksVariablesToExtractFinderTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #MessageSendingBlocksVariablesToExtractFinderTest category: #Refactoring!
 RefactoringTest subclass: #MessageSendingBlocksVariablesToExtractFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageSendingBlocksVariablesToExtractFinderTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'MessageSendingBlocksVariablesToExtractFinderTest class' category: #Refactoring!
 MessageSendingBlocksVariablesToExtractFinderTest class
 	instanceVariableNames: ''!
 
-!testClassDefinition: #NullObjectHierarchyCreatorTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #NullObjectHierarchyCreatorTest category: #Refactoring!
 RefactoringTest subclass: #NullObjectHierarchyCreatorTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'NullObjectHierarchyCreatorTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'NullObjectHierarchyCreatorTest class' category: #Refactoring!
 NullObjectHierarchyCreatorTest class
 	instanceVariableNames: ''!
 
-!testClassDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: #Refactoring!
 RefactoringTest subclass: #ReplaceIfNilWithPolymorphismParametersTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ReplaceIfNilWithPolymorphismParametersTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParametersTest class' category: #Refactoring!
 ReplaceIfNilWithPolymorphismParametersTest class
 	instanceVariableNames: ''!
 
-!testClassDefinition: #VariableToParametrizeKeywordDefinitionTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #VariableToParametrizeKeywordDefinitionTest category: #Refactoring!
 RefactoringTest subclass: #VariableToParametrizeKeywordDefinitionTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariableToParametrizeKeywordDefinitionTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'VariableToParametrizeKeywordDefinitionTest class' category: #Refactoring!
 VariableToParametrizeKeywordDefinitionTest class
 	instanceVariableNames: ''!
 
-!testClassDefinition: #VariablesToExtractFinderTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #VariablesToExtractFinderTest category: #Refactoring!
 RefactoringTest subclass: #VariablesToExtractFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToExtractFinderTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'VariablesToExtractFinderTest class' category: #Refactoring!
 VariablesToExtractFinderTest class
 	instanceVariableNames: ''!
 
-!testClassDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: #Refactoring!
 RefactoringTest subclass: #VariablesToParametrizeKeywordsDefinitionsTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: #Refactoring!
 VariablesToParametrizeKeywordsDefinitionsTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObject category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #ExtractToMethodObject category: #Refactoring!
 Refactoring subclass: #ExtractToMethodObject
 	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract methodVariableNamesToInstanceVariableNames methodObjectInstanceVariables keywordsDefinitions methodObjectEvaluationSelector'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObject class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'ExtractToMethodObject class' category: #Refactoring!
 ExtractToMethodObject class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObject category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #IntroduceNullObject category: #Refactoring!
 Refactoring subclass: #IntroduceNullObject
 	instanceVariableNames: 'instVar classToRefactor concreteClass nullClass replacementParameters'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObject class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'IntroduceNullObject class' category: #Refactoring!
 IntroduceNullObject class
 	instanceVariableNames: ''!
 
-!classDefinition: #NullObjectHierarchyCreator category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #NullObjectHierarchyCreator category: #Refactoring!
 Refactoring subclass: #NullObjectHierarchyCreator
 	instanceVariableNames: 'concreteClass abstractClassName nullObjectClassName category'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'NullObjectHierarchyCreator class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'NullObjectHierarchyCreator class' category: #Refactoring!
 NullObjectHierarchyCreator class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectApplier category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #ExtractToMethodObjectApplier category: #Refactoring!
 RefactoringApplier subclass: #ExtractToMethodObjectApplier
 	instanceVariableNames: 'smalltalkEditor classToRefactor methodNode panel done compiledMethodToExtract extractToMethodObjectRequest'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectApplier class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'ExtractToMethodObjectApplier class' category: #Refactoring!
 ExtractToMethodObjectApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectApplier category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #IntroduceNullObjectApplier category: #Refactoring!
 RefactoringApplier subclass: #IntroduceNullObjectApplier
 	instanceVariableNames: 'classToRefactor instanceVariable form done ifNilChecks introduceNullObjectRequest'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectApplier class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'IntroduceNullObjectApplier class' category: #Refactoring!
 IntroduceNullObjectApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #AutocompletedTextProvider category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #AutocompletedTextProvider category: #Refactoring!
 Object subclass: #AutocompletedTextProvider
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'AutocompletedTextProvider class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'AutocompletedTextProvider class' category: #Refactoring!
 AutocompletedTextProvider class
 	instanceVariableNames: ''!
 
-!classDefinition: #ChangeRowOrderButtonModel category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #ChangeRowOrderButtonModel category: #Refactoring!
 Object subclass: #ChangeRowOrderButtonModel
 	instanceVariableNames: 'tableModel rowPosition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ChangeRowOrderButtonModel class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'ChangeRowOrderButtonModel class' category: #Refactoring!
 ChangeRowOrderButtonModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectRequest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #ExtractToMethodObjectRequest category: #Refactoring!
 Object subclass: #ExtractToMethodObjectRequest
 	instanceVariableNames: 'methodObjectClassNameModel methodObjectCategoryModel methodObjectSuperclassNameModel methodObjectEvaluationMessageSelectorModel variableToParametrizeToInstVarNameModel instanceCreationMessageModels'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectRequest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'ExtractToMethodObjectRequest class' category: #Refactoring!
 ExtractToMethodObjectRequest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilCheck category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #IfNilCheck category: #Refactoring!
 Object subclass: #IfNilCheck
 	instanceVariableNames: 'messageNode index methodNode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilCheck class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'IfNilCheck class' category: #Refactoring!
 IfNilCheck class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilChecksFinder category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #IfNilChecksFinder category: #Refactoring!
 Object subclass: #IfNilChecksFinder
 	instanceVariableNames: 'contextClass instanceVariable'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilChecksFinder class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'IfNilChecksFinder class' category: #Refactoring!
 IfNilChecksFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilMessageListModel category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #IfNilMessageListModel category: #Refactoring!
 Object subclass: #IfNilMessageListModel
 	instanceVariableNames: 'listIndex ifNilChecks introduceNullObjectForm'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilMessageListModel class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'IfNilMessageListModel class' category: #Refactoring!
 IfNilMessageListModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectRequest category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #IntroduceNullObjectRequest category: #Refactoring!
 Object subclass: #IntroduceNullObjectRequest
 	instanceVariableNames: 'nullClassNameModel concreteClassNameModel messageKeywordsAndParametersModels'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectRequest class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'IntroduceNullObjectRequest class' category: #Refactoring!
 IntroduceNullObjectRequest class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageKeywordsAndParametersModel category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #MessageKeywordsAndParametersModel category: #Refactoring!
 Object subclass: #MessageKeywordsAndParametersModel
 	instanceVariableNames: 'models selectorModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageKeywordsAndParametersModel class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'MessageKeywordsAndParametersModel class' category: #Refactoring!
 MessageKeywordsAndParametersModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #RefactoringPackageRefactoringMenues category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #RefactoringPackageRefactoringMenues category: #Refactoring!
 Object subclass: #RefactoringPackageRefactoringMenues
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RefactoringPackageRefactoringMenues class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'RefactoringPackageRefactoringMenues class' category: #Refactoring!
 RefactoringPackageRefactoringMenues class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: #Refactoring!
 Object subclass: #ReplaceIfNilWithPolymorphismParameters
 	instanceVariableNames: 'messageNode methodNode definitions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: #Refactoring!
 ReplaceIfNilWithPolymorphismParameters class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariableToParametrizeKeywordDefinition category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #VariableToParametrizeKeywordDefinition category: #Refactoring!
 Object subclass: #VariableToParametrizeKeywordDefinition
 	instanceVariableNames: 'variableName keyword parameterName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: #Refactoring!
 VariableToParametrizeKeywordDefinition class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: #Refactoring!
 Object subclass: #VariablesToParametrizeKeywordsDefinitions
 	instanceVariableNames: 'selector definitions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: #Refactoring stamp: 'HAW 10/23/2019 08:57:36'!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: #Refactoring!
 VariablesToParametrizeKeywordsDefinitions class
 	instanceVariableNames: ''!
 
@@ -448,29 +448,29 @@ initializeToFindIn: aMessageNode
 
 !MessageSendingBlocksVariablesToExtractFinder methodsFor: 'evaluating' stamp: 'FGJ 3/29/2019 17:36:29'!
 value
-	
+
 	messageNode arguments do: [:argument |
 		currentScopeTemporaries := Bag new.
 		argument accept: self].
-	
+
 	variablesToExtract remove: 'true' ifAbsent: [nil].
 	variablesToExtract remove: 'false' ifAbsent: [nil].
-	
-		
+
+
 	^OrderedCollection newFrom: variablesToExtract! !
 
 !MessageSendingBlocksVariablesToExtractFinder methodsFor: 'visiting' stamp: 'FGJ 3/28/2019 17:54:25'!
 visitBlockNode: aBlockNode
 
 	 | temporariesNames argumentsNames |
-					
+
 	temporariesNames := aBlockNode temporaries collect: [:aTemp | aTemp name].
 	argumentsNames := aBlockNode arguments collect: [:anArg | anArg name].
 	currentScopeTemporaries addAll: temporariesNames.
 	currentScopeTemporaries addAll: argumentsNames.
-	
+
 	super visitBlockNode: aBlockNode.
-	
+
 	temporariesNames := aBlockNode temporaries collect: [:aTemp | aTemp name].
 	currentScopeTemporaries removeAll: temporariesNames.! !
 
@@ -483,15 +483,15 @@ visitInstanceVariableNode: anInstanceVariableNode
 visitVariableNode: aVariableNode
 
 	| name |
-	
+
 	name := aVariableNode name.
 
-	name = 'nil' ifTrue: [^self]. 
+	name = 'nil' ifTrue: [^self].
 	(currentScopeTemporaries includes: name) ifFalse: [variablesToExtract add: name].! !
 
 !MessageSendingBlocksVariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 3/28/2019 17:31:08'!
-valueIn: aMessageNode 
-	
+valueIn: aMessageNode
+
 	^(self new initializeToFindIn: aMessageNode) value! !
 
 !VariablesToExtractFinder methodsFor: 'initialization' stamp: 'HAW 3/4/2019 13:35:48'!
@@ -503,10 +503,10 @@ initializeIn: aMethodNode
 
 !VariablesToExtractFinder methodsFor: 'evaluating' stamp: 'HAW 3/4/2019 14:34:24'!
 value
-	
+
 	variablesToExtract addAll: methodNode argumentNames.
 	methodNode accept: self.
-	
+
 	^variablesToExtract! !
 
 !VariablesToExtractFinder methodsFor: 'visiting' stamp: 'HAW 3/4/2019 13:46:05'!
@@ -518,7 +518,7 @@ visitInstanceVariableNode: anInstanceVariableNode
 visitLiteralVariableNode: aLiteralVariableNode
 
 	Smalltalk at: aLiteralVariableNode name asSymbol ifAbsent: [ variablesToExtract add: aLiteralVariableNode name ]
-	
+
 ! !
 
 !VariablesToExtractFinder methodsFor: 'visiting' stamp: 'HAW 3/4/2019 14:23:56'!
@@ -530,19 +530,19 @@ visitReturnNode: aReturnNode
 visitVariableNode: aVariableNode
 
 	aVariableNode isSelfPseudoVariable ifTrue: [ variablesToExtract add: aVariableNode name ].
-	super visitVariableNode: aVariableNode 
+	super visitVariableNode: aVariableNode
 	! !
 
 !VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'HAW 3/4/2019 14:36:12'!
-valueIn: aCompiledMethod 
-	
+valueIn: aCompiledMethod
+
 	^(self in: aCompiledMethod) value! !
 
 !VariablesToExtractFinder class methodsFor: 'instance creation' stamp: 'HAW 3/4/2019 13:23:23'!
-in: aCompiledMethod 
-	
+in: aCompiledMethod
+
 	^self new initializeIn: aCompiledMethod methodNode.
-	
+
 	! !
 
 !IndependentlyColoredButton methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 12:38:30'!
@@ -552,18 +552,18 @@ adoptWidgetsColor: paneColor! !
 minimumHeightToDisplay: aString on: aWidth
 
 	| aComposer composition lines aText disregardHeight |
-	
+
 	aComposer := TextComposer new.
 	aText := Text fromString: aString.
 	disregardHeight := 999999.
-	composition := aComposer composeLinesFrom: 1 to: aText size delta: 0 into: OrderedCollection new priorLines: Array new atY: 0 text: aText extentForComposing: aWidth @ disregardHeight. 
+	composition := aComposer composeLinesFrom: 1 to: aText size delta: 0 into: OrderedCollection new priorLines: Array new atY: 0 text: aText extentForComposing: aWidth @ disregardHeight.
 	lines := composition first asArray size.
-	
+
 	^lines * self textHeight! !
 
 !ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 19:43:22'!
 textHeight
-	
+
 	^AbstractFont default height! !
 
 !ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 19:42:21'!
@@ -577,14 +577,14 @@ withText: aText withColor: aColor withWidth: aWidth
 	anInstance drawKeyboardFocusIndicator: false.
 	anInstance lock: true.
 	anInstance hideScrollBarsIndefinitely.
-	
+
 	bottomSpaceToAccountForLettersBelowBaseLineLikep := 5.
-	anInstanceLayoutSpec := LayoutSpec 
+	anInstanceLayoutSpec := LayoutSpec
 		proportionalWidth: 0.95
 		fixedHeight: (self minimumHeightToDisplay: aText on: aWidth) + bottomSpaceToAccountForLettersBelowBaseLineLikep.
 	anInstanceLayoutSpec minorDirectionPadding: #left.
-	anInstance layoutSpec: anInstanceLayoutSpec. 
-	
+	anInstance layoutSpec: anInstanceLayoutSpec.
+
 	^anInstance! !
 
 !PreviewTextModelMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 10:40:38'!
@@ -606,12 +606,12 @@ bordersExtent
 drawOn: aCanvas
 
 	color := Color lightGray.
-	
+
 	super drawOn: aCanvas.! !
 
 !ColoredScrollPane methodsFor: 'as yet unclassified' stamp: 'FGJ 2/5/2019 16:24:51'!
 getMenu
-	
+
 	^nil! !
 
 !ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 2/5/2019 16:25:41'!
@@ -633,7 +633,7 @@ layoutSpecForSection: aSection
 recommendedWidthForLabels: labels
 
 	| rightMargin |
-	
+
 	rightMargin := 20.
 	^(labels collect: [:aLabel | AbstractFont default widthOfString: aLabel]) max + rightMargin! !
 
@@ -643,7 +643,7 @@ shouldStyle: text with: anSHTextStyler
 	text = self previewUnavailableMessage ifFalse: [
 		anSHTextStyler classOrMetaClass: Object.
 		^true].
-	
+
 	^false.! !
 
 !ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 12:57:14'!
@@ -658,14 +658,14 @@ closeBoxHit
 
 !ExtractToMethodObjectForm methodsFor: 'open/close' stamp: 'FGJ 2/14/2019 19:58:44'!
 deleteDiscardingEdits
-	
+
 	discardEdits := true.
 	super delete.! !
 
 !ExtractToMethodObjectForm methodsFor: 'open/close' stamp: 'FGJ 2/15/2019 10:20:40'!
 okToChange
-	
-	discardEdits 
+
+	discardEdits
 		ifTrue: [^true]
 		ifFalse: [^super okToChange].! !
 
@@ -673,14 +673,14 @@ okToChange
 buildActionButtonsSection
 
 	| section sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
-	
+
 	section := LayoutMorph newRow.
 	section separation: 10.
 	section color: self backgroundColor.
-	
+
 	section addMorph: self buildCancelButton.
 	section addMorph: self buildSubmitButton.
-	
+
 	submorphsWidth := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedWidth]) sum.
 	sectionWidth := submorphsWidth + (section xSeparation * (section submorphs size + 1)).
 	submorphsHeight := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedHeight]) max.
@@ -688,7 +688,7 @@ buildActionButtonsSection
 	sectionLayoutSpec minorDirectionPadding: 0.95.
 
 	section layoutSpec: sectionLayoutSpec.
-	
+
 	^section.
 	! !
 
@@ -696,41 +696,41 @@ buildActionButtonsSection
 buildCancelButton
 
 	| button buttonLayoutSpec |
-	
+
 	button := IndependentlyColoredButton model: self action: #cancelButtonClicked label: 'Cancel'.
 	button color: Theme current cancelButton.
-	
-	buttonLayoutSpec := LayoutSpec 
+
+	buttonLayoutSpec := LayoutSpec
 		fixedWidth: button morphWidth
 		fixedHeight: ExtractToMethodObjectForm fontProportionalUnitOfReferenceForHeight  * 2.
 	buttonLayoutSpec minorDirectionPadding: 0.85.
 	button layoutSpec: buttonLayoutSpec.
-	
+
 	^button! !
 
 !ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/10/2019 18:07:37'!
-buildInstanceCreationMessageSection	
-	
+buildInstanceCreationMessageSection
+
 	| section previewExplanation previewLayoutSpec |
-	
+
 	section := FormSection
 		withTitle: 'Instance creation message definition'
 		withExplanation: 'The collaborators will be passed in the MethodObject instance creation message. Pick the keyword and the formal parameter name corresponding to each collaborator:'
 		withColor: self backgroundColor .
-	
-	inputTable := MessageKeywordsAndParametersTable 
+
+	inputTable := MessageKeywordsAndParametersTable
 		withRows: variablesToParametrize
 		withColor: self backgroundColor
 		withPreviewModel: self
 		withRefactoringModel: extractToMethodObjectRequest.
 	section addMorph: inputTable.
-	
-	previewExplanation := ImmutableTextModelMorph 
+
+	previewExplanation := ImmutableTextModelMorph
 		withText: 'This is how the instance creation message header will look:'
 		withColor: self backgroundColor
 		withWidth: section fixedWidthForTexts.
 	section addMorph: previewExplanation.
-	
+
 	preview := TextModelMorph textProvider: self.
 	preview model actualContents: self previewUnavailableMessage.
 	preview color: Color white.
@@ -738,17 +738,17 @@ buildInstanceCreationMessageSection
 	preview drawKeyboardFocusIndicator: false.
 	preview lock: true.
 	self buildPreview.
-	
-	previewLayoutSpec := LayoutSpec 
+
+	previewLayoutSpec := LayoutSpec
 		proportionalWidth: 0.95
 		fixedHeight: ExtractToMethodObjectForm fontProportionalUnitOfReferenceForHeight * 3.
 	previewLayoutSpec minorDirectionPadding: 0.3.
-	preview layoutSpec: previewLayoutSpec. 
-	
+	preview layoutSpec: previewLayoutSpec.
+
 	section addMorph: preview.
-	
+
 	section layoutSpec: (self layoutSpecForSection: section).
-	
+
 	^section! !
 
 !ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/11/2019 13:05:10'!
@@ -756,19 +756,19 @@ buildInstanceVariablesSection
 
 	| maxLabelWidth section |
 
-	section := FormSection 
+	section := FormSection
 			withTitle: 'Instance variables names'
 			withExplanation: 'Instance, class and pool variables referenced by the method will be passed as collaborators to the MethodObject. The method object will have one instance variable corresponding to each of them. Pick their names:'
 			withColor: self backgroundColor.
-	
+
 	maxLabelWidth := self recommendedWidthForLabels: variablesToParametrize.
-	
+
 	variablesToParametrize do: [ :aVariable | | labeledInput |
 		labeledInput := LabeledInput withLabel: aVariable withWidth: maxLabelWidth withModel: (extractToMethodObjectRequest nameModelForVariableToParametrize: aVariable) usingAs: self.
 		section addMorph: labeledInput].
-	
+
 	section layoutSpec: (self layoutSpecForSection: section).
-	
+
 	^section
 ! !
 
@@ -783,18 +783,18 @@ buildMethodObjectClassSection
 
 	nameInput := LabeledInput withLabel: 'Name' withWidth: maxLabelWidth withModel: extractToMethodObjectRequest methodObjectClassNameModel usingAs: self.
 	section addMorph: nameInput.
-	
+
 	superclassNameInput := LabeledInput withLabel: 'Superclass name' withWidth: maxLabelWidth withModel: extractToMethodObjectRequest methodObjectSuperclassNameModel usingAs: self.
 	section addMorph: superclassNameInput.
-	
+
 	categoryInput := LabeledInput withLabel: 'Category' withWidth: maxLabelWidth withModel: extractToMethodObjectRequest methodObjectCategoryModel usingAs: self.
 	section addMorph: categoryInput.
-	
+
 	evaluationMessageSelectorInput := LabeledInput withLabel: 'Evaluation message selector' withWidth: maxLabelWidth withModel: extractToMethodObjectRequest methodObjectEvaluationMessageSelectorModel usingAs: self.
 	section addMorph: evaluationMessageSelectorInput.
-	
+
 	section layoutSpec: (self layoutSpecForSection: section).
-	
+
 	^section
 ! !
 
@@ -802,26 +802,26 @@ buildMethodObjectClassSection
 buildMorphicWindow
 
 	| requiredExtent instanceCreationMessageSection requiredHeight methodObjectClassSection instanceVariablesSection actionButtonsSection requiredWidth sections windowElementsExtent xtraBorderToAvoidScrollbars |
-	
+
 	firstTimeBuild := true.
-	
+
 	self initializeScrollableContainer.
 	self initializeFormLayout.
 	scrollPane scroller addMorph: formLayout.
-	
+
 	sections := Set new.
-	
+
 	"Method object class section"
 	methodObjectClassSection := self buildMethodObjectClassSection.
 	formLayout addMorph: methodObjectClassSection.
 	sections add: methodObjectClassSection.
-	
+
 	variablesToParametrize isEmpty ifFalse: [
 		"Instance variables section"
 		instanceVariablesSection := self buildInstanceVariablesSection.
 		formLayout addMorph: instanceVariablesSection.
 		sections add: instanceVariablesSection.
-		
+
 		"Instance creation message section"
 		instanceCreationMessageSection := self buildInstanceCreationMessageSection.
 		formLayout addMorph: instanceCreationMessageSection.
@@ -830,8 +830,8 @@ buildMorphicWindow
 	"Submit & Cancel buttons"
 	actionButtonsSection := self buildActionButtonsSection.
 	formLayout addMorph: actionButtonsSection.
-	
-	requiredHeight := (sections collect: [:aSection | aSection recommendedHeight]) sum 
+
+	requiredHeight := (sections collect: [:aSection | aSection recommendedHeight]) sum
 		+ actionButtonsSection layoutSpec fixedHeight
 		+ (formLayout ySeparation * 4).
 	requiredWidth := (sections collect: [:aSection | aSection recommendedWidth]) max + (formLayout xSeparation * 2).
@@ -839,7 +839,7 @@ buildMorphicWindow
 	requiredExtent := requiredWidth@requiredHeight.
 	formLayout morphExtent: requiredExtent.
 	scrollPane scroller morphExtent: requiredExtent.
-	
+
 	windowElementsExtent := (borderWidth * 2)@(borderWidth * 2 + self labelHeight).
 	xtraBorderToAvoidScrollbars := 4@4.
 	windowElementsExtent := windowElementsExtent + scrollPane bordersExtent + xtraBorderToAvoidScrollbars.
@@ -849,33 +849,33 @@ buildMorphicWindow
 buildPreview
 
 	| keywordParamStrings previewContent |
-	
+
 	keywordParamStrings := OrderedCollection new.
 	inputTable keywordsAndParametersDo: [:keyword :parameterName |
 		(keyword isEmpty or: [parameterName isEmpty]) ifTrue: [
 			preview model actualContents: self previewUnavailableMessage.
 			^self].
-		
+
 		keywordParamStrings addFirst: '', keyword, ': ', parameterName].
-	
+
 	previewContent := ' ' join: keywordParamStrings.
-	
+
 	preview model actualContents: previewContent.! !
 
 !ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 2/16/2019 11:35:56'!
 buildSubmitButton
 
 	| submitButton submitButtonLayoutSpec |
-	
+
 	submitButton := IndependentlyColoredButton model: self action: #submitButtonClicked label: 'Refactor'.
 	submitButton color: Theme current acceptButton.
-	
-	submitButtonLayoutSpec := LayoutSpec 
+
+	submitButtonLayoutSpec := LayoutSpec
 		fixedWidth: submitButton morphWidth
 		fixedHeight: ExtractToMethodObjectForm fontProportionalUnitOfReferenceForHeight  * 2.
 	submitButtonLayoutSpec minorDirectionPadding: 0.95.
 	submitButton layoutSpec: submitButtonLayoutSpec.
-	
+
 	^submitButton! !
 
 !ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 2/12/2019 15:29:28'!
@@ -890,12 +890,12 @@ initializeScrollableContainer
 	scrollPane := ColoredScrollPane initializedInstance.
 	scrollPane scroller color: self backgroundColor.
 	scrollPane scroller layoutSpec: LayoutSpec useAll.
-	scrollPane color: self backgroundColor. 
+	scrollPane color: self backgroundColor.
 	self layoutMorph addMorphUseAll: scrollPane.! !
 
 !ExtractToMethodObjectForm methodsFor: 'events' stamp: 'FGJ 2/13/2019 15:29:04'!
 cancelButtonClicked
-	
+
 	model cancel.! !
 
 !ExtractToMethodObjectForm methodsFor: 'events' stamp: 'FGJ 2/6/2019 13:12:47'!
@@ -931,9 +931,9 @@ previewUnavailableMessage
 initializeWithModel: aModel
 
 	super model: aModel.
-	
+
 	self setLabel: 'Extract Method to Method Object'.
-	
+
 	discardEdits := false.
 	variablesToParametrize := model variablesToParametrize.
 	extractToMethodObjectRequest := ExtractToMethodObjectRequest for: aModel methodToExtract.
@@ -948,10 +948,10 @@ addFocusReceiver: anInnerTextMorph
 moveFrom: anInnerTextMorph
 
 	| newFocusMorph oldFocusIndex |
-	
+
 	oldFocusIndex := (1 to: focusMorphs size) detect: [:i | (focusMorphs at: i) = anInnerTextMorph].
 	newFocusMorph := focusMorphs at: (oldFocusIndex mod: focusMorphs size) + 1.
-	
+
 	self world activeHand newKeyboardFocus: newFocusMorph.! !
 
 !ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 18:27:41'!
@@ -992,7 +992,7 @@ backgroundColor
 
 !IntroduceNullObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/29/2019 16:41:04'!
 deleteDiscardingEdits
-	
+
 	discardEdits := true.
 	super delete.! !
 
@@ -1010,7 +1010,7 @@ layoutSpecForSection: aSection
 recommendedWidthForLabels: labels
 
 	| rightMargin |
-	
+
 	rightMargin := 20.
 	^(labels collect: [:aLabel | AbstractFont default widthOfString: aLabel]) max + rightMargin! !
 
@@ -1018,14 +1018,14 @@ recommendedWidthForLabels: labels
 buildActionButtonsSection
 
 	| section sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
-	
+
 	section := LayoutMorph newRow.
 	section separation: 10.
 	section color: self backgroundColor.
-	
+
 	section addMorph: self buildCancelButton.
 	section addMorph: self buildSubmitButton.
-	
+
 	submorphsWidth := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedWidth]) sum.
 	sectionWidth := submorphsWidth + (section xSeparation * (section submorphs size + 1)).
 	submorphsHeight := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedHeight]) max.
@@ -1033,7 +1033,7 @@ buildActionButtonsSection
 	sectionLayoutSpec minorDirectionPadding: 0.95.
 
 	section layoutSpec: sectionLayoutSpec.
-	
+
 	^section.
 	! !
 
@@ -1041,62 +1041,62 @@ buildActionButtonsSection
 buildCancelButton
 
 	| button buttonLayoutSpec |
-	
+
 	button := IndependentlyColoredButton model: self action: #cancelButtonClicked label: 'Cancel'.
 	button color: Theme current cancelButton.
-	
-	buttonLayoutSpec := LayoutSpec 
+
+	buttonLayoutSpec := LayoutSpec
 		fixedWidth: button morphWidth
 		fixedHeight: ExtractToMethodObjectForm fontProportionalUnitOfReferenceForHeight  * 2.
 	buttonLayoutSpec minorDirectionPadding: 0.85.
 	button layoutSpec: buttonLayoutSpec.
-	
+
 	^button! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'HAW 10/23/2019 08:15:03'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'HAW 10/23/2019 09:52:36'!
 buildCodePaneFor: anIfNilCheck
 
 	| codePane |
-	
+
 	codePane := TextModelMorph textProvider: self.
 	codePane model actualContents: anIfNilCheck methodNode sourceText.
 	codePane color: Color white.
 	codePane disableEditing.
 	codePane drawKeyboardFocusIndicator: false.
-	codePane selectFrom: anIfNilCheck messageNodeIndex to: (anIfNilCheck methodNode encoder rangeForNode: anIfNilCheck messageNode ifAbsent: [self shouldNotHappen ]) last.
-	
+	codePane selectFrom: anIfNilCheck messageNodeIndex to: (anIfNilCheck methodNode encoder rangeForNode: anIfNilCheck messageNode ifAbsent: [ self shouldNotHappen ]) last.
+
 	codePane layoutSpec: (LayoutSpec proportionalWidth: 1.0 fixedHeight: (IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight * 7)).
-	
+
 	^codePane! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 12:42:52'!
 buildIfNilCheckFormFor: anIfNilCheck
 
 	| layout variablesToExtract polymorphicSelectorSection codePane |
-	
+
 	layout := LayoutMorph newColumn.
 	layout color: self backgroundColor.
 	layout separation: 0@10.
-	
+
 	codePane := self buildCodePaneFor: anIfNilCheck.
 	layout addMorph: codePane.
-	
+
 	variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: anIfNilCheck messageNode.
-	variablesToExtract 
+	variablesToExtract
 		ifEmpty: [polymorphicSelectorSection := self buildPolymorphicSelectorInputFor: anIfNilCheck]
 		ifNotEmpty: [polymorphicSelectorSection := self buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor: variablesToExtract].
 	layout addMorph: polymorphicSelectorSection.
-	
+
 	layout layoutSpec: (LayoutSpec
 		fixedWidth: polymorphicSelectorSection layoutSpec fixedWidth
 		fixedHeight: (codePane layoutSpec fixedHeight + polymorphicSelectorSection layoutSpec fixedHeight+ (layout ySeparation * 3))).
-	
-	formLayout addMorph: layout.	
-	
+
+	formLayout addMorph: layout.
+
 	layout hide.
-	
+
 	variablesToExtract ifNotEmpty: [self buildPreviewOf: layout].
-	
+
 	^layout.! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/29/2019 16:57:12'!
@@ -1108,9 +1108,9 @@ buildIfNilChecksFormsFor: someIfNilChecks
 buildMessageSendingListSection
 
 	| list |
-	
+
 	list := PluggableListMorph
-		model: messageListModel 
+		model: messageListModel
 		listGetter: #messageList
 		indexGetter: #messageListIndex
 		indexSetter: #messageListIndex:
@@ -1119,7 +1119,7 @@ buildMessageSendingListSection
 		keystrokeAction: #messageListKey:from:.
 	list color: Color white.
 	list layoutSpec: (LayoutSpec proportionalWidth: 1.0 fixedHeight: IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight * 7).
-	
+
 	^list! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 16:22:49'!
@@ -1131,20 +1131,20 @@ buildMorphicWindow
 	self initializeFormLayout.
 	scrollPane scroller addMorph: formLayout.
 	formLayout padding: #top.
-	
+
 	hierarchySection := self buildNullObjectHierarchyClassesSection.
 	formLayout addMorph: hierarchySection.
-	
+
 	messageSendingListSection := self buildMessageSendingListSection.
 	formLayout addMorph: messageSendingListSection.
-	
+
 	self buildIfNilChecksFormsFor: ifNilChecks.
-	
+
 	actionButtonsSection := self buildActionButtonsSection.
 	formLayout addMorph: actionButtonsSection.
-	
+
 	self setExtents.
-	
+
 	self showFormForMessage: messageListModel messageListIndex.! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/11/2019 13:12:36'!
@@ -1158,11 +1158,11 @@ buildNullObjectHierarchyClassesSection
 
 	nullClassInput := LabeledInput withLabel: 'Null Class' withWidth: maxLabelWidth withModel: introduceNullObjectRequest nullClassNameModel usingAs: self.
 	section addMorph: nullClassInput.
-	
+
 	concreteClassInput := LabeledInput withLabel: 'Concrete Class' withWidth: maxLabelWidth withModel: introduceNullObjectRequest concreteClassNameModel usingAs: self. 	section addMorph: concreteClassInput.
-	
+
 	section layoutSpec: (self layoutSpecForSection: section).
-	
+
 	^section
 ! !
 
@@ -1170,87 +1170,87 @@ buildNullObjectHierarchyClassesSection
 buildPolymorphicSelectorInputFor: anIfNilCheck
 
 	| selectorInput inputWidth ifNilCheckModel |
-	
+
 	inputWidth := self recommendedWidthForLabels: #('Polymorphic Selector').
 	ifNilCheckModel := introduceNullObjectRequest messgeKeywordsAndParametersModelFor: anIfNilCheck.
 	selectorInput := LabeledInput withLabel: 'Polymorphic Selector' withWidth: inputWidth withModel: ifNilCheckModel selectorModel usingAs: self.
-	
+
 	selectorInput layoutSpec: (LayoutSpec fixedWidth: LabeledInput inputWidth fixedHeight: IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight  * 2).
-	
+
 	^selectorInput ! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/10/2019 18:07:05'!
 buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor: someVariablesToExtract
 
 	| parametersTable preview layout previewLayoutSpec |
-	
+
 	layout := LayoutMorph newColumn.
 	layout color: self backgroundColor.
 	layout separation: 0@10.
-		
+
 	parametersTable := MessageKeywordsAndParametersTable
 		withRows: someVariablesToExtract
 		withColor: self backgroundColor
 		withPreviewModel: self
 		withRefactoringModel: (introduceNullObjectRequest messgeKeywordsAndParametersModelFor: anIfNilCheck).
 	layout addMorph: parametersTable.
-	
+
 	preview := TextModelMorph textProvider: self.
 	preview model actualContents: self previewUnavailableMessage.
 	preview color: Color white.
 	preview disableEditing.
 	preview drawKeyboardFocusIndicator: false.
 	preview lock: true.
-	
-	previewLayoutSpec := LayoutSpec 
+
+	previewLayoutSpec := LayoutSpec
 		proportionalWidth: 1.0
 		fixedHeight: IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight * 3.
 	previewLayoutSpec minorDirectionPadding: 0.3.
-	preview layoutSpec: previewLayoutSpec. 
-	
+	preview layoutSpec: previewLayoutSpec.
+
 	layout addMorph: preview.
-	
+
 	layoutSpec := LayoutSpec
 		fixedWidth: parametersTable layoutSpec fixedWidth
 		fixedHeight: (preview layoutSpec fixedHeight + parametersTable layoutSpec fixedHeight + (layout ySeparation * 3)).
 	layout layoutSpec: layoutSpec.
-	
+
 	^layout! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/10/2019 18:38:31'!
 buildPreviewOf: anIfNilCheckForm
 
 	| keywordParamStrings previewContent currentlyShownPreview currentlyShownTable |
-	
+
 	currentlyShownTable := (anIfNilCheckForm submorphs at: 1) submorphs at: 2.
 	currentlyShownPreview := (anIfNilCheckForm submorphs at: 1) submorphs at: 1.
-	
+
 	keywordParamStrings := OrderedCollection new.
 	currentlyShownTable keywordsAndParametersDo: [:keyword :parameterName |
 		(keyword isEmpty or: [parameterName isEmpty]) ifTrue: [
 			currentlyShownPreview model actualContents: self previewUnavailableMessage.
 			^self].
-		
+
 		keywordParamStrings addFirst: '', keyword, ': ', parameterName.].
-	
+
 	previewContent := ' ' join: keywordParamStrings.
-	
+
 	currentlyShownPreview model actualContents: previewContent.! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/29/2019 14:25:18'!
 buildSubmitButton
 
 	| submitButton submitButtonLayoutSpec |
-	
+
 	submitButton := IndependentlyColoredButton model: self action: #submitButtonClicked label: 'Refactor'.
 	submitButton color: Theme current acceptButton.
-	
-	submitButtonLayoutSpec := LayoutSpec 
+
+	submitButtonLayoutSpec := LayoutSpec
 		fixedWidth: submitButton morphWidth
 		fixedHeight: ExtractToMethodObjectForm fontProportionalUnitOfReferenceForHeight  * 2.
 	submitButtonLayoutSpec minorDirectionPadding: 0.95.
 	submitButton layoutSpec: submitButtonLayoutSpec.
-	
+
 	^submitButton! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/26/2019 12:27:29'!
@@ -1265,15 +1265,15 @@ initializeScrollableContainer
 	scrollPane := ColoredScrollPane initializedInstance.
 	scrollPane scroller color: self backgroundColor.
 	scrollPane scroller layoutSpec: LayoutSpec useAll.
-	scrollPane color: self backgroundColor. 
+	scrollPane color: self backgroundColor.
 	self layoutMorph addMorphUseAll: scrollPane.! !
 
 !IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 17:13:01'!
 setExtents
 
-	
+
 	| requiredExtent requiredHeight requiredWidth windowElementsExtent xtraBorderToAvoidScrollbars |
-	
+
 	requiredHeight := hierarchySection recommendedHeight
 		+ messageSendingListSection layoutSpec fixedHeight
 		+ (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedHeight
@@ -1282,11 +1282,11 @@ setExtents
 	requiredWidth := {hierarchySection recommendedWidth. (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedWidth} max.
 	(ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedWidth: requiredWidth.
 	requiredWidth := requiredWidth + (formLayout xSeparation * 2).
-	
+
 	requiredExtent := requiredWidth@requiredHeight.
 	formLayout morphExtent: requiredExtent.
 	scrollPane scroller morphExtent: requiredExtent.
-	
+
 	windowElementsExtent := (borderWidth * 2)@(borderWidth * 2 + self labelHeight).
 	xtraBorderToAvoidScrollbars := 4@4.
 	windowElementsExtent := windowElementsExtent + scrollPane bordersExtent + xtraBorderToAvoidScrollbars.
@@ -1299,7 +1299,7 @@ closeBoxHit
 
 !IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 3/29/2019 14:26:25'!
 cancelButtonClicked
-	
+
 	model cancel.! !
 
 !IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/8/2019 12:40:02'!
@@ -1325,7 +1325,7 @@ hideFormForMessage: anIndex
 okToChangeDueTo: aMorph
 
 	aMorph = messageSendingListSection ifTrue: [^true].
-	
+
 	^self okToChange.! !
 
 !IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 4/8/2019 12:39:44'!
@@ -1342,10 +1342,10 @@ row: aRowIndex wasSwappedWith: anotherRowIndex
 showFormForMessage: anIndex
 
 	| form |
-	
+
 	form := ifNilChecksForms at: anIndex.
 	form show.
-	
+
 	self setExtents.! !
 
 !IntroduceNullObjectForm methodsFor: 'events' stamp: 'FGJ 3/29/2019 14:26:42'!
@@ -1369,7 +1369,7 @@ shouldStyle: text with: anSHTextStyler
 	text = self previewUnavailableMessage ifFalse: [
 		anSHTextStyler classOrMetaClass: model classToRefactor.
 		^true].
-	
+
 	^false.! !
 
 !IntroduceNullObjectForm methodsFor: 'text provider' stamp: 'FGJ 3/28/2019 13:21:08'!
@@ -1379,8 +1379,8 @@ textStylerClassFor: textGetter
 
 !IntroduceNullObjectForm methodsFor: 'user interface' stamp: 'FGJ 3/29/2019 16:41:15'!
 okToChange
-	
-	discardEdits 
+
+	discardEdits
 		ifTrue: [^true]
 		ifFalse: [^super okToChange].! !
 
@@ -1388,16 +1388,16 @@ okToChange
 initializeWithModel: aModel
 
 	super model: aModel.
-	
+
 	self setLabel: 'Introduce Null Object'.
-	
+
 	discardEdits := false.
-	
+
 	ifNilChecks := model ifNilChecks.
 	introduceNullObjectRequest := IntroduceNullObjectRequest for: ifNilChecks.
 	messageListModel := IfNilMessageListModel with: ifNilChecks withForm: self.
 	focusMorphs := OrderedCollection new.
-	
+
 ! !
 
 !IntroduceNullObjectForm methodsFor: 'focus change' stamp: 'FGJ 4/11/2019 13:13:28'!
@@ -1409,11 +1409,11 @@ addFocusReceiver: anInnerTextMorph
 moveFrom: anInnerTextMorph
 
 	| newFocusMorph oldFocusIndex |
-	
+
 	oldFocusIndex := (1 to: focusMorphs size) detect: [:i | (focusMorphs at: i) = anInnerTextMorph].
 	newFocusMorph := focusMorphs at: (oldFocusIndex mod: focusMorphs size) + 1.
 	newFocusMorph isReallyVisible ifFalse: [newFocusMorph := focusMorphs at: 1].
-	
+
 	self world activeHand newKeyboardFocus: newFocusMorph.! !
 
 !IntroduceNullObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/1/2019 14:39:26'!
@@ -1446,27 +1446,27 @@ withModel: aModel
 initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
 
 	| titleLayoutSpec |
-	
+
 	title := aTitle.
 	explanation := anExplanation.
-	
+
 	self separation: 3.
 	self color: aColor.
-	
-	titleMorph := StringMorph 
-		contents: title 
-		font: Preferences windowTitleFont 
+
+	titleMorph := StringMorph
+		contents: title
+		font: Preferences windowTitleFont
 		emphasis: 1.
-	titleLayoutSpec := LayoutSpec 
-		fixedWidth: titleMorph morphWidth 
+	titleLayoutSpec := LayoutSpec
+		fixedWidth: titleMorph morphWidth
 		fixedHeight: titleMorph morphHeight.
 	titleLayoutSpec minorDirectionPadding: 0.03.
-	
+
 	self addMorph: titleMorph layoutSpec: titleLayoutSpec.
-	
+
 	explanation isEmpty ifFalse: [
-		explanationMorph := ImmutableTextModelMorph 
-			withText: anExplanation 
+		explanationMorph := ImmutableTextModelMorph
+			withText: anExplanation
 			withColor: aColor
 			withWidth: self fixedWidthForTexts.
 		self addMorph: explanationMorph.
@@ -1498,7 +1498,7 @@ recommendedWidth
 
 !FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:54:23'!
 textHeight
-	
+
 	^AbstractFont default height! !
 
 !FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 17:14:53'!
@@ -1524,65 +1524,65 @@ drawOn: aCanvas
 
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 15:43:39'!
 textModel: aTextModel
-	
+
 	inputMorph model: aTextModel.! !
 
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 15:46:45'!
 withLabel: aLabel withWidth: aWidth withModel: aTextModel
 
 	| labelLayoutSpec inputMorphLayoutSpec |
-	
+
 	self separation: 5.
 	layoutSpec := LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight.
 	self layoutSpec: layoutSpec.
-	
+
 	labelMorph := StringMorph contents: aLabel.
-	labelLayoutSpec := LayoutSpec 
+	labelLayoutSpec := LayoutSpec
 		fixedWidth: aWidth
 		fixedHeight: labelMorph morphHeight
 		minorDirectionPadding: #center.
 	self addMorph: labelMorph layoutSpec: labelLayoutSpec.
-	
+
 	inputMorph := TextModelMorph withModel: aTextModel.
 	inputMorph hideScrollBarsIndefinitely.
-	inputMorphLayoutSpec := 
-		LayoutSpec 
+	inputMorphLayoutSpec :=
+		LayoutSpec
 			fixedWidth: LabeledInput inputWidth
 			fixedHeight: labelMorph morphHeight + 2.
 	self addMorph: inputMorph layoutSpec: inputMorphLayoutSpec.
-	
-	
-	
+
+
+
 	! !
 
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:50:09'!
 withLabel: aLabel withWidth: aWidth withModel: aTextModel usingAs: focusMover
 
 	| labelLayoutSpec inputMorphLayoutSpec |
-	
+
 	self separation: 5.
 	layoutSpec := LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight.
 	self layoutSpec: layoutSpec.
-	
+
 	labelMorph := StringMorph contents: aLabel.
-	labelLayoutSpec := LayoutSpec 
+	labelLayoutSpec := LayoutSpec
 		fixedWidth: aWidth
 		fixedHeight: labelMorph morphHeight
 		minorDirectionPadding: #center.
 	self addMorph: labelMorph layoutSpec: labelLayoutSpec.
-	
+
 	inputMorph := TabPassingTextModelMorph withModel: aTextModel.
 	inputMorph textMorph focusMover: focusMover.
 	focusMover addFocusReceiver: inputMorph textMorph.
 	inputMorph hideScrollBarsIndefinitely.
-	inputMorphLayoutSpec := 
-		LayoutSpec 
+	inputMorphLayoutSpec :=
+		LayoutSpec
 			fixedWidth: LabeledInput inputWidth
 			fixedHeight: labelMorph morphHeight + 2.
 	self addMorph: inputMorph layoutSpec: inputMorphLayoutSpec.
-	
-	
-	
+
+
+
 	! !
 
 !LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 18:08:29'!
@@ -1596,13 +1596,13 @@ recommendedHeight
 	^AbstractFont default height * 1.8! !
 
 !LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 16:32:52'!
-withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel 
-	
+withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel
+
 	^self newRow withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel! !
 
 !LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 4/11/2019 12:47:10'!
 withLabel: aLabel withWidth: aWidth withModel: aPreviewModel usingAs: aFocusMover
-	
+
 	^self newRow withLabel: aLabel withWidth: aWidth withModel: aPreviewModel usingAs: aFocusMover! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 14:16:02'!
@@ -1614,19 +1614,19 @@ backgroundColor
 columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: numberOfInputColumns
 
 	| widths maxRowTitleWidth widthForInputs |
-	
+
 	widths := OrderedCollection new.
-	
+
 	maxRowTitleWidth := (rowsTitles collect: [:aRowTitle | AbstractFont default widthOfString: aRowTitle]) max + 20.
 	widths add: maxRowTitleWidth.
-	
+
 	widthForInputs := ExtractToMethodObjectForm fontProportionalUnitOfReferenceForWidth * 20.
 	numberOfInputColumns timesRepeat: [widths add: widthForInputs].
-	
+
 	rowsTitles size > 1 ifTrue: [widths add: (AbstractFont default widthOfString: 'Change order')].
-	
+
 	^widths
-	
+
 	! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 1/22/2019 15:30:47'!
@@ -1652,7 +1652,7 @@ keywordsAndParametersDo: aBlock
 		parameterMorph := aSubmorph submorphs at: (hasChangeOrderColumn ifTrue: [2] ifFalse: [1]).
 		keyword := keywordMorph model actualContents string withBlanksTrimmed.
 		parameterName := parameterMorph model actualContents string withBlanksTrimmed.
-		
+
 		aBlock value: keyword value: parameterName].! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:01:04'!
@@ -1713,7 +1713,7 @@ swapRowModel: aRowIndex with: anotherRowIndex
 swapRowSubmorph: aRowIndex with: anotherRowIndex
 
 	self privateSubmorphs swap: aRowIndex with: anotherRowIndex.
-	
+
 	self flag: #todofgj.
 	"It seems that the redraw isn't needed. Remove later if that's the case."
 	"self redrawNeeded."
@@ -1723,7 +1723,7 @@ swapRowSubmorph: aRowIndex with: anotherRowIndex
 withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
 
 	| rowsSeparation recommendedHeight numberOfRows columnsTitlesRow changeOrderButtons tableWidth inputColumnsTitles |
-	
+
 	backgroundColor := aColor.
 	rowModels := OrderedCollection new.
 	previewModel := aPreviewModel.
@@ -1732,47 +1732,47 @@ withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefac
 
 	rowsSeparation := 4.
 	self separation: rowsSeparation.
-	
+
 	"Calculate table height"
 	numberOfRows := (rowsTitles size + 1).
 	recommendedHeight :=  self rowHeight * numberOfRows + (rowsSeparation * (numberOfRows + 1)).
-	
+
 	"Calculate column widths"
 	inputColumnsTitles := #('Keyword' 'Parameter name').
 	columnWidths := self columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: inputColumnsTitles size.
-		
+
 	"Calculate table width"
 	tableWidth := columnWidths sum + (self columnSeparation * (columnWidths size + 1)).
-	
+
 	self layoutSpec: (LayoutSpec fixedWidth: tableWidth fixedHeight: recommendedHeight).
-	
+
 	"Buid the columns titles row"
 	columnsTitlesRow := self buildColumnTitlesRowFor: inputColumnsTitles.
 	self addMorph: columnsTitlesRow layoutSpec: self rowsLayoutSpec.
-	
+
 	"Build the input rows"
 	rowsTitles withIndexDo: [:aRowTitle :index | | aRow changeOrderModel upButton downButton layoutButtons keywordModel keywordInputMorph inputMorphLayoutSpec parameternameInputMorph |
 		aRow := LayoutMorph newRow.
 		aRow color: self backgroundColor; separation: self columnSeparation.
-		
-		aRow 
+
+		aRow
 			addMorph: (StringMorph contents: aRowTitle)
 			layoutSpec: (LayoutSpec fixedWidth: (columnWidths at: 1)).
-			
+
 		inputMorphLayoutSpec := LayoutSpec fixedWidth: (columnWidths at: 2) fixedHeight: self rowHeight.
-		
+
 		keywordInputMorph := self buildInputMorphWith: (aRefactoringModel keywordModelOf: aRowTitle).
 		aRow addMorph: keywordInputMorph layoutSpec: inputMorphLayoutSpec.
-		
+
 		parameternameInputMorph := self buildInputMorphWith: (aRefactoringModel parameterModelOf: aRowTitle).
 		aRow addMorph: parameternameInputMorph layoutSpec: inputMorphLayoutSpec.
-		
+
 		self needsToReorderRows ifTrue: [
 			changeOrderModel := ChangeRowOrderButtonModel for: (rowsTitles size - (index - 1)) notifying: self.
 			rowModels addFirst: changeOrderModel.
 			changeOrderButtons := self buildChangeOrderButtonsWith: changeOrderModel.
 			aRow addMorph: changeOrderButtons layoutSpec: (LayoutSpec fixedWidth: (columnWidths last))].
-			
+
 		self addMorph: aRow layoutSpec: self rowsLayoutSpec.
 	].! !
 
@@ -1790,32 +1790,32 @@ rowWasMovedUp: aRowIndex
 buildChangeOrderButtonsWith: aModel
 
 	| downButton layoutButtons upButton |
-	
+
 	upButton := PluggableButtonMorph new.
 	upButton icon: Theme current goUpIcon.
 	upButton model: aModel.
 	upButton action: #moveUp.
-			
+
 	downButton := PluggableButtonMorph new.
 	downButton icon: Theme current goDownIcon.
 	downButton model: aModel.
 	downButton action: #moveDown.
-	
+
 	layoutButtons := LayoutMorph newRow.
 	layoutButtons padding: #center; color: self backgroundColor.
-	layoutButtons addMorph: downButton; addMorph: upButton.	
-	
+	layoutButtons addMorph: downButton; addMorph: upButton.
+
 	^layoutButtons! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 4/10/2019 18:17:57'!
 buildColumnTitlesRowFor: inputColumnsTitles
 
 	| columnsTitles row |
-	
+
 	row := LayoutMorph newRow.
 	row color: self backgroundColor.
 	row separation: self columnSeparation.
-	
+
 	columnsTitles := OrderedCollection newFrom: inputColumnsTitles.
 	columnsTitles addFirst: ''.
 	self needsToReorderRows ifTrue: [columnsTitles addLast: 'Change order'].
@@ -1825,26 +1825,26 @@ buildColumnTitlesRowFor: inputColumnsTitles
 		titleLayout padding: #center.
 		titleLayout addMorph: (StringMorph contents: aColumnTitle).
 		columnTitleLayoutSpec := LayoutSpec fixedWidth: (columnWidths at: columnIndex).
-		row 
+		row
 			addMorph: titleLayout
 			layoutSpec: columnTitleLayoutSpec].
-		
+
 	^row
-	
+
 	! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 4/11/2019 13:09:23'!
 buildInputMorphWith: aModel
 
 	| inputMorph |
-	
+
 	inputMorph := PreviewTextModelMorph withModel: aModel.
 	inputMorph textMorph previewModel: previewModel.
 	inputMorph textMorph focusMover: previewModel.
 	previewModel addFocusReceiver: inputMorph textMorph.
-			
+
 	inputMorph hideScrollBarsIndefinitely.
-	
+
 	^inputMorph! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'accessing' stamp: 'FGJ 2/14/2019 12:14:23'!
@@ -1860,8 +1860,8 @@ rowHeight
 !MessageKeywordsAndParametersTable class methodsFor: 'instance creation' stamp: 'FGJ 4/10/2019 18:05:01'!
 withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
 
-	^self newColumn withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel. 
-	
+	^self newColumn withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel.
+
 	! !
 
 !TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:31:07'!
@@ -1871,14 +1871,14 @@ focusMover: aFocusMover
 
 !TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:28:05'!
 keyStroke: aKeyboardEvent
-	
+
 	aKeyboardEvent isTab ifTrue: [focusMover moveFrom: self] ifFalse: [super keyStroke: aKeyboardEvent].! !
 
 !PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:37:10'!
 keyStroke: aKeyboardEvent
-	
+
 	super keyStroke: aKeyboardEvent.
-	
+
 	previewModel previewTextInputReceivedKeyStroke.! !
 
 !PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 10:40:05'!
@@ -1890,10 +1890,10 @@ previewModel: aPreviewModel
 test01MethodObjectClassNameMustNotBeEmpty
 
 	| anEmptyClassName |
-	
+
 	anEmptyClassName  := ''.
-	
-	self 
+
+	self
 		creationWithMethodObjectClassName: anEmptyClassName
 		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage ].! !
 
@@ -1901,21 +1901,21 @@ test01MethodObjectClassNameMustNotBeEmpty
 test02MethodObjectClassNameMustBeASymbol
 
 	| aStringClassName |
-	
+
 	aStringClassName  := 'MethodObject'.
-	
-	self 
+
+	self
 		creationWithMethodObjectClassName: aStringClassName
 		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
 
-!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'HAW 10/22/2019 12:23:07'!
+!ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'HAW 10/23/2019 09:51:26'!
 test03MethodObjectClassNameMustStartWithUppercaseLetter
 
 	| nonCapitalizedClassName |
-	
+
 	nonCapitalizedClassName  := #methodObject.
-	
-	self 
+
+	self
 		creationWithMethodObjectClassName: nonCapitalizedClassName
 		failsWithMessageText:[ NewClassPrecondition newNameMustStartWithRightLetterErrorMessage ].! !
 
@@ -1923,64 +1923,64 @@ test03MethodObjectClassNameMustStartWithUppercaseLetter
 test04MethodObjectClassNameMustNotHaveSeparators
 
 	| classNameWithSeparators |
-	
+
 	classNameWithSeparators  := 'Method Object' asSymbol.
-	
-	self creationWithMethodObjectClassName: classNameWithSeparators 
+
+	self creationWithMethodObjectClassName: classNameWithSeparators
 		  failsWithMessageText: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/17/2018 18:06:57'!
 test05MethodObjectClassNameMustNotExist
 
 	| anExistingClassName |
-	
+
 	anExistingClassName  := #Object.
-	
-	self creationWithMethodObjectClassName: anExistingClassName 
+
+	self creationWithMethodObjectClassName: anExistingClassName
 		  failsWithMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: anExistingClassName ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/9/2019 12:15:20'!
 test06AllVariablesToParametrizeMustHaveACorrespondingMethodObjectInstanceVariableName
 
 	| namesForParametrizedMissingSelf keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName |
-	
+
 	namesForParametrizedMissingSelf := #() asDictionary.
 	keywordToParametrizedVariable := { self keyword: #with varName: 'self' paramName: 'aParameterName'. }.
 	variablesToParametrizeWithoutInstVarName := Set with: 'self'.
-	
-	self 
+
+	self
 		creationWithExtractedVariablesToInstanceVariables: namesForParametrizedMissingSelf
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
-		failsWithMessageText: [ ExtractToMethodObject 
+		failsWithMessageText: [ ExtractToMethodObject
 			variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesToParametrizeWithoutInstVarName].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/9/2019 12:15:30'!
 test07AllInstanceVariableNamesMustCorrespondToVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName namesForParametrizedVariables |
-	
+
 	namesForParametrizedVariables := {
 		'self' -> 'oldSelf'.
 		'inexistentVariableToParametrize' -> 'anInstVarName'
 	} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
 	variablesToParametrizeWithoutInstVarName := Set with: 'inexistentVariableToParametrize'.
-	
-	self 
+
+	self
 		creationWithExtractedVariablesToInstanceVariables: namesForParametrizedVariables
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
-		failsWithMessageText: [ ExtractToMethodObject 
+		failsWithMessageText: [ ExtractToMethodObject
 			unknownVariablesToParametrizeErrorMessage: variablesToParametrizeWithoutInstVarName].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:48:24'!
 test08MethodObjectInstanceVariableNamesMustNotBeEmpty
 
 	| keywordToParametrizedVariable namesWithEmptyInstanceVariable |
-	
+
 	namesWithEmptyInstanceVariable := {'self' -> ''.} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	self 
+
+	self
 		creationWithExtractedVariablesToInstanceVariables: namesWithEmptyInstanceVariable
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
 		failsWithMessageText: [ NewInstanceVariablePrecondition newVariableCanNotBeEmptyErrorMessage].! !
@@ -1989,12 +1989,12 @@ test08MethodObjectInstanceVariableNamesMustNotBeEmpty
 test09MethodObjectInstanceVariableNamesCanNotContainBlanks
 
 	| keywordToParametrizedVariable namesWithBlanksInstanceVariable anInstVarNameWithBlanks |
-	
+
 	anInstVarNameWithBlanks := 'an Inst Var Name'.
 	namesWithBlanksInstanceVariable := {'self' -> anInstVarNameWithBlanks.} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	self 
+
+	self
 		creationWithExtractedVariablesToInstanceVariables: namesWithBlanksInstanceVariable
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
 		failsWithMessageText: [ NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: anInstVarNameWithBlanks].! !
@@ -2003,12 +2003,12 @@ test09MethodObjectInstanceVariableNamesCanNotContainBlanks
 test10MethodObjectInstanceVariableNamesCanNotContainInvalidCharacters
 
 	| keywordToParametrizedVariable anInstVarNameWithInvalidCharacters namesWithInvalidCharsInstanceVariable |
-	
+
 	anInstVarNameWithInvalidCharacters := 'anInst2!!!!VarName'.
 	namesWithInvalidCharsInstanceVariable := {'self' -> anInstVarNameWithInvalidCharacters.} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	self 
+
+	self
 		creationWithExtractedVariablesToInstanceVariables: namesWithInvalidCharsInstanceVariable
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
 		failsWithMessageText: [ NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: anInstVarNameWithInvalidCharacters].! !
@@ -2017,17 +2017,17 @@ test10MethodObjectInstanceVariableNamesCanNotContainInvalidCharacters
 test11MethodObjectInstanceVariableNamesCanNotBeDefinedInSuperclasses
 
 	| keywordToParametrizedVariable anInstVarName methodObjectSuperclass namesWithAlreadyDefinedInstanceVariable |
-	
+
 	anInstVarName := 'anInstVarName'.
 	methodObjectSuperclass := self
 		createClassNamed: #MethodObjectSuperclass
 		instanceVariableNames: anInstVarName.
 	namesWithAlreadyDefinedInstanceVariable := {'self' -> anInstVarName .} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	self 
+
+	self
 		should: [
-			ExtractToMethodObject 
+			ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: methodObjectSuperclass
@@ -2036,7 +2036,7 @@ test11MethodObjectInstanceVariableNamesCanNotBeDefinedInSuperclasses
 				withInstanceCreationMessageFrom: keywordToParametrizedVariable
 				evaluatedWith: self defaultEvaluationSelector]
 		raise: RefactoringError
-		withMessageText: [ 
+		withMessageText: [
 			NewInstanceVariablePrecondition
 				errorMessageForNewInstanceVariable: anInstVarName
 				alreadyDefinedInAll: {methodObjectSuperclass} ].! !
@@ -2045,7 +2045,7 @@ test11MethodObjectInstanceVariableNamesCanNotBeDefinedInSuperclasses
 test12MethodObjectInstanceVariableNamesCanNotBeDuplicated
 
 	| keywordToParametrizedVariable anInstVarName namesWithDuplicatedInstanceVariable aClassToRefactor aDuplicatedInstVarName aCompiledMethodToRefactor sourceCode |
-	
+
 	anInstVarName := 'anInstVar'.
 	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: anInstVarName.
 	sourceCode := 'm1
@@ -2053,15 +2053,15 @@ test12MethodObjectInstanceVariableNamesCanNotBeDuplicated
 		', anInstVarName ,' isNil.'.
 	aClassToRefactor compile: sourceCode.
 	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
-	
+
 	aDuplicatedInstVarName := 'aDuplicatedInstVarName'.
 	namesWithDuplicatedInstanceVariable := {
 		'self' -> aDuplicatedInstVarName.
 		anInstVarName -> aDuplicatedInstVarName} asDictionary.
 	keywordToParametrizedVariable := {
-		self keyword: #with varName: 'self' paramName: 'aParamName'. 
+		self keyword: #with varName: 'self' paramName: 'aParamName'.
 		self keyword: #andWith varName: anInstVarName paramName: 'aParamName2'.}.
-	
+
 	self
 		creationFrom: aCompiledMethodToRefactor
 		withExtractedVariablesToInstanceVariables: namesWithDuplicatedInstanceVariable
@@ -2073,189 +2073,189 @@ test12MethodObjectInstanceVariableNamesCanNotBeDuplicated
 test13MethodObjectInstanceVariableNamesCanNotBeNamedAsMethodTemporal
 
 	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor aTemporalName namesWithSameAsTemporal |
-	
+
 	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	aTemporalName := 'aTemporal'.
 	aClassToRefactor compile: 'm1
 		| ', aTemporalName, ' |
-		
+
 		', aTemporalName, ' := 1.
 		self isNil.
-		
+
 		^', aTemporalName, ' + 2'.
-		
+
 	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
-	
+
 	namesWithSameAsTemporal := {'self' -> aTemporalName.} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
+
 	self
 		creationFrom: aCompiledMethodToRefactor
 		withExtractedVariablesToInstanceVariables: namesWithSameAsTemporal
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject instanceVariableNamesSameAsTemporalsErrorMessageFor: {aTemporalName} ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:50:23'!
 test14MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockTemporal
 
 	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor namesWithSameAsTemporal aBlockTemporalName |
-	
+
 	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	aBlockTemporalName := 'aBlockTemporal'.
 	aClassToRefactor compile: 'm1
 		^[
 			| ', aBlockTemporalName, ' |
-			
+
 			self isNil.
 			', aBlockTemporalName, '.]'.
-		
+
 	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
-	
+
 	namesWithSameAsTemporal := {'self' -> aBlockTemporalName.} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
+
 	self
 		creationFrom: aCompiledMethodToRefactor
 		withExtractedVariablesToInstanceVariables: namesWithSameAsTemporal
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: {aBlockTemporalName} ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:50:36'!
 test15MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockArgument
 
 	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor aBlockArgumentName namesWithSameAsArgument |
-	
+
 	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	aBlockArgumentName := 'aBlockArgument'.
 	aClassToRefactor compile: 'm1
 		^[:', aBlockArgumentName, ' |
 			self isNil.
 			', aBlockArgumentName, '.]'.
-		
+
 	aCompiledMethodToRefactor := aClassToRefactor compiledMethodAt: #m1.
-	
+
 	namesWithSameAsArgument := {'self' -> aBlockArgumentName.} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'.}.
-	
+
 	self
 		creationFrom: aCompiledMethodToRefactor
 		withExtractedVariablesToInstanceVariables: namesWithSameAsArgument
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: {aBlockArgumentName} ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 12/19/2018 11:10:34'!
 test16MethodObjectInstanceCreationMessageMustHaveAKeywordForEveryVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordToParametrizedVariable := #().
-	
+
 	self
-		creationFrom: self compiledMethodReferencingSelf 
+		creationFrom: self compiledMethodReferencingSelf
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject variablesToParametrizeHaveNoKeywordErrorMessage: #('self') ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:51:37'!
 test17MethodObjectInstanceCreationMessageMustHaveOnlyOneKeywordForEveryVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordToParametrizedVariable := {
 		self keyword: #with varName: 'self' paramName: 'aParamName'.
 		self keyword: #andWith varName: 'self' paramName: 'aParamName2'}.
-	
+
 	self
-		creationFrom: self compiledMethodReferencingSelf 
+		creationFrom: self compiledMethodReferencingSelf
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject variablesToParametrizeHaveMultipleKeywordsErrorMessage: #('self') ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 14:52:26'!
 test18MethodObjectInstanceCreationMessageMustNotHaveKeywordForAnUnknownVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables anUnknownVariableToParametrize |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	anUnknownVariableToParametrize := 'anUnknownVariableToParametrize'.
 	keywordToParametrizedVariable := {
 		self keyword: #with varName: 'self' paramName: 'aParamName'.
 		self keyword: #andWith varName: anUnknownVariableToParametrize paramName: 'aParamName2'}.
-	
+
 	self
-		creationFrom: self compiledMethodReferencingSelf 
+		creationFrom: self compiledMethodReferencingSelf
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordToParametrizedVariable
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject keywordForUnknownVariablesToParametrizeErrorMessage: {anUnknownVariableToParametrize} ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:04:55'!
 test19MethodObjectInstanceCreationMessageKeywordsCanNotHaveInvalidCharacters
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables keywordWithInvalidCharacters |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordWithInvalidCharacters := 'wi(th' asSymbol.
 	keywordsDefinitions := {
 		self keyword: keywordWithInvalidCharacters varName: 'self' paramName: 'aParamName'.}.
-	
+
 	self
-		creationFrom: self compiledMethodReferencingSelf 
+		creationFrom: self compiledMethodReferencingSelf
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordsDefinitions
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject keywordsContainInvalidCharactersErrorMessage: {keywordWithInvalidCharacters} ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:06:51'!
 test20MethodObjectInstanceCreationMessageSelectorStartsWithAnInvalidStartOfSelector
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables keyword |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keyword := '1with' asSymbol.
 	keywordsDefinitions := {self keyword: keyword varName: 'self' paramName: 'aParamName'.}.
-	
+
 	self
-		creationFrom: self compiledMethodReferencingSelf 
+		creationFrom: self compiledMethodReferencingSelf
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordsDefinitions
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject selectorStartsWithInvalidStartOfSelectorCharacterErrorMessage].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:07:32'!
 test21MethodObjectInstanceCreationMessageKeywordsCannotBeEmpty
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables keyword |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keyword := '' asSymbol.
 	keywordsDefinitions := {self keyword: keyword varName: 'self' paramName: 'aParamName'.}.
-	
+
 	self
-		creationFrom: self compiledMethodReferencingSelf 
+		creationFrom: self compiledMethodReferencingSelf
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordsDefinitions
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject instanceCreationMessageKeywordsCannotBeEmptyErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/4/2019 13:25:39'!
 test22MethodObjectSuperclassCannotBeMeta
 
 	| aMetaClass |
-	
+
 	aMetaClass := (self createClassNamed: #MethodObjectSuperclass) class.
 
-	self 
+	self
 		should: [
-			ExtractToMethodObject 
-				from: self emptyCompiledMethod 
+			ExtractToMethodObject
+				from: self emptyCompiledMethod
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: aMetaClass
 				onCategory: self classCategoryOfTestData
@@ -2267,35 +2267,35 @@ test22MethodObjectSuperclassCannotBeMeta
 test23CreatesMethodObjectClass
 
 	| refactor |
-	
+
 	refactor :=
-		ExtractToMethodObject 
-			from: self emptyCompiledMethod 
+		ExtractToMethodObject
+			from: self emptyCompiledMethod
 			toMethodObjectClassNamed: self methodObjectClassName
-			subclassing: self methodObjectSuperclass 
+			subclassing: self methodObjectSuperclass
 			onCategory: self classCategoryOfTestData
 			evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	self assert: (Smalltalk hasClassNamed: self methodObjectClassName).! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/3/2019 16:04:04'!
 test24CreatesMethodObjectClassAsSubclassOfTheChosenSuperclass
 
 	| refactor methodObjectClass methodObjectSuperclass |
-	
+
 	methodObjectSuperclass :=  self methodObjectSuperclass.
 	refactor :=
-		ExtractToMethodObject 
-			from: self emptyCompiledMethod 
+		ExtractToMethodObject
+			from: self emptyCompiledMethod
 			toMethodObjectClassNamed: self methodObjectClassName
 			subclassing: methodObjectSuperclass
 			onCategory: self classCategoryOfTestData
 			evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: methodObjectSuperclass equals: methodObjectClass superclass.! !
 
@@ -2303,17 +2303,17 @@ test24CreatesMethodObjectClassAsSubclassOfTheChosenSuperclass
 test25CreatesMethodObjectClassInTheChosenCategory
 
 	| refactor methodObjectClass |
-	
+
 	refactor :=
-		ExtractToMethodObject 
-			from: self emptyCompiledMethod 
+		ExtractToMethodObject
+			from: self emptyCompiledMethod
 			toMethodObjectClassNamed: self methodObjectClassName
 			subclassing: self methodObjectSuperclass
 			onCategory: self classCategoryOfTestData
 			evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: self classCategoryOfTestData equals: methodObjectClass category.! !
 
@@ -2321,11 +2321,11 @@ test25CreatesMethodObjectClassInTheChosenCategory
 test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAsVariablesToParametrizeInMethodToExtract
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2333,9 +2333,9 @@ test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAs
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordToParametrizedVariable
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass class selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
 
@@ -2343,11 +2343,11 @@ test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAs
 test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeywords
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2355,9 +2355,9 @@ test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeyword
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordToParametrizedVariable
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass class includesSelector: #with:).! !
 
@@ -2365,11 +2365,11 @@ test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeyword
 test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables newRefactoringSourceCode |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2377,9 +2377,9 @@ test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordToParametrizedVariable
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	newRefactoringSourceCode := 'with: aParamName',
 		String newLineString,
@@ -2391,11 +2391,11 @@ test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 test29MethodObjectInitializationMessageReceivesTheSameNumberOfArgumentsAsVariablesToParametrizeInMethodToExtract
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordToParametrizedVariable := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2403,9 +2403,9 @@ test29MethodObjectInitializationMessageReceivesTheSameNumberOfArgumentsAsVariabl
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordToParametrizedVariable
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass selectors anySatisfy: [:aSelector | aSelector = #initializeWith:]).! !
 
@@ -2413,11 +2413,11 @@ test29MethodObjectInitializationMessageReceivesTheSameNumberOfArgumentsAsVariabl
 test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywordsPrefixedWithInitializationPrefix
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2425,9 +2425,9 @@ test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywordsPrefix
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass includesSelector: #initializeWith:).! !
 
@@ -2435,11 +2435,11 @@ test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywordsPrefix
 test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables intializationSourceCode |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2447,9 +2447,9 @@ test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	intializationSourceCode := 'initializeWith: aParamName
 	thePreviousSelf := aParamName.'.
@@ -2459,22 +2459,22 @@ test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 test32MethodObjectEvaluationMessageHasTheChosenSelector
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables customEvaluationSelector |
-	
+
 	variablesToParametrizeToInstanceVariables := #() asDictionary.
 	keywordsDefinitions := #().
 	customEvaluationSelector := #aCustomEvaluationSelector.
-	
-	refactor := ExtractToMethodObject 
-				from: self emptyCompiledMethod 
+
+	refactor := ExtractToMethodObject
+				from: self emptyCompiledMethod
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: customEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
 	self assert: (methodObjectClass includesSelector: customEvaluationSelector).! !
 
@@ -2482,14 +2482,14 @@ test32MethodObjectEvaluationMessageHasTheChosenSelector
 test33MethodObjectEvaluationMethodSourceCodeHasTheSameFormatAsTheExtractedMethod
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
+
 	methodToRefactorSourceCode := 'm1', String newLineString, String tab, 'self isNil.'.
 	compiledMethodToRefactor := self compiledMethodFrom: methodToRefactorSourceCode.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: compiledMethodToRefactor
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2497,7 +2497,7 @@ test33MethodObjectEvaluationMethodSourceCodeHasTheSameFormatAsTheExtractedMethod
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
@@ -2508,15 +2508,15 @@ test33MethodObjectEvaluationMethodSourceCodeHasTheSameFormatAsTheExtractedMethod
 test34MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfSelf
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToExtractSourceCode |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
+
 	methodToExtractSourceCode := 'm1
 		self isNil.'.
 	compiledMethodToRefactor := self compiledMethodFrom: methodToExtractSourceCode.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: compiledMethodToRefactor
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2524,7 +2524,7 @@ test34MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
@@ -2536,19 +2536,19 @@ test34MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 test35MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorInstanceVariable
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode anInstVar correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass |
-	
+
 	anInstVar := 'anInstVar'.
 	correspondingInstVar := 'aCorrespondingInstVar'.
 	variablesToParametrizeToInstanceVariables := {anInstVar -> correspondingInstVar.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: anInstVar paramName: 'aParamName'}.
-	
+
 	aClass := self createClassNamed: #AClass instanceVariableNames: anInstVar.
 	methodToRefactorSourceCode := 'm1
 		', anInstVar, ' isNil.'.
 	aClass compile: methodToRefactorSourceCode.
 	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: compiledMethodToRefactor
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2556,7 +2556,7 @@ test35MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
@@ -2568,15 +2568,15 @@ test35MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 test36MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfExtractedMethodArgument
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
-	
+
 	variablesToParametrizeToInstanceVariables := {'anArg' -> 'anArgReplacement'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'anArg' paramName: 'aParamName'}.
-	
+
 	methodToRefactorSourceCode := 'm1: anArg
 		anArg isNil.'.
 	compiledMethodToRefactor := self compiledMethodFrom: methodToRefactorSourceCode.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: compiledMethodToRefactor
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2584,7 +2584,7 @@ test36MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
@@ -2596,12 +2596,12 @@ test36MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorPoolVariable
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass aPool aPoolVar |
-	
+
 	aPoolVar := 'APoolVar'.
 	correspondingInstVar := 'aCorrespondingInstVar'.
 	variablesToParametrizeToInstanceVariables := {aPoolVar -> correspondingInstVar.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: aPoolVar paramName: 'aParamName'}.
-	
+
 	aPool := self
 		createClassNamed: #APool
 		subclassOf: SharedPool
@@ -2609,7 +2609,7 @@ test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 		classVariableNames: aPoolVar
 		poolDictionaries: ''
 		category: self classCategoryOfTestData.
-	
+
 	aClass := self
 		createClassNamed: #AClass
 		subclassOf: Object
@@ -2621,8 +2621,8 @@ test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 		', aPoolVar, ' isNil.'.
 	aClass compile: methodToRefactorSourceCode.
 	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: compiledMethodToRefactor
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2630,7 +2630,7 @@ test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
@@ -2642,16 +2642,16 @@ test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 test38MethodObjectEvaluationMethodSourceCodeCommentsReferencingParametrizedVariableAreNotReplaced
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
+
 	methodToRefactorSourceCode := 'm1
 		"A comment talking about self"
 		self isNil.'.
 	compiledMethodToRefactor := self compiledMethodFrom: methodToRefactorSourceCode.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: compiledMethodToRefactor
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2659,7 +2659,7 @@ test38MethodObjectEvaluationMethodSourceCodeCommentsReferencingParametrizedVaria
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
@@ -2670,24 +2670,24 @@ test38MethodObjectEvaluationMethodSourceCodeCommentsReferencingParametrizedVaria
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/11/2019 12:09:05'!
 test39MethodObjectEvaluationMethodSourceCodePreservesBlockArgumentsShadowing
-	
+
 	"This case must not be considered because shadowing is not longer allowed - FGJ"
-	
+
 	self shouldFail: [
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode aClass |
-	
+
 	variablesToParametrizeToInstanceVariables := {'anInstVar' -> 'correspondingToAnInstVar'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'anInstVar' paramName: 'aParamName'}.
-	
+
 	aClass := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
 	methodToRefactorSourceCode := 'm1
 		anInstVar isNil.
 		[:anInstVar | anInstVar isNil].'.
 	aClass compile: methodToRefactorSourceCode.
-	
+
 	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: compiledMethodToRefactor
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2695,7 +2695,7 @@ test39MethodObjectEvaluationMethodSourceCodePreservesBlockArgumentsShadowing
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
@@ -2709,22 +2709,22 @@ test39MethodObjectEvaluationMethodSourceCodePreservesBlockArgumentsShadowing
 test40MethodObjectEvaluationMethodSourceCodePreservesBlockTemporalsShadowing
 
 	"This case must not be considered because shadowing is not longer allowed - FGJ"
-	
+
 	self shouldFail: [
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode aClass |
-	
+
 	variablesToParametrizeToInstanceVariables := {'anInstVar' -> 'correspondingToAnInstVar'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'anInstVar' paramName: 'aParamName'}.
-	
+
 	aClass := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
 	methodToRefactorSourceCode := 'm1
 		anInstVar isNil.
 		[ | anInstVar | anInstVar isNil].'.
 	aClass compile: methodToRefactorSourceCode.
-	
+
 	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: compiledMethodToRefactor
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2732,7 +2732,7 @@ test40MethodObjectEvaluationMethodSourceCodePreservesBlockTemporalsShadowing
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
@@ -2744,23 +2744,23 @@ test40MethodObjectEvaluationMethodSourceCodePreservesBlockTemporalsShadowing
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:21:04'!
 test41RefactoredMethodUnarySelectorIsPreserved
-	
+
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
-	
+
 	variablesToParametrizeToInstanceVariables := #() asDictionary.
 	keywordsDefinitions := #().
-	
+
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1'.
-	refactor := ExtractToMethodObject 
-				from: (aClass compiledMethodAt: #m1) 
+	refactor := ExtractToMethodObject
+				from: (aClass compiledMethodAt: #m1)
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	self assert: 1 equals: aClass selectors size.
@@ -2768,23 +2768,23 @@ test41RefactoredMethodUnarySelectorIsPreserved
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:21:38'!
 test42RefactoredMethodBinarySelectorIsPreserved
-	
+
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
-	
+
 	variablesToParametrizeToInstanceVariables := {'anArg' -> 'correspondingInstVar'.}  asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'anArg' paramName: 'aParamName'}.
-	
+
 	aClass := self createClassNamed: #AClass.
 	aClass compile: '!!@ anArg ^anArg.'.
-	refactor := ExtractToMethodObject 
-				from: (aClass compiledMethodAt: #!!@) 
+	refactor := ExtractToMethodObject
+				from: (aClass compiledMethodAt: #!!@)
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	self assert: 1 equals: aClass selectors size.
@@ -2793,23 +2793,23 @@ test42RefactoredMethodBinarySelectorIsPreserved
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:22:07'!
 test43RefactoredMethodKeywordSelectorIsPreserved
-	
+
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
-	
+
 	variablesToParametrizeToInstanceVariables := {'anArg' -> 'correspondingInstVar'.}  asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'anArg' paramName: 'aParamName'}.
-	
+
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1: anArg ^anArg.'.
-	refactor := ExtractToMethodObject 
-				from: (aClass compiledMethodAt: #m1:) 
+	refactor := ExtractToMethodObject
+				from: (aClass compiledMethodAt: #m1:)
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	self assert: 1 equals: aClass selectors size.
@@ -2818,61 +2818,61 @@ test43RefactoredMethodKeywordSelectorIsPreserved
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:22:23'!
 test44WhenBinaryMethodIsRefactoredArgumentNameIsPreserved
-	
+
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
-	
+
 	variablesToParametrizeToInstanceVariables := {'anArg' -> 'correspondingInstVar'.}  asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'anArg' paramName: 'aParamName'}.
-	
+
 	aClass := self createClassNamed: #AClass.
 	aClass compile: '!!@ anArg ^anArg.'.
-	refactor := ExtractToMethodObject 
-				from: (aClass compiledMethodAt: #!!@) 
+	refactor := ExtractToMethodObject
+				from: (aClass compiledMethodAt: #!!@)
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	self assert: 'anArg' equals: (aClass compiledMethodAt: #!!@) methodNode arguments first name.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:22:40'!
 test45WhenKeywordsMethodIsRefactoredArgumentNamesArePreserved
-	
+
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
-	
+
 	variablesToParametrizeToInstanceVariables := {'anArg' -> 'correspondingInstVar'.}  asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'anArg' paramName: 'aParamName'}.
-	
+
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1: anArg ^anArg.'.
-	refactor := ExtractToMethodObject 
-				from: (aClass compiledMethodAt: #m1:) 
+	refactor := ExtractToMethodObject
+				from: (aClass compiledMethodAt: #m1:)
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	self assert: 'anArg' equals: (aClass compiledMethodAt: #m1:) methodNode arguments first name.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:22:52'!
 test46WhenThereAreNoVariablesToParametrizeTheRefactoredMethodUsesTheNewMessageToCreateTheMethodObjectInstance
-	
+
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
-	
+
 	variablesToParametrizeToInstanceVariables := #()  asDictionary.
 	keywordsDefinitions := #().
 
 	aClass := self createClassNamed: #AClass.
-	aClass compile: 'm1'.	
-	refactor := ExtractToMethodObject 
+	aClass compile: 'm1'.
+	refactor := ExtractToMethodObject
 				from: (aClass compiledMethodAt: #m1)
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2880,28 +2880,28 @@ test46WhenThereAreNoVariablesToParametrizeTheRefactoredMethodUsesTheNewMessageTo
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	expectedRefactoredSourceCode := 'm1',
 		String newLineString,
-		String tab, 
+		String tab,
 		'(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
-	self 
-		assert: expectedRefactoredSourceCode 
+	self
+		assert: expectedRefactoredSourceCode
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:23:24'!
 test47WhenThereAreVariablesToParametrizeTheRefactoredMethodUsesTheChosenMessageToCreateTheMethodObjectInstance
-	
+
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'correspondingInstVar'.}  asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
+
 	aClass := self createClassNamed: #AClass.
-	aClass compile: 'm1 ^self isNil'.	
-	refactor := ExtractToMethodObject 
+	aClass compile: 'm1 ^self isNil'.
+	refactor := ExtractToMethodObject
 				from: (aClass compiledMethodAt: #m1)
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2909,22 +2909,22 @@ test47WhenThereAreVariablesToParametrizeTheRefactoredMethodUsesTheChosenMessageT
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	expectedRefactoredSourceCode := 'm1',
 		String newLineString,
-		String tab, 
+		String tab,
 		'^(', self methodObjectClassName, ' with: self) ', self defaultEvaluationSelector.
-	self 
-		assert: expectedRefactoredSourceCode 
+	self
+		assert: expectedRefactoredSourceCode
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 15:33:39'!
 test48WhenThereAreMultipleVariablesToParametrizeTheRefactoredMethodPassesTheVariablesInTheChosenOrderToTheMessageToCreateTheMethodObjectInstance
-	
+
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
-	
+
 	variablesToParametrizeToInstanceVariables := {
 		'self' -> 'selfCorrespondingInstVar'.
 		'anArg' -> 'anArgCorrespondingInstVar'.
@@ -2933,10 +2933,10 @@ test48WhenThereAreMultipleVariablesToParametrizeTheRefactoredMethodPassesTheVari
 		self keyword: #with varName: 'anArg' paramName: 'anArgParamName'.
 		self keyword: #andWith varName: 'self' paramName: 'aSelfParamName'
 	}.
-	
+
 	aClass := self createClassNamed: #AClass.
-	aClass compile: 'm1: anArg ^(self isNil) or: (anArg isNil)'.	
-	refactor := ExtractToMethodObject 
+	aClass compile: 'm1: anArg ^(self isNil) or: (anArg isNil)'.
+	refactor := ExtractToMethodObject
 				from: (aClass compiledMethodAt: #m1:)
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2944,28 +2944,28 @@ test48WhenThereAreMultipleVariablesToParametrizeTheRefactoredMethodPassesTheVari
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	expectedRefactoredSourceCode := 'm1: anArg',
 		String newLineString,
-		String tab, 
+		String tab,
 		'^(', self methodObjectClassName, ' with: anArg andWith: self) ', self defaultEvaluationSelector.
-	self 
-		assert: expectedRefactoredSourceCode 
+	self
+		assert: expectedRefactoredSourceCode
 		equals: (aClass compiledMethodAt: #m1:) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:24:19'!
 test49TheRefactoredMethodUsesTheChosenEvaluationSelectorToEvaluateTheMethodObjectInstance
-	
+
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
-	
+
 	variablesToParametrizeToInstanceVariables := #() asDictionary.
 	keywordsDefinitions := #().
-	
+
 	aClass := self createClassNamed: #AClass.
-	aClass compile: 'm1'.	
-	refactor := ExtractToMethodObject 
+	aClass compile: 'm1'.
+	refactor := ExtractToMethodObject
 				from: (aClass compiledMethodAt: #m1)
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -2973,31 +2973,31 @@ test49TheRefactoredMethodUsesTheChosenEvaluationSelectorToEvaluateTheMethodObjec
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	expectedRefactoredSourceCode := 'm1',
 		String newLineString,
-		String tab, 
+		String tab,
 		'(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
-	self 
-		assert: expectedRefactoredSourceCode 
+	self
+		assert: expectedRefactoredSourceCode
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:24:33'!
 test50TheRefactoredMethodPreservesTheImplicitReturn
-	
+
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
-	
+
 	variablesToParametrizeToInstanceVariables := #() asDictionary.
 	keywordsDefinitions := #().
-	
+
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1
 		| a |
-		
-		a := 1 + 1.'.	
-	refactor := ExtractToMethodObject 
+
+		a := 1 + 1.'.
+	refactor := ExtractToMethodObject
 				from: (aClass compiledMethodAt: #m1)
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -3005,33 +3005,33 @@ test50TheRefactoredMethodPreservesTheImplicitReturn
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	expectedRefactoredSourceCode := 'm1',
 		String newLineString,
-		String tab, 
+		String tab,
 		'(', self methodObjectClassName, ' new) ', self defaultEvaluationSelector.
-	self 
-		assert: expectedRefactoredSourceCode 
+	self
+		assert: expectedRefactoredSourceCode
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:24:57'!
 test51TheMethodToExtractMustNotReferenceSuper
-	
+
 	| keywordsDefinitions variablesToParametrizeToInstVars aClass |
-	
+
 	variablesToParametrizeToInstVars := #().
 	keywordsDefinitions := #().
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1 ^super isNil'.
-	
-	self 
+
+	self
 		should: [
-			ExtractToMethodObject 
+			ExtractToMethodObject
 				from: (aClass compiledMethodAt: #m1)
 				toMethodObjectClassNamed: self methodObjectClassName
-				subclassing: self methodObjectSuperclass 
+				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstVars
 				withInstanceCreationMessageFrom: keywordsDefinitions
@@ -3041,21 +3041,21 @@ test51TheMethodToExtractMustNotReferenceSuper
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:25:34'!
 test52TheMethodToExtractMustNotContainInstVarAssignments
-	
+
 	| keywordsDefinitions variablesToParametrizeToInstVars aClass |
-	
+
 	variablesToParametrizeToInstVars := {'anInstVar' -> 'correspondingInstVar'} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'anInstVar' paramName: 'aParamName'}.
 	aClass := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
 	aClass compile: 'm1
 		anInstVar := 2.'.
-	
-	self 
+
+	self
 		should: [
-			ExtractToMethodObject 
+			ExtractToMethodObject
 				from: (aClass compiledMethodAt: #m1)
 				toMethodObjectClassNamed: self methodObjectClassName
-				subclassing: self methodObjectSuperclass 
+				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstVars
 				withInstanceCreationMessageFrom: keywordsDefinitions
@@ -3065,13 +3065,13 @@ test52TheMethodToExtractMustNotContainInstVarAssignments
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:26:10'!
 test53TheMethodToExtractMustNotContainClassVarAssignments
-	
+
 	| keywordsDefinitions variablesToParametrizeToInstVars aClass classVarName |
-	
+
 	classVarName := 'AClassVar'.
 	variablesToParametrizeToInstVars := {classVarName -> 'correspondingInstVar'} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: classVarName paramName: 'aParamName'}.
-	aClass := self 
+	aClass := self
 		createClassNamed: #AClass
 		subclassOf: Object
 		instanceVariableNames: ''
@@ -3081,13 +3081,13 @@ test53TheMethodToExtractMustNotContainClassVarAssignments
 
 	aClass compile: 'm1
 		', classVarName, ' := 2.'.
-	
-	self 
+
+	self
 		should: [
-			ExtractToMethodObject 
+			ExtractToMethodObject
 				from: (aClass compiledMethodAt: #m1)
 				toMethodObjectClassNamed: self methodObjectClassName
-				subclassing: self methodObjectSuperclass 
+				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstVars
 				withInstanceCreationMessageFrom: keywordsDefinitions
@@ -3097,14 +3097,14 @@ test53TheMethodToExtractMustNotContainClassVarAssignments
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/16/2019 15:26:40'!
 test54TheMethodToExtractMustNotContainPoolVarAssignments
-	
+
 	| keywordsDefinitions aClass aPool aPoolVar compiledMethodToRefactor correspondingInstVar methodToRefactorSourceCode variablesToParametrizeToInstanceVariables |
-	
+
 	aPoolVar := 'APoolVar'.
 	correspondingInstVar := 'aCorrespondingInstVar'.
 	variablesToParametrizeToInstanceVariables := {aPoolVar -> correspondingInstVar.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: aPoolVar paramName: 'aParamName'}.
-	
+
 	aPool := self
 		createClassNamed: #APool
 		subclassOf: SharedPool
@@ -3112,7 +3112,7 @@ test54TheMethodToExtractMustNotContainPoolVarAssignments
 		classVariableNames: aPoolVar
 		poolDictionaries: ''
 		category: self classCategoryOfTestData.
-	
+
 	aClass := self
 		createClassNamed: #AClass
 		subclassOf: Object
@@ -3120,18 +3120,18 @@ test54TheMethodToExtractMustNotContainPoolVarAssignments
 		classVariableNames: ''
 		poolDictionaries: aPool name
 		category: self classCategoryOfTestData.
-	
+
 	methodToRefactorSourceCode := 'm1
 		', aPoolVar, ' := 2.'.
 	aClass compile: methodToRefactorSourceCode.
 	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
-	
-		self 
+
+		self
 		should: [
-			ExtractToMethodObject 
+			ExtractToMethodObject
 				from: compiledMethodToRefactor
 				toMethodObjectClassNamed: self methodObjectClassName
-				subclassing: self methodObjectSuperclass 
+				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
@@ -3143,12 +3143,12 @@ test54TheMethodToExtractMustNotContainPoolVarAssignments
 test55MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorClassVariable
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass aClassVar |
-	
+
 	aClassVar := 'AClassVar'.
 	correspondingInstVar := 'aCorrespondingInstVar'.
 	variablesToParametrizeToInstanceVariables := {aClassVar -> correspondingInstVar.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: aClassVar paramName: 'aParamName'}.
-	
+
 	aClass := self
 		createClassNamed: #AClass
 		subclassOf: Object
@@ -3160,8 +3160,8 @@ test55MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 		', aClassVar, ' isNil.'.
 	aClass compile: methodToRefactorSourceCode.
 	compiledMethodToRefactor := aClass compiledMethodAt: #m1.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: compiledMethodToRefactor
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -3169,7 +3169,7 @@ test55MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
 
 	methodObjectClass := Smalltalk classNamed: self methodObjectClassName.
@@ -3181,102 +3181,102 @@ test55MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 test56MethodObjectInstanceCreationMessageParameterNamesMustNotRepeat
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables aClassToRefactor |
-	
+
 	variablesToParametrizeToInstanceVariables := {
 		'self' -> 'thePreviousSelf'.
 		'anInstVar' -> 'theInstVar'} asDictionary.
 	keywordsDefinitions := {
 		self keyword: #with varName: 'self' paramName: 'aParamName'.
 		self keyword: #with varName: 'anInstVar' paramName: 'aParamName'}.
-	
+
 	aClassToRefactor := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
 	aClassToRefactor compile: 'm1 self = anInstVar ifTrue: [^1] ifFalse: [^2]'.
-	
+
 	self
 		creationFrom: (aClassToRefactor compiledMethodAt: #m1)
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordsDefinitions
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject instanceCreationMessageParameterNamesAreDuplicated: #('aParamName') ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 14:30:06'!
 test57MethodObjectInstanceCreationMessageParameterNamesMustNotBeEmpty
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: ''.}.
-	
+
 	self
 		creationFrom: self compiledMethodReferencingSelf
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordsDefinitions
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject invalidParameterNamesErrorMessage: #('') ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/9/2019 12:16:35'!
 test58MethodObjectInstanceCreationMessageParameterNamesMustNotContainSeparators
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables aParameterName |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'} asDictionary.
 	aParameterName := 'a Parameter Name'.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: aParameterName.}.
-	
+
 	self
 		creationFrom: self compiledMethodReferencingSelf
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordsDefinitions
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject invalidParameterNamesErrorMessage: (Array with: aParameterName) ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/9/2019 12:16:52'!
 test59MethodObjectInstanceCreationMessageParameterNamesMustNotContainInvalidCharacters
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables aParameterName |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'} asDictionary.
 	aParameterName := 'a(Parameter!!Name'.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: aParameterName.}.
-	
+
 	self
 		creationFrom: self compiledMethodReferencingSelf
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordsDefinitions
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject invalidParameterNamesErrorMessage: (Array with: aParameterName) ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 2/17/2019 14:48:32'!
 test60MethodObjectInstanceCreationMessageParameterNamesMustNotBeEqualToAMethodObjectInstanceVariable
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables aClassToRefactor |
-	
+
 	variablesToParametrizeToInstanceVariables := {
 		'self' -> 'thePreviousSelf'.
 		'anInstVar' -> 'theInstVar'} asDictionary.
 	keywordsDefinitions := {
 		self keyword: #with varName: 'self' paramName: 'theInstVar'.
 		self keyword: #with varName: 'anInstVar' paramName: 'aParamName'}.
-	
+
 	aClassToRefactor := self createClassNamed: #AClass instanceVariableNames: 'anInstVar'.
 	aClassToRefactor compile: 'm1 self = anInstVar ifTrue: [^1] ifFalse: [^2]'.
-	
+
 	self
 		creationFrom: (aClassToRefactor compiledMethodAt: #m1)
 		withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 		withInstanceCreationMessageFrom: keywordsDefinitions
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			ExtractToMethodObject parameterNamesOverlapWithInstanceVariableNamesErrorMessage: #('theInstVar')].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/9/2019 12:17:03'!
 test61MethodObjectClassInstanceCreationMessageParameterNamesAreTheChosenOnes
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor methodObjectClass instanceCreationMethod |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -3284,23 +3284,23 @@ test61MethodObjectClassInstanceCreationMessageParameterNamesAreTheChosenOnes
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObjectClass := (Smalltalk classNamed: self methodObjectClassName) class.
 	instanceCreationMethod := methodObjectClass compiledMethodAt: #with:.
-	
+
 	self assert: 'aParamName' equals: instanceCreationMethod methodNode arguments first name.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/9/2019 12:25:53'!
 test62MethodObjectInstanceCreationMessageParameterNamesAreTheChosenOnes
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor instanceCreationMethod methodObject |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -3308,23 +3308,23 @@ test62MethodObjectInstanceCreationMessageParameterNamesAreTheChosenOnes
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObject := Smalltalk classNamed: self methodObjectClassName.
 	instanceCreationMethod := methodObject compiledMethodAt: #initializeWith:.
-	
+
 	self assert: 'aParamName' equals: instanceCreationMethod methodNode arguments first name.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/10/2019 16:16:32'!
 test63MethodObjectInstanceInitializationMessageIsCategorizedAsInitialization
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor instanceInitializationMethod methodObject |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -3332,23 +3332,23 @@ test63MethodObjectInstanceInitializationMessageIsCategorizedAsInitialization
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObject := Smalltalk classNamed: self methodObjectClassName.
 	instanceInitializationMethod := methodObject compiledMethodAt: #initializeWith:.
-	
+
 	self assert: #initialization equals: instanceInitializationMethod category.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/10/2019 16:16:54'!
 test64MethodObjectInstanceCreationMessageIsCategorizedAsInstanceCreation
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor instanceCreationMethod methodObject |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -3356,23 +3356,23 @@ test64MethodObjectInstanceCreationMessageIsCategorizedAsInstanceCreation
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObject := Smalltalk classNamed: self methodObjectClassName.
 	instanceCreationMethod := methodObject class compiledMethodAt: #with:.
-	
+
 	self assert: #'instance creation' equals: instanceCreationMethod category.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/10/2019 16:19:03'!
 test65MethodObjectEvaluationMessageIsCategorizedAsEvaluating
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor evaluationMethod methodObject |
-	
+
 	variablesToParametrizeToInstanceVariables := {'self' -> 'thePreviousSelf'.} asDictionary.
 	keywordsDefinitions := {self keyword: #with varName: 'self' paramName: 'aParamName'}.
-	
-	refactor := ExtractToMethodObject 
+
+	refactor := ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -3380,19 +3380,19 @@ test65MethodObjectEvaluationMessageIsCategorizedAsEvaluating
 				withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 				withInstanceCreationMessageFrom: keywordsDefinitions
 				evaluatedWith: self defaultEvaluationSelector.
-	
+
 	refactor apply.
-	
+
 	methodObject := Smalltalk classNamed: self methodObjectClassName.
 	evaluationMethod := methodObject compiledMethodAt: self defaultEvaluationSelector.
-	
+
 	self assert: #'evaluating' equals: evaluationMethod category.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/11/2019 11:42:37'!
 test66MethodObjectEvaluationSelectorMustNotBeEmpty
 
 	self should: [
-		ExtractToMethodObject 
+		ExtractToMethodObject
 			from: self emptyCompiledMethod
 			toMethodObjectClassNamed: self methodObjectClassName
 			subclassing: self methodObjectSuperclass
@@ -3407,7 +3407,7 @@ test66MethodObjectEvaluationSelectorMustNotBeEmpty
 test67MethodObjectEvaluationSelectorMustNotContainInvalidCharacters
 
 	self should: [
-		ExtractToMethodObject 
+		ExtractToMethodObject
 			from: self emptyCompiledMethod
 			toMethodObjectClassNamed: self methodObjectClassName
 			subclassing: self methodObjectSuperclass
@@ -3422,7 +3422,7 @@ test67MethodObjectEvaluationSelectorMustNotContainInvalidCharacters
 test68MethodObjectEvaluationSelectorMustNotStartWithAnInvalidStartOfSelector
 
 	self should: [
-		ExtractToMethodObject 
+		ExtractToMethodObject
 			from: self emptyCompiledMethod
 			toMethodObjectClassNamed: self methodObjectClassName
 			subclassing: self methodObjectSuperclass
@@ -3437,10 +3437,10 @@ test68MethodObjectEvaluationSelectorMustNotStartWithAnInvalidStartOfSelector
 compiledMethodFrom: aSourceCode
 
 	| aClass |
-	
+
 	aClass := self createClassNamed: #AClass.
 	aClass compile: aSourceCode.
-	
+
 	^aClass compiledMethodAt: (Parser selectorFrom: aSourceCode).! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 1/14/2019 11:04:52'!
@@ -3452,7 +3452,7 @@ compiledMethodReferencingSelf
 	aMessageSelector := #m1.
 	aMessageSourceCode := aMessageSelector asString, self sourceCodeBodyOfMethodReferencingSelf.
 	aClass compile: aMessageSourceCode.
-	
+
 	^aClass compiledMethodAt: aMessageSelector! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/18/2018 17:07:18'!
@@ -3460,10 +3460,10 @@ creationFrom: aCompiledMethodToRefactor
 withExtractedVariablesToInstanceVariables: namesWithDuplicatedInstanceVariable
 withInstanceCreationMessageFrom: keywordToParametrizedVariable
 failsWithMessageText: aMessageTextBlock
-	
-	self 
+
+	self
 		should: [
-			ExtractToMethodObject 
+			ExtractToMethodObject
 				from: aCompiledMethodToRefactor
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -3476,24 +3476,24 @@ failsWithMessageText: aMessageTextBlock
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/17/2018 11:21:23'!
 defaultEvaluationSelector
-	
+
 	^#defaultEvaluationSelector! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 12/17/2018 17:51:55'!
 emptyCompiledMethod
 
 	| aClass |
-	
+
 	aClass := self createClassNamed: #AClass.
 	aClass compile: 'm1'.
-	
+
 	^aClass compiledMethodAt: #m1.
 	! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 2/16/2019 14:46:39'!
 keyword: aKeyword varName: aVariableName paramName: aParameterName
 
-	^{ 
+	^{
 		#keyword -> aKeyword.
 		#variableName -> aVariableName .
 		#parameterName -> aParameterName
@@ -3520,9 +3520,9 @@ creationWithExtractedVariablesToInstanceVariables: parametrizedVariablesToInstan
 withInstanceCreationMessageFrom: keywordToParametrizedVariable
 failsWithMessageText: aMessageTextBlock
 
-	self 
+	self
 		should: [
-			ExtractToMethodObject 
+			ExtractToMethodObject
 				from: self compiledMethodReferencingSelf
 				toMethodObjectClassNamed: self methodObjectClassName
 				subclassing: self methodObjectSuperclass
@@ -3535,15 +3535,15 @@ failsWithMessageText: aMessageTextBlock
 		! !
 
 !ExtractToMethodObjectTest methodsFor: 'assertions' stamp: 'FGJ 12/17/2018 18:03:06'!
-creationWithMethodObjectClassName: aClassName 
+creationWithMethodObjectClassName: aClassName
 failsWithMessageText: aMessageTextBlock
 
-	self 
+	self
 		should: [
-			ExtractToMethodObject 
-				from: self emptyCompiledMethod 
-				toMethodObjectClassNamed: aClassName 
-				subclassing: self methodObjectSuperclass 
+			ExtractToMethodObject
+				from: self emptyCompiledMethod
+				toMethodObjectClassNamed: aClassName
+				subclassing: self methodObjectSuperclass
 				onCategory: self classCategoryOfTestData
 				evaluatedWith: self defaultEvaluationSelector ]
 		raise: RefactoringError
@@ -3556,19 +3556,19 @@ allClassCategoriesOfTestData
 
 !IfNilChecksFinderTest methodsFor: 'accessing' stamp: 'FGJ 3/27/2019 14:54:16'!
 instVar
-	
+
 	^'randomInstVar'! !
 
 !IfNilChecksFinderTest methodsFor: 'assertions' stamp: 'FGJ 3/29/2019 17:40:26'!
 assertLookUpOnSource: aMethodSource includesMessageAtIndex: anIndex
 
 	| contextClass result |
-	
+
 	contextClass := self createClassNamed: #ContextClass instanceVariableNames: self instVar.
 	contextClass compile: aMethodSource.
-	
+
 	result := (IfNilChecksFinder on: contextClass for: self instVar) value.
-	
+
 	self assert: 1 equals: result size.
 	self assert: anIndex equals: result first messageNodeIndex.
 	self assert: #m1 equals: result first methodNode selector.! !
@@ -3577,10 +3577,10 @@ assertLookUpOnSource: aMethodSource includesMessageAtIndex: anIndex
 test01InstanceVariableMustBelongToTheClass
 
 	| contextClass nonExistentInstVar |
-	
+
 	nonExistentInstVar := 'randomInstVar'.
 	contextClass := self createClassNamed: #ContextClass instanceVariableNames: ''.
-	
+
 	self
 		should: [IfNilChecksFinder on: contextClass for: nonExistentInstVar]
 		raise: RefactoringError
@@ -3590,17 +3590,17 @@ test01InstanceVariableMustBelongToTheClass
 test02WhenThereAreNoIfNilChecksTheResultIsEmpty
 
 	| contextClass instVar |
-	
+
 	instVar := 'randomInstVar'.
 	contextClass := self createClassNamed: #ContextClass instanceVariableNames: instVar.
-	
+
 	self assert: (IfNilChecksFinder on: contextClass for: instVar) value isEmpty.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 3/27/2019 15:52:05'!
 test03ResultIncludesIfNilMessageSending
 
 	| source nilCheckIndex |
-	
+
 	source := 'm1 ', self instVar, ' ifNil: [ 1 + 1 ]'.
 	nilCheckIndex := source findString: 'if'.
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
@@ -3609,7 +3609,7 @@ test03ResultIncludesIfNilMessageSending
 test04ResultIncludesIfNotNilMessageSending
 
 	| source nilCheckIndex |
-	
+
 	source := 'm1 ', self instVar, ' ifNotNil: [ 1 + 1 ]'.
 	nilCheckIndex := source findString: 'if'.
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
@@ -3618,7 +3618,7 @@ test04ResultIncludesIfNotNilMessageSending
 test05ResultIncludesIfNilIfNotNilMessageSending
 
 	| source nilCheckIndex |
-	
+
 	source := 'm1 ', self instVar, ' ifNil: [ 2 + 2 ] ifNotNil: [ 1 + 1 ]'.
 	nilCheckIndex := source findString: 'if'.
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
@@ -3627,7 +3627,7 @@ test05ResultIncludesIfNilIfNotNilMessageSending
 test06ResultIncludesIfNotNilIfNilMessageSending
 
 	| source nilCheckIndex |
-	
+
 	source := 'm1 ', self instVar, ' ifNotNil: [ 2 + 2 ] ifNil: [ 1 + 1 ]'.
 	nilCheckIndex := source findString: 'if'.
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
@@ -3636,7 +3636,7 @@ test06ResultIncludesIfNotNilIfNilMessageSending
 test07ResultIncludesIsNilIfTrueMessageSending
 
 	| source nilCheckIndex |
-	
+
 	source := 'm1 ', self instVar, ' isNil ifTrue: [ 2 + 2 ]'.
 	nilCheckIndex := source findString: 'if'.
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
@@ -3645,7 +3645,7 @@ test07ResultIncludesIsNilIfTrueMessageSending
 test08ResultIncludesIsNilIfFalseMessageSending
 
 	| source nilCheckIndex |
-	
+
 	source := 'm1 ', self instVar, ' isNil ifFalse: [ 2 + 2 ]'.
 	nilCheckIndex := source findString: 'if'.
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
@@ -3654,7 +3654,7 @@ test08ResultIncludesIsNilIfFalseMessageSending
 test09ResultIncludesIsNilIfTrueIfFalseMessageSending
 
 	| source nilCheckIndex |
-	
+
 	source := 'm1 ', self instVar, ' isNil ifTrue: [1 + 1] ifFalse: [ 2 + 2 ]'.
 	nilCheckIndex := source findString: 'if'.
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
@@ -3663,7 +3663,7 @@ test09ResultIncludesIsNilIfTrueIfFalseMessageSending
 test10ResultIncludesIsNilIfFalseIfTrueMessageSending
 
 	| source nilCheckIndex |
-	
+
 	source := 'm1 ', self instVar, ' isNil ifFalse: [1 + 1] ifTrue: [ 2 + 2 ]'.
 	nilCheckIndex := source findString: 'if'.
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
@@ -3672,17 +3672,17 @@ test10ResultIncludesIsNilIfFalseIfTrueMessageSending
 test11WhenThereAreMultipleIfNilChecksInTheSameMethodTheResultIncludesAllOfThem
 
 	| contextClass anIfNilCheckStatement methodHeader source result anIfNotNilCheckStatement |
-	
+
 	contextClass := self createClassNamed: #ContextClass instanceVariableNames: self instVar.
-	
+
 	methodHeader := 'm1 '.
 	anIfNilCheckStatement := self instVar, ' ifNil: [1 + 1].'.
 	anIfNotNilCheckStatement := self instVar, ' ifNotNil: [1 + 1].'.
 	source := methodHeader, anIfNilCheckStatement, anIfNotNilCheckStatement.
 	contextClass compile: source.
-	
+
 	result := (IfNilChecksFinder on: contextClass for: self instVar) value.
-	
+
 	self assert: 2 equals: result size.
 	self assert: (source findString: 'ifNotNil') equals: result first messageNodeIndex.
 	self assert: #m1 equals: result second methodNode selector.
@@ -3693,16 +3693,16 @@ test11WhenThereAreMultipleIfNilChecksInTheSameMethodTheResultIncludesAllOfThem
 test12WhenThereAreIfNilChecksInMultipleMethodsTheResultIncludesAllOfThem
 
 	| contextClass result sourcem1 sourcem2 |
-	
+
 	contextClass := self createClassNamed: #ContextClass instanceVariableNames: self instVar.
 
 	sourcem1 := 'm1 ', self instVar, ' ifNil: [1 + 1]'.
 	contextClass compile: sourcem1.
 	sourcem2 := 'm2 ', self instVar, ' ifNil: [2 + 2]'.
 	contextClass compile: sourcem2.
-	
+
 	result := (IfNilChecksFinder on: contextClass for: self instVar) value.
-	
+
 	self assert: 2 equals: result size.
 	self assert: #m1 equals: result first methodNode selector.
 	self assert: #m2 equals: result second methodNode selector.! !
@@ -3711,18 +3711,18 @@ test12WhenThereAreIfNilChecksInMultipleMethodsTheResultIncludesAllOfThem
 test13WhenThereAreMultipleIfNilChecksInTheSameMethodWithTheSameCodeTheResultIncludesAllOfThem
 
 	| contextClass anIfNilCheckStatement methodHeader source result firstIfNilIndex |
-	
+
 	contextClass := self createClassNamed: #ContextClass instanceVariableNames: self instVar.
-	
+
 	methodHeader := 'm1 '.
 	anIfNilCheckStatement := self instVar, ' ifNil: [1 + 1].'.
 	source := methodHeader, anIfNilCheckStatement, anIfNilCheckStatement.
 	contextClass compile: source.
-	
+
 	result := (IfNilChecksFinder on: contextClass for: self instVar) value.
-	
+
 	self assert: 2 equals: result size.
-	firstIfNilIndex := source findString: 'ifNil'. 
+	firstIfNilIndex := source findString: 'ifNil'.
 	self assert: (source findString: 'ifNil' startingAt: firstIfNilIndex + 1) equals: result first messageNodeIndex.
 	self assert: #m1 equals: result first methodNode selector.
 	self assert: firstIfNilIndex equals: result second messageNodeIndex.
@@ -3734,26 +3734,26 @@ test01BlocksToExtractMustNotContainReferencesToSuper
 
 	| aClassToRefactor sourceWithIf ifMessageNode replacementParameters definitions methodNode |
 
-	aClassToRefactor := self 
+	aClassToRefactor := self
 		createClassNamed: #AClassToRefactor
 		instanceVariableNames: self defaultInstVarName.
 	sourceWithIf := 'm1 ', self defaultInstVarName, ' ifNil: [ super isNil ]'.
 	aClassToRefactor compile: sourceWithIf.
 	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	ifMessageNode :=  methodNode block statements first.
-	
+
 	definitions :=
 		VariablesToParametrizeKeywordsDefinitions
 			with: {VariableToParametrizeKeywordDefinition forVariable: 'super' useKeyword: #with withParameterName: 'p1'}.
-	replacementParameters := 
+	replacementParameters :=
 		ReplaceIfNilWithPolymorphismParameters
 			forIfNilMessageSending: ifMessageNode
 			onMethod: methodNode
 			useKeywordsDefinitions: definitions.
-	
-	self 
-		should: [ 
-			IntroduceNullObject 
+
+	self
+		should: [
+			IntroduceNullObject
 				on: self defaultInstVarName
 				of: aClassToRefactor
 				usingAsConcreteClass: (self createClassNamed: #ConcreteClass)
@@ -3767,7 +3767,7 @@ test02BlocksToExtractMustNotContainAssignmentsToVariablesThatAreNotTemporals
 
 	self
 		creationFromSourceCode: self defaultInstVarName, ' ifNil: [ ', self defaultInstVarName, ' := 1 ]'
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			IntroduceNullObject blocksToExtractCannotContainAssignmentsToVariablesThatAreNotBlockTemporalsErrorMessage ].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 2/19/2019 23:01:51'!
@@ -3791,29 +3791,29 @@ test07BlocksToExtractMustNotContainReturnStatements
 	self
 		creationFromSourceCode:
 			self defaultInstVarName, ' ifNil: [^', self defaultInstVarName , ' is Nil]'
-		failsWithMessageText: [ 
+		failsWithMessageText: [
 			IntroduceNullObject blocksToExtractMustNotContainReturnStatementsErrorMessage ].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/18/2019 17:09:34'!
 test08InstanceVariableMustBelongToTheClassToRefactor
 
 	| aClassToRefactor sourceWithIf replacementParameters aClassToRefactorSuperclass |
-	
-	aClassToRefactorSuperclass := self 
+
+	aClassToRefactorSuperclass := self
 		createClassNamed: #AClassToRefactorSuperclass
 		instanceVariableNames: self defaultInstVarName.
 	aClassToRefactor := self
 		createClassNamed: #AClassToRefactor
 		subclassOf: aClassToRefactorSuperclass.
 	sourceWithIf := self defaultInstVarName, ' ifNil: [', self defaultInstVarName, ' isNil ]'.
-		
-	replacementParameters := self 
+
+	replacementParameters := self
 		replacementParametersFrom: sourceWithIf
 		usingAsClassToRefactor: aClassToRefactor.
-	
-	self 
-		should: [ 
-			IntroduceNullObject 
+
+	self
+		should: [
+			IntroduceNullObject
 				on: self defaultInstVarName
 				of: aClassToRefactor
 				usingAsConcreteClass: (self createClassNamed: #ConcreteClass)
@@ -3826,21 +3826,21 @@ test08InstanceVariableMustBelongToTheClassToRefactor
 test09ConcreteClassMustBeDifferentToNullClass
 
 	| aClassToRefactor sourceWithIf replacementParameters concreteAndNullClass |
-	
-	aClassToRefactor := self 
+
+	aClassToRefactor := self
 		createClassNamed: #AClassToRefactor
 		instanceVariableNames: self defaultInstVarName.
-	
-	sourceWithIf := self defaultInstVarName, ' ifNil: [', self defaultInstVarName, ' isNil ]'.	
-	replacementParameters := self 
+
+	sourceWithIf := self defaultInstVarName, ' ifNil: [', self defaultInstVarName, ' isNil ]'.
+	replacementParameters := self
 		replacementParametersFrom: sourceWithIf
 		usingAsClassToRefactor: aClassToRefactor.
-	
+
 	concreteAndNullClass := self createClassNamed: #AClass.
-	
-	self 
-		should: [ 
-			IntroduceNullObject 
+
+	self
+		should: [
+			IntroduceNullObject
 				on: self defaultInstVarName
 				of: aClassToRefactor
 				usingAsConcreteClass: concreteAndNullClass
@@ -3853,22 +3853,22 @@ test09ConcreteClassMustBeDifferentToNullClass
 test10MethodsMustBelongToTheHierarchyToRefactor
 
 	| aClassToRefactor sourceWithIf replacementParameters aClasOutsideTheHierarchy |
-	
-	aClassToRefactor := self 
+
+	aClassToRefactor := self
 		createClassNamed: #AClassToRefactor
 		instanceVariableNames: self defaultInstVarName.
-	aClasOutsideTheHierarchy := self 
+	aClasOutsideTheHierarchy := self
 		createClassNamed: #AClasOutsideTheHierarchy
 		instanceVariableNames: self defaultInstVarName.
-	
-	sourceWithIf := self defaultInstVarName, ' ifNil: [', self defaultInstVarName, ' isNil ]'.	
-	replacementParameters := self 
+
+	sourceWithIf := self defaultInstVarName, ' ifNil: [', self defaultInstVarName, ' isNil ]'.
+	replacementParameters := self
 		replacementParametersFrom: sourceWithIf
 		usingAsClassToRefactor: aClasOutsideTheHierarchy.
-	
-	self 
-		should: [ 
-			IntroduceNullObject 
+
+	self
+		should: [
+			IntroduceNullObject
 				on: self defaultInstVarName
 				of: aClassToRefactor
 				usingAsConcreteClass: self concreteClass
@@ -3881,49 +3881,49 @@ test10MethodsMustBelongToTheHierarchyToRefactor
 test13MessageNodesMustNotBeDuplicated
 
 	| aClassToRefactor replacementParameters replacementParametersWithDuplicatedMessageNode sourceWithIf |
-	
-	aClassToRefactor := self 
+
+	aClassToRefactor := self
 		createClassNamed: #AClassToRefactor
 		instanceVariableNames: self defaultInstVarName.
 	sourceWithIf := self defaultInstVarName, ' ifNil: [', self defaultInstVarName, ' isNil ]'.
-	replacementParameters := self 
+	replacementParameters := self
 		replacementParametersFrom: sourceWithIf
 		usingAsClassToRefactor: aClassToRefactor.
 	replacementParametersWithDuplicatedMessageNode := replacementParameters copy.
-	
-	self 
-		should: [ 
-			IntroduceNullObject 
+
+	self
+		should: [
+			IntroduceNullObject
 				on: self defaultInstVarName
 				of: aClassToRefactor
 				usingAsConcreteClass: self concreteClass
 				usingAsNullClass: self nullClass
 				for: {replacementParameters. replacementParametersWithDuplicatedMessageNode}]
 		raise: RefactoringError
-		withMessageText: [ 
+		withMessageText: [
 			IntroduceNullObject messageNodesMustNotBeDuplicatedErrorMessage ].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 14:24:35'!
 test14MessageNodesReceiverMustBeTheInstVar
 
 	| aClassToRefactor replacementParameters sourceWithIf |
-	
+
 	aClassToRefactor := self defaultClassToRefactor.
-	sourceWithIf := 'self ifNil: [', self defaultInstVarName, ' isNil ]'.	
+	sourceWithIf := 'self ifNil: [', self defaultInstVarName, ' isNil ]'.
 	replacementParameters := self
 		replacementParametersFrom: sourceWithIf
 		usingAsClassToRefactor: aClassToRefactor.
-		
-	self 
-		should: [ 
-			IntroduceNullObject 
+
+	self
+		should: [
+			IntroduceNullObject
 				on: self defaultInstVarName
 				of: aClassToRefactor
 				usingAsConcreteClass: self concreteClass
 				usingAsNullClass: self nullClass
 				for: {replacementParameters}]
 		raise: RefactoringError
-		withMessageText: [ 
+		withMessageText: [
 			IntroduceNullObject messageNodeReceiverMustBeTheInstVarErrorMessage].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/20/2019 11:34:57'!
@@ -3931,28 +3931,28 @@ test15ConcreteClassMustNotContainAnyPolymorphicSelector
 
 	| aClassToRefactor sourceWithIf ifMessageNode replacementParameters definitions methodNode concreteClass |
 
-	aClassToRefactor := self 
+	aClassToRefactor := self
 		createClassNamed: #AClassToRefactor
 		instanceVariableNames: self defaultInstVarName.
 	sourceWithIf := 'm1 ', self defaultInstVarName, ' ifNil: [ 1 + 1 ]'.
 	aClassToRefactor compile: sourceWithIf.
 	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	ifMessageNode :=  methodNode block statements first.
-	
+
 	definitions := VariablesToParametrizeKeywordsDefinitions
 		withSelector: #unaryPolymorphicSelector.
-	replacementParameters := 
+	replacementParameters :=
 		ReplaceIfNilWithPolymorphismParameters
 			forIfNilMessageSending: ifMessageNode
 			onMethod: methodNode
 			useKeywordsDefinitions: definitions.
-	
+
 	concreteClass := self createClassNamed: #ConcreteClass.
 	concreteClass compile: 'unaryPolymorphicSelector'.
-	
-	self 
-		should: [ 
-			IntroduceNullObject 
+
+	self
+		should: [
+			IntroduceNullObject
 				on: self defaultInstVarName
 				of: aClassToRefactor
 				usingAsConcreteClass: concreteClass
@@ -3967,28 +3967,28 @@ test16NullClassMustNotContainAnyPolymorphicSelector
 
 	| aClassToRefactor sourceWithIf ifMessageNode replacementParameters definitions methodNode nullClass |
 
-	aClassToRefactor := self 
+	aClassToRefactor := self
 		createClassNamed: #AClassToRefactor
 		instanceVariableNames: self defaultInstVarName.
 	sourceWithIf := 'm1 ', self defaultInstVarName, ' ifNil: [ 1 + 1 ]'.
 	aClassToRefactor compile: sourceWithIf.
 	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	ifMessageNode :=  methodNode block statements first.
-	
+
 	definitions := VariablesToParametrizeKeywordsDefinitions
 		withSelector: #unaryPolymorphicSelector.
-	replacementParameters := 
+	replacementParameters :=
 		ReplaceIfNilWithPolymorphismParameters
 			forIfNilMessageSending: ifMessageNode
 			onMethod: methodNode
 			useKeywordsDefinitions: definitions.
-	
+
 	nullClass := self createClassNamed: #NullClass.
 	nullClass compile: 'unaryPolymorphicSelector'.
-	
-	self 
-		should: [ 
-			IntroduceNullObject 
+
+	self
+		should: [
+			IntroduceNullObject
 				on: self defaultInstVarName
 				of: aClassToRefactor
 				usingAsConcreteClass: (self createClassNamed: #ConcreteClass)
@@ -4002,13 +4002,13 @@ test16NullClassMustNotContainAnyPolymorphicSelector
 test17WhenThereAreNoVariablesToParametrizeReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode polymorphicSelector |
-	
+
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ifNil: [ 1 + 1 ]'.
 	polymorphicSelector := #replaceIfNilSelector.
 	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: polymorphicSelector.
-		
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ', polymorphicSelector asString.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4020,10 +4020,10 @@ test18WhenThereAreVariablesToParametrizeReplacesIfNilWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ifNil: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4035,10 +4035,10 @@ test19WhenIfNilCheckHasOneKeywordReplacesIfNilWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ifNil: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4050,10 +4050,10 @@ test20WhenIfNilCheckHasTwoKeywordsReplacesIfNilWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ifNil: [ self isNil ] ifNotNil: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4065,10 +4065,10 @@ test21WhenIfNilCheckHasIsNilReplacesIfNilWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [ self isNil ] ifFalse: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4080,10 +4080,10 @@ test22PolymorphicMessageIsAddedToTheConcreteClass
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [ self isNil ] ifFalse: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	self assert: (self concreteClass selectors includes: #with:).! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 13:59:00'!
@@ -4093,10 +4093,10 @@ test23PolymorphicMessageIsAddedToTheConcreteClassWithChosenParameterNames
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [ self isNil ] ifFalse: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	self assert: 'p1' equals: (self concreteClass compiledMethodAt: #with:) methodNode arguments first name.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 13:59:53'!
@@ -4106,10 +4106,10 @@ test24PolymorphicMessageIsAddedToTheConcreteClassReplacingParametrizedVariables
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [ self isNil ] ifFalse: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 isNil'.
 	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
 	! !
@@ -4121,10 +4121,10 @@ test25ReplacesIfNilIfNotNilWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ifNil: [ self isNil ] ifNotNil: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4136,10 +4136,10 @@ test26ReplacesIfNotNilIfNilWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ifNotNil: [ self isNil ] ifNil: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4151,10 +4151,10 @@ test27ReplacesIfNilWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ifNil: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4166,10 +4166,10 @@ test28ReplacesIfNotNilWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ifNotNil: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4181,10 +4181,10 @@ test29ReplacesIsNilIfTrueWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4196,10 +4196,10 @@ test30ReplacesIsNilIfFalseWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifFalse: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4211,10 +4211,10 @@ test31ReplacesIsNilIfTrueIfFalseWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [self isNil] ifFalse: [self isNil]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4226,10 +4226,10 @@ test32ReplacesIsNilIfFalseIfTrueWithPolymorphicMessageSend
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifFalse: [self isNil] ifTrue: [self isNil]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
@@ -4241,10 +4241,10 @@ test33PolymorphicMessageIsAddedToTheNullClass
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [ self isNil ] ifFalse: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	self assert: (self nullClass selectors includes: #with:).! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 16:43:46'!
@@ -4254,10 +4254,10 @@ test34PolymorphicMessageIsAddedToTheNullClassWithChosenParameterNames
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [ self isNil ] ifFalse: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	self assert: 'p1' equals: (self nullClass compiledMethodAt: #with:) methodNode arguments first name.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 16:44:21'!
@@ -4267,10 +4267,10 @@ test35PolymorphicMessageIsAddedToTheNullClassReplacingParametrizedVariables
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [ self isNil ] ifFalse: [ self isNil ]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 isNil'.
 	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #with:) sourceCode.
 	! !
@@ -4282,10 +4282,10 @@ test36WhenNoNullBlockIsPresentEmptyPolymorphicMessageIsAddedToTheNullClass
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifFalse: [self isNil]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedSourceCode := 'with: p1'.
 	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #with:) sourceCode.
 	! !
@@ -4297,10 +4297,10 @@ test37WhenNoConcreteBlockIsPresentEmptyPolymorphicMessageIsAddedToTheConcreteCla
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [self isNil]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
-		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.	
-	
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedSourceCode := 'with: p1'.
 	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
 	! !
@@ -4312,9 +4312,9 @@ test38WhenThereAreMultipleStatementsPolymorphicMessageIsAddedToTheNullClass
 
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ifNil: [1+1. 2+2]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unaryPolymorphicSelector.
-	
+
 	self applyRefactoringOn: sourceWithIf using: definitions.
-	
+
 	expectedSourceCode := 'unaryPolymorphicSelector
 	1+1. 2+2'.
 	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #unaryPolymorphicSelector) sourceCode.
@@ -4329,18 +4329,18 @@ allClassCategoriesOfTestData
 applyRefactoringOn: source using: definitions
 
 	| aClassToRefactor ifMessageNode methodNode refactoring replacementParameters |
-	
+
 	aClassToRefactor := self defaultClassToRefactor.
 	aClassToRefactor compile: source.
 	methodNode := (aClassToRefactor compiledMethodAt: self methodToRefactorSelector) methodNode.
 	ifMessageNode :=  methodNode block statements first.
-	
-	replacementParameters := 
+
+	replacementParameters :=
 		ReplaceIfNilWithPolymorphismParameters
 			forIfNilMessageSending: ifMessageNode
 			onMethod: methodNode
 			useKeywordsDefinitions: definitions.
-	
+
 	refactoring := IntroduceNullObject
 		on: self defaultInstVarName
 		of: aClassToRefactor
@@ -4376,8 +4376,8 @@ findOrCreateEmptyClassNamed: aName
 
 	(Smalltalk classNamed: aName)
 		ifNotNil: [:aClass | ^aClass]
-		ifNil: [ 
-			^self 
+		ifNil: [
+			^self
 				createClassNamed: aName].! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/25/2019 13:45:30'!
@@ -4391,21 +4391,21 @@ nullClass
 	^self findOrCreateEmptyClassNamed: #ANullClass! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/20/2019 11:42:53'!
-replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass	
-	
+replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass
+
 	| messageNode methodNode definitions |
-	
+
 	aClass compile: 'm1 ', aSourceCode.
 	methodNode := (aClass compiledMethodAt: #m1) methodNode.
 	messageNode := methodNode block statements first.
-	definitions := 
-		VariablesToParametrizeKeywordsDefinitions 
-			with: {VariableToParametrizeKeywordDefinition 
+	definitions :=
+		VariablesToParametrizeKeywordsDefinitions
+			with: {VariableToParametrizeKeywordDefinition
 				forVariable: self defaultInstVarName
 				useKeyword: #with
 				withParameterName: 'paramName'}.
-	
-	^ReplaceIfNilWithPolymorphismParameters 
+
+	^ReplaceIfNilWithPolymorphismParameters
 		forIfNilMessageSending: messageNode
 		onMethod: methodNode
 		useKeywordsDefinitions: definitions.! !
@@ -4414,29 +4414,29 @@ replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass
 creationFromSourceCode: aSourceCodeBody failsWithMessageText: messageTextBlock
 
 	| aClassToRefactor ifMessageNode methodNode replacementParameters definitions |
-	
-	aClassToRefactor := self 
-		createClassNamed: #AClassToRefactor 
+
+	aClassToRefactor := self
+		createClassNamed: #AClassToRefactor
 		instanceVariableNames: self defaultInstVarName.
 	aClassToRefactor compile: self methodToRefactorSelector asString, ' ', aSourceCodeBody.
 	methodNode := (aClassToRefactor compiledMethodAt: self methodToRefactorSelector) methodNode.
 	ifMessageNode := methodNode block statements first.
-	
-	definitions := 
-		VariablesToParametrizeKeywordsDefinitions 
-			with: {VariableToParametrizeKeywordDefinition 
+
+	definitions :=
+		VariablesToParametrizeKeywordsDefinitions
+			with: {VariableToParametrizeKeywordDefinition
 					forVariable: self defaultInstVarName
 					useKeyword:  #with
 					withParameterName: 'paramName'}.
-	replacementParameters := 
-		ReplaceIfNilWithPolymorphismParameters 
+	replacementParameters :=
+		ReplaceIfNilWithPolymorphismParameters
 			forIfNilMessageSending: ifMessageNode
 			onMethod: methodNode
 			useKeywordsDefinitions: definitions.
-	
-	self 
-		should: [ 
-			IntroduceNullObject 
+
+	self
+		should: [
+			IntroduceNullObject
 				on: self defaultInstVarName
 				of: aClassToRefactor
 				usingAsConcreteClass: (self createClassNamed: #ConcreteClass)
@@ -4449,27 +4449,27 @@ creationFromSourceCode: aSourceCodeBody failsWithMessageText: messageTextBlock
 creationFromSourceCode: aSourceCodeBody shouldntRaise: anException
 
 	| aClassToRefactor ifMessageNode methodNode replacementParameters definitions |
-	
-	aClassToRefactor := self 
-		createClassNamed: #AClassToRefactor 
+
+	aClassToRefactor := self
+		createClassNamed: #AClassToRefactor
 		instanceVariableNames: self defaultInstVarName.
 	aClassToRefactor compile: 'm1 ', aSourceCodeBody.
 	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	ifMessageNode := methodNode block statements first.
-	
-	definitions := 
-		VariablesToParametrizeKeywordsDefinitions 
+
+	definitions :=
+		VariablesToParametrizeKeywordsDefinitions
 			withSelector: self defaultPolymorphicUnarySelector.
-			 
-	replacementParameters := 
+
+	replacementParameters :=
 		ReplaceIfNilWithPolymorphismParameters
 			forIfNilMessageSending: ifMessageNode
 			onMethod: methodNode
 			useKeywordsDefinitions: definitions.
 
-	self 
-		shouldnt: [ 
-			IntroduceNullObject 
+	self
+		shouldnt: [
+			IntroduceNullObject
 				on: self defaultInstVarName
 				of: aClassToRefactor
 				usingAsConcreteClass: (self createClassNamed: #ConcreteClass)
@@ -4481,19 +4481,19 @@ creationFromSourceCode: aSourceCodeBody shouldntRaise: anException
 defaultClassToRefactor
 
 	| className |
-	
+
 	className := #AClassToRefactor.
 	(Smalltalk classNamed: className)
 		ifNotNil: [:aClass | ^aClass]
-		ifNil: [ 
-			^self 
+		ifNil: [
+			^self
 				createClassNamed: className
 				instanceVariableNames: self defaultInstVarName].! !
 
 !IntroduceNullObjectTest methodsFor: 'class factory' stamp: 'FGJ 2/18/2019 18:52:13'!
 keyword: aKeyword varName: aVariableName paramName: aParameterName
 
-	^{ 
+	^{
 		#keyword -> aKeyword.
 		#variableName -> aVariableName .
 		#parameterName -> aParameterName
@@ -4503,7 +4503,7 @@ keyword: aKeyword varName: aVariableName paramName: aParameterName
 test01WhenThereAreNoVariablesToExtractFindsNothing
 
 	| messageClass messageNode |
-	
+
 	messageClass := self createClassNamed: #AClass.
 	messageClass compile: 'm1 self ifNil: [1 + 1]'.
 	messageNode := (messageClass compiledMethodAt: #m1) methodNode block statements first.
@@ -4514,7 +4514,7 @@ test01WhenThereAreNoVariablesToExtractFindsNothing
 test02WhenThereAreOnlyTemporariesFindsNothing
 
 	| messageClass messageNode |
-	
+
 	messageClass := self createClassNamed: #AClass.
 	messageClass compile: 'm1 self ifNil: [| a | a := 2. a + 1]'.
 	messageNode := (messageClass compiledMethodAt: #m1) methodNode block statements first.
@@ -4525,7 +4525,7 @@ test02WhenThereAreOnlyTemporariesFindsNothing
 test03WhenABlockReferencesNonTemporariesTheyAreFound
 
 	| messageClass messageNode variablesToExtract |
-	
+
 	messageClass := self createClassNamed: #AClass.
 	messageClass compile: 'm1 self ifNil: [| a | a := 2. a + self]'.
 	messageNode := (messageClass compiledMethodAt: #m1) methodNode block statements first.
@@ -4538,7 +4538,7 @@ test03WhenABlockReferencesNonTemporariesTheyAreFound
 test04WhenANestedBlockReferencesNonTemporariesTheyAreFound
 
 	| messageClass messageNode variablesToExtract |
-	
+
 	messageClass := self createClassNamed: #AClass.
 	messageClass compile: 'm1 self ifNil: [| a | a := 2. a ifNil: [ self + 2]]'.
 	messageNode := (messageClass compiledMethodAt: #m1) methodNode block statements first.
@@ -4551,7 +4551,7 @@ test04WhenANestedBlockReferencesNonTemporariesTheyAreFound
 test05NilIsNotFound
 
 	| messageClass messageNode |
-	
+
 	messageClass := self createClassNamed: #AClass.
 	messageClass compile: 'm1 self ifNil: [| a | a := nil]'.
 	messageNode := (messageClass compiledMethodAt: #m1) methodNode block statements first.
@@ -4562,7 +4562,7 @@ test05NilIsNotFound
 test06TrueAndFalseAreNotFound
 
 	| messageClass messageNode |
-	
+
 	messageClass := self createClassNamed: #AClass.
 	messageClass compile: 'm1 self ifNil: [false or: [true]]'.
 	messageNode := (messageClass compiledMethodAt: #m1) methodNode block statements first.
@@ -4586,10 +4586,10 @@ test07WhenABlockReferencesInstanceVariablesTheyAreFound
 test01AbstractClassClassNameMustNotBeEmpty
 
 	| emptyClassName |
-	
+
 	emptyClassName := '' asSymbol.
-	
-	self 
+
+	self
 		creationWithAbstractClassName: emptyClassName
 		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage ].! !
 
@@ -4597,21 +4597,21 @@ test01AbstractClassClassNameMustNotBeEmpty
 test02AbstractClassClassNameMustBeASymbol
 
 	| stringClassName |
-	
+
 	stringClassName := 'AnAbstractClassName'.
-	
-	self 
+
+	self
 		creationWithAbstractClassName: stringClassName
 		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
 
-!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'HAW 10/22/2019 12:33:39'!
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'HAW 10/23/2019 09:53:55'!
 test03AbstractClassClassNameMustStartWithUppercaseLetter
 
 	| classNameNotCapitalized |
-	
+
 	classNameNotCapitalized := #anAbstractClassName.
-	
-	self 
+
+	self
 		creationWithAbstractClassName: classNameNotCapitalized
 		failsWithMessageText: [ NewClassPrecondition newNameMustStartWithRightLetterErrorMessage ].! !
 
@@ -4619,10 +4619,10 @@ test03AbstractClassClassNameMustStartWithUppercaseLetter
 test04AbstractClassClassNameMustNotHaveSeparators
 
 	| classNameWithSeparators |
-	
+
 	classNameWithSeparators := 'An abstract class name' asSymbol.
-	
-	self 
+
+	self
 		creationWithAbstractClassName: classNameWithSeparators
 		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
 
@@ -4630,10 +4630,10 @@ test04AbstractClassClassNameMustNotHaveSeparators
 test05AbstractClassClassNameMustNotExist
 
 	| existingClassName |
-	
+
 	existingClassName := #Object.
-	
-	self 
+
+	self
 		creationWithAbstractClassName: existingClassName
 		failsWithMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: existingClassName].! !
 
@@ -4641,10 +4641,10 @@ test05AbstractClassClassNameMustNotExist
 test06NullObjectClassNameMustNotBeEmpty
 
 	| emptyClassName |
-	
+
 	emptyClassName := '' asSymbol.
-	
-	self 
+
+	self
 		creationWithNullObjectClassName: emptyClassName
 		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage ].! !
 
@@ -4652,21 +4652,21 @@ test06NullObjectClassNameMustNotBeEmpty
 test07NullObjectClassNameMustBeASymbol
 
 	| stringClassName |
-	
+
 	stringClassName := 'AStringClassName'.
-	
-	self 
+
+	self
 		creationWithNullObjectClassName: stringClassName
 		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
 
-!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'HAW 10/22/2019 12:34:04'!
+!NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'HAW 10/23/2019 09:54:11'!
 test08NullObjectClassNameMustStartWithUppercaseLetter
 
 	| classNameNotCapitalized |
-	
+
 	classNameNotCapitalized := #aNullObjectClassName.
-	
-	self 
+
+	self
 		creationWithNullObjectClassName: classNameNotCapitalized
 		failsWithMessageText: [ NewClassPrecondition newNameMustStartWithRightLetterErrorMessage ].! !
 
@@ -4674,10 +4674,10 @@ test08NullObjectClassNameMustStartWithUppercaseLetter
 test09NullObjectClassNameMustNotHaveSeparators
 
 	| classNameWithSeparators |
-	
+
 	classNameWithSeparators := 'A null object class name' asSymbol.
-	
-	self 
+
+	self
 		creationWithNullObjectClassName: classNameWithSeparators
 		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
 
@@ -4685,10 +4685,10 @@ test09NullObjectClassNameMustNotHaveSeparators
 test10NullObjectClassNameMustNotExist
 
 	| existingClassName |
-	
+
 	existingClassName := #Object.
-	
-	self 
+
+	self
 		creationWithNullObjectClassName: existingClassName
 		failsWithMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: existingClassName].! !
 
@@ -4696,32 +4696,32 @@ test10NullObjectClassNameMustNotExist
 test11CreatesAbstractClass
 
 	| refactor |
-	
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: self concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	self assert: (Smalltalk hasClassNamed: self abstractClassName).! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 15:49:29'!
 test12CreatesAbstractClassInChosenCategory
 
 	| refactor abstractClass |
-	
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: self concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	abstractClass := Smalltalk classNamed: self abstractClassName.
 	self assert: self classCategoryOfTestData equals: abstractClass category.! !
 
@@ -4729,19 +4729,19 @@ test12CreatesAbstractClassInChosenCategory
 test13CreatesAbstractClassAsSubclassOfConcreteClassPreviousSuperclass
 
 	| refactor abstractClass concreteClass concreteClassOldSuperclass |
-	
+
 	concreteClass := self concreteClass.
 	concreteClassOldSuperclass := concreteClass superclass.
-	 
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	abstractClass := Smalltalk classNamed: self abstractClassName.
 	self assert: concreteClassOldSuperclass equals: abstractClass superclass.! !
 
@@ -4749,101 +4749,101 @@ test13CreatesAbstractClassAsSubclassOfConcreteClassPreviousSuperclass
 test14AbstractClassDefinesAllTheSelectorsOfConcreteClass
 
 	| refactor abstractClass concreteClass |
-	
+
 	concreteClass := self concreteClass.
 	concreteClass compile: 'm1'.
-	 
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	abstractClass := Smalltalk classNamed: self abstractClassName.
 	self assert: concreteClass selectors equals: abstractClass selectors.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:41:22'!
 test15AbstractClassMethodParametersNamesArePreservedFromConcreteClass
-	
+
 	| refactor abstractClass concreteClass compiledMethod |
-	
+
 	concreteClass := self concreteClass.
 	concreteClass compile: 'm1: anArg'.
-	 
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	abstractClass := Smalltalk classNamed: self abstractClassName.
-	compiledMethod := abstractClass compiledMethodAt: #m1:. 
-		
+	compiledMethod := abstractClass compiledMethodAt: #m1:.
+
 	self assert: 'anArg' equals: compiledMethod methodNode arguments first name.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:44:13'!
 test16AbstractClassMethodsDelegateResponsibility
-	
+
 	| refactor abstractClass concreteClass compiledMethod expectedMethodSourceCode |
-	
+
 	concreteClass := self concreteClass.
 	concreteClass compile: 'm1: anArg
 		^1 + 2'.
-	 
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	abstractClass := Smalltalk classNamed: self abstractClassName.
-	compiledMethod := abstractClass compiledMethodAt: #m1:. 
+	compiledMethod := abstractClass compiledMethodAt: #m1:.
 	expectedMethodSourceCode := 'm1: anArg',
 		Character newLineCharacter asString,
 		Character tab asString,
 		'self subclassResponsibility.'.
-		
+
 	self assert: expectedMethodSourceCode equals: compiledMethod sourceCode.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:41:50'!
 test17CreatesNullObjectClass
-	
+
 | refactor |
-	
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: self concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	self assert: (Smalltalk hasClassNamed: self nullObjectClassName).! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:42:02'!
 test18CreatesNullObjectClassInChosenCategory
 
 	| refactor nullObjectClass |
-	
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: self concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	nullObjectClass := Smalltalk classNamed: self nullObjectClassName.
 	self assert: self classCategoryOfTestData equals: nullObjectClass category.! !
 
@@ -4851,132 +4851,132 @@ test18CreatesNullObjectClassInChosenCategory
 test19CreatesNullObjectClassClassAsSubclassOfAbstractClass
 
 	| refactor abstractClass concreteClass nullObjectClass |
-	
+
 	concreteClass := self concreteClass.
-	 
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	nullObjectClass := Smalltalk classNamed: self nullObjectClassName.
 	abstractClass := Smalltalk classNamed: self abstractClassName .
-	
+
 	self assert: abstractClass equals: nullObjectClass superclass.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:42:33'!
 test20NullObjectClassDefinesAllTheSelectorsOfConcreteClass
 
 	| refactor concreteClass nullObjectClass |
-	
+
 	concreteClass := self concreteClass.
 	concreteClass compile: 'm1'.
-	 
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	nullObjectClass := Smalltalk classNamed: self nullObjectClassName.
-	
+
 	self assert: concreteClass selectors equals: nullObjectClass selectors.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:43:12'!
 test21NullObjectClassMethodParametersNamesArePreservedFromConcreteClass
-	
+
 	| refactor concreteClass compiledMethod nullObjectClass |
-	
+
 	concreteClass := self concreteClass.
 	concreteClass compile: 'm1: anArg'.
-	 
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	nullObjectClass := Smalltalk classNamed: self nullObjectClassName.
-	compiledMethod := nullObjectClass compiledMethodAt: #m1:. 
-	
+	compiledMethod := nullObjectClass compiledMethodAt: #m1:.
+
 	self assert: 'anArg' equals: compiledMethod methodNode arguments first name.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:44:54'!
 test22NullObjectClassMethodsAreEmpty
-	
+
 	| refactor concreteClass compiledMethod expectedMethodSourceCode nullObjectClass |
-	
+
 	concreteClass := self concreteClass.
 	concreteClass compile: 'm1: anArg
 		^1 + 2'.
-	 
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	nullObjectClass := Smalltalk classNamed: self nullObjectClassName.
-	compiledMethod := nullObjectClass compiledMethodAt: #m1:. 
+	compiledMethod := nullObjectClass compiledMethodAt: #m1:.
 	expectedMethodSourceCode := 'm1: anArg'.
-		
+
 	self assert: expectedMethodSourceCode equals: compiledMethod sourceCode.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 16:46:48'!
 test23ConcreteClassSubclassesTheAbstractClass
-	
+
 	| refactor concreteClass abstractClass |
-	
+
 	concreteClass := self concreteClass.
-	
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	abstractClass := Smalltalk classNamed: self abstractClassName.
-		
+
 	self assert: abstractClass equals: concreteClass superclass.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 17:17:38'!
 test24ConcreteClassMethodsArePreserved
-	
+
 	| refactor concreteClass compiledMethod concreteClassName originalMethodSourceCode updatedConcreteClass |
-	
+
 	concreteClass := self concreteClass.
 	originalMethodSourceCode := 'm1: anArg
 		^1 + 2'.
 	concreteClass compile: originalMethodSourceCode.
-	 
-	refactor := 
-		NullObjectHierarchyCreator 
+
+	refactor :=
+		NullObjectHierarchyCreator
 			from: concreteClass
 			withAbstractClassName: self abstractClassName
 			withNullClassName: self nullObjectClassName
 			inCategory: self classCategoryOfTestData.
-			
+
 	refactor apply.
-	
+
 	concreteClassName := concreteClass name.
 	updatedConcreteClass := Smalltalk classNamed: concreteClassName.
-	compiledMethod := updatedConcreteClass compiledMethodAt: #m1:. 
+	compiledMethod := updatedConcreteClass compiledMethodAt: #m1:.
 
 	self assert: originalMethodSourceCode equals: compiledMethod sourceCode.! !
 
@@ -5006,8 +5006,8 @@ failsWithMessageText: aMessageTextBlock
 
 	self
 		should: [
-			NullObjectHierarchyCreator 
-				from: self concreteClass 
+			NullObjectHierarchyCreator
+				from: self concreteClass
 				withAbstractClassName: anAbstractClassName
 				withNullClassName: self nullObjectClassName
 				inCategory: self classCategoryOfTestData ]
@@ -5020,9 +5020,9 @@ failsWithMessageText: aMessageTextBlock
 
 	self
 		should: [
-			NullObjectHierarchyCreator 
-				from: self concreteClass 
-				withAbstractClassName: self abstractClassName 
+			NullObjectHierarchyCreator
+				from: self concreteClass
+				withAbstractClassName: self abstractClassName
 				withNullClassName: aNullClassName
 				inCategory: self classCategoryOfTestData ]
 		raise: RefactoringError
@@ -5040,43 +5040,43 @@ assertMessageSendRangeForSource: aSource equals: anInterval
 
 	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'anInstVar'.
 	aClassToRefactor compile: aSource.
-	
+
 	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	messageNode := methodNode block statements first.
 
 	variablesToParametrizeKeywordsDefinitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unarySelector.
-	
-	parameters := ReplaceIfNilWithPolymorphismParameters 
+
+	parameters := ReplaceIfNilWithPolymorphismParameters
 		forIfNilMessageSending: messageNode
 		onMethod: methodNode
 		useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions.
-		
+
 	self assert: anInterval equals: parameters rangeOfMessageSend.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'assertions' stamp: 'FGJ 3/25/2019 15:28:02'!
 creationFromSource: aSource failsWithMessageText: aMessageBlock
-	
+
 	| definitions |
-	
+
 	definitions :=
 		VariablesToParametrizeKeywordsDefinitions withSelector: #polymorphicSelector.
-		
+
 	self creationFromSource: aSource withDefinitions: definitions failsWithMessageText: aMessageBlock.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'assertions' stamp: 'FGJ 3/29/2019 15:04:53'!
 creationFromSource: aSource withDefinitions: someDefinitions failsWithMessageText: aMessageBlock
 
 	| aClassToRefactor messageNode methodNode |
-	
+
 	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'anInstVar'.
 	aClassToRefactor compile: aSource.
-	
+
 	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	messageNode := methodNode block statements first.
-	
+
 	self
 		should: [
-			ReplaceIfNilWithPolymorphismParameters 
+			ReplaceIfNilWithPolymorphismParameters
 				forIfNilMessageSending: messageNode
 				onMethod: methodNode
 				useKeywordsDefinitions: someDefinitions]
@@ -5085,18 +5085,18 @@ creationFromSource: aSource withDefinitions: someDefinitions failsWithMessageTex
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'initialization' stamp: 'FGJ 3/25/2019 15:51:45'!
 parametersForSourceCode: aSource
-	
+
 	| aClassToRefactor messageNode methodNode variablesToParametrizeKeywordsDefinitions |
-	
+
 	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'anInstVar'.
 	aClassToRefactor compile: aSource.
-	
+
 	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	messageNode := methodNode block statements first.
 
 	variablesToParametrizeKeywordsDefinitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unarySelector.
-	
-	^ReplaceIfNilWithPolymorphismParameters 
+
+	^ReplaceIfNilWithPolymorphismParameters
 		forIfNilMessageSending: messageNode
 		onMethod: methodNode
 		useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions.
@@ -5106,22 +5106,22 @@ parametersForSourceCode: aSource
 test01MessageNodeMustBelongToTheMethodNode
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf |
-	
+
 	aClassToRefactor := self createClassNamed: #AClassToRefactor.
 	sourceWithIf := 'm1 self ifNil: [1 + 1].'.
 	aClassToRefactor compile: sourceWithIf.
-	
+
 	messageNode := (aClassToRefactor compiledMethodAt: #m1) methodNode block statements first.
-	
+
 	aClassToRefactor compile: 'm2 1 + 1.'.
 	methodNode := (aClassToRefactor compiledMethodAt: #m2) methodNode.
-	
+
 	variablesToParametrizeKeywordsDefinitions :=
 		VariablesToParametrizeKeywordsDefinitions withSelector: #polymorphicSelector.
-	
+
 	self
 		should: [
-			ReplaceIfNilWithPolymorphismParameters 
+			ReplaceIfNilWithPolymorphismParameters
 				forIfNilMessageSending: messageNode
 				onMethod: methodNode
 				useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions]
@@ -5133,7 +5133,7 @@ test01MessageNodeMustBelongToTheMethodNode
 test02MessageNodeMustRepresentASupportedMessageSent
 
 	| sourceWithIf |
-	
+
 	sourceWithIf := 'm1 anInstVar ifTrue: [1 + 1].'.
 	self creationFromSource: sourceWithIf failsWithMessageText: [
 			ReplaceIfNilWithPolymorphismParameters messageNodeMustRepresentSupportedMessageSendingErrorMessage].! !
@@ -5142,10 +5142,10 @@ test02MessageNodeMustRepresentASupportedMessageSent
 test03AllVariablesToParametrizeHaveACorrespondingKeyword
 
 	| sourceWithIf definitions |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNil: [self isNil]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #polymorphicSelector.
-	
+
 	self creationFromSource: sourceWithIf withDefinitions: definitions failsWithMessageText: [
 			ReplaceIfNilWithPolymorphismParameters allVariablesToParametrizeMustHaveAKeywordErrorMessage].! !
 
@@ -5153,20 +5153,20 @@ test03AllVariablesToParametrizeHaveACorrespondingKeyword
 test04AllKeywordsMustHaveACorrespondingVariableToParametrize
 
 	| variablesToParametrizeKeywordsDefinitions sourceWithIf definitions |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNil: [self isNil].'.
 	definitions := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'self'
 			useKeyword: #with
 			withParameterName: 'pSelf'.
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'inexistentVar'
 			useKeyword: #with
 			withParameterName: 'pInexistentVar'}.
 	variablesToParametrizeKeywordsDefinitions :=
 		VariablesToParametrizeKeywordsDefinitions with: definitions.
-	
+
 	self creationFromSource: sourceWithIf withDefinitions: variablesToParametrizeKeywordsDefinitions failsWithMessageText: [
 			ReplaceIfNilWithPolymorphismParameters allKeywordsMustHaveACorrespondingVariableToParametrizeErrorMessage].! !
 
@@ -5174,66 +5174,66 @@ test04AllKeywordsMustHaveACorrespondingVariableToParametrize
 test05CreatesReplaceIfNilWithPolymorphismParameters
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf definitions parameters |
-	
+
 	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'anInstVar'.
 	sourceWithIf := 'm1 anInstVar ifNil: [self isNil].'.
 	aClassToRefactor compile: sourceWithIf.
-	
+
 	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	messageNode := methodNode block statements first.
-	
+
 	definitions := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'self'
 			useKeyword: #with
 			withParameterName: 'pSelf'}.
 	variablesToParametrizeKeywordsDefinitions :=
 		VariablesToParametrizeKeywordsDefinitions with: definitions.
-	
+
 	parameters :=
-		ReplaceIfNilWithPolymorphismParameters 
+		ReplaceIfNilWithPolymorphismParameters
 			forIfNilMessageSending: messageNode
 			onMethod: methodNode
 			useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions.
-			
+
 	self assert: messageNode equals: parameters messageNode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/20/2019 11:32:23'!
 test06ReplaceIfNilWithPolymorphismParametersOnBlocksWithBooleanConstants
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf definitions parameters |
-	
+
 	aClassToRefactor := self createClassNamed: #AClassToRefactor instanceVariableNames: 'anInstVar'.
 	sourceWithIf := 'm1 anInstVar ifNil: [self or: [true]].'.
 	aClassToRefactor compile: sourceWithIf.
-	
+
 	methodNode := (aClassToRefactor compiledMethodAt: #m1) methodNode.
 	messageNode := methodNode block statements first.
-	
+
 	definitions := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'self'
 			useKeyword: #with
 			withParameterName: 'pSelf'}.
 	variablesToParametrizeKeywordsDefinitions :=
 		VariablesToParametrizeKeywordsDefinitions with: definitions.
-	
+
 	parameters :=
-		ReplaceIfNilWithPolymorphismParameters 
+		ReplaceIfNilWithPolymorphismParameters
 			forIfNilMessageSending: messageNode
 			onMethod: methodNode
 			useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions.
-			
+
 	self assert: messageNode equals: parameters messageNode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 15:30:37'!
 test07ParameterNamesMustNotBeEqualToABlockTemporal
 
 	| variablesToParametrizeKeywordsDefinitions sourceWithIf definitions |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNil: [ | tempVar | tempVar := 1 + 1. self isNil].'.
 	definitions := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'self'
 			useKeyword: #with
 			withParameterName: 'tempVar'}.
@@ -5246,17 +5246,17 @@ test07ParameterNamesMustNotBeEqualToABlockTemporal
 test08ParameterNamesMustNotBeEqualToANestedBlockTemporal
 
 	| variablesToParametrizeKeywordsDefinitions sourceWithIf definitions |
-	
-	sourceWithIf := 'm1 
+
+	sourceWithIf := 'm1
 		anInstVar ifNil: [self ifNil: [ | tempVar | tempVar := 1 + 1]].'.
 	definitions := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'self'
 			useKeyword: #with
 			withParameterName: 'tempVar'}.
 	variablesToParametrizeKeywordsDefinitions :=
 		VariablesToParametrizeKeywordsDefinitions with: definitions.
-	
+
 	self creationFromSource: sourceWithIf withDefinitions: variablesToParametrizeKeywordsDefinitions failsWithMessageText: [
 			ReplaceIfNilWithPolymorphismParameters	parameterNameMustNotBeEqualToBlockTemporaryErrorMessage].! !
 
@@ -5264,17 +5264,17 @@ test08ParameterNamesMustNotBeEqualToANestedBlockTemporal
 test09ParameterNamesMustNotBeEqualToNestedBlocksArguments
 
 	| variablesToParametrizeKeywordsDefinitions sourceWithIf definitions |
-	
-	sourceWithIf := 'm1 
+
+	sourceWithIf := 'm1
 		anInstVar ifNil: [self allInstVarNames collect: [:arg | arg asSymbol]].'.
 	definitions := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'self'
 			useKeyword: #with
 			withParameterName: 'arg'}.
 	variablesToParametrizeKeywordsDefinitions :=
 		VariablesToParametrizeKeywordsDefinitions with: definitions.
-	
+
 	self creationFromSource: sourceWithIf withDefinitions: variablesToParametrizeKeywordsDefinitions failsWithMessageText: [
 			ReplaceIfNilWithPolymorphismParameters	parameterNameMustNotBeEqualToBlockTemporaryErrorMessage ].! !
 
@@ -5282,11 +5282,11 @@ test09ParameterNamesMustNotBeEqualToNestedBlocksArguments
 test10RangeOfMessageSendForIfNilIfNotNil
 
 	| sourceWithIf beforeMessageSend from messageSend |
-	
+
 	beforeMessageSend := 'm1 '.
 	messageSend := 'anInstVar ifNil: [1 + 1] ifNotNil: [2 + 2]'.
 	sourceWithIf := beforeMessageSend, messageSend.
-	
+
 	from := beforeMessageSend size + 1.
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
@@ -5294,11 +5294,11 @@ test10RangeOfMessageSendForIfNilIfNotNil
 test11RangeOfMessageSendForIfNotNilIfNil
 
 	| sourceWithIf beforeMessageSend from messageSend |
-	
+
 	beforeMessageSend := 'm1 '.
 	messageSend := 'anInstVar ifNotNil: [1 + 1] ifNil: [2 + 2]'.
 	sourceWithIf := beforeMessageSend, messageSend.
-	
+
 	from := beforeMessageSend size + 1.
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
@@ -5306,11 +5306,11 @@ test11RangeOfMessageSendForIfNotNilIfNil
 test12RangeOfMessageSendForIfNotNil
 
 	| sourceWithIf beforeMessageSend from messageSend |
-	
+
 	beforeMessageSend := 'm1 '.
 	messageSend := 'anInstVar ifNotNil: [1 + 1]'.
 	sourceWithIf := beforeMessageSend, messageSend.
-	
+
 	from := beforeMessageSend size + 1.
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
@@ -5318,11 +5318,11 @@ test12RangeOfMessageSendForIfNotNil
 test13RangeOfMessageSendForIfNil
 
 	| sourceWithIf beforeMessageSend from messageSend |
-	
+
 	beforeMessageSend := 'm1 '.
 	messageSend := 'anInstVar ifNil: [1 + 1]'.
 	sourceWithIf := beforeMessageSend, messageSend.
-	
+
 	from := beforeMessageSend size + 1.
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
@@ -5330,11 +5330,11 @@ test13RangeOfMessageSendForIfNil
 test14RangeOfMessageSendForIsNilIfTrue
 
 	| sourceWithIf beforeMessageSend messageSend from |
-	
+
 	beforeMessageSend := 'm1 '.
 	messageSend := 'anInstVar isNil ifTrue: [1 + 1]'.
 	sourceWithIf := beforeMessageSend, messageSend.
-	
+
 	from := beforeMessageSend size + 1.
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
@@ -5342,11 +5342,11 @@ test14RangeOfMessageSendForIsNilIfTrue
 test15RangeOfMessageSendForIsNilIfTrueIfFalse
 
 	| sourceWithIf beforeMessageSend from messageSend |
-	
+
 	beforeMessageSend := 'm1 '.
 	messageSend := 'anInstVar isNil ifTrue: [1 + 1] ifFalse: [2+2]'.
 	sourceWithIf := beforeMessageSend, messageSend.
-	
+
 	from := beforeMessageSend size + 1.
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
@@ -5354,11 +5354,11 @@ test15RangeOfMessageSendForIsNilIfTrueIfFalse
 test16WhenThereAreExtraSpacesRangeOfMessageSendForIfNilIfNotNil
 
 	| sourceWithIf beforeMessageSend messageSend from |
-	
+
 	beforeMessageSend := 'm1 '.
 	messageSend := 'anInstVar       ifNil: [1 + 1]          ifNotNil: [2 + 2]'.
 	sourceWithIf := beforeMessageSend, messageSend.
-	
+
 	from := beforeMessageSend size + 1.
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
@@ -5366,11 +5366,11 @@ test16WhenThereAreExtraSpacesRangeOfMessageSendForIfNilIfNotNil
 test17WhenThereAreExtraSpacesRangeOfMessageSendForIsNilIfTrue
 
 	| sourceWithIf beforeMessageSend messageSend from |
-	
+
 	beforeMessageSend := 'm1 '.
 	messageSend := 'anInstVar    isNil       ifTrue: [1 + 1]'.
 	sourceWithIf := beforeMessageSend, messageSend.
-	
+
 	from := beforeMessageSend size + 1.
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
@@ -5378,175 +5378,175 @@ test17WhenThereAreExtraSpacesRangeOfMessageSendForIsNilIfTrue
 test18ConcreteBlockSourceCodeForIfNilIfNotNil
 
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNil: [1 + 1] ifNotNil: [2+2]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '2+2' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 15:52:40'!
 test19ConcreteBlockSourceCodeForIfNotNil
-	
+
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNotNil: [2+2]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '2+2' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 15:53:07'!
 test20ConcreteBlockSourceCodeForIfNotNilIfNil
-	
+
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNotNil: [2+2] ifNil: [1+1]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '2+2' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 15:53:42'!
 test21ConcreteBlockSourceCodeForIsNilIfFalse
 
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar isNil ifFalse: [2+2]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '2+2' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 15:54:08'!
 test22ConcreteBlockSourceCodeForIsNilIfTrueIfFalse
-	
+
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar isNil ifTrue: [1+1] ifFalse: [2+2]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '2+2' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 15:54:48'!
 test23NullBlockSourceCodeForIfNilIfNotNil
-	
+
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNil: [1+1] ifNotNil: [2+2]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '1+1' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 16:39:32'!
 test24NullBlockSourceCodeForIfNil
 
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNil: [1+1]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '1+1' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 16:40:01'!
 test25NullBlockSourceCodeForIfNotNilIfNil
 
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNotNil: [2+2] ifNil: [1+1]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '1+1' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 16:40:27'!
 test26NullBlockSourceCodeForIsNilIfTrue
-	
+
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar isNil ifTrue: [1+1]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '1+1' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 16:40:52'!
 test27NullBlockSourceCodeForIsNilIfFalseIfTrue
-	
+
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar isNil ifFalse: [2+2] ifTrue: [1+1]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '1+1' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 16:41:43'!
 test28NullBlockSourceCodeForIfNotNil
-	
+
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNotNil: [1+1]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:35:38'!
 test29WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIfNilIfNotNil
 
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNil: [1] ifNotNil: [2+2. 1+1.]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '2+2. 1+1.' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:51:55'!
 test30WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIfNotNil
-	
+
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNotNil: [2+2. 1+1.]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '2+2. 1+1.' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:52:41'!
 test31WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIsNilIfFalse
 
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar isNil ifFalse: [2+2. 1+1.]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '2+2. 1+1.' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:59:03'!
 test32WhenThereAreMultipleStatementsNullBlockSourceCodeForIfNilIfNotNil
-	
+
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNil: [1+1. 2+2.] ifNotNil: [2+2]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '1+1. 2+2.' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:59:30'!
 test33WhenThereAreMultipleStatementsNullBlockSourceCodeForIfNil
 
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar ifNil: [1+1. 2+2.]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '1+1. 2+2.' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 19:59:55'!
 test34WhenThereAreMultipleStatementsNullBlockSourceCodeForIsNilIfTrue
-	
+
 	| sourceWithIf parameters |
-	
+
 	sourceWithIf := 'm1 anInstVar isNil ifTrue: [1+1. 2+2.]'.
 	parameters := self parametersForSourceCode: sourceWithIf.
-	
+
 	self assert: '1+1. 2+2.' equals: parameters nullBlockSourceCode.! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'assertions' stamp: 'FGJ 3/18/2019 12:31:43'!
-creationWithKeyword: aKeyword failsWithMessageText: anErrorMessageBlock 
-	
+creationWithKeyword: aKeyword failsWithMessageText: anErrorMessageBlock
+
 	self
 		should: [
 			VariableToParametrizeKeywordDefinition
@@ -5557,7 +5557,7 @@ creationWithKeyword: aKeyword failsWithMessageText: anErrorMessageBlock
 		withMessageText: anErrorMessageBlock.! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'assertions' stamp: 'FGJ 3/18/2019 12:13:23'!
-creationWithParameterName: aParameterName failsWithMessageText: anErrorMessageBlock 
+creationWithParameterName: aParameterName failsWithMessageText: anErrorMessageBlock
 
 	self
 		should: [
@@ -5579,8 +5579,8 @@ test01ParameterNameMustNotBeEmpty
 	| emptyParameterName |
 
 	emptyParameterName := ''.
-	
-	self 
+
+	self
 		creationWithParameterName: emptyParameterName
 		failsWithMessageText: [VariableToParametrizeKeywordDefinition invalidParameterNameErrorMessage].! !
 
@@ -5591,7 +5591,7 @@ test02ParameterNameMustNotContainInvalidCharacters
 
 	parameterNameWithInvalidCharacters := 'parameterName23With$#$@InvalidCharacters'.
 
-	self 
+	self
 		creationWithParameterName: parameterNameWithInvalidCharacters
 		failsWithMessageText: [
 			VariableToParametrizeKeywordDefinition invalidParameterNameErrorMessage].! !
@@ -5602,8 +5602,8 @@ test03ParameterNameMustNotContainSeparators
 	| parameterNameWithSeparators |
 
 	parameterNameWithSeparators := 'parameterName With Separators'.
-	
-	self 
+
+	self
 		creationWithParameterName: parameterNameWithSeparators
 		failsWithMessageText: [
 			VariableToParametrizeKeywordDefinition invalidParameterNameErrorMessage].! !
@@ -5614,8 +5614,8 @@ test04KeywordMustNotBeEmpty
 	| emptyKeyword |
 
 	emptyKeyword := '' asSymbol.
-	
-	self 
+
+	self
 		creationWithKeyword: emptyKeyword
 		failsWithMessageText: [VariableToParametrizeKeywordDefinition keywordMustNotBeEmptyErrorMessage].! !
 
@@ -5625,8 +5625,8 @@ test05KeywordMustNotContainInvalidCharacters
 	| keywordWithInvalidCharacters |
 
 	keywordWithInvalidCharacters := 'keywordWith^%%$#@invalidCharacters' asSymbol.
-	
-	self 
+
+	self
 		creationWithKeyword: keywordWithInvalidCharacters
 		failsWithMessageText: [VariableToParametrizeKeywordDefinition keywordMustNotContainInvalidCharactersErrorMessage].! !
 
@@ -5634,13 +5634,13 @@ test05KeywordMustNotContainInvalidCharacters
 test06CreatesADefinition
 
 	| definition keyword parameterName variableName |
-	
+
 	variableName := 'self'.
 	keyword := #with.
 	parameterName := 'selfParameterName'.
-	
+
 	definition := VariableToParametrizeKeywordDefinition forVariable: variableName useKeyword: keyword withParameterName: parameterName.
-	
+
 	self assert: keyword equals: definition keyword.
 	self assert: variableName equals: definition variableName.
 	self assert: parameterName equals: definition parameterName.! !
@@ -5649,41 +5649,41 @@ test06CreatesADefinition
 test01WhenTheMethodHasNoVariablesItReturnsAnEmptySet
 
 	| classToAnalize variablesToExtract |
-	
+
 	classToAnalize := self createClassNamed: #AClass.
 	variablesToExtract := self variablesToExtractIn: 'm1' at: classToAnalize.
-	
+
 	self assert: variablesToExtract isEmpty.! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 3/4/2019 14:41:54'!
 test02WhenTheMethodHasOnlyTemporaryVariablesItReturnsAnEmptySet
 
 	| classToAnalize variablesToExtract sourceCode |
-	
+
 	classToAnalize := self createClassNamed: #AClass.
 	sourceCode := 'm1
-		| aTempVar | 
-		
+		| aTempVar |
+
 		aTempVar := 2.
-		
+
 		^aTempVar.'.
-		
+
 	variablesToExtract := self variablesToExtractIn: sourceCode at: classToAnalize.
-	
+
 	self assert: variablesToExtract isEmpty.! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 3/4/2019 14:43:15'!
 test03WhenTheMethodReferencesSelfPseudoVariableItFindsIt
 
 	| classToAnalize variablesToExtract sourceCode |
-	
+
 	classToAnalize := self createClassNamed: #AClass.
 	sourceCode := 'm1
-	
+
 		self m2.'.
-	
+
 	variablesToExtract := self variablesToExtractIn: sourceCode at: classToAnalize.
-	
+
 	self assert: 1 equals: variablesToExtract size.
 	self assert: (variablesToExtract includes: 'self').! !
 
@@ -5691,14 +5691,14 @@ test03WhenTheMethodReferencesSelfPseudoVariableItFindsIt
 test04WhenTheMethodHasArgumentsTheyAreIncludedAsVariablesToExtract
 
 	| classToAnalize variablesToExtract sourceCode |
-	
+
 	classToAnalize := self createClassNamed: #AClass.
 	sourceCode := 'm1: anArg
-	
+
 		^anArg + 2'.
 
 	variablesToExtract := self variablesToExtractIn: sourceCode at: classToAnalize.
-	
+
 	self assert: 1 equals: variablesToExtract size.
 	self assert: (variablesToExtract includes: 'anArg').! !
 
@@ -5706,15 +5706,15 @@ test04WhenTheMethodHasArgumentsTheyAreIncludedAsVariablesToExtract
 test05WhenTheMethodReferencesAnInstanceVariableItFindsIt
 
 	| classToAnalize variablesToExtract sourceCode instVarName |
-	
+
 	instVarName := 'anInstVar'.
 	classToAnalize := self createClassNamed: #AClass instanceVariableNames: instVarName.
 	sourceCode := 'm1
-	
+
 		^',instVarName, ' isNil'.
-		
+
 	variablesToExtract := self variablesToExtractIn: sourceCode at: classToAnalize.
-	
+
 	self assert: 1 equals: variablesToExtract size.
 	self assert: (variablesToExtract includes: instVarName).! !
 
@@ -5722,22 +5722,22 @@ test05WhenTheMethodReferencesAnInstanceVariableItFindsIt
 test06WhenTheMethodReferencesAClassVariableItFindsIt
 
 	| classToAnalize variablesToExtract sourceCode classVarName |
-	
+
 	classVarName := 'AClassVar'.
-	classToAnalize := self 
+	classToAnalize := self
 		createClassNamed: #AClass
 		subclassOf: Object
 		instanceVariableNames: ''
 		classVariableNames: classVarName
 		poolDictionaries: ''
 		category: self classCategoryOfTestData.
-	
+
 	sourceCode := 'm1
-	
+
 		^', classVarName, ' isNil'.
-	
+
 	variablesToExtract := self variablesToExtractIn: sourceCode at: classToAnalize.
-	
+
 	self assert: 1 equals: variablesToExtract size.
 	self assert: (variablesToExtract includes: classVarName).! !
 
@@ -5745,30 +5745,30 @@ test06WhenTheMethodReferencesAClassVariableItFindsIt
 test07WhenTheMethodReferencesAPoolVariableItFindsIt
 
 	| classToAnalize variablesToExtract sourceCode aSharedPoolName aPoolVariableName |
-	
+
 	aSharedPoolName := #ASharedPool.
 	aPoolVariableName := 'APoolVariable'.
-	self 
+	self
 		createClassNamed: aSharedPoolName
 		subclassOf: SharedPool
 		instanceVariableNames: ''
 		classVariableNames: aPoolVariableName
 		poolDictionaries: ''
 		category: self classCategoryOfTestData.
-	
-	classToAnalize := self 
+
+	classToAnalize := self
 		createClassNamed: #AClass
 		subclassOf: Object
 		instanceVariableNames: ''
 		classVariableNames: ''
 		poolDictionaries: aSharedPoolName asString
 		category: self classCategoryOfTestData.
-	
+
 	sourceCode := 'm1
 		^', aPoolVariableName, ' isNil'.
-	
-	variablesToExtract := self variablesToExtractIn: sourceCode at: classToAnalize. 
-	
+
+	variablesToExtract := self variablesToExtractIn: sourceCode at: classToAnalize.
+
 	self assert: 1 equals: variablesToExtract size.
 	self assert: (variablesToExtract includes: aPoolVariableName). ! !
 
@@ -5776,28 +5776,28 @@ test07WhenTheMethodReferencesAPoolVariableItFindsIt
 test08DoesNotFindPseudoVariablesButSelf
 
 	| classToAnalize variablesToExtract sourceCode |
-	
-	classToAnalize := self createClassNamed: #AClass. 
+
+	classToAnalize := self createClassNamed: #AClass.
 	sourceCode := 'm1
-	
+
 		^true not'.
-	
+
 	variablesToExtract := self variablesToExtractIn: sourceCode at: classToAnalize.
-	
+
 	self assert: variablesToExtract isEmpty! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 3/4/2019 14:48:04'!
 test09WhenReturnsAnInstVarFindsIt
 
 	| aClass variablesToExtract aMethodReferencingInstVarSourceCode instVarName |
-	
+
 	instVarName := 'anInstVar'.
 	aClass := self createClassNamed: #AClass instanceVariableNames: instVarName.
 	aMethodReferencingInstVarSourceCode := 'm1
 		^', instVarName.
-	
+
 	variablesToExtract := self variablesToExtractIn: aMethodReferencingInstVarSourceCode at: aClass.
-	
+
 	self assert: 1 equals: variablesToExtract size.
 	self assert: (variablesToExtract includes: instVarName).! !
 
@@ -5805,35 +5805,35 @@ test09WhenReturnsAnInstVarFindsIt
 test10DoesNotFindClasses
 
 	| classToAnalize variablesToExtract sourceCode |
-	
+
 	classToAnalize := self createClassNamed: #AClass.
 	sourceCode := 'm1
 		^Object'.
-	
+
 	variablesToExtract := self variablesToExtractIn: sourceCode at: classToAnalize.
-	
+
 	self assert: variablesToExtract isEmpty! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 3/4/2019 14:49:29'!
 test11DoesNotFindGlobals
 
 	| classToAnalize variablesToExtract sourceCode |
-	
+
 	classToAnalize := self createClassNamed: #AClass.
 	sourceCode := 'm1
 		^Smalltalk'.
 
 	variablesToExtract := self variablesToExtractIn: sourceCode at: classToAnalize.
-	
+
 	self assert: variablesToExtract isEmpty! !
 
 !VariablesToExtractFinderTest methodsFor: 'variables to extract' stamp: 'HAW 3/4/2019 14:40:39'!
-variablesToExtractIn: aSourceCode at: aClass 
-	
+variablesToExtractIn: aSourceCode at: aClass
+
 	| selector |
-	
+
 	selector := aClass compile: aSourceCode.
-	
+
 	^VariablesToExtractFinder valueIn: (aClass>>selector)
 ! !
 
@@ -5848,14 +5848,14 @@ creationWithSelector: aSelector failsWithMessageText: anErrorMessageBlock
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/13/2019 14:16:54'!
 test01SelectorMustNotBeEmpty
 
-	self 
+	self
 		creationWithSelector: '' asSymbol
 		failsWithMessageText: [
 			VariablesToParametrizeKeywordsDefinitions selectorMustNotBeEmptyErrorMessage].! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/13/2019 14:14:45'!
 test02SelectorMustNotContainInvalidCharacters
-	
+
 	self
 		creationWithSelector: 'abc@#$' asSymbol
 		failsWithMessageText: [
@@ -5864,7 +5864,7 @@ test02SelectorMustNotContainInvalidCharacters
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/13/2019 14:19:07'!
 test03SelectorMustNotStartWithInvalidStartOfSelector
 
-	self 
+	self
 		creationWithSelector: '1sadkljfh' asSymbol
 		failsWithMessageText: [
 			VariablesToParametrizeKeywordsDefinitions selectorMustNotStartWithInvalidStartOfSelectorErrorMessage].! !
@@ -5873,22 +5873,22 @@ test03SelectorMustNotStartWithInvalidStartOfSelector
 test04CreatesVariablesToParametrizeKeywordsDefinitionsWithSelector
 
 	| variablesToParametrizeKeywordsDefinitions |
-	
+
 	variablesToParametrizeKeywordsDefinitions := VariablesToParametrizeKeywordsDefinitions withSelector: #polymorphicSelector.
-	
+
 	self assert: #polymorphicSelector asString equals: variablesToParametrizeKeywordsDefinitions messageSending.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/20/2019 11:32:48'!
 test05FirstKeywordMustNotStartWithAnInvalidStartOfSelector
 
 	| orderedDefinitions |
-	
-	orderedDefinitions := {VariableToParametrizeKeywordDefinition 
-		forVariable: 'variableName' 
+
+	orderedDefinitions := {VariableToParametrizeKeywordDefinition
+		forVariable: 'variableName'
 		useKeyword: '1aKeyword' asSymbol
 		withParameterName: 'parameterName'}.
-		
-	self 
+
+	self
 		should: [VariablesToParametrizeKeywordsDefinitions with: orderedDefinitions]
 		raise: RefactoringError
 		withMessageText: [VariablesToParametrizeKeywordsDefinitions firstKeywordMustNoStartWithInvalidStartOfSelectorErrorMessage].! !
@@ -5897,9 +5897,9 @@ test05FirstKeywordMustNotStartWithAnInvalidStartOfSelector
 test06ParameterNamesMustNotBeRepeated
 
 	| orderedDefinitionsWithRepeatedParameterNames |
-	
+
 	orderedDefinitionsWithRepeatedParameterNames := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'variableName1'
 			useKeyword: #with
 			withParameterName: 'parameterName'.
@@ -5907,8 +5907,8 @@ test06ParameterNamesMustNotBeRepeated
 			forVariable: 'variableName2'
 			useKeyword: #with
 			withParameterName: 'parameterName'}.
-		
-	self 
+
+	self
 		should: [VariablesToParametrizeKeywordsDefinitions with: orderedDefinitionsWithRepeatedParameterNames]
 		raise: RefactoringError
 		withMessageText: [VariablesToParametrizeKeywordsDefinitions parameterNamesMustNotBeRepeatedErrorMessage].! !
@@ -5917,9 +5917,9 @@ test06ParameterNamesMustNotBeRepeated
 test07VariablesToParametrizeMustNotBeRepeated
 
 	| orderedDefinitionsWithRepeatedVariableNames |
-	
+
 	orderedDefinitionsWithRepeatedVariableNames := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'variableName'
 			useKeyword: #with
 			withParameterName: 'p1'.
@@ -5927,8 +5927,8 @@ test07VariablesToParametrizeMustNotBeRepeated
 			forVariable: 'variableName'
 			useKeyword: #with
 			withParameterName: 'p2'}.
-		
-	self 
+
+	self
 		should: [VariablesToParametrizeKeywordsDefinitions with: orderedDefinitionsWithRepeatedVariableNames]
 		raise: RefactoringError
 		withMessageText: [VariablesToParametrizeKeywordsDefinitions variableNamesMustNotBeRepeatedErrorMessage].! !
@@ -5937,9 +5937,9 @@ test07VariablesToParametrizeMustNotBeRepeated
 test08CreatesVariablesToParametrizeKeywordsDefinitionsWithDefinitions
 
 	| definitions orderedDefinitions |
-	
+
 	orderedDefinitions := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'v1'
 			useKeyword: #k1
 			withParameterName: 'p1'.
@@ -5947,9 +5947,9 @@ test08CreatesVariablesToParametrizeKeywordsDefinitionsWithDefinitions
 			forVariable: 'v2'
 			useKeyword: #k2
 			withParameterName: 'p2'}.
-		
+
 	definitions := VariablesToParametrizeKeywordsDefinitions with: orderedDefinitions.
-	
+
 	self assert: 2 equals: definitions variablesToParametrize size.
 	self assert: (definitions variablesToParametrize includesAllOf: #('v1' 'v2')).! !
 
@@ -5957,19 +5957,19 @@ test08CreatesVariablesToParametrizeKeywordsDefinitionsWithDefinitions
 test09WhenNoVariablesToParametrizeBuildsSelector
 
 	| definitions |
-	
+
 	definitions := VariablesToParametrizeKeywordsDefinitions
 		withSelector: #theSelector.
-	
+
 	self assert: #theSelector equals: definitions selector.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/20/2019 11:33:02'!
 test10WhenVariablesToParametrizeBuildsSelectorFromKeywordsInOrder
 
 	| definitions orderedDefinitions |
-	
+
 	orderedDefinitions := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'v1'
 			useKeyword: #k1
 			withParameterName: 'p1'.
@@ -5977,19 +5977,19 @@ test10WhenVariablesToParametrizeBuildsSelectorFromKeywordsInOrder
 			forVariable: 'v2'
 			useKeyword: #k2
 			withParameterName: 'p2'}.
-		
+
 	definitions := VariablesToParametrizeKeywordsDefinitions
 		with: orderedDefinitions.
-	
+
 	self assert: #k1:k2: equals: definitions selector.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/20/2019 11:39:50'!
 test11WhenVariablesToParametrizeBuildsMessageSending
 
 	| definitions orderedDefinitions |
-	
+
 	orderedDefinitions := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'v1'
 			useKeyword: #k1
 			withParameterName: 'p1'.
@@ -5997,29 +5997,29 @@ test11WhenVariablesToParametrizeBuildsMessageSending
 			forVariable: 'v2'
 			useKeyword: #k2
 			withParameterName: 'p2'}.
-		
+
 	definitions := VariablesToParametrizeKeywordsDefinitions
 		with: orderedDefinitions.
-	
+
 	self assert: 'k1: v1 k2: v2' equals: definitions messageSending.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/20/2019 15:56:46'!
 test12WhenNoVariablesToParametrizeBuildsMessageHeader
 
 	| definitions |
-	
+
 	definitions := VariablesToParametrizeKeywordsDefinitions
 		withSelector: #aRandomSelector.
-	
+
 	self assert: 'aRandomSelector' equals: definitions messageHeader.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 3/20/2019 15:56:07'!
 test13WhenVariablesToParametrizeBuildsMessageHeader
 
 	| definitions orderedDefinitions |
-	
+
 	orderedDefinitions := {
-		VariableToParametrizeKeywordDefinition 
+		VariableToParametrizeKeywordDefinition
 			forVariable: 'v1'
 			useKeyword: #k1
 			withParameterName: 'p1'.
@@ -6027,10 +6027,10 @@ test13WhenVariablesToParametrizeBuildsMessageHeader
 			forVariable: 'v2'
 			useKeyword: #k2
 			withParameterName: 'p2'}.
-		
+
 	definitions := VariablesToParametrizeKeywordsDefinitions
 		with: orderedDefinitions.
-	
+
 	self assert: 'k1: p1 k2: p2' equals: definitions messageHeader.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 17:16:19'!
@@ -6042,14 +6042,14 @@ allClassCategoriesOfTestData
 apply
 
 	| methodObjectClass |
-	
+
 	methodObjectClass := methodObjectSuperclass
 		subclass: methodObjectClassName
 		instanceVariableNames: (' ' join: methodObjectInstanceVariables )
 		classVariableNames: ''
 		poolDictionaries: ''
 		category: methodObjectCategory.
-	
+
 	self compileInstanceCreationMethodInto: methodObjectClass.
 	self compileExtractedMethodAsEvaluationMethodOn: methodObjectClass.
 	self replaceExtractedMethodWithMethodObjectEvaluation.! !
@@ -6058,7 +6058,7 @@ apply
 compileExtractedMethodAsEvaluationMethodOn: aClass
 
 	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced disregardType sourceCodeWithVariablesReplaced rangesToNewStrings rangesToNewStringsWithArgsFiltered |
-	
+
 	methodNode :=  methodToExtract methodNode.
 	rangesToNewStrings := SortedCollection sortBlock: [:rangeToStringA :rangeToStringB | rangeToStringA key first < rangeToStringB key first].
 	disregardType := [:aNode | true].
@@ -6066,29 +6066,29 @@ compileExtractedMethodAsEvaluationMethodOn: aClass
 		do: [
 			:aVariableName |
 			| rangesOfVariable |
-			rangesOfVariable := methodNode encoder 
-				rangesForVariable: aVariableName 
-				checkingType: disregardType 
+			rangesOfVariable := methodNode encoder
+				rangesForVariable: aVariableName
+				checkingType: disregardType
 				ifAbsent: [Set new].
-			
-			rangesOfVariable addAll: (methodNode encoder 
-				rangesForLiteralVariableNode: aVariableName 
+
+			rangesOfVariable addAll: (methodNode encoder
+				rangesForLiteralVariableNode: aVariableName
 				ifAbsent: [Set new]).
-					
+
 			rangesOfVariable do: [
 				:aRange |
 				| rangeToNewString instVarForVar |
 				instVarForVar := methodVariableNamesToInstanceVariableNames at: aVariableName.
 				rangeToNewString := Association key: aRange value: instVarForVar.
 				rangesToNewStrings add: rangeToNewString]].
-	
+
 	rangesToNewStringsWithArgsFiltered := self filter: rangesToNewStrings ofArgRangesOf: methodNode.
-	
+
 	originalSourceCode := methodNode sourceText.
 	sourceCodeWithVariablesReplaced := originalSourceCode copyReplacing: rangesToNewStringsWithArgsFiltered.
-	
+
 	endHeaderIndex := Parser methodHeaderLengthFrom: methodNode sourceText.
-	sourceCodeWithSelectorReplaced := sourceCodeWithVariablesReplaced copyReplacing: { Interval from: 1 to: endHeaderIndex. } with: methodObjectEvaluationSelector asString. 
+	sourceCodeWithSelectorReplaced := sourceCodeWithVariablesReplaced copyReplacing: { Interval from: 1 to: endHeaderIndex. } with: methodObjectEvaluationSelector asString.
 	aClass compile: sourceCodeWithSelectorReplaced.
 	aClass organization classify: methodObjectEvaluationSelector asSymbol under: #evaluating! !
 
@@ -6096,37 +6096,37 @@ compileExtractedMethodAsEvaluationMethodOn: aClass
 compileInstanceCreationMethodInto: aClass
 
 	| methodTitle methodBody keywordsWithParam instVarAssignments instanceInitializationSelector instanceCreationSelector keywords |
-	
+
 	methodObjectInstanceVariables isEmpty ifTrue: [^true].
-	
+
 	keywordsWithParam := keywordsDefinitions collect: [
-		:keywordDefinition | 
+		:keywordDefinition |
 		(keywordDefinition at: #keyword), ': ', (keywordDefinition at: #parameterName)].
 	methodTitle := ' ' join: keywordsWithParam.
-	
+
 	instVarAssignments := methodObjectInstanceVariables collect: [
 		:instVarName |
 		String tab, instVarName, ' := ', (self parameterNameForInstVarName: instVarName), '.'].
 	methodBody := String newLineString join: instVarAssignments.
-	
+
 	aClass class compile: methodTitle, String newLineString, String tab, '^self new initialize', methodTitle capitalized.
 	keywords := keywordsDefinitions collect: [:kd | (kd at: #keyword), ':'].
 	instanceCreationSelector := ('' join: keywords) asSymbol.
 	aClass class organization classify: instanceCreationSelector under: #'instance creation'.
-	
+
 	aClass compile: 'initialize', methodTitle capitalized, String newLineString, methodBody.
 	instanceInitializationSelector := ('initialize', instanceCreationSelector asString capitalized) asSymbol.
 	aClass organization classify: instanceInitializationSelector under: #initialization.
-	
+
 	^true.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/12/2018 15:07:36'!
 filter: rangesToStrings ofArgRangesOf: aMethodNode
-	
-	| endHeaderIndex 
+
+	| endHeaderIndex
 	|
 	endHeaderIndex := Parser methodHeaderLengthFrom: aMethodNode sourceText.
-	
+
 	^rangesToStrings select: [
 		:rangeToString |
 		rangeToString key first > endHeaderIndex].! !
@@ -6135,10 +6135,10 @@ filter: rangesToStrings ofArgRangesOf: aMethodNode
 methodHeaderFrom: aCompiledMethod
 
 	| headerLength methodToExtractSourceCode |
-	
+
 	methodToExtractSourceCode := methodToExtract methodNode sourceText.
 	headerLength := Parser methodHeaderLengthFrom: methodToExtractSourceCode.
-	
+
 	^methodToExtractSourceCode first: headerLength.
 	! !
 
@@ -6146,7 +6146,7 @@ methodHeaderFrom: aCompiledMethod
 methodToExtractBodySourceCode
 
 	| aStream methodBodyAsBlock |
-	
+
 	aStream := RWBinaryOrTextStream initializeWith: ''.
 	methodBodyAsBlock := methodToExtract methodNode block.
 	methodBodyAsBlock printOn: aStream indent: 0.
@@ -6154,24 +6154,24 @@ methodToExtractBodySourceCode
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/31/2019 13:28:42'!
 onlyReturnsSelf: aMethodNode
-	
-	aMethodNode 
-		accept: (ParseNodeEnumerator 
+
+	aMethodNode
+		accept: (ParseNodeEnumerator
 			ofBlock: [:aNode | (aNode isReturn and: [aNode isReturnSelf not]) ifTrue: [^false]]).
-	
+
 	^true.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 2/17/2019 15:26:45'!
 parameterNameForInstVarName: instVarName
 
 	| variableName keywordDefinitionForVariableName |
-	
+
 	variableName := methodVariableNamesToInstanceVariableNames keyAtValue: instVarName.
-	
+
 	keywordDefinitionForVariableName := keywordsDefinitions detect: [
 		:keywordDefinition |
 		(keywordDefinition at: #variableName) = variableName].
-	
+
 	^keywordDefinitionForVariableName at: #parameterName! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 11/30/2018 14:56:23'!
@@ -6183,7 +6183,7 @@ removeBlockEnclosingCharacters: aBlockSourceCode
 replaceExtractedMethodWithMethodObjectEvaluation
 
 	| classToRefactor constructorMessage methodToExtractHeader refactoredSourceCode optionalReturn |
-	
+
 	classToRefactor := methodToExtract methodClass.
 	constructorMessage := 'new'.
 	methodObjectInstanceVariables isEmpty ifFalse: [
@@ -6192,17 +6192,17 @@ replaceExtractedMethodWithMethodObjectEvaluation
 			:keywordDefinition |
 			(keywordDefinition at: #keyword), ': ', (keywordDefinition at: #variableName)].
 		constructorMessage := ' ' join: keywordsWithVarNames.].
-	
+
 	methodToExtractHeader := self methodHeaderFrom: methodToExtract.
 	optionalReturn := (self onlyReturnsSelf: methodToExtract methodNode)
 		ifTrue: ['']
 		ifFalse: ['^'].
-	refactoredSourceCode := methodToExtractHeader, 
+	refactoredSourceCode := methodToExtractHeader,
 		String newLineString,
 		String tab,
-		optionalReturn, 
+		optionalReturn,
 		'(',methodObjectClassName, ' ', constructorMessage, ') ', methodObjectEvaluationSelector asString.
-		
+
 	classToRefactor compile: refactoredSourceCode.! !
 
 !ExtractToMethodObject methodsFor: 'initialization' stamp: 'FGJ 4/10/2019 16:20:27'!
@@ -6230,8 +6230,8 @@ toMethodObjectClassNamed: aClassName
 subclassing: aClass
 onCategory: aCategory
 evaluatedWith: anEvaluationSelector
-		
-	^self 
+
+	^self
 		from: aCompiledMethod
 		toMethodObjectClassNamed: aClassName
 		subclassing: aClass
@@ -6249,69 +6249,69 @@ onCategory: aCategory
 withExtractedVariablesToInstanceVariables: variablesToParametrizeToInstanceVariables
 withInstanceCreationMessageFrom: keywordsDefinitions
 evaluatedWith: anEvaluationSelector
-	
+
 	| instanceVariableNames instanceCreationMessageKeywords parameterNames |
-	
+
 	self assertMethodToExtractDoesNotReferenceSuper: aCompiledMethod.
-	
+
 	"Method Object classes assertions"
 	self assertMethodObjectSuperclassIsNotMeta: aClass.
 	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
-	
+
 	"Assignment assertions"
 	self assertMethodDoesNotContainInstVarAssignments: aCompiledMethod.
       self assertMethodDoesNotContainClassVarAssignments: aCompiledMethod.
 	self assertMethodDoesNotContainPoolVarAssignments: aCompiledMethod.
-	
+
 	"Evaluation message selector assertions"
 	self assertEvaluationSelectorMustNotBeEmpty: anEvaluationSelector.
 	self assertEvaluationSelectorMustNotContainInvalidCharacters: anEvaluationSelector.
 	self assertEvaluationSelectorMustNotStartWithAnInvalidStartOfSelector: anEvaluationSelector.
-	
+
 	"Instance variable names assertions"
-	self 
+	self
 		assertAllVariablesToParametrizeFrom: aCompiledMethod
 		haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariables.
-	self 
+	self
 		assertAllInstanceVariableNamesIn: variablesToParametrizeToInstanceVariables
 		haveACorrespondingVariableToParametrizeFrom: aCompiledMethod.
-	
+
 	instanceVariableNames := variablesToParametrizeToInstanceVariables values.
-	self 
+	self
 		assertAllInstanceVariableNamesAreValid: instanceVariableNames
 		for: aClass.
 	self assertNoDuplicatedInstanceVariableNames: instanceVariableNames.
-	self 
+	self
 		assertInstanceVariableNames: instanceVariableNames
 		areNotNamedAsMethodTemporariesOf: aCompiledMethod.
 	self
 		assertInstanceVariableNamesFrom: variablesToParametrizeToInstanceVariables
 		areNotShadowedByBlockArgumentsOrTemporariesOf: aCompiledMethod.
-	
+
 	"Keywords assertions"
-	self 
+	self
 		assertAllVariablesToParametrize: variablesToParametrizeToInstanceVariables keys
 		haveOneCorrespondingKeyword: keywordsDefinitions.
 	self
-		assertAllKeywords: keywordsDefinitions 
+		assertAllKeywords: keywordsDefinitions
 		correspondToAVariableToParametrize: variablesToParametrizeToInstanceVariables keys.
-	
+
 	instanceCreationMessageKeywords := keywordsDefinitions collect: [
 		:keywordDefinition |
 		keywordDefinition at: #keyword].
 	self assertKeywordsHaveNoInvalidCharacters: instanceCreationMessageKeywords.
 	self assertKeywordsAreNotEmpty: instanceCreationMessageKeywords.
 	self assertSelectorFromKeywordsStartsWithValidStartOfSelector: instanceCreationMessageKeywords.
-	
+
 	"Instance creation message parameters assertions"
 	parameterNames := keywordsDefinitions collect: [
 		:aKeywordDefinition |
 		aKeywordDefinition at: #parameterName].
 	self assertParameterNamesAreNotDuplicated: parameterNames.
 	self assertParameterNamesAreValid: parameterNames.
-	self assertParameterNames: parameterNames doNotOverlapWithMethodObjectInstanceVariableNames: instanceVariableNames. 
-	
-	^self new 
+	self assertParameterNames: parameterNames doNotOverlapWithMethodObjectInstanceVariableNames: instanceVariableNames.
+
+	^self new
 		from: aCompiledMethod
 		toMethodObjectClassNamed: aClassName
 		subclassing: aClass
@@ -6338,7 +6338,7 @@ evaluationSelectorMustNotInvalidCharactersErrorMessage
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 4/11/2019 11:54:01'!
 evaluationSelectorMustNotStartWithAnInvalidStartOfSelectorErrorMessage
-	
+
 	^'The evaluation selector must not start with an invalid start of selector.'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 12/21/2018 15:34:17'!
@@ -6519,7 +6519,7 @@ signalMethodObjectSuperclassCannotBeMeta
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 12/11/2018 14:51:12'!
 signalMethodReferencesSuper
-	
+
 	self refactoringError: self methodCanNotReferenceSuperErrorMessage.! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 2/17/2019 14:46:24'!
@@ -6559,10 +6559,10 @@ assertAllInstanceVariableNamesIn: variablesToParametrizeToInstanceVariableNames
 haveACorrespondingVariableToParametrizeFrom: aCompiledMethod
 
 	| variablesToParametrize variablesWithNames |
-	
+
 	variablesToParametrize := VariablesToExtractFinder valueIn: aCompiledMethod.
 	variablesWithNames := variablesToParametrizeToInstanceVariableNames keys asSet.
-	
+
 	(variablesToParametrize includesAllOf: variablesWithNames)
 		ifFalse: [
 			| unknownVariableToParametrize |
@@ -6571,13 +6571,13 @@ haveACorrespondingVariableToParametrizeFrom: aCompiledMethod
 	! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 2/16/2019 14:59:07'!
-assertAllKeywords: keywordsDefinitions 
+assertAllKeywords: keywordsDefinitions
 correspondToAVariableToParametrize: variablesToParametrize
 
 	| unknownVariablesWithKeyword variablesWithKeyword |
 	variablesWithKeyword := keywordsDefinitions collect: [:keywordDefinition | keywordDefinition at: #variableName].
 	unknownVariablesWithKeyword := variablesWithKeyword difference: variablesToParametrize.
-	
+
 	unknownVariablesWithKeyword
 		isEmpty
 		ifFalse: [
@@ -6588,19 +6588,19 @@ assertAllVariablesToParametrize: variablesToParametrize
 haveOneCorrespondingKeyword: keywordsDefinitions
 
 	| variablesToParametrizeWithKeyword variablesToParametrizeWithoutKeyword variablesWithMultipleKeywords |
-	
+
 	variablesToParametrizeWithKeyword := keywordsDefinitions collect: [:keywordDefinition | keywordDefinition at: #variableName].
 	variablesToParametrizeWithoutKeyword := variablesToParametrize difference: variablesToParametrizeWithKeyword.
-	
+
 	variablesToParametrizeWithoutKeyword
 		isEmpty
 		ifFalse: [
 			self signalVariablesToParametrizeWithoutKeywordAssigned: variablesToParametrizeWithoutKeyword].
-	
+
 	variablesWithMultipleKeywords := variablesToParametrizeWithKeyword select: [
 		:aVar |
 		(variablesToParametrizeWithKeyword occurrencesOf: aVar) > 1].
-	
+
 	variablesWithMultipleKeywords
 		isEmpty
 		ifFalse: [
@@ -6611,10 +6611,10 @@ assertAllVariablesToParametrizeFrom: aCompiledMethod
 haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariableNames
 
 	| variablesToParametrize variablesWithNames |
-	
+
 	variablesToParametrize := VariablesToExtractFinder valueIn: aCompiledMethod.
 	variablesWithNames := variablesToParametrizeToInstanceVariableNames keys asSet.
-	
+
 	(variablesWithNames includesAllOf: variablesToParametrize)
 		ifFalse: [
 			| variablesWithoutNames |
@@ -6644,9 +6644,9 @@ areNotNamedAsMethodTemporariesOf: aCompiledMethod
 
 	temporariesNodes := aCompiledMethod methodNode temporaries.
 	temporariesNames := temporariesNodes collect: [:tempNode | tempNode name].
-	
+
 	overlappingNames := temporariesNames intersection: variableNames.
-	
+
 	overlappingNames
 		isEmpty
 		ifFalse: [self signalInstanceVariableNamesSameAsTemporals: overlappingNames].! !
@@ -6654,13 +6654,13 @@ areNotNamedAsMethodTemporariesOf: aCompiledMethod
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/18/2018 16:45:33'!
 assertInstanceVariableNamesFrom: methodVariableNamesToInstanceVariableNames
 areNotShadowedByBlockArgumentsOrTemporariesOf: aCompiledMethod
-		
+
 	| shadowedInstanceVariables |
-	
-	shadowedInstanceVariables := self 
+
+	shadowedInstanceVariables := self
 		shadowedInstanceVariablesByArgumentsOrTemporariesOfBlockNodesOf: aCompiledMethod
 		whenReplacingWith: methodVariableNamesToInstanceVariableNames.
-	
+
 	shadowedInstanceVariables
 		isEmpty
 		ifFalse: [self signalInstanceVariableNamesShadowedByBlockTemporals: shadowedInstanceVariables].! !
@@ -6675,10 +6675,10 @@ assertKeywordsAreNotEmpty: instanceCreationMessageKeywords
 assertKeywordsHaveNoInvalidCharacters: keywords
 
 	| keywordsWithInvalidCharacters |
-	
+
 	keywordsWithInvalidCharacters := keywords select: [:keyword | self keywordHasInvalidCharacters: keyword].
-	
-	keywordsWithInvalidCharacters 
+
+	keywordsWithInvalidCharacters
 		isEmpty
 		ifFalse: [self signalKeywordsContainInvalidCharacters: keywordsWithInvalidCharacters].! !
 
@@ -6704,7 +6704,7 @@ assertMethodDoesNotContainPoolVarAssignments: aCompiledMethod
 assertMethodObjectSuperclassIsNotMeta: aClass
 
 	aClass
-		isMeta 
+		isMeta
 		ifTrue: [self signalMethodObjectSuperclassCannotBeMeta].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 1/4/2019 12:40:32'!
@@ -6718,8 +6718,8 @@ assertNoDuplicatedInstanceVariableNames: names
 
 	| duplicateNames |
 	duplicateNames := names select: [:aName | (names occurrencesOf: aName) > 1].
-	
-	duplicateNames 
+
+	duplicateNames
 		isEmpty
 		ifFalse: [ self signalDuplicateInstanceVariableNames: duplicateNames asSet ].! !
 
@@ -6728,9 +6728,9 @@ assertParameterNames: parameterNames
 doNotOverlapWithMethodObjectInstanceVariableNames: instanceVariableNames
 
 	| overlappingParameterNames |
-	
+
 	overlappingParameterNames := parameterNames intersection: instanceVariableNames.
-	
+
 	overlappingParameterNames ifNotEmpty: [
 		self signalParameterNamesOverlapWithInstanceVariableNames: overlappingParameterNames].! !
 
@@ -6742,7 +6742,7 @@ assertParameterNamesAreNotDuplicated: parameterNames
 	duplicatedParameterNames := parameterNames select: [
 		:aName |
 		(parameterNames occurrencesOf: aName) > 1].
-	
+
 	duplicatedParameterNames ifNotEmpty: [
 		self signalDuplicateParameterNames: duplicatedParameterNames asSet ].! !
 
@@ -6750,22 +6750,22 @@ assertParameterNamesAreNotDuplicated: parameterNames
 assertParameterNamesAreValid: parameterNames
 
 	| invalidParameterNames |
-	
+
 	invalidParameterNames := parameterNames select: [
 		:aParameterName |
 		self isInvalidParameterName: aParameterName].
-		
+
 	invalidParameterNames size > 0 ifTrue: [self signalInvalidParameterNames: invalidParameterNames].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 12/21/2018 16:01:40'!
 assertSelectorFromKeywordsStartsWithValidStartOfSelector: instanceCreationMessageKeywords
 
 	| firstKeyword |
-	
+
 	instanceCreationMessageKeywords isEmpty ifTrue: [^true].
-	
+
 	firstKeyword := instanceCreationMessageKeywords first.
-	
+
 	firstKeyword
 		first
 		isValidStartOfIdentifiers
@@ -6775,30 +6775,30 @@ assertSelectorFromKeywordsStartsWithValidStartOfSelector: instanceCreationMessag
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/18/2018 15:13:34'!
 blockNodesFrom: aMethodNode
-		
+
 	| blockNodes |
-	
+
 	blockNodes := Set new.
 	aMethodNode
 		accept: (ParseNodeEnumerator
 			ofBlock: [
 				:aNode |
-				aNode 
+				aNode
 					isBlockNode
-					ifTrue: [blockNodes add: aNode.]]). 					
-	
+					ifTrue: [blockNodes add: aNode.]]).
+
 	^blockNodes! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 1/31/2019 20:35:33'!
 doesMethodContainsClassVarAssignments: aCompiledMethod
 
 	| methodClass |
-	
+
 	methodClass := aCompiledMethod methodNode methodClass.
 	aCompiledMethod methodNode
 		accept: (ParseNodeEnumerator
 			ofBlock: [:aNode | (self isNode: aNode anAssignmentToAClassVarFrom: methodClass) ifTrue: [^true]]).
-		
+
 	^false.
 ! !
 
@@ -6808,7 +6808,7 @@ doesMethodContainsInstVarAssignments: aCompiledMethod
 	aCompiledMethod methodNode
 		accept: (ParseNodeEnumerator
 			ofBlock: [:aNode | (self isAssignmentToInstVarNode: aNode) ifTrue: [^true]]).
-		
+
 	^false.
 ! !
 
@@ -6816,18 +6816,18 @@ doesMethodContainsInstVarAssignments: aCompiledMethod
 doesMethodContainsPoolVarAssignments: aCompiledMethod
 
 	| poolVariablesNames methodNode |
-	
+
 	methodNode := aCompiledMethod methodNode.
 	poolVariablesNames := methodNode methodClass allSharedPools
 		inject: Set new
 		into: [:varNames :aPool | varNames addAll: aPool allClassVarNames. varNames ].
-	
+
 	methodNode
 		accept: (ParseNodeEnumerator
 			ofBlock: [:aNode |
 				(aNode isAssignmentNode and: [poolVariablesNames includes: aNode variable name])
 					ifTrue: [^true]]).
-		
+
 	^false.
 ! !
 
@@ -6840,11 +6840,11 @@ isAssignmentToInstVarNode: aNode
 isInvalidParameterName: aParameterName
 
 	| scannedNames |
-	
+
 	scannedNames _ Scanner new scanFieldNames: aParameterName.
 	scannedNames size = 1 ifFalse: [^true].
 	scannedNames first = aParameterName ifFalse: [^true].
-	
+
 	^false
 ! !
 
@@ -6860,28 +6860,28 @@ keywordHasInvalidCharacters: keyword
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 11/27/2018 15:46:47'!
 newClassPreconditionClass
-	
-	^NewClassPrecondition.	
+
+	^NewClassPrecondition.
 	! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/18/2018 16:42:39'!
 shadowedInstanceVariablesByArgumentsOrTemporariesOfBlockNodesOf: aCompiledMethod
-whenReplacingWith: methodVariableNamesToInstanceVariableNames		
+whenReplacingWith: methodVariableNamesToInstanceVariableNames
 
 	| shadowedInstanceVariables blockNodes |
-	
+
 	blockNodes := self blockNodesFrom: aCompiledMethod methodNode.
 	shadowedInstanceVariables := Set new.
-	
+
 	blockNodes do: [
 		:aBlockNode |
 		|  aBlockNodeShadowedInstanceVaribles |
 			aBlockNodeShadowedInstanceVaribles := self
 				shadowedInstanceVariablesIn: aBlockNode
 				whenReplacingWith: methodVariableNamesToInstanceVariableNames.
-			
+
 			shadowedInstanceVariables addAll: aBlockNodeShadowedInstanceVaribles].
-	
+
 	^shadowedInstanceVariables! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/18/2018 16:44:54'!
@@ -6889,35 +6889,35 @@ shadowedInstanceVariablesIn: aBlockNode
 whenReplacingWith: methodVariableNamesToInstanceVariableNames
 
 	| aBlockTemporariesNames aBlockVariablesNames blockVariablesToExtract variablesToExtract blockVariablesToExtractInstVarNames aBlockArgumentsNames |
-	
+
 	aBlockVariablesNames := (self variableNodesFrom: aBlockNode) collect: [:aNode | aNode name].
 	variablesToExtract := methodVariableNamesToInstanceVariableNames keys asSet.
 	blockVariablesToExtract := aBlockVariablesNames intersection: variablesToExtract.
-	
+
 	blockVariablesToExtractInstVarNames := blockVariablesToExtract collect: [
 		:aBlockVariableToExtract |
 		methodVariableNamesToInstanceVariableNames at: aBlockVariableToExtract].
-	
+
 	aBlockTemporariesNames := aBlockNode temporaries collect: [:aNode | aNode name].
 	aBlockArgumentsNames := aBlockNode arguments collect: [:anArgument | anArgument name].
-	
+
 	^(aBlockTemporariesNames union: aBlockArgumentsNames)
 		intersection: blockVariablesToExtractInstVarNames! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 12/18/2018 15:57:30'!
-variableNodesFrom: aBlockNode 
-		
+variableNodesFrom: aBlockNode
+
 	| variableNodes |
-	
+
 	variableNodes := Set new.
 	aBlockNode
 		accept: (ParseNodeEnumerator
 			ofBlock: [
 				:aNode |
-				aNode 
-					isVariableNode 
-					ifTrue: [variableNodes add: aNode.]]). 					
-	
+				aNode
+					isVariableNode
+					ifTrue: [variableNodes add: aNode.]]).
+
 	^variableNodes! !
 
 !IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/19/2019 17:54:43'!
@@ -6927,13 +6927,13 @@ apply
 
 !IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 4/16/2019 15:37:36'!
 applyWith: replacementParameter
-	
-	self 
+
+	self
 		compile: replacementParameter concreteBlockSourceCode
 		in: replacementParameter concreteBlockRange
 		asPolymorphicMessageOnClass: concreteClass
 		using: replacementParameter.
-	self 
+	self
 		compile: replacementParameter nullBlockSourceCode
 		in: replacementParameter nullBlockRange
 		asPolymorphicMessageOnClass: nullClass
@@ -6981,20 +6981,20 @@ rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter
 	offset := aBlockRange first - 1.
 	rangesOffsetToBlock := rangesInsideBlockRange collect: [:rangeToReplacement |
 		Association key: rangeToReplacement key - offset value: rangeToReplacement value].
-	
+
 	^rangesOffsetToBlock! !
 
 !IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/20/2019 15:47:21'!
 replaceNilCheckWithPolymorphicMessageSendUsing: replacementParameter
 
 	| originalSourceCode refactoredSourceCode |
-	
+
 	originalSourceCode := replacementParameter methodSourceCode.
 	refactoredSourceCode := originalSourceCode copyReplacing: {
-		Association 
+		Association
 			key: replacementParameter rangeOfMessageSend
 			value: instVar, Character space asString, replacementParameter polymorphicMessageSend}.
-	
+
 	classToRefactor compile: refactoredSourceCode.! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 2/20/2019 11:01:56'!
@@ -7028,9 +7028,9 @@ assertBlocksDoNotContainAssignmentsToVariablesThatAreNotBlockTemporals: messageN
 assertBlocksDoNotContainReferencesToSuper: messageNodes
 
 	| nodesWithReferenceToSuper |
-	
+
 	nodesWithReferenceToSuper := messageNodes select: [:aMessageNode | self referencesSuper: aMessageNode].
-	
+
 	nodesWithReferenceToSuper ifNotEmpty: [
 		self signalMessageNodesReferenceSuper: nodesWithReferenceToSuper].! !
 
@@ -7045,10 +7045,10 @@ assertBlocksDoNotContainReturnStatements: messageNodes
 assertMessageNode: messageNode receiverIs: anInstVarName
 
 	| variableReceiver |
-	
+
 	variableReceiver := messageNode receiver.
 	messageNode receiver isVariableNode ifFalse: [variableReceiver := variableReceiver receiver].
-	
+
 	variableReceiver name = anInstVarName ifFalse: [self signalMessageNodeReceiverMustBeTheInstVar].! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 3/18/2019 17:24:56'!
@@ -7070,7 +7070,7 @@ assertPolymorphicSelectorsFrom: replacementParameters areNotDefinedIn: aClass
 	| anySelectorAlreadyDefined |
 	anySelectorAlreadyDefined := replacementParameters anySatisfy: [:parameter |
 		aClass selectors includes: parameter polymorphicSelector].
-	
+
 	anySelectorAlreadyDefined ifTrue: [self signalPolymorphicSelectorsMustNotBeDefinedInTheNullObjectClasses].
 	! !
 
@@ -7081,24 +7081,24 @@ containsAssignmentToNotBlockTemporal: messageNode
 
 	assignableTemporals := Bag new.
 
-	assignmentToNotBlockTemporalDetector := EntranceExitBlockEnumerator 
+	assignmentToNotBlockTemporalDetector := EntranceExitBlockEnumerator
 		atEntranceBlock: [
 			:aNode |
-			
+
 			(aNode isAssignmentNode and: [
 				(assignableTemporals includes: aNode variable name) not])
 			ifTrue: [^true].
-			
+
 			aNode isBlockNode ifTrue: [
 				assignableTemporals addAll: (aNode temporaries collect: [:variable | variable name]).] ]
 		atExitBlock: [
 			:aNode |
-		
+
 			aNode isBlockNode ifTrue: [
 				assignableTemporals removeAll: (aNode temporaries collect: [:variable | variable name])]].
-		
+
 	messageNode accept: assignmentToNotBlockTemporalDetector.
-	
+
 	^false! !
 
 !IntroduceNullObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/19/2019 19:33:04'!
@@ -7107,7 +7107,7 @@ containsReturnStatement: aMessageNode
 	aMessageNode accept: (ParseNodeEnumerator ofBlock: [
 		:aNode |
 		(aNode isBlockNode and: [aNode returns]) ifTrue: [^true]]).
-		
+
 	^false! !
 
 !IntroduceNullObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/18/2019 18:56:41'!
@@ -7116,7 +7116,7 @@ referencesSuper: aParseNode
 	aParseNode accept: (ParseNodeEnumerator ofBlock: [
 		:aNode |
 		(aNode isVariableNode and: [aNode name = 'super']) ifTrue: [^true]]).
-	
+
 	^false! !
 
 !IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 2/19/2019 21:35:28'!
@@ -7217,24 +7217,24 @@ usingAsNullClass: aNullClass
 for: replacementParameters
 
 	| messageNodes methodNodes |
-	
+
 	messageNodes := replacementParameters collect: [:parameter | parameter messageNode].
 	self assertBlocksDoNotContainReferencesToSuper: messageNodes.
 	self assertBlocksDoNotContainAssignmentsToVariablesThatAreNotBlockTemporals: messageNodes.
 	self assertBlocksDoNotContainReturnStatements: messageNodes.
-	
+
 	self assert: anInstVarName belongsTo: aClassToRefactor.
-	
+
 	self assert: aConcreteClass isDifferentFrom: aNullClass.
-	
+
 	methodNodes := replacementParameters collect: [:parameter | parameter methodNode].
 	self assert: methodNodes belongToTheHierarchyToRefactorRootedOn: aClassToRefactor.
 	self assertMessageNodesAreNotDuplicated: messageNodes.
 	self assertMessageNodes: messageNodes receiverIs: anInstVarName.
-	
+
 	self assertPolymorphicSelectorsFrom: replacementParameters areNotDefinedIn: aConcreteClass.
 	self assertPolymorphicSelectorsFrom: replacementParameters areNotDefinedIn: aNullClass.
-	
+
 	^self new
 		initializeOn: anInstVarName
 		of: aClassToRefactor
@@ -7245,37 +7245,37 @@ for: replacementParameters
 
 !NullObjectHierarchyCreator methodsFor: 'evaluating' stamp: 'FGJ 1/23/2019 17:10:26'!
 apply
-	
+
 	| concreteClassSuperclass abstractClass nullObjectClass |
-	
+
 	concreteClassSuperclass := concreteClass superclass.
-	
-	abstractClass := concreteClassSuperclass 
-		subclass: abstractClassName 
+
+	abstractClass := concreteClassSuperclass
+		subclass: abstractClassName
 		instanceVariableNames: ''
 		classVariableNames: ''
 		poolDictionaries: ''
 		category: category.
-		
-	nullObjectClass := abstractClass 
+
+	nullObjectClass := abstractClass
 		subclass: nullObjectClassName
 		instanceVariableNames: ''
 		classVariableNames: ''
 		poolDictionaries: ''
 		category: category.
-	
+
 	concreteClass selectorsDo: [:aSelector |
 		| methodHeader |
-		
+
 		methodHeader := concreteClass methodHeaderFor: aSelector.
-		
-		abstractClass compile: 
-			methodHeader, 
+
+		abstractClass compile:
+			methodHeader,
 			Character newLineCharacter asString,
 			Character tab asString,
 			'self subclassResponsibility.'.
 		nullObjectClass compile: methodHeader].
-	
+
 	concreteClass superclass: abstractClass.! !
 
 !NullObjectHierarchyCreator methodsFor: 'initialization' stamp: 'FGJ 1/23/2019 15:45:22'!
@@ -7292,28 +7292,28 @@ inCategory: aCategory
 !NullObjectHierarchyCreator class methodsFor: 'instance creation' stamp: 'FGJ 1/23/2019 15:45:55'!
 from: aConcreteClass
 withAbstractClassName: anAbstractClassName
-withNullClassName: aNullClassName 
+withNullClassName: aNullClassName
 inCategory: aCategory
-	
-	self newClassPreconditionClass valueFor: anAbstractClassName in: Smalltalk undeclared: Undeclared. 
+
+	self newClassPreconditionClass valueFor: anAbstractClassName in: Smalltalk undeclared: Undeclared.
 	self newClassPreconditionClass valueFor: aNullClassName in: Smalltalk undeclared: Undeclared.
-	
-	^self new 
+
+	^self new
 		from: aConcreteClass
-		withAbstractClassName: anAbstractClassName 
+		withAbstractClassName: anAbstractClassName
 		withNullClassName: aNullClassName
 		inCategory: aCategory! !
 
 !NullObjectHierarchyCreator class methodsFor: 'instance creation' stamp: 'FGJ 1/23/2019 14:34:12'!
 newClassPreconditionClass
-	
+
 	^NewClassPrecondition! !
 
 !ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 17:56:19'!
 createRefactoring
-	
-	^ExtractToMethodObject 
-		from: compiledMethodToExtract 
+
+	^ExtractToMethodObject
+		from: compiledMethodToExtract
 		toMethodObjectClassNamed: extractToMethodObjectRequest methodObjectClassName
 		subclassing: extractToMethodObjectRequest methodObjectSuperclass
 		onCategory: extractToMethodObjectRequest methodObjectCategory
@@ -7329,7 +7329,7 @@ requestRefactoringParameters
 
 !ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 19:56:45'!
 showChanges
-	
+
 	panel deleteDiscardingEdits.
 	Transcript log: 'Successfully applied the Extract Method To Method Object refactoring'.! !
 
@@ -7339,7 +7339,7 @@ cancel
 	panel delete.! !
 
 !ExtractToMethodObjectApplier methodsFor: 'event handling' stamp: 'FGJ 4/4/2019 17:33:21'!
-handleRefactoringError: aRefactoringError 
+handleRefactoringError: aRefactoringError
 
 	self inform: aRefactoringError messageText.! !
 
@@ -7353,7 +7353,7 @@ userSubmitted: anExtractToMethodObjectRequest
 
 	extractToMethodObjectRequest := anExtractToMethodObjectRequest.
 	self createRefactoringHandlingRefactoringExceptions.
-	
+
 	refactoring ifNotNil: [self applyRefactoring; showChanges].! !
 
 !ExtractToMethodObjectApplier methodsFor: 'initialization' stamp: 'FGJ 2/13/2019 15:24:32'!
@@ -7402,19 +7402,19 @@ cancel
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:58:59'!
 chooseInstanceVariable
-	
+
 	instanceVariable ifNotNil: [ ^self ].
-		
-	classToRefactor 
+
+	classToRefactor
 		chooseDefiningInstanceVariableAlphabeticallyWith: self selectVariableLabel
 		thenDo: [ :anInstanceVariable | ^instanceVariable := anInstanceVariable ].! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 17:46:44'!
 createRefactoring
-	
+
 	^IntroduceNullObject
-		on: instanceVariable 
-		of: classToRefactor 
+		on: instanceVariable
+		of: classToRefactor
 		usingAsConcreteClass: introduceNullObjectRequest concreteClass
 		usingAsNullClass: introduceNullObjectRequest nullClass
 		for: introduceNullObjectRequest replacementParameters
@@ -7427,7 +7427,7 @@ formWasClosed
 	self cancel.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 13:07:17'!
-handleRefactoringError: aRefactoringError 
+handleRefactoringError: aRefactoringError
 
 	self inform: aRefactoringError messageText.! !
 
@@ -7440,23 +7440,23 @@ ifNilChecks
 requestRefactoringParameters
 
 	self chooseInstanceVariable.
-	
+
 	instanceVariable ifNil: [^self].
-	
+
 	ifNilChecks := (IfNilChecksFinder on: classToRefactor for: instanceVariable) value.
-	
+
 	ifNilChecks ifEmpty: [^self inform: ('There are no ifNil checks on ', instanceVariable)].
-	
+
 	form := IntroduceNullObjectForm open: self.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:58:00'!
 selectVariableLabel
-	
+
 	^'Select instance variable to introduce null object on'! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 3/29/2019 16:40:04'!
 showChanges
-	
+
 	form deleteDiscardingEdits.
 	Transcript log: 'Successfully applied the Introduce Null Object refactoring'.! !
 
@@ -7465,12 +7465,12 @@ userSubmitted: anIntroduceNullObjectRequest
 
 	introduceNullObjectRequest := anIntroduceNullObjectRequest.
 	self createRefactoringHandlingRefactoringExceptions.
-	
+
 	refactoring ifNotNil: [self applyRefactoring; showChanges].! !
 
 !IntroduceNullObjectApplier methodsFor: 'accessing' stamp: 'FGJ 3/28/2019 13:22:43'!
 classToRefactor
-	
+
 	^classToRefactor! !
 
 !IntroduceNullObjectApplier methodsFor: 'evaluating' stamp: 'FGJ 4/4/2019 17:34:24'!
@@ -7485,7 +7485,7 @@ applyOn: aClass
 
 !AutocompletedTextProvider methodsFor: 'user interface support' stamp: 'FGJ 4/8/2019 17:09:38'!
 autoCompleterClassFor: aTextGetter
-	
+
 	^SmalltalkCompleter! !
 
 !ChangeRowOrderButtonModel methodsFor: 'initialization' stamp: 'FGJ 2/9/2019 16:33:36'!
@@ -7563,7 +7563,7 @@ methodObjectEvaluationMessageSelectorModel
 methodObjectSuperclass
 
 	| methodObjectSuperclass |
-	
+
 	methodObjectSuperclass := Smalltalk classNamed: methodObjectSuperclassNameModel actualContents string asSymbol.
 	methodObjectSuperclass ifNil: [self signalMethodObjectSuperclassNameDoesNotExist] ifNotNil: [^methodObjectSuperclass].! !
 
@@ -7602,7 +7602,7 @@ initializeFor: aCompiledMethod
 
 	variableToParametrizeToInstVarNameModel := Dictionary new.
 	instanceCreationMessageModels := OrderedCollection new.
-	
+
 	methodObjectClassNameModel := PluggableTextModel on: self.
 	methodObjectCategoryModel := PluggableTextModel on: self.
 	methodObjectCategoryModel actualContents: aCompiledMethod methodClass category.
@@ -7614,10 +7614,10 @@ initializeFor: aCompiledMethod
 keywordModelOf: aVariableName
 
 	| variableModel |
-	
+
 	variableModel := instanceCreationMessageModels
 		detect: [:model | (model at: #variableName) = aVariableName]
-		ifNone: [ | keywordParameterModel defaultName parameterModel | 
+		ifNone: [ | keywordParameterModel defaultName parameterModel |
 			keywordParameterModel := Dictionary new.
 			keywordParameterModel at: #variableName put: aVariableName.
 			keywordParameterModel at: #keyword put: (PluggableTextModel on: self).
@@ -7627,7 +7627,7 @@ keywordModelOf: aVariableName
 			keywordParameterModel at: #parameterName put: parameterModel.
 			instanceCreationMessageModels add: keywordParameterModel.
 			keywordParameterModel].
-	
+
 	^variableModel at: #keyword.! !
 
 !ExtractToMethodObjectRequest methodsFor: 'initialization' stamp: 'FGJ 4/8/2019 16:24:25'!
@@ -7679,7 +7679,7 @@ methodNode
 
 !IfNilCheck methodsFor: 'accessing' stamp: 'FGJ 3/27/2019 15:48:45'!
 messageNodeIndex
-	
+
 	^index! !
 
 !IfNilCheck class methodsFor: 'instance creation' stamp: 'FGJ 3/29/2019 15:28:30'!
@@ -7687,19 +7687,19 @@ in: aMethodNode representedBy: aMessageNode atIndex: anIndex
 
 	^self new initializeIn: aMethodNode representedBy: aMessageNode atIndex: anIndex.! !
 
-!IfNilChecksFinder methodsFor: 'initialization' stamp: 'HAW 10/22/2019 12:30:46'!
+!IfNilChecksFinder methodsFor: 'initialization' stamp: 'HAW 10/23/2019 09:51:59'!
 ifNilChecksIn: aSelector
 
 	| methodNode ifNilChecks |
 
 	methodNode := (contextClass compiledMethodAt: aSelector) methodNode.
-	
+
 	ifNilChecks := OrderedCollection new.
 	methodNode accept: (ParseNodeEnumerator ofBlock: [:node |
 		(self isIfNilCheckNode: node) ifTrue:[ | nodeIndex |
-			nodeIndex := (methodNode encoder rangeForNode: node ifAbsent: [self fail ]) first.
+			nodeIndex := (methodNode encoder rangeForNode: node ifAbsent: [ self shouldNotHappen ]) first.
 			ifNilChecks add: (IfNilCheck in: methodNode representedBy: node atIndex: nodeIndex)]]).
-	
+
 	^ifNilChecks reverse! !
 
 !IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 3/26/2019 15:35:31'!
@@ -7712,7 +7712,7 @@ initializeOn: aContextClass for: anInstanceVariable
 isIfNilCheck: aMessageNode
 
 	| checkReceiverIsInstanceVariableBlock |
-	
+
 	checkReceiverIsInstanceVariableBlock := [:receiver | receiver name = instanceVariable].
 	^{
 		"var == nil ifNil: [] ifNotNil: []"
@@ -7731,7 +7731,7 @@ isIfNilCheckNode: aNode
 value
 
 	| selectors |
-	
+
 	selectors := contextClass whichSelectorsAccess: instanceVariable.
 
 	^selectors inject: OrderedCollection new into: [:ifNilChecks :selector |
@@ -7739,24 +7739,24 @@ value
 
 !IfNilChecksFinder class methodsFor: 'instance creation' stamp: 'FGJ 3/26/2019 15:35:04'!
 on: aContextClass for: anInstanceVariable
-	
+
 	self assertInstanceVariable: anInstanceVariable belongsTo: aContextClass.
-	
+
 	^self new initializeOn: aContextClass for: anInstanceVariable.! !
 
 !IfNilChecksFinder class methodsFor: 'error handling' stamp: 'FGJ 3/26/2019 15:21:40'!
-refactoringError: anErrorMessage 
-	
+refactoringError: anErrorMessage
+
 	self refactoringErrorClass signal: anErrorMessage.! !
 
 !IfNilChecksFinder class methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 15:22:00'!
 refactoringErrorClass
-	
+
 	^RefactoringError! !
 
 !IfNilChecksFinder class methodsFor: 'error messages' stamp: 'FGJ 3/26/2019 15:22:35'!
 instVarMustBelongToClassErrorMessage
-	
+
 	^'The instance variable must belong to the context class.'! !
 
 !IfNilChecksFinder class methodsFor: 'exceptions' stamp: 'FGJ 3/26/2019 15:33:56'!
@@ -7766,7 +7766,7 @@ signalInstVarMustBelongToClass
 
 !IfNilChecksFinder class methodsFor: 'assertions' stamp: 'FGJ 3/26/2019 15:33:40'!
 assertInstanceVariable: anInstanceVariable belongsTo: aContextClass
-	
+
 	(aContextClass instVarNames includes: anInstanceVariable) ifFalse: [self signalInstVarMustBelongToClass].! !
 
 !IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 17:31:29'!
@@ -7802,32 +7802,32 @@ isIsNilWithBooleanCheck: aMessageNode
 isIsNilWithBooleanCheck: aMessageNode withReceiver: aBlockToValidateReceiver
 
 	| booleanSupportedMessages |
-	
+
 	booleanSupportedMessages := #( ifTrue: ifTrue:ifFalse: ifFalse: ifFalse:ifTrue: ).
-	
+
 	^(booleanSupportedMessages includes: aMessageNode selector key) and: [
 		aMessageNode receiver isMessage: #isNil receiver: [:r | r isVariableNode and: [aBlockToValidateReceiver value: r]] arguments: nil]! !
 
 !IfNilMessageListModel methodsFor: 'accessing' stamp: 'FGJ 3/29/2019 15:30:50'!
 messageList
-	
+
 	^ifNilChecks collect: [:ifNilCheck | ifNilCheck methodNode selector, ' at position ', ifNilCheck messageNodeIndex asString]! !
 
 !IfNilMessageListModel methodsFor: 'accessing' stamp: 'FGJ 3/28/2019 16:28:53'!
 messageListIndex
-	
+
 	^listIndex
 	! !
 
 !IfNilMessageListModel methodsFor: 'accessing' stamp: 'FGJ 4/5/2019 15:07:00'!
 messageListIndex: anIndex
-	
+
 	| doNothing |
-	
+
 	doNothing := [^self].
 	anIndex = 0 ifTrue: doNothing.
 	anIndex > ifNilChecks size ifTrue: doNothing.
-	
+
 	introduceNullObjectForm hideFormForMessage: listIndex.
 	listIndex := anIndex.
 	introduceNullObjectForm showFormForMessage: listIndex.
@@ -7851,11 +7851,11 @@ initializeFor: someIfNilChecks
 	messageKeywordsAndParametersModels := Dictionary new.
 	someIfNilChecks do: [:anIfNilCheck | | messageKeywordsAndParametersModel variablesToExtract |
 		variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: anIfNilCheck messageNode.
-		variablesToExtract 
+		variablesToExtract
 			ifEmpty: [messageKeywordsAndParametersModel := MessageKeywordsAndParametersModel initializedForSelector]
 			ifNotEmpty: [messageKeywordsAndParametersModel := MessageKeywordsAndParametersModel for: variablesToExtract].
 		messageKeywordsAndParametersModels at: anIfNilCheck put: messageKeywordsAndParametersModel].
-	
+
 	nullClassNameModel := PluggableTextModel on: self.
 	concreteClassNameModel := PluggableTextModel on: self.! !
 
@@ -7863,7 +7863,7 @@ initializeFor: someIfNilChecks
 concreteClass
 
 	| concreteClass |
-	
+
 	concreteClass := Smalltalk classNamed: concreteClassNameModel actualContents string asSymbol.
 	concreteClass ifNil: [self signalConcreteClassNameDoesNotExist] ifNotNil: [^concreteClass].! !
 
@@ -7881,7 +7881,7 @@ messgeKeywordsAndParametersModelFor: anIfNilCheck
 nullClass
 
 	| nullClass |
-	
+
 	nullClass := Smalltalk classNamed: nullClassNameModel actualContents string asSymbol.
 	nullClass ifNil: [self signalNullClassNameDoesNotExist] ifNotNil: [^nullClass].! !
 
@@ -7892,16 +7892,16 @@ nullClassNameModel
 
 !IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 3/29/2019 16:29:58'!
 replacementParameters
-	
+
 	| parameters |
-	
+
 	parameters := OrderedCollection new.
 	messageKeywordsAndParametersModels keysAndValuesDo: [:ifNilCheck :model |
-		parameters add: (ReplaceIfNilWithPolymorphismParameters 
+		parameters add: (ReplaceIfNilWithPolymorphismParameters
 			forIfNilMessageSending: ifNilCheck messageNode
 			onMethod: ifNilCheck methodNode
 			useKeywordsDefinitions: model definitions)].
-		
+
 	^parameters! !
 
 !IntroduceNullObjectRequest methodsFor: 'user interface support' stamp: 'FGJ 4/8/2019 14:38:47'!
@@ -7946,10 +7946,10 @@ for: someIfNilChecks
 !MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 14:21:45'!
 definitions
 
-	^selectorModel 
+	^selectorModel
 		ifNotNil: [VariablesToParametrizeKeywordsDefinitions withSelector: selectorModel actualContents string asSymbol]
 		ifNil: [VariablesToParametrizeKeywordsDefinitions with: (models collect: [:model |
-			VariableToParametrizeKeywordDefinition 
+			VariableToParametrizeKeywordDefinition
 				forVariable: (model at: #variableName)
 				useKeyword: (model at: #keyword) actualContents string
 				withParameterName: (model at: #parameterName) actualContents string])]! !
@@ -7966,7 +7966,7 @@ initializeFor: someVariablesToExtract
 		defaultName := (variableToExtract first isVowel ifTrue: ['an'] ifFalse: ['a']), variableToExtract capitalized.
 		parameterModel actualContents: defaultName.
 		keywordParameterModel at: #parameterName put: parameterModel.
-		
+
 		models add: keywordParameterModel].! !
 
 !MessageKeywordsAndParametersModel methodsFor: 'initialization' stamp: 'FGJ 4/8/2019 14:26:15'!
@@ -8043,42 +8043,42 @@ useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 4/16/2019 20:08:36'!
 concreteBlockRange
-	
+
 	self isConcreteBlockFirstBlock ifTrue: [^self sourceRangeFor: messageNode arguments first in: methodNode].
 	self isConcreteBlockSecondBlock ifTrue: [^self sourceRangeFor: messageNode arguments second in: methodNode].
-	
+
 	^Interval newFrom: #()! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 14:52:32'!
 concreteBlockSourceCode
-	
+
 	self isConcreteBlockFirstBlock ifTrue: [^self extractSourceCodeOfBlock: messageNode arguments first fromMethod: methodNode].
 	self isConcreteBlockSecondBlock ifTrue: [^self extractSourceCodeOfBlock: messageNode arguments second fromMethod: methodNode].
-	
+
 	^''! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 4/16/2019 19:43:45'!
 extractSourceCodeOfBlock: aBlockNode fromMethod: aMethodNode
 
 	| blockRange methodSourceCode |
-	
+
 	methodSourceCode := (aMethodNode methodClass compiledMethodAt: aMethodNode selector) sourceCode.
 	blockRange := self sourceRangeFor: aBlockNode in: aMethodNode.
-	
+
 	^methodSourceCode copyFrom: blockRange first to: blockRange last
-	
+
 	! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 17:34:29'!
 isConcreteBlockFirstBlock
-	
+
 	^(IfNilChecksFinder isIsNilWithBooleanCheck: messageNode) and: [#ifFalse:ifTrue: = messageNode selector key]! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 17:34:06'!
 isConcreteBlockSecondBlock
-	
+
 	^{
-		"var == nil ifTrue: [] ifFalse: [] --> always the second block" 
+		"var == nil ifTrue: [] ifFalse: [] --> always the second block"
 		IfNilChecksFinder isIfNilWithModifications: messageNode.
 		"ifFalse: is included here because is compiled specially making the block the second argument"
 		(IfNilChecksFinder isIsNilWithBooleanCheck: messageNode)
@@ -8094,40 +8094,40 @@ isNullBlockFirstBlock
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 17:34:37'!
 isNullBlockSecondBlock
-		
+
 	^(IfNilChecksFinder isIsNilWithBooleanCheck: messageNode)
 		and: [messageNode selector key = #ifFalse:ifTrue:]! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/18/2019 16:29:29'!
 messageNode
-	
+
 	^messageNode! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 16:36:38'!
 messageNodeFirstArgumentIsEmptyBlock
 
 	| statement |
-	
+
 	statement := messageNode arguments first block statements first.
-	
+
 	^statement isVariableNode and: [statement name = 'nil']! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/18/2019 16:42:09'!
 methodNode
-	
+
 	^methodNode! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/20/2019 10:47:30'!
 methodSourceCode
-	
+
 	^(methodNode methodClass compiledMethodAt: methodNode selector) sourceCode! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 4/16/2019 20:06:13'!
 nullBlockRange
-	
+
 	self isNullBlockFirstBlock ifTrue: [^self sourceRangeFor: messageNode arguments first in: methodNode].
 	self isNullBlockSecondBlock ifTrue: [^self sourceRangeFor: messageNode arguments first in: methodNode].
-	
+
 	^Interval newFrom: #()! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 14:54:24'!
@@ -8135,22 +8135,22 @@ nullBlockSourceCode
 
 	self isNullBlockFirstBlock ifTrue: [^self extractSourceCodeOfBlock: messageNode arguments first fromMethod: methodNode].
 	self isNullBlockSecondBlock ifTrue: [^self extractSourceCodeOfBlock: messageNode arguments second fromMethod: methodNode].
-	
+
 	^''! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/21/2019 12:44:07'!
 parameterNameFor: aVariableName
-	
+
 	^definitions parameterNameFor: aVariableName.! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/20/2019 15:57:39'!
 polymorphicMessageHeader
-	
+
 	^definitions messageHeader! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/20/2019 10:48:45'!
 polymorphicMessageSend
-	
+
 	^definitions messageSending! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/19/2019 17:08:22'!
@@ -8158,57 +8158,57 @@ polymorphicSelector
 
 	^definitions selector! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 10/23/2019 08:13:53'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 10/23/2019 09:53:01'!
 rangeOfMessageSend
-	
+
 	| encoder keywordsRange variableNode variableNodeRange |
-	
+
 	encoder := methodNode encoder.
-	keywordsRange := encoder rangeForNode: messageNode ifAbsent: [self shouldNotHappen ].
+	keywordsRange := encoder rangeForNode: messageNode ifAbsent: [ self shouldNotHappen ].
 
 	((IfNilChecksFinder isIfNilWithModifications: messageNode) or: [IfNilChecksFinder isIsNilWithBooleanCheck: messageNode])
 		ifTrue: [variableNode := messageNode receiver receiver].
 	(IfNilChecksFinder isIfNil: messageNode) ifTrue: [variableNode := messageNode receiver].
-	
+
 	variableNodeRange := ((encoder rangeForNode: variableNode ifAbsent: [ self shouldNotHappen ]) select: [:range | range first < keywordsRange first]) last.
-	
+
 	^Interval from: variableNodeRange first to: keywordsRange last! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 15:08:23'!
 rangesOfVariablesToParametrizeToReplacingParameter
 
 	| disregardType rangeToReplacementParameter |
-	
+
 	rangeToReplacementParameter := SortedCollection sortBlock: [:rangeToStringA :rangeToStringB | rangeToStringA key first < rangeToStringB key first].
 	disregardType := [:aNode | true].
 	self variablesToParametrize do: [:aVariableName | | rangesOfVariable |
-		rangesOfVariable := self methodNode encoder 
-			rangesForVariable: aVariableName 
-			checkingType: disregardType 
+		rangesOfVariable := self methodNode encoder
+			rangesForVariable: aVariableName
+			checkingType: disregardType
 			ifAbsent: [Set new].
-		
-		rangesOfVariable addAll: (self methodNode encoder 
-			rangesForLiteralVariableNode: aVariableName 
+
+		rangesOfVariable addAll: (self methodNode encoder
+			rangesForLiteralVariableNode: aVariableName
 			ifAbsent: [Set new]).
-				
+
 		rangesOfVariable do: [:aRange | | rangeToNewString parameterNameForVar |
 			parameterNameForVar := self parameterNameFor: aVariableName.
 			rangeToNewString := Association key: aRange value: parameterNameForVar.
 			rangeToReplacementParameter add: rangeToNewString]].
-	
+
 	^rangeToReplacementParameter
 ! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 10/23/2019 08:13:36'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 10/23/2019 09:53:14'!
 sourceRangeFor: aBlockNode in: aMethodNode
 
 	| blockRange encoder |
-	
+
 	encoder := aMethodNode encoder.
 	blockRange := encoder rangeForNode: aBlockNode closureCreationNode ifAbsent: [ self shouldNotHappen ].
-	
+
 	^Interval from: blockRange first + 1 to: blockRange last - 1
-	
+
 	! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/21/2019 12:46:30'!
@@ -8222,7 +8222,7 @@ onMethod: aMethodNode
 useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 
 	| variablesToParametrize |
-	
+
 	self assertMethodNode: aMethodNode includesMessageNode: aMessageNode.
 	self assertMessageNodeRepresentsSupportedMessageSending: aMessageNode.
 
@@ -8233,12 +8233,12 @@ useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 	self
 		assertKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 		haveACorrespondingVariableToParametrizeFrom: variablesToParametrize.
-	
-	self 
-		assertParameterNamesOf: variablesToParametrizeKeywordsDefinitions 
+
+	self
+		assertParameterNamesOf: variablesToParametrizeKeywordsDefinitions
 		areNotEqualToBlockTemporariesOrArgumentsOn: aMessageNode.
-	
-	^self new 
+
+	^self new
 		initializeForIfNilMessageSending: aMessageNode
 		onMethod: aMethodNode
 		useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
@@ -8248,14 +8248,14 @@ useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 allTemporariesNamesAndArgumentsFrom: aBlockNode
 
 	| blocksTemporaries |
-	
+
 	blocksTemporaries := Set new.
-	
+
 	aBlockNode accept: (ParseNodeEnumerator ofBlock: [:node |
 		node isBlockNode ifTrue: [
 			blocksTemporaries addAll: (self temporariesNamesFrom: node).
 			blocksTemporaries addAll: (self argumentsNamesFrom: node)]]).
-	
+
 	^blocksTemporaries! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 16:30:29'!
@@ -8277,10 +8277,10 @@ refactoringErrorClass
 sourceOfMessageNode: aMessageNode
 
 	| stream |
-	
-	stream := RWBinaryOrTextStream with: Array new. 
+
+	stream := RWBinaryOrTextStream with: Array new.
 	aMessageNode printOn: stream indent: 0.
-	
+
 	^stream contents asString.! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 15:51:50'!
@@ -8293,9 +8293,9 @@ assertKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 haveACorrespondingVariableToParametrizeFrom: variablesToParametrize
 
 	| variablesWithKeywords |
-	
+
 	variablesWithKeywords := variablesToParametrizeKeywordsDefinitions variablesToParametrize.
-	
+
 	(variablesToParametrize includesAllOf: variablesWithKeywords) ifFalse: [self signalKeywordsMustHaveAVariableToParametrize].	! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 3/26/2019 17:30:03'!
@@ -8310,35 +8310,35 @@ assertMessageNodeRepresentsSupportedMessageSending: aMessageNode
 		IfNilChecksFinder isIfNil: aMessageNode.
 		"var isNil ifTrue: [] ifFalse: []"
 		IfNilChecksFinder isIsNilWithBooleanCheck: aMessageNode} reduce: [:a :b | a or: [b]].
-	
+
 	isSupportedMessageSending ifFalse: [self signalMessageNodeMustRepresentSupportedMessageSending].! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 3/29/2019 15:17:02'!
 assertMethodNode: methodNode includesMessageNode: messageNode
 
 	| messageNodeSource |
-	
+
 	messageNodeSource := self sourceOfMessageNode: messageNode.
-	
+
 	methodNode accept: (ParseNodeEnumerator ofBlock: [:aNode |
 		(aNode isMessageNode and: [(self sourceOfMessageNode: aNode) = messageNodeSource]) ifTrue: [^true]]).
-	
+
 	self signalMethodNodeMustIncludeMessageNode.
 	! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 3/19/2019 16:29:34'!
-assertParameterNamesOf: variablesToParametrizeKeywordsDefinitions 
+assertParameterNamesOf: variablesToParametrizeKeywordsDefinitions
 areNotEqualToBlockTemporariesOrArgumentsOn: aMessageNode
 
 	| blocksTemporaries parameterNames |
 
 	blocksTemporaries := Set new.
 
-	aMessageNode arguments do: [:argument | 
+	aMessageNode arguments do: [:argument |
 		blocksTemporaries addAll: (self allTemporariesNamesAndArgumentsFrom: argument)].
-	
+
 	parameterNames := variablesToParametrizeKeywordsDefinitions parameterNames.
-	
+
 	(blocksTemporaries intersection: parameterNames) ifNotEmpty: [
 		self signalParameterNamesMustNotBeEqualToBlocksTemporals].! !
 
@@ -8346,9 +8346,9 @@ areNotEqualToBlockTemporariesOrArgumentsOn: aMessageNode
 assertVariablesToParametrizeFrom: someVariablesToParametrize haveACorrespondingKeywordOn: someVariablesToParametrizeKeywordsDefinitions
 
 	| variablesWithKeywords |
-	
+
 	variablesWithKeywords := someVariablesToParametrizeKeywordsDefinitions variablesToParametrize.
-	
+
 	(variablesWithKeywords includesAllOf: someVariablesToParametrize) ifFalse: [self signalAllVariablesToParametrizeMustHaveAKeyword].! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'error messages' stamp: 'FGJ 3/18/2019 15:48:04'!
@@ -8358,7 +8358,7 @@ allKeywordsMustHaveACorrespondingVariableToParametrizeErrorMessage
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'error messages' stamp: 'FGJ 3/18/2019 15:17:07'!
 allVariablesToParametrizeMustHaveAKeywordErrorMessage
-	
+
 	^'All variables to parametrize must have a corresponding keyword.'! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'error messages' stamp: 'FGJ 3/13/2019 16:37:10'!
@@ -8378,7 +8378,7 @@ parameterNameMustNotBeEqualToBlockTemporaryErrorMessage
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'exceptions' stamp: 'FGJ 3/18/2019 15:16:37'!
 signalAllVariablesToParametrizeMustHaveAKeyword
-	
+
 	self refactoringError: self allVariablesToParametrizeMustHaveAKeywordErrorMessage.! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'exceptions' stamp: 'FGJ 3/18/2019 15:47:38'!
@@ -8407,12 +8407,12 @@ initializeForVariable: aVariableName useKeyword: aKeyword withParameterName: aPa
 	variableName := aVariableName.
 	keyword := aKeyword.
 	parameterName := aParameterName.
-	
+
 	! !
 
 !VariableToParametrizeKeywordDefinition methodsFor: 'accessing' stamp: 'FGJ 3/18/2019 12:48:07'!
 keyword
-	
+
 	^keyword! !
 
 !VariableToParametrizeKeywordDefinition methodsFor: 'accessing' stamp: 'FGJ 3/18/2019 12:48:43'!
@@ -8440,7 +8440,7 @@ assertKeywordIsNotEmpty: aKeyword
 assertParameterNameIsValid: aParameterName
 
 	| scannedNames isValidParameterName |
-	
+
 	scannedNames _ Scanner new scanFieldNames: aParameterName.
 	isValidParameterName := scannedNames size = 1 and: [scannedNames first = aParameterName].
 	isValidParameterName ifFalse: [self signalInvalidParameterName].! !
@@ -8457,7 +8457,7 @@ refactoringErrorClass
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'error messages' stamp: 'FGJ 3/18/2019 12:00:17'!
 invalidParameterNameErrorMessage
-	
+
 	^'Invalid parameter name'! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'error messages' stamp: 'FGJ 3/18/2019 12:34:35'!
@@ -8479,10 +8479,10 @@ parameterNameMustNotBeEmptyErrorMessage
 forVariable: aVariableName useKeyword: aKeyword withParameterName: aParameterName
 
 	self assertParameterNameIsValid: aParameterName.
-	
+
 	self assertKeywordIsNotEmpty: aKeyword.
 	self assertKeywordDoesNotContainInvalidCharacters: aKeyword.
-	
+
 	^self new initializeForVariable: aVariableName useKeyword: aKeyword withParameterName: aParameterName! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'exceptions' stamp: 'FGJ 3/18/2019 12:05:19'!
@@ -8512,7 +8512,7 @@ initializeWithSelector: aSelector
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 3/20/2019 15:55:42'!
 messageHeader
-	
+
 	definitions
 		ifNil: [^selector asString]
 		ifNotNil: [^' ' join: (definitions collect: [:definition | definition keyword, ': ', definition parameterName])].	! !
@@ -8531,8 +8531,8 @@ parameterNameFor: aVariableName
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 3/19/2019 15:54:08'!
 parameterNames
-	
-	definitions 
+
+	definitions
 		ifNil: [^#()]
 		ifNotNil: [^definitions collect: [:definition | definition parameterName]].
 		! !
@@ -8540,15 +8540,15 @@ parameterNames
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 3/19/2019 17:15:22'!
 selector
 
-	definitions 
+	definitions
 		ifNil: [^selector]
 		ifNotNil: [
 			^((':' join: (definitions collect: [:definition | definition keyword])), ':') asSymbol].! !
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 3/18/2019 15:21:07'!
 variablesToParametrize
-	
-	definitions 
+
+	definitions
 		ifNil: [^#()]
 		ifNotNil: [^definitions collect: [:definition | definition variableName]].
 		! !
@@ -8560,12 +8560,12 @@ firstKeywordMustNoStartWithInvalidStartOfSelectorErrorMessage
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 3/18/2019 14:26:54'!
 parameterNamesMustNotBeRepeatedErrorMessage
-	
+
 	^'Parameter names must not be repeated.'! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 3/13/2019 14:03:36'!
 selectorMustNotBeEmptyErrorMessage
-	
+
 	^'The selector must not be empty'! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 3/13/2019 14:12:23'!
@@ -8575,7 +8575,7 @@ selectorMustNotContainInvalidCharactersErrorMessage
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 3/13/2019 14:22:09'!
 selectorMustNotStartWithInvalidStartOfSelectorErrorMessage
-	
+
 	^'Selector must not start with invalid start of selector.'! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 3/18/2019 14:32:00'!
@@ -8596,7 +8596,7 @@ assertDoesNotStartWithInvalidStartOfSelector: aSelector
 		self signalSelectorMustNotStartWithInvalidStartOfSelector ].! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 4/8/2019 14:33:01'!
-assertIsNotEmpty: aSymbol 
+assertIsNotEmpty: aSymbol
 
 	aSymbol withBlanksTrimmed isEmpty ifTrue: [ self signalSelectorMustNotBeEmpty ].! !
 
@@ -8612,9 +8612,9 @@ assertParameterNamesAreNotRepeated: someDefinitions
 
 	allParameterNames := someDefinitions collect: [:aDefinition | aDefinition parameterName].
 	uniqueParameterNames := Set newFrom: allParameterNames.
-	
+
 	allParameterNames size = uniqueParameterNames size ifFalse: [self signalParameterNamesMustNotBeRepeated].
-	
+
 	! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 3/18/2019 14:31:13'!
@@ -8624,26 +8624,26 @@ assertVariableNamesAreNotRepeated: someDefinitions
 
 	allVariableNames := someDefinitions collect: [:aDefinition | aDefinition variableName].
 	uniqueVariableNames := Set newFrom: allVariableNames.
-	
+
 	allVariableNames size = uniqueVariableNames size ifFalse: [self signalVariableNamesMustNotBeRepeated].! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 14:04:45'!
-refactoringError: aMessage 
-	
+refactoringError: aMessage
+
 	self refactoringErrorClass signal: aMessage.! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/13/2019 14:05:17'!
 refactoringErrorClass
-	
+
 	^RefactoringError! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'instance creation' stamp: 'FGJ 3/20/2019 11:31:37'!
-with: someDefinitions 
-	
+with: someDefinitions
+
 	self assertKeywordMustStartWithValidStartOfSelector: someDefinitions first keyword.
 	self assertParameterNamesAreNotRepeated: someDefinitions.
 	self assertVariableNamesAreNotRepeated: someDefinitions.
-	
+
 	^self new initializeWith: someDefinitions ! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'instance creation' stamp: 'FGJ 3/20/2019 11:31:43'!
@@ -8652,7 +8652,7 @@ withSelector: aSelector
 	self assertIsNotEmpty: aSelector.
 	self assertDoesNotContainInvalidCharacters: aSelector.
 	self assertDoesNotStartWithInvalidStartOfSelector: aSelector.
-	
+
 	^self new initializeWithSelector: aSelector.! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'exceptions' stamp: 'FGJ 3/18/2019 12:52:02'!
@@ -8667,7 +8667,7 @@ signalParameterNamesMustNotBeRepeated
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'exceptions' stamp: 'FGJ 3/13/2019 14:03:04'!
 signalSelectorMustNotBeEmpty
-	
+
 	self refactoringError: self selectorMustNotBeEmptyErrorMessage.! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'exceptions' stamp: 'FGJ 3/13/2019 14:11:33'!
@@ -8689,20 +8689,20 @@ signalVariableNamesMustNotBeRepeated
 extractMethodToMethodObject
 
 	| classToRefactor messageName |
-	
+
 	messageName := model selectedMessageName.
 	classToRefactor := model selectedClassOrMetaClass.
-	
+
 	messageName ifNotNil: [ | compiledMethod|
 		compiledMethod := classToRefactor compiledMethodAt: messageName.
-	
+
 		(ExtractToMethodObjectApplier extract: compiledMethod) value.].! !
 
 !BrowserWindow methodsFor: '*Refactoring' stamp: 'FGJ 3/26/2019 11:33:13'!
 introduceNullObject
 
 	| classToRefactor |
-	
+
 	classToRefactor := model selectedClassOrMetaClass.
-	
+
 	classToRefactor ifNotNil: [(IntroduceNullObjectApplier applyOn: classToRefactor) value.].! !

@@ -1,6 +1,7 @@
-'From Cuis 5.0 [latest update: #3926] on 23 October 2019 at 9:55:24 am'!
-'Description Lineup with 3926'!
-!provides: 'Refactoring' 1 537!
+'From Cuis 5.0 [latest update: #3956] on 9 November 2019 at 4:34:58 pm'!
+'Description Requierement of BaseImageTests'!
+!provides: 'Refactoring' 1 538!
+!requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
 

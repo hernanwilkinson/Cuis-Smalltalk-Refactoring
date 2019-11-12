@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #3956] on 9 November 2019 at 4:34:58 pm'!
-'Description Requierement of BaseImageTests'!
-!provides: 'Refactoring' 1 538!
+'From Cuis 5.0 [latest update: #3958] on 12 November 2019 at 3:53:59 pm'!
+'Description New position for extract to menu object menu'!
+!provides: 'Refactoring' 1 539!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -8019,13 +8019,13 @@ classRefactoringMenuOptions
 
 	}`! !
 
-!RefactoringPackageRefactoringMenues class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/14/2019 12:23:07'!
+!RefactoringPackageRefactoringMenues class methodsFor: 'as yet unclassified' stamp: 'HAW 11/12/2019 15:52:07'!
 messsageRefactoringMenuOptions
 
 	^ `{
 			{
 				#itemGroup 	-> 		10.
-				#itemOrder 		-> 		50.
+				#itemOrder 		-> 		60.
 				#label 			-> 		'extract to method object'.
 				#selector 		-> 		#extractMethodToMethodObject.
 				#icon 			-> 		#newFolderIcon

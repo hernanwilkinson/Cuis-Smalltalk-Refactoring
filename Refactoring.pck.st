@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #3958] on 12 November 2019 at 3:53:59 pm'!
-'Description New position for extract to menu object menu'!
-!provides: 'Refactoring' 1 539!
+'From Cuis 5.0 [latest update: #3958] on 16 November 2019 at 1:07:26 pm'!
+'Description Fix on ExtractToMethodObject when checking for new instance variable'!
+!provides: 'Refactoring' 1 540!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -6550,10 +6550,10 @@ signalVariablesToParametrizeWithoutKeywordAssigned: someVariablesNames
 
 	self refactoringError: (self variablesToParametrizeHaveNoKeywordErrorMessage: someVariablesNames).! !
 
-!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 3/4/2019 11:43:38'!
+!ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 11/13/2019 20:49:21'!
 assertAllInstanceVariableNamesAreValid: instanceVariableNames for: aClass
 
-	instanceVariableNames do: [ :anInstanceVariableName | NewInstanceVariablePrecondition valueOf: anInstanceVariableName for: aClass].! !
+	instanceVariableNames do: [ :anInstanceVariableName | (NewInstanceVariablePrecondition of: anInstanceVariableName for: aClass) valueForSuperclass ].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 3/4/2019 14:36:12'!
 assertAllInstanceVariableNamesIn: variablesToParametrizeToInstanceVariableNames

@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #3958] on 16 November 2019 at 1:07:26 pm'!
-'Description Fix on ExtractToMethodObject when checking for new instance variable'!
-!provides: 'Refactoring' 1 540!
+'From Cuis 5.0 [latest update: #4076] on 5 April 2020 at 7:27:09 pm'!
+'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
+!provides: 'Refactoring' 1 541!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -670,7 +670,7 @@ okToChange
 		ifTrue: [^true]
 		ifFalse: [^super okToChange].! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 2/13/2019 14:10:54'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:13:57'!
 buildActionButtonsSection
 
 	| section sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
@@ -682,9 +682,9 @@ buildActionButtonsSection
 	section addMorph: self buildCancelButton.
 	section addMorph: self buildSubmitButton.
 
-	submorphsWidth := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedWidth]) sum.
+	submorphsWidth := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedOrMinimumLayoutWidth]) sum.
 	sectionWidth := submorphsWidth + (section xSeparation * (section submorphs size + 1)).
-	submorphsHeight := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedHeight]) max.
+	submorphsHeight := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedOrMinimumLayoutHeight]) max.
 	sectionLayoutSpec := LayoutSpec fixedWidth: sectionWidth fixedHeight: submorphsHeight * 2.
 	sectionLayoutSpec minorDirectionPadding: 0.95.
 
@@ -799,7 +799,7 @@ buildMethodObjectClassSection
 	^section
 ! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 17:27:35'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:13:09'!
 buildMorphicWindow
 
 	| requiredExtent instanceCreationMessageSection requiredHeight methodObjectClassSection instanceVariablesSection actionButtonsSection requiredWidth sections windowElementsExtent xtraBorderToAvoidScrollbars |
@@ -833,7 +833,7 @@ buildMorphicWindow
 	formLayout addMorph: actionButtonsSection.
 
 	requiredHeight := (sections collect: [:aSection | aSection recommendedHeight]) sum
-		+ actionButtonsSection layoutSpec fixedHeight
+		+ actionButtonsSection layoutSpec fixedOrMinimumLayoutHeight
 		+ (formLayout ySeparation * 4).
 	requiredWidth := (sections collect: [:aSection | aSection recommendedWidth]) max + (formLayout xSeparation * 2).
 
@@ -1015,7 +1015,7 @@ recommendedWidthForLabels: labels
 	rightMargin := 20.
 	^(labels collect: [:aLabel | AbstractFont default widthOfString: aLabel]) max + rightMargin! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/29/2019 14:24:50'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:14:04'!
 buildActionButtonsSection
 
 	| section sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
@@ -1027,9 +1027,9 @@ buildActionButtonsSection
 	section addMorph: self buildCancelButton.
 	section addMorph: self buildSubmitButton.
 
-	submorphsWidth := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedWidth]) sum.
+	submorphsWidth := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedOrMinimumLayoutWidth]) sum.
 	sectionWidth := submorphsWidth + (section xSeparation * (section submorphs size + 1)).
-	submorphsHeight := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedHeight]) max.
+	submorphsHeight := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedOrMinimumLayoutHeight]) max.
 	sectionLayoutSpec := LayoutSpec fixedWidth: sectionWidth fixedHeight: submorphsHeight * 2.
 	sectionLayoutSpec minorDirectionPadding: 0.95.
 
@@ -1070,7 +1070,7 @@ buildCodePaneFor: anIfNilCheck
 
 	^codePane! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 12:42:52'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:16:48'!
 buildIfNilCheckFormFor: anIfNilCheck
 
 	| layout variablesToExtract polymorphicSelectorSection codePane |
@@ -1089,8 +1089,8 @@ buildIfNilCheckFormFor: anIfNilCheck
 	layout addMorph: polymorphicSelectorSection.
 
 	layout layoutSpec: (LayoutSpec
-		fixedWidth: polymorphicSelectorSection layoutSpec fixedWidth
-		fixedHeight: (codePane layoutSpec fixedHeight + polymorphicSelectorSection layoutSpec fixedHeight+ (layout ySeparation * 3))).
+		fixedWidth: polymorphicSelectorSection layoutSpec fixedOrMinimumLayoutWidth
+		fixedHeight: (codePane layoutSpec fixedOrMinimumLayoutHeight + polymorphicSelectorSection layoutSpec fixedOrMinimumLayoutHeight+ (layout ySeparation * 3))).
 
 	formLayout addMorph: layout.
 
@@ -1180,7 +1180,7 @@ buildPolymorphicSelectorInputFor: anIfNilCheck
 
 	^selectorInput ! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/10/2019 18:07:05'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:14:11'!
 buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor: someVariablesToExtract
 
 	| parametersTable preview layout previewLayoutSpec |
@@ -1212,8 +1212,8 @@ buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor:
 	layout addMorph: preview.
 
 	layoutSpec := LayoutSpec
-		fixedWidth: parametersTable layoutSpec fixedWidth
-		fixedHeight: (preview layoutSpec fixedHeight + parametersTable layoutSpec fixedHeight + (layout ySeparation * 3)).
+		fixedWidth: parametersTable layoutSpec fixedOrMinimumLayoutWidth
+		fixedHeight: (preview layoutSpec fixedOrMinimumLayoutHeight + parametersTable layoutSpec fixedOrMinimumLayoutHeight + (layout ySeparation * 3)).
 	layout layoutSpec: layoutSpec.
 
 	^layout! !
@@ -1269,18 +1269,18 @@ initializeScrollableContainer
 	scrollPane color: self backgroundColor.
 	self layoutMorph addMorphUseAll: scrollPane.! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/8/2019 17:13:01'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:13:36'!
 setExtents
 
 
 	| requiredExtent requiredHeight requiredWidth windowElementsExtent xtraBorderToAvoidScrollbars |
 
 	requiredHeight := hierarchySection recommendedHeight
-		+ messageSendingListSection layoutSpec fixedHeight
-		+ (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedHeight
-		+ actionButtonsSection layoutSpec fixedHeight
+		+ messageSendingListSection layoutSpec fixedOrMinimumLayoutHeight
+		+ (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedOrMinimumLayoutHeight
+		+ actionButtonsSection layoutSpec fixedOrMinimumLayoutHeight
 		+ (formLayout ySeparation * (formLayout submorphs size + 1)).
-	requiredWidth := {hierarchySection recommendedWidth. (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedWidth} max.
+	requiredWidth := {hierarchySection recommendedWidth. (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedOrMinimumLayoutHeight} max.
 	(ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedWidth: requiredWidth.
 	requiredWidth := requiredWidth + (formLayout xSeparation * 2).
 
@@ -1487,15 +1487,15 @@ fixedWidthForTexts
 
 	^ExtractToMethodObjectForm recommendedWidth * 0.7! !
 
-!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 18:17:02'!
+!FormSection methodsFor: 'as yet unclassified' stamp: 'jmv 3/31/2020 18:13:12'!
 recommendedHeight
 
-	^((self submorphs collect: [:aMorph | aMorph layoutSpec fixedHeight]) sum) + ( (self submorphs size + 1) * self ySeparation) + self verticalMargins! !
+	^((self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutHeight]) sum) + ( (self submorphs size + 1) * self ySeparation) + self verticalMargins! !
 
-!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:53:17'!
+!FormSection methodsFor: 'as yet unclassified' stamp: 'jmv 3/31/2020 18:14:32'!
 recommendedWidth
 
-	^(self submorphs collect: [:aMorph | aMorph layoutSpec fixedWidth]) max + (self xSeparation * 2) max: self fixedWidthForTexts! !
+	^(self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutWidth]) max + (self xSeparation * 2) max: self fixedWidthForTexts + 65! !
 
 !FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:54:23'!
 textHeight
@@ -1528,14 +1528,13 @@ textModel: aTextModel
 
 	inputMorph model: aTextModel.! !
 
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 15:46:45'!
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'jmv 3/31/2020 18:12:08'!
 withLabel: aLabel withWidth: aWidth withModel: aTextModel
 
 	| labelLayoutSpec inputMorphLayoutSpec |
 
 	self separation: 5.
-	layoutSpec := LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight.
-	self layoutSpec: layoutSpec.
+	self layoutSpec: (LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight).
 
 	labelMorph := StringMorph contents: aLabel.
 	labelLayoutSpec := LayoutSpec
@@ -1556,14 +1555,13 @@ withLabel: aLabel withWidth: aWidth withModel: aTextModel
 
 	! !
 
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:50:09'!
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'jmv 3/31/2020 18:14:48'!
 withLabel: aLabel withWidth: aWidth withModel: aTextModel usingAs: focusMover
 
 	| labelLayoutSpec inputMorphLayoutSpec |
 
 	self separation: 5.
-	layoutSpec := LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight.
-	self layoutSpec: layoutSpec.
+	self layoutSpec: (LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight).
 
 	labelMorph := StringMorph contents: aLabel.
 	labelLayoutSpec := LayoutSpec
@@ -1578,7 +1576,7 @@ withLabel: aLabel withWidth: aWidth withModel: aTextModel usingAs: focusMover
 	inputMorph hideScrollBarsIndefinitely.
 	inputMorphLayoutSpec :=
 		LayoutSpec
-			fixedWidth: LabeledInput inputWidth
+			fixedWidth: LabeledInput inputWidth * 0.7
 			fixedHeight: labelMorph morphHeight + 2.
 	self addMorph: inputMorph layoutSpec: inputMorphLayoutSpec.
 

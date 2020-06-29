@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4076] on 5 April 2020 at 7:27:09 pm'!
+'From Cuis 5.0 [latest update: #4109] on 29 June 2020 at 4:28:38 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 541!
+!provides: 'Refactoring' 1 542!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -1492,7 +1492,7 @@ recommendedHeight
 
 	^((self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutHeight]) sum) + ( (self submorphs size + 1) * self ySeparation) + self verticalMargins! !
 
-!FormSection methodsFor: 'as yet unclassified' stamp: 'jmv 3/31/2020 18:14:32'!
+!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 6/8/2020 15:42:48'!
 recommendedWidth
 
 	^(self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutWidth]) max + (self xSeparation * 2) max: self fixedWidthForTexts + 65! !
@@ -1718,7 +1718,7 @@ swapRowSubmorph: aRowIndex with: anotherRowIndex
 	"self redrawNeeded."
 	self layoutSubmorphs.! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 4/10/2019 18:17:38'!
+!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 6/9/2020 12:30:27'!
 withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
 
 	| rowsSeparation recommendedHeight numberOfRows columnsTitlesRow changeOrderButtons tableWidth inputColumnsTitles |
@@ -1734,14 +1734,14 @@ withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefac
 
 	"Calculate table height"
 	numberOfRows := (rowsTitles size + 1).
-	recommendedHeight :=  self rowHeight * numberOfRows + (rowsSeparation * (numberOfRows + 1)).
+	recommendedHeight :=  self rowHeight * numberOfRows + (rowsSeparation * (numberOfRows + 1)) * 1.1.
 
 	"Calculate column widths"
 	inputColumnsTitles := #('Keyword' 'Parameter name').
 	columnWidths := self columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: inputColumnsTitles size.
 
 	"Calculate table width"
-	tableWidth := columnWidths sum + (self columnSeparation * (columnWidths size + 1)).
+	tableWidth := columnWidths sum + (self columnSeparation * (columnWidths size + 1)) * 1.1.
 
 	self layoutSpec: (LayoutSpec fixedWidth: tableWidth fixedHeight: recommendedHeight).
 
@@ -1750,7 +1750,7 @@ withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefac
 	self addMorph: columnsTitlesRow layoutSpec: self rowsLayoutSpec.
 
 	"Build the input rows"
-	rowsTitles withIndexDo: [:aRowTitle :index | | aRow changeOrderModel upButton downButton layoutButtons keywordModel keywordInputMorph inputMorphLayoutSpec parameternameInputMorph |
+	rowsTitles withIndexDo: [:aRowTitle :index | | aRow changeOrderModel keywordInputMorph inputMorphLayoutSpec parameternameInputMorph |
 		aRow := LayoutMorph newRow.
 		aRow color: self backgroundColor; separation: self columnSeparation.
 
@@ -6037,7 +6037,7 @@ allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 1/9/2019 15:46:56'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 5/26/2020 17:39:28'!
 apply
 
 	| methodObjectClass |
@@ -6091,39 +6091,42 @@ compileExtractedMethodAsEvaluationMethodOn: aClass
 	aClass compile: sourceCodeWithSelectorReplaced.
 	aClass organization classify: methodObjectEvaluationSelector asSymbol under: #evaluating! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 4/10/2019 16:12:49'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 6/10/2020 15:32:41'!
 compileInstanceCreationMethodInto: aClass
 
-	| methodTitle methodBody keywordsWithParam instVarAssignments instanceInitializationSelector instanceCreationSelector keywords |
+	| classMethodHeader methodBody keywordsWithParam instVarAssignments instanceInitializationSelector instanceCreationSelector keywords instanceMethodHeader |
 
 	methodObjectInstanceVariables isEmpty ifTrue: [^true].
-
+	
+	"Class method header"
 	keywordsWithParam := keywordsDefinitions collect: [
 		:keywordDefinition |
 		(keywordDefinition at: #keyword), ': ', (keywordDefinition at: #parameterName)].
-	methodTitle := ' ' join: keywordsWithParam.
+	classMethodHeader := ' ' join: keywordsWithParam.
 
+	"Instance initialization method body"
 	instVarAssignments := methodObjectInstanceVariables collect: [
 		:instVarName |
 		String tab, instVarName, ' := ', (self parameterNameForInstVarName: instVarName), '.'].
 	methodBody := String newLineString join: instVarAssignments.
 
-	aClass class compile: methodTitle, String newLineString, String tab, '^self new initialize', methodTitle capitalized.
+	instanceMethodHeader := 'initialize', classMethodHeader capitalized.
+	aClass class compile: classMethodHeader, String newLineString, String tab, '^self new ', instanceMethodHeader.
 	keywords := keywordsDefinitions collect: [:kd | (kd at: #keyword), ':'].
 	instanceCreationSelector := ('' join: keywords) asSymbol.
 	aClass class organization classify: instanceCreationSelector under: #'instance creation'.
 
-	aClass compile: 'initialize', methodTitle capitalized, String newLineString, methodBody.
+	aClass compile: instanceMethodHeader, String newLineString, methodBody.
 	instanceInitializationSelector := ('initialize', instanceCreationSelector asString capitalized) asSymbol.
 	aClass organization classify: instanceInitializationSelector under: #initialization.
 
 	^true.! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 12/12/2018 15:07:36'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 5/26/2020 17:36:18'!
 filter: rangesToStrings ofArgRangesOf: aMethodNode
 
-	| endHeaderIndex
-	|
+	| endHeaderIndex |
+	
 	endHeaderIndex := Parser methodHeaderLengthFrom: aMethodNode sourceText.
 
 	^rangesToStrings select: [
@@ -6240,7 +6243,7 @@ evaluatedWith: anEvaluationSelector
 		evaluatedWith: anEvaluationSelector
 ! !
 
-!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 4/11/2019 11:52:37'!
+!ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 5/21/2020 15:02:05'!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
@@ -6251,23 +6254,23 @@ evaluatedWith: anEvaluationSelector
 
 	| instanceVariableNames instanceCreationMessageKeywords parameterNames |
 
+	"MethodToExtract"
 	self assertMethodToExtractDoesNotReferenceSuper: aCompiledMethod.
+	"Assert method does not contain assignments to non-temporals"
+	self assertMethodDoesNotContainInstVarAssignments: aCompiledMethod.
+       self assertMethodDoesNotContainClassVarAssignments: aCompiledMethod.
+	self assertMethodDoesNotContainPoolVarAssignments: aCompiledMethod.
 
-	"Method Object classes assertions"
+	"Method Object class"
 	self assertMethodObjectSuperclassIsNotMeta: aClass.
 	self newClassPreconditionClass valueFor: aClassName in: Smalltalk  undeclared: Undeclared.
 
-	"Assignment assertions"
-	self assertMethodDoesNotContainInstVarAssignments: aCompiledMethod.
-      self assertMethodDoesNotContainClassVarAssignments: aCompiledMethod.
-	self assertMethodDoesNotContainPoolVarAssignments: aCompiledMethod.
-
-	"Evaluation message selector assertions"
+	"Evaluation message selector"
 	self assertEvaluationSelectorMustNotBeEmpty: anEvaluationSelector.
 	self assertEvaluationSelectorMustNotContainInvalidCharacters: anEvaluationSelector.
 	self assertEvaluationSelectorMustNotStartWithAnInvalidStartOfSelector: anEvaluationSelector.
 
-	"Instance variable names assertions"
+	"Method Object instance variable names"
 	self
 		assertAllVariablesToParametrizeFrom: aCompiledMethod
 		haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariables.
@@ -6287,7 +6290,8 @@ evaluatedWith: anEvaluationSelector
 		assertInstanceVariableNamesFrom: variablesToParametrizeToInstanceVariables
 		areNotShadowedByBlockArgumentsOrTemporariesOf: aCompiledMethod.
 
-	"Keywords assertions"
+	"Method Object instance creation message"
+	"Keywords"
 	self
 		assertAllVariablesToParametrize: variablesToParametrizeToInstanceVariables keys
 		haveOneCorrespondingKeyword: keywordsDefinitions.
@@ -6301,8 +6305,7 @@ evaluatedWith: anEvaluationSelector
 	self assertKeywordsHaveNoInvalidCharacters: instanceCreationMessageKeywords.
 	self assertKeywordsAreNotEmpty: instanceCreationMessageKeywords.
 	self assertSelectorFromKeywordsStartsWithValidStartOfSelector: instanceCreationMessageKeywords.
-
-	"Instance creation message parameters assertions"
+	"Parameters"
 	parameterNames := keywordsDefinitions collect: [
 		:aKeywordDefinition |
 		aKeywordDefinition at: #parameterName].
@@ -6919,12 +6922,25 @@ variableNodesFrom: aBlockNode
 
 	^variableNodes! !
 
-!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/19/2019 17:54:43'!
+!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/19/2019 17:52:48'!
+initializeOn: anInstVarName
+of: aClassToRefactor
+usingAsConcreteClass: aConcreteClass
+usingAsNullClass: aNullClass
+for: someReplacementParameters
+
+	instVar := anInstVarName.
+	classToRefactor := aClassToRefactor.
+	concreteClass := aConcreteClass.
+	nullClass := aNullClass.
+	replacementParameters := someReplacementParameters.! !
+
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 3/19/2019 17:54:43'!
 apply
 
 	replacementParameters do: [:parameter | self applyWith: parameter].! !
 
-!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 4/16/2019 15:37:36'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 4/16/2019 15:37:36'!
 applyWith: replacementParameter
 
 	self
@@ -6941,7 +6957,7 @@ applyWith: replacementParameter
 	self replaceNilCheckWithPolymorphicMessageSendUsing: replacementParameter.
 	! !
 
-!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 4/16/2019 20:31:13'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 4/16/2019 20:31:13'!
 compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass using: replacementParameter
 
 	| polymorphicMessageSourceCode refactoredBlockSourceCode rangesToReplacingParameter |
@@ -6956,20 +6972,7 @@ compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass us
 
 	aClass compile: polymorphicMessageSourceCode.! !
 
-!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/19/2019 17:52:48'!
-initializeOn: anInstVarName
-of: aClassToRefactor
-usingAsConcreteClass: aConcreteClass
-usingAsNullClass: aNullClass
-for: someReplacementParameters
-
-	instVar := anInstVarName.
-	classToRefactor := aClassToRefactor.
-	concreteClass := aConcreteClass.
-	nullClass := aNullClass.
-	replacementParameters := someReplacementParameters.! !
-
-!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 4/16/2019 20:29:06'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 4/16/2019 20:29:06'!
 rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter
 
 	| rangesInsideBlockRange rangesOffsetToBlock variableToParametrizeRangeToReplacingParameter offset |
@@ -6983,7 +6986,7 @@ rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter
 
 	^rangesOffsetToBlock! !
 
-!IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 3/20/2019 15:47:21'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 3/20/2019 15:47:21'!
 replaceNilCheckWithPolymorphicMessageSendUsing: replacementParameter
 
 	| originalSourceCode refactoredSourceCode |
@@ -7208,7 +7211,7 @@ polymorphicSelectorsMustNotBeDefinedInTheNullObjectClassesErrorMessage
 
 	^'Polymorphic selectors must not be defined neither in the concrete nor the null class.' ! !
 
-!IntroduceNullObject class methodsFor: 'instance creation' stamp: 'FGJ 3/19/2019 17:46:08'!
+!IntroduceNullObject class methodsFor: 'instance creation' stamp: 'FGJ 6/16/2020 14:59:10'!
 on: anInstVarName
 of: aClassToRefactor
 usingAsConcreteClass: aConcreteClass
@@ -7575,16 +7578,6 @@ methodObjectSuperclassNameModel
 variablesToParametrizeToInstanceVariables
 
 	^variableToParametrizeToInstVarNameModel collect: [:aInstVarNameModel | aInstVarNameModel actualContents string]! !
-
-!ExtractToMethodObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:02:18'!
-forVariableToParametrize: aVariable nameModel: aModel
-
-	variableToParametrizeToInstVarNameModel at: aVariable put: aModel.! !
-
-!ExtractToMethodObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:07:57'!
-instVarNameFor: aVariableToParametrize
-
-	^(variableToParametrizeToInstVarNameModel at: aVariableToParametrize) actualContents! !
 
 !ExtractToMethodObjectRequest methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:04:31'!
 keywordOfIndex: aKeywordIndex wasSwappedWithKeywordOfIndex: anotherKeywordIndex

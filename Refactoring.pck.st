@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4109] on 29 June 2020 at 4:28:38 pm'!
+'From Cuis 5.0 [latest update: #4109] on 30 June 2020 at 4:27:35 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 542!
+!provides: 'Refactoring' 1 543!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -4319,6 +4319,23 @@ test38WhenThereAreMultipleStatementsPolymorphicMessageIsAddedToTheNullClass
 	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #unaryPolymorphicSelector) sourceCode.
 	! !
 
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 6/30/2020 16:25:11'!
+test39ReplacesNilAssignmentsWithNullObject
+
+	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
+
+	nextLine := String newLineString, String tab.
+	sourceWithAssignment := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' ifNil: [1+1. 2+2].'.
+	sourceWithAssignment := sourceWithAssignment, nextLine, self defaultInstVarName, ' := nil.'.
+	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unaryPolymorphicSelector.
+
+	self applyRefactoringOn: sourceWithAssignment using: definitions.
+	
+	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
+	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
+	expectedSource := expectedSource, nextLine, self defaultInstVarName, ' := ', self nullClass name, ' new.'.
+	self assert: expectedSource equals: refactoredMethod sourceCode.! !
+
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 17:16:59'!
 allClassCategoriesOfTestData
 
@@ -6935,10 +6952,22 @@ for: someReplacementParameters
 	nullClass := aNullClass.
 	replacementParameters := someReplacementParameters.! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 3/19/2019 17:54:43'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 6/30/2020 16:10:32'!
 apply
 
-	replacementParameters do: [:parameter | self applyWith: parameter].! !
+	| nilAssignmentsFinder nilAssignmentsRanges encoder |
+	
+	replacementParameters do: [:parameter | self applyWith: parameter].
+	
+	nilAssignmentsFinder := ParseNodeEnumerator ofBlock: [ :node |
+		(node isAssignmentNode  and: [(node value isNilPseudoVariable) and: [node variable name =  instVar]]) ifTrue: [
+			nilAssignmentsRanges add: (encoder rangeForNode: node value ifAbsent: [self shouldNotHappen]) first]].
+	replacementParameters do: [:replacementParameter | | methodNode |
+		nilAssignmentsRanges := SortedCollection new.
+		methodNode := replacementParameter methodNode.
+		encoder := methodNode encoder.
+		methodNode accept: nilAssignmentsFinder.
+		methodNode methodClass compile: (replacementParameter methodSourceCode copyReplacing: nilAssignmentsRanges with: (nullClass name, ' new'))] .! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 4/16/2019 15:37:36'!
 applyWith: replacementParameter
@@ -6986,7 +7015,7 @@ rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter
 
 	^rangesOffsetToBlock! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 3/20/2019 15:47:21'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 6/30/2020 15:46:16'!
 replaceNilCheckWithPolymorphicMessageSendUsing: replacementParameter
 
 	| originalSourceCode refactoredSourceCode |
@@ -8104,10 +8133,10 @@ messageNodeFirstArgumentIsEmptyBlock
 
 	^statement isVariableNode and: [statement name = 'nil']! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/18/2019 16:42:09'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 6/30/2020 16:11:06'!
 methodNode
 
-	^methodNode! !
+	^(methodNode methodClass compiledMethodAt: methodNode selector) methodNode! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/20/2019 10:47:30'!
 methodSourceCode

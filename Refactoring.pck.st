@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4109] on 2 July 2020 at 4:23:37 pm'!
+'From Cuis 5.0 [latest update: #4109] on 2 July 2020 at 6:14:33 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 545!
+!provides: 'Refactoring' 1 546!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -4353,7 +4353,7 @@ test40ReplacesMultipleNilAssignmentsWithNullObject
 	2 timesRepeat: [expectedSource := expectedSource, nextLine, self defaultInstVarName, ' := ', self nullClass name, ' new.'].
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 7/2/2020 15:39:05'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 7/2/2020 18:08:49'!
 test41ReplacesAssignmentWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -4367,10 +4367,10 @@ test41ReplacesAssignmentWithNullObject
 	
 	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
-	expectedSource := expectedSource, nextLine, self defaultInstVarName, ' := self assignOptionalField: (self doSomething).'.
+	expectedSource := expectedSource, nextLine, 'self assignOptionalField: (self doSomething).'.
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 7/2/2020 15:54:10'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 7/2/2020 18:13:37'!
 test42ReplacesMultipleAssignmentsInTheSameMethodWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine firstRightSide secondRightSide |
@@ -4387,11 +4387,11 @@ test42ReplacesMultipleAssignmentsInTheSameMethodWithNullObject
 	
 	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
-	expectedSource := expectedSource, nextLine, self defaultInstVarName, ' := self assignOptionalField: (', firstRightSide, ').'.
-	expectedSource := expectedSource, nextLine, self defaultInstVarName, ' := self assignOptionalField: (', secondRightSide withBlanksCondensed , ').'.
+	expectedSource := expectedSource, nextLine, 'self assignOptionalField: (', firstRightSide, ').'.
+	expectedSource := expectedSource, nextLine, 'self assignOptionalField: (', secondRightSide withBlanksCondensed , ').'.
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 7/2/2020 16:23:10'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 7/2/2020 18:14:08'!
 test43ReplacesMultipleAssignmentsInMultipleMethodsWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine firstRightSide secondRightSide aClassToRefactor refactoring replacementParameters |
@@ -4430,8 +4430,8 @@ test43ReplacesMultipleAssignmentsInMultipleMethodsWithNullObject
 		selector := (self methodToRefactorSelector asString, i asString) asSymbol.
 		refactoredMethod := self defaultClassToRefactor compiledMethodAt: selector.
 		expectedSource := selector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
-		expectedSource := expectedSource, nextLine, self defaultInstVarName, ' := self assignOptionalField: (', firstRightSide, ').'.
-		expectedSource := expectedSource, nextLine, self defaultInstVarName, ' := self assignOptionalField: (', secondRightSide withBlanksCondensed , ').'.
+		expectedSource := expectedSource, nextLine, 'self assignOptionalField: (', firstRightSide, ').'.
+		expectedSource := expectedSource, nextLine, 'self assignOptionalField: (', secondRightSide withBlanksCondensed , ').'.
 		self assert: expectedSource equals: refactoredMethod sourceCode].! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 17:16:59'!
@@ -7050,11 +7050,12 @@ for: someReplacementParameters
 	nullClass := aNullClass.
 	replacementParameters := someReplacementParameters.! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/1/2020 19:03:53'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 16:25:01'!
 apply
 
 	replacementParameters do: [:parameter | self applyWith: parameter].
-	self replaceAssignments.! !
+	self replaceAssignments.
+	self compileAssignOptionalField.! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 4/16/2019 15:37:36'!
 applyWith: replacementParameter
@@ -7088,6 +7089,18 @@ compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass us
 
 	aClass compile: polymorphicMessageSourceCode.! !
 
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 18:03:50'!
+compileAssignOptionalField
+
+	| body header paramName selectorName |
+	
+	paramName := 'maybeNil'.
+	selectorName := 'assignOptionalField'.
+	header := selectorName, ': ', paramName, String newLineString, String newLineString, String tab.
+	body := instVar, ' := ', paramName, ' ifNil: [ ', nullClass name, ' new ] ifNotNil: [ ', paramName, ' ].'.
+	
+	classToRefactor compile: header, body. ! !
+
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 6/30/2020 18:57:22'!
 isAssignmentToNil: aNode
 
@@ -7112,7 +7125,7 @@ rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter
 
 	^rangesOffsetToBlock! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 15:48:29'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 18:12:48'!
 replaceAssignments
 
 	| encoder rangesToReplacement nilAssignmentsFinder nullObjectNew methodNode |
@@ -7125,12 +7138,13 @@ replaceAssignments
 			nilRange := ranges detect: [:range | assignmentRange rangeIncludes: range first].
 			rangesToReplacement add: (Association key: nilRange value: nullObjectNew)].
 		
-		(self isAssignmentToNonNil: node) ifTrue: [ | assignmentRange replacement originalSource rangeToReplace sourceToReplace |
+		(self isAssignmentToNonNil: node) ifTrue: [ | assignmentRange replacement originalSource rangeToReplace sourceToReplace leftSideRange |
 			assignmentRange := encoder rangeForNode: node ifAbsent: [self shouldNotHappen].
-			rangeToReplace := Interval from: (assignmentRange first + 2) to: assignmentRange last.
+			leftSideRange := ((encoder rangeForNode: node variable ifAbsent: [self shouldNotHappen]) select: [:r | r last < assignmentRange first]) last.
+			rangeToReplace := Interval from: (leftSideRange first) to: assignmentRange last.
 			originalSource := (methodNode methodClass compiledMethodAt: methodNode selector) sourceCode.
-			sourceToReplace := originalSource copyFrom: rangeToReplace first to: rangeToReplace last.
-			replacement := ' self assignOptionalField: (', sourceToReplace withBlanksTrimmed withBlanksCondensed ,')'.
+			sourceToReplace := originalSource copyFrom: (assignmentRange first + 2) to: rangeToReplace last.
+			replacement := 'self assignOptionalField: (', sourceToReplace withBlanksTrimmed withBlanksCondensed ,')'.
 			rangesToReplacement add: (Association key: rangeToReplace value: replacement)
 		]	
 	].

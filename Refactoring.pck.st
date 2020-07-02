@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4109] on 2 July 2020 at 6:14:33 pm'!
+'From Cuis 5.0 [latest update: #4109] on 2 July 2020 at 7:01:26 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 546!
+!provides: 'Refactoring' 1 548!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -7089,7 +7089,7 @@ compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass us
 
 	aClass compile: polymorphicMessageSourceCode.! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 18:03:50'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 18:53:50'!
 compileAssignOptionalField
 
 	| body header paramName selectorName |
@@ -7097,7 +7097,7 @@ compileAssignOptionalField
 	paramName := 'maybeNil'.
 	selectorName := 'assignOptionalField'.
 	header := selectorName, ': ', paramName, String newLineString, String newLineString, String tab.
-	body := instVar, ' := ', paramName, ' ifNil: [ ', nullClass name, ' new ] ifNotNil: [ ', paramName, ' ].'.
+	body := instVar, ' := ', paramName, ' ifNil: [ ', nullClass name, ' new ].'.
 	
 	classToRefactor compile: header, body. ! !
 
@@ -7106,10 +7106,25 @@ isAssignmentToNil: aNode
 
 	^aNode isAssignmentNode and: [(aNode value isNilPseudoVariable) and: [aNode variable name =  instVar]].! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 15:36:35'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 19:00:40'!
 isAssignmentToNonNil: aNode
 
-	^aNode isAssignmentNode and: [aNode variable name =  instVar].! !
+	^(aNode isAssignmentNode and: [aNode variable name =  instVar]) and: [aNode value isNilPseudoVariable not].! !
+
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 18:32:49'!
+rangeToReplaceToReplacementFrom: methodNode of: node
+
+	| assignmentRange leftSideRange originalSource rangeToReplace replacement sourceToReplace variableRanges |
+	
+	assignmentRange := methodNode encoder rangeForNode: node ifAbsent: [self shouldNotHappen].
+	variableRanges := methodNode encoder rangeForNode: node variable ifAbsent: [self shouldNotHappen].
+	leftSideRange := (variableRanges select: [:r | r last < assignmentRange first]) last.
+	rangeToReplace := Interval from: (leftSideRange first) to: assignmentRange last.
+	originalSource := (methodNode methodClass compiledMethodAt: methodNode selector) sourceCode.
+	sourceToReplace := originalSource copyFrom: (assignmentRange first + 2) to: rangeToReplace last.
+	replacement := 'self assignOptionalField: (', sourceToReplace withBlanksTrimmed withBlanksCondensed ,')'.
+	
+	^Association key: rangeToReplace value: replacement! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 4/16/2019 20:29:06'!
 rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter
@@ -7125,7 +7140,7 @@ rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter
 
 	^rangesOffsetToBlock! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 18:12:48'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 18:30:51'!
 replaceAssignments
 
 	| encoder rangesToReplacement nilAssignmentsFinder nullObjectNew methodNode |
@@ -7138,16 +7153,8 @@ replaceAssignments
 			nilRange := ranges detect: [:range | assignmentRange rangeIncludes: range first].
 			rangesToReplacement add: (Association key: nilRange value: nullObjectNew)].
 		
-		(self isAssignmentToNonNil: node) ifTrue: [ | assignmentRange replacement originalSource rangeToReplace sourceToReplace leftSideRange |
-			assignmentRange := encoder rangeForNode: node ifAbsent: [self shouldNotHappen].
-			leftSideRange := ((encoder rangeForNode: node variable ifAbsent: [self shouldNotHappen]) select: [:r | r last < assignmentRange first]) last.
-			rangeToReplace := Interval from: (leftSideRange first) to: assignmentRange last.
-			originalSource := (methodNode methodClass compiledMethodAt: methodNode selector) sourceCode.
-			sourceToReplace := originalSource copyFrom: (assignmentRange first + 2) to: rangeToReplace last.
-			replacement := 'self assignOptionalField: (', sourceToReplace withBlanksTrimmed withBlanksCondensed ,')'.
-			rangesToReplacement add: (Association key: rangeToReplace value: replacement)
-		]	
-	].
+		(self isAssignmentToNonNil: node) ifTrue: [ 
+			rangesToReplacement add: (self rangeToReplaceToReplacementFrom: methodNode of: node)]].
 	
 	replacementParameters do: [:replacementParameter | | refactoredSource  |
 		rangesToReplacement := SortedCollection sortBlock: [:intA :intB | intA key first < intB key first].

@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4365] on 3 September 2020 at 11:57:55 am'!
+'From Cuis 5.0 [latest update: #4365] on 3 September 2020 at 2:36:29 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 543!
+!provides: 'Refactoring' 1 544!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -577,7 +577,7 @@ textHeight
 
 	^AbstractFont default height! !
 
-!ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 19:42:21'!
+!ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:25:08'!
 withText: aText withColor: aColor withWidth: aWidth
 
 	| anInstance anInstanceLayoutSpec bottomSpaceToAccountForLettersBelowBaseLineLikep |
@@ -593,7 +593,7 @@ withText: aText withColor: aColor withWidth: aWidth
 	anInstanceLayoutSpec := LayoutSpec
 		proportionalWidth: 0.95
 		fixedHeight: (self minimumHeightToDisplay: aText on: aWidth) + bottomSpaceToAccountForLettersBelowBaseLineLikep.
-	anInstanceLayoutSpec minorDirectionPadding: #left.
+	anInstanceLayoutSpec offAxisEdgeWeight: #columnLeft.
 	anInstance layoutSpec: anInstanceLayoutSpec.
 
 	^anInstance! !
@@ -680,7 +680,7 @@ okToChange
 		ifTrue: [^true]
 		ifFalse: [^super okToChange].! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:13:57'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:22:31'!
 buildActionButtonsSection
 
 	| section sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
@@ -696,14 +696,14 @@ buildActionButtonsSection
 	sectionWidth := submorphsWidth + (section xSeparation * (section submorphs size + 1)).
 	submorphsHeight := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedOrMinimumLayoutHeight]) max.
 	sectionLayoutSpec := LayoutSpec fixedWidth: sectionWidth fixedHeight: submorphsHeight * 2.
-	sectionLayoutSpec minorDirectionPadding: 0.95.
+	sectionLayoutSpec offAxisEdgeWeight: 0.95.
 
 	section layoutSpec: sectionLayoutSpec.
 
 	^section.
 	! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 2/16/2019 11:35:56'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:23:25'!
 buildCancelButton
 
 	| button buttonLayoutSpec |
@@ -714,12 +714,12 @@ buildCancelButton
 	buttonLayoutSpec := LayoutSpec
 		fixedWidth: button morphWidth
 		fixedHeight: ExtractToMethodObjectForm fontProportionalUnitOfReferenceForHeight  * 2.
-	buttonLayoutSpec minorDirectionPadding: 0.85.
+	buttonLayoutSpec offAxisEdgeWeight: 0.85.
 	button layoutSpec: buttonLayoutSpec.
 
 	^button! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/10/2019 18:07:37'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:23:30'!
 buildInstanceCreationMessageSection
 
 	| section previewExplanation previewLayoutSpec |
@@ -753,7 +753,7 @@ buildInstanceCreationMessageSection
 	previewLayoutSpec := LayoutSpec
 		proportionalWidth: 0.95
 		fixedHeight: ExtractToMethodObjectForm fontProportionalUnitOfReferenceForHeight * 3.
-	previewLayoutSpec minorDirectionPadding: 0.3.
+	previewLayoutSpec offAxisEdgeWeight: 0.3.
 	preview layoutSpec: previewLayoutSpec.
 
 	section addMorph: preview.
@@ -873,7 +873,7 @@ buildPreview
 
 	preview model actualContents: previewContent.! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 2/16/2019 11:35:56'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:23:36'!
 buildSubmitButton
 
 	| submitButton submitButtonLayoutSpec |
@@ -884,7 +884,7 @@ buildSubmitButton
 	submitButtonLayoutSpec := LayoutSpec
 		fixedWidth: submitButton morphWidth
 		fixedHeight: ExtractToMethodObjectForm fontProportionalUnitOfReferenceForHeight  * 2.
-	submitButtonLayoutSpec minorDirectionPadding: 0.95.
+	submitButtonLayoutSpec offAxisEdgeWeight: 0.95.
 	submitButton layoutSpec: submitButtonLayoutSpec.
 
 	^submitButton! !
@@ -965,15 +965,15 @@ moveFrom: anInnerTextMorph
 
 	self world activeHand newKeyboardFocus: newFocusMorph.! !
 
-!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 18:27:41'!
+!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:35:48'!
 fontProportionalUnitOfReferenceForHeight
 
-	^AbstractFont default height! !
+	^FontFamily defaultPointSize ! !
 
-!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 18:27:24'!
+!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:32:55'!
 fontProportionalUnitOfReferenceForWidth
 
-	^AbstractFont default widthOf: $A! !
+	^FontFamily defaultFamilyAndPointSize widthOfString: 'A'! !
 
 !ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/8/2019 17:26:06'!
 open: aModel label: aString
@@ -1017,15 +1017,15 @@ layoutSpecForSection: aSection
 
 	^LayoutSpec proportionalWidth: 1.0 fixedHeight: aSection recommendedHeight! !
 
-!IntroduceNullObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 12:43:16'!
+!IntroduceNullObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:28:42'!
 recommendedWidthForLabels: labels
 
 	| rightMargin |
 
 	rightMargin := 20.
-	^(labels collect: [:aLabel | AbstractFont default widthOfString: aLabel]) max + rightMargin! !
+	^(labels collect: [:aLabel | FontFamily defaultFamilyAndPointSize widthOfString: aLabel]) max + rightMargin! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:14:04'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:24:03'!
 buildActionButtonsSection
 
 	| section sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
@@ -1041,14 +1041,14 @@ buildActionButtonsSection
 	sectionWidth := submorphsWidth + (section xSeparation * (section submorphs size + 1)).
 	submorphsHeight := (section submorphs collect: [:aSubmorph | aSubmorph layoutSpec fixedOrMinimumLayoutHeight]) max.
 	sectionLayoutSpec := LayoutSpec fixedWidth: sectionWidth fixedHeight: submorphsHeight * 2.
-	sectionLayoutSpec minorDirectionPadding: 0.95.
+	sectionLayoutSpec offAxisEdgeWeight: 0.95.
 
 	section layoutSpec: sectionLayoutSpec.
 
 	^section.
 	! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/29/2019 14:25:04'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:24:09'!
 buildCancelButton
 
 	| button buttonLayoutSpec |
@@ -1059,7 +1059,7 @@ buildCancelButton
 	buttonLayoutSpec := LayoutSpec
 		fixedWidth: button morphWidth
 		fixedHeight: ExtractToMethodObjectForm fontProportionalUnitOfReferenceForHeight  * 2.
-	buttonLayoutSpec minorDirectionPadding: 0.85.
+	buttonLayoutSpec offAxisEdgeWeight: 0.85.
 	button layoutSpec: buttonLayoutSpec.
 
 	^button! !
@@ -1133,7 +1133,7 @@ buildMessageSendingListSection
 
 	^list! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/5/2019 16:22:49'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:19:55'!
 buildMorphicWindow
 
 	firstTimeBuild := true.
@@ -1141,7 +1141,7 @@ buildMorphicWindow
 	self initializeScrollableContainer.
 	self initializeFormLayout.
 	scrollPane scroller addMorph: formLayout.
-	formLayout padding: #top.
+	formLayout axisEdgeWeight: #columnTop.
 
 	hierarchySection := self buildNullObjectHierarchyClassesSection.
 	formLayout addMorph: hierarchySection.
@@ -1190,7 +1190,7 @@ buildPolymorphicSelectorInputFor: anIfNilCheck
 
 	^selectorInput ! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:14:11'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:24:15'!
 buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor: someVariablesToExtract
 
 	| parametersTable preview layout previewLayoutSpec |
@@ -1216,7 +1216,7 @@ buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor:
 	previewLayoutSpec := LayoutSpec
 		proportionalWidth: 1.0
 		fixedHeight: IntroduceNullObjectForm fontProportionalUnitOfReferenceForHeight * 3.
-	previewLayoutSpec minorDirectionPadding: 0.3.
+	previewLayoutSpec offAxisEdgeWeight: 0.3.
 	preview layoutSpec: previewLayoutSpec.
 
 	layout addMorph: preview.
@@ -1248,7 +1248,7 @@ buildPreviewOf: anIfNilCheckForm
 
 	currentlyShownPreview model actualContents: previewContent.! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 3/29/2019 14:25:18'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:24:19'!
 buildSubmitButton
 
 	| submitButton submitButtonLayoutSpec |
@@ -1259,7 +1259,7 @@ buildSubmitButton
 	submitButtonLayoutSpec := LayoutSpec
 		fixedWidth: submitButton morphWidth
 		fixedHeight: ExtractToMethodObjectForm fontProportionalUnitOfReferenceForHeight  * 2.
-	submitButtonLayoutSpec minorDirectionPadding: 0.95.
+	submitButtonLayoutSpec offAxisEdgeWeight: 0.95.
 	submitButton layoutSpec: submitButtonLayoutSpec.
 
 	^submitButton! !
@@ -1427,10 +1427,10 @@ moveFrom: anInnerTextMorph
 
 	self world activeHand newKeyboardFocus: newFocusMorph.! !
 
-!IntroduceNullObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/1/2019 14:39:26'!
+!IntroduceNullObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:33:32'!
 fontProportionalUnitOfReferenceForHeight
 
-	^AbstractFont default height! !
+	^FontFamily defaultPointSize ! !
 
 !IntroduceNullObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:32:21'!
 fontProportionalUnitOfReferenceForWidth
@@ -1453,7 +1453,7 @@ withModel: aModel
 
 	^self new initializeWithModel: aModel! !
 
-!FormSection methodsFor: 'initialization' stamp: 'FGJ 2/13/2019 18:57:34'!
+!FormSection methodsFor: 'initialization' stamp: 'FGJ 9/3/2020 14:23:42'!
 initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
 
 	| titleLayoutSpec |
@@ -1471,7 +1471,7 @@ initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
 	titleLayoutSpec := LayoutSpec
 		fixedWidth: titleMorph morphWidth
 		fixedHeight: titleMorph morphHeight.
-	titleLayoutSpec minorDirectionPadding: 0.03.
+	titleLayoutSpec offAxisEdgeWeight: 0.03.
 
 	self addMorph: titleMorph layoutSpec: titleLayoutSpec.
 
@@ -1565,7 +1565,7 @@ withLabel: aLabel withWidth: aWidth withModel: aTextModel
 
 	! !
 
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'jmv 3/31/2020 18:14:48'!
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:31:59'!
 withLabel: aLabel withWidth: aWidth withModel: aTextModel usingAs: focusMover
 
 	| labelLayoutSpec inputMorphLayoutSpec |
@@ -1577,7 +1577,7 @@ withLabel: aLabel withWidth: aWidth withModel: aTextModel usingAs: focusMover
 	labelLayoutSpec := LayoutSpec
 		fixedWidth: aWidth
 		fixedHeight: labelMorph morphHeight
-		minorDirectionPadding: #center.
+		offAxisEdgeWeight: #center.
 	self addMorph: labelMorph layoutSpec: labelLayoutSpec.
 
 	inputMorph := TabPassingTextModelMorph withModel: aTextModel.
@@ -1599,10 +1599,10 @@ inputWidth
 
 	^ExtractToMethodObjectForm fontProportionalUnitOfReferenceForWidth * 30! !
 
-!LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/6/2019 20:39:39'!
+!LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:31:03'!
 recommendedHeight
 
-	^AbstractFont default height * 1.8! !
+	^FontFamily defaultPointSize * 1.8! !
 
 !LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 16:32:52'!
 withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel
@@ -1619,14 +1619,14 @@ backgroundColor
 
 	^backgroundColor ! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 4/10/2019 18:09:29'!
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:34:01'!
 columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: numberOfInputColumns
 
 	| widths maxRowTitleWidth widthForInputs |
 
 	widths := OrderedCollection new.
 
-	maxRowTitleWidth := (rowsTitles collect: [:aRowTitle | AbstractFont default widthOfString: aRowTitle]) max + 20.
+	maxRowTitleWidth := (rowsTitles collect: [:aRowTitle | FontFamily defaultFamilyAndPointSize widthOfString: aRowTitle]) max + 20.
 	widths add: maxRowTitleWidth.
 
 	widthForInputs := ExtractToMethodObjectForm fontProportionalUnitOfReferenceForWidth * 20.
@@ -1795,7 +1795,7 @@ rowWasMovedUp: aRowIndex
 
 	(rowModels at: aRowIndex) wasMovedUp.! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 2/13/2019 14:14:52'!
+!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:20:05'!
 buildChangeOrderButtonsWith: aModel
 
 	| downButton layoutButtons upButton |
@@ -1811,12 +1811,12 @@ buildChangeOrderButtonsWith: aModel
 	downButton action: #moveDown.
 
 	layoutButtons := LayoutMorph newRow.
-	layoutButtons padding: #center; color: self backgroundColor.
+	layoutButtons axisEdgeWeight: #columnTop; color: self backgroundColor.
 	layoutButtons addMorph: downButton; addMorph: upButton.
 
 	^layoutButtons! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 4/10/2019 18:17:57'!
+!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:35:28'!
 buildColumnTitlesRowFor: inputColumnsTitles
 
 	| columnsTitles row |
@@ -1831,7 +1831,7 @@ buildColumnTitlesRowFor: inputColumnsTitles
 	columnsTitles withIndexDo: [:aColumnTitle :columnIndex | | columnTitleLayoutSpec titleLayout |
 		titleLayout := LayoutMorph newRow.
 		titleLayout color: self backgroundColor .
-		titleLayout padding: #center.
+		titleLayout axisEdgeWeight: #center.
 		titleLayout addMorph: (StringMorph contents: aColumnTitle).
 		columnTitleLayoutSpec := LayoutSpec fixedWidth: (columnWidths at: columnIndex).
 		row
@@ -1861,10 +1861,10 @@ columnSeparation
 
 	^4! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'accessing' stamp: 'FGJ 2/14/2019 12:09:59'!
+!MessageKeywordsAndParametersTable methodsFor: 'accessing' stamp: 'FGJ 9/3/2020 14:33:48'!
 rowHeight
 
-	^AbstractFont default height * 1.6! !
+	^FontFamily defaultPointSize * 1.6! !
 
 !MessageKeywordsAndParametersTable class methodsFor: 'instance creation' stamp: 'FGJ 4/10/2019 18:05:01'!
 withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel

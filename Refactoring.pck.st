@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4137] on 3 July 2020 at 7:04:45 pm'!
+'From Cuis 5.0 [latest update: #4365] on 3 September 2020 at 11:57:55 am'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 542!
+!provides: 'Refactoring' 1 543!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -293,6 +293,16 @@ RefactoringApplier subclass: #IntroduceNullObjectApplier
 	category: 'Refactoring'!
 !classDefinition: 'IntroduceNullObjectApplier class' category: #Refactoring!
 IntroduceNullObjectApplier class
+	instanceVariableNames: ''!
+
+!classDefinition: #ArgumentsAndReturnsFinder category: #Refactoring!
+Object subclass: #ArgumentsAndReturnsFinder
+	instanceVariableNames: 'methodNode ranges instVar'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ArgumentsAndReturnsFinder class' category: #Refactoring!
+ArgumentsAndReturnsFinder class
 	instanceVariableNames: ''!
 
 !classDefinition: #AutocompletedTextProvider category: #Refactoring!
@@ -4434,7 +4444,7 @@ test43ReplacesMultipleAssignmentsInMultipleMethodsWithNullObject
 		expectedSource := expectedSource, nextLine, 'self assignOptionalField: (', secondRightSide withBlanksCondensed , ').'.
 		self assert: expectedSource equals: refactoredMethod sourceCode].! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 7/3/2020 16:06:22'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/3/2020 10:40:53'!
 test44ReplacesReturnOfIvarWithGetReference
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -4449,7 +4459,7 @@ test44ReplacesReturnOfIvarWithGetReference
 	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
 	expectedSource := expectedSource, nextLine, '^', self defaultInstVarName, ' getReference'.
-	self halt.
+	
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 7/3/2020 16:08:08'!
@@ -7154,11 +7164,6 @@ isAssignmentToNonNil: aNode
 
 	^(aNode isAssignmentNode and: [aNode variable name =  instVar]) and: [aNode value isNilPseudoVariable not].! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/3/2020 15:47:05'!
-nodeIsIvar: node
-	
-	^node isInstanceVariableNode and: [node name = instVar]! !
-
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 18:32:49'!
 rangeToReplaceToReplacementFrom: methodNode of: node
 
@@ -7212,35 +7217,14 @@ replaceAssignments
 		refactoredSource := replacementParameter methodSourceCode copyReplacing: rangesToReplacement.
 		methodNode methodClass compile: refactoredSource]! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/3/2020 18:59:16'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/3/2020 11:45:53'!
 replaceIvarWithGetReference
 
-	| methodNode rangesToReplace paramsAndReturnsFinder |
-	
-	paramsAndReturnsFinder := ParseNodeEnumerator ofBlock: [ :node | | isMessageWithIvarAsArg argIvarRanges |	
-		(node isReturn and: [self nodeIsIvar: node expr]) ifTrue: [ | returnNodeRange ivarRanges|
-			ivarRanges := methodNode rangeForNode: node expr ifAbsent: [self shouldNotHappen].
-			(methodNode isMultipleRanges: ivarRanges) ifFalse: [ivarRanges := {ivarRanges}]. 
-			returnNodeRange := methodNode rangeForNode: node ifAbsent: [self shouldNotHappen].
-			rangesToReplace add: (ivarRanges detect: [:r | returnNodeRange includes: r first])
-		].
-		argIvarRanges := {}.
-		isMessageWithIvarAsArg := node isMessageNode and: [ node arguments anySatisfy: [:a |
-				(self nodeIsIvar: a) ifTrue: [argIvarRanges := methodNode rangeForNode: a ifAbsent: [self shouldNotHappen]. true]]].
-		isMessageWithIvarAsArg ifTrue: [ | messageNodeRange |
-			(methodNode isMultipleRanges: argIvarRanges) ifFalse: [argIvarRanges := {argIvarRanges}]. 
-			messageNodeRange := methodNode rangeForNode: node ifAbsent: [self shouldNotHappen].
-			rangesToReplace add: (argIvarRanges detect: [:r | messageNodeRange includes: r first])
-		]
-	].
-
-	replacementParameters do: [:replacementParameter | | refactoredSource  |
-		rangesToReplace := OrderedCollection new.
+	replacementParameters do: [:replacementParameter | | refactoredSource  finder methodNode |
 		methodNode := replacementParameter methodNode.
-		
-		methodNode accept: paramsAndReturnsFinder.
-		
-		refactoredSource := replacementParameter methodSourceCode copyReplacing: rangesToReplace with: instVar, ' getReference'.
+		finder := ArgumentsAndReturnsFinder in: methodNode for: instVar.
+		finder value.	
+		refactoredSource := replacementParameter methodSourceCode copyReplacing: finder ranges with: instVar, ' getReference'.
 		methodNode methodClass compile: refactoredSource]! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 6/30/2020 15:46:16'!
@@ -7741,6 +7725,75 @@ value
 applyOn: aClass
 
 	^self new initializeToApplyOn: aClass! !
+
+!ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 11:40:41'!
+addParametersRangesFrom: node
+
+	| messageNodeRange argIvarRanges ivarNode |
+	
+	ivarNode := (node arguments detect: [:a | self nodeIsIvar: a]).
+	argIvarRanges := methodNode rangeForNode: ivarNode ifAbsent: [self shouldNotHappen].
+	(methodNode isMultipleRanges: argIvarRanges) ifFalse: [argIvarRanges := {argIvarRanges}]. 
+	messageNodeRange := methodNode rangeForNode: node ifAbsent: [self shouldNotHappen].
+	
+	ranges add: (argIvarRanges detect: [:r | messageNodeRange includes: r first])! !
+
+!ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 11:26:41'!
+addReturnRangesFrom: node
+
+	| returnNodeRange ivarRanges|
+
+	ivarRanges := methodNode rangeForNode: node expr ifAbsent: [self shouldNotHappen].
+	(methodNode isMultipleRanges: ivarRanges) ifFalse: [ivarRanges := {ivarRanges}]. 
+	returnNodeRange := methodNode rangeForNode: node ifAbsent: [self shouldNotHappen].
+
+	ranges add: (ivarRanges detect: [:r | returnNodeRange includes: r first])! !
+
+!ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 11:43:01'!
+in: aMethodNode for: anInstVar
+
+	methodNode := aMethodNode.
+	instVar := anInstVar.! !
+
+!ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 11:56:01'!
+isMessageWithIvarAsArg: node
+
+	^node isMessageNode and: [ node arguments anySatisfy: [:a | self nodeIsIvar: a]].
+! !
+
+!ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 11:20:41'!
+isReturnIvar: node
+
+	^ node isReturn and: [self nodeIsIvar: node expr]! !
+
+!ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 11:22:19'!
+nodeIsIvar: node
+	
+	^node isInstanceVariableNode and: [node name = instVar]! !
+
+!ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 11:20:01'!
+ranges
+
+	^ranges! !
+
+!ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 11:41:45'!
+value
+
+	| paramsAndReturnsFinder |
+	
+	ranges := OrderedCollection new.
+	
+	paramsAndReturnsFinder := ParseNodeEnumerator ofBlock: [ :node | 	
+		(self isReturnIvar: node) ifTrue: [self addReturnRangesFrom: node].
+		(self isMessageWithIvarAsArg: node) ifTrue: [ self addParametersRangesFrom: node]].
+
+	methodNode accept: paramsAndReturnsFinder.
+! !
+
+!ArgumentsAndReturnsFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 11:54:04'!
+in: methodNode for: instVar
+
+	^self new in: methodNode for: instVar.! !
 
 !AutocompletedTextProvider methodsFor: 'user interface support' stamp: 'FGJ 4/8/2019 17:09:38'!
 autoCompleterClassFor: aTextGetter

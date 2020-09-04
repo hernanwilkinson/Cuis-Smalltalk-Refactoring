@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4365] on 3 September 2020 at 2:36:29 pm'!
+'From Cuis 5.0 [latest update: #4365] on 4 September 2020 at 10:58:42 am'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 544!
+!provides: 'Refactoring' 1 545!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -457,7 +457,7 @@ initializeToFindIn: aMessageNode
 	currentScopeTemporaries := Bag new.
 	! !
 
-!MessageSendingBlocksVariablesToExtractFinder methodsFor: 'evaluating' stamp: 'FGJ 3/29/2019 17:36:29'!
+!MessageSendingBlocksVariablesToExtractFinder methodsFor: 'evaluating' stamp: 'FGJ 9/4/2020 10:48:58'!
 value
 
 	messageNode arguments do: [:argument |
@@ -466,6 +466,7 @@ value
 
 	variablesToExtract remove: 'true' ifAbsent: [nil].
 	variablesToExtract remove: 'false' ifAbsent: [nil].
+	variablesToExtract remove: 'nil' ifAbsent: [nil].
 
 
 	^OrderedCollection newFrom: variablesToExtract! !
@@ -490,14 +491,22 @@ visitInstanceVariableNode: anInstanceVariableNode
 
 	variablesToExtract add: anInstanceVariableNode name.! !
 
-!MessageSendingBlocksVariablesToExtractFinder methodsFor: 'visiting' stamp: 'FGJ 3/28/2019 19:12:06'!
+!MessageSendingBlocksVariablesToExtractFinder methodsFor: 'visiting' stamp: 'FGJ 9/4/2020 10:53:33'!
+visitTempVariableNode: aTempVariableNode
+
+	| name |
+
+	name := aTempVariableNode name.
+
+	(currentScopeTemporaries includes: name) ifFalse: [variablesToExtract add: name].! !
+
+!MessageSendingBlocksVariablesToExtractFinder methodsFor: 'visiting' stamp: 'FGJ 9/4/2020 10:48:37'!
 visitVariableNode: aVariableNode
 
 	| name |
 
 	name := aVariableNode name.
 
-	name = 'nil' ifTrue: [^self].
 	(currentScopeTemporaries includes: name) ifFalse: [variablesToExtract add: name].! !
 
 !MessageSendingBlocksVariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 3/28/2019 17:31:08'!
@@ -1619,7 +1628,7 @@ backgroundColor
 
 	^backgroundColor ! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:34:01'!
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 9/4/2020 10:56:07'!
 columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: numberOfInputColumns
 
 	| widths maxRowTitleWidth widthForInputs |
@@ -1632,7 +1641,7 @@ columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: numberOfInputColum
 	widthForInputs := ExtractToMethodObjectForm fontProportionalUnitOfReferenceForWidth * 20.
 	numberOfInputColumns timesRepeat: [widths add: widthForInputs].
 
-	rowsTitles size > 1 ifTrue: [widths add: (AbstractFont default widthOfString: 'Change order')].
+	rowsTitles size > 1 ifTrue: [widths add: (FontFamily defaultFamilyAndPointSize widthOfString: 'Change order')].
 
 	^widths
 
@@ -1795,7 +1804,7 @@ rowWasMovedUp: aRowIndex
 
 	(rowModels at: aRowIndex) wasMovedUp.! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:20:05'!
+!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 9/4/2020 10:56:45'!
 buildChangeOrderButtonsWith: aModel
 
 	| downButton layoutButtons upButton |
@@ -1811,7 +1820,7 @@ buildChangeOrderButtonsWith: aModel
 	downButton action: #moveDown.
 
 	layoutButtons := LayoutMorph newRow.
-	layoutButtons axisEdgeWeight: #columnTop; color: self backgroundColor.
+	layoutButtons axisEdgeWeight: #center; color: self backgroundColor.
 	layoutButtons addMorph: downButton; addMorph: upButton.
 
 	^layoutButtons! !
@@ -4740,6 +4749,19 @@ test07WhenABlockReferencesInstanceVariablesTheyAreFound
 	variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: messageNode.
 	self assert: 1 equals: variablesToExtract size.
 	self assert: (variablesToExtract includes: 'anInstVar').! !
+
+!MessageSendingBlocksVariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 9/4/2020 10:54:05'!
+test08WhenABlockReferencesArgumentsTheyAreFound
+
+	| messageClass messageNode variablesToExtract |
+
+	messageClass := self createClassNamed: #AClass.
+	messageClass compile: 'm1: anArg self ifNil: [| a | a := 2. a + anArg]'.
+	messageNode := (messageClass compiledMethodAt: #m1:) methodNode block statements first.
+	
+	variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: messageNode.
+	self assert: 1 equals: variablesToExtract size.
+	self assert: (variablesToExtract includes: 'anArg').! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:52:30'!
 test01AbstractClassClassNameMustNotBeEmpty

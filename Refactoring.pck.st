@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4365] on 4 September 2020 at 10:58:42 am'!
+'From Cuis 5.0 [latest update: #4365] on 5 September 2020 at 2:44:13 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 545!
+!provides: 'Refactoring' 1 546!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -4453,7 +4453,7 @@ test43ReplacesMultipleAssignmentsInMultipleMethodsWithNullObject
 		expectedSource := expectedSource, nextLine, 'self assignOptionalField: (', secondRightSide withBlanksCondensed , ').'.
 		self assert: expectedSource equals: refactoredMethod sourceCode].! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/3/2020 10:40:53'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/5/2020 14:43:42'!
 test44ReplacesReturnOfIvarWithGetReference
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -4467,11 +4467,11 @@ test44ReplacesReturnOfIvarWithGetReference
 	
 	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
-	expectedSource := expectedSource, nextLine, '^', self defaultInstVarName, ' getReference'.
+	expectedSource := expectedSource, nextLine, '^', self defaultInstVarName, ' nilIfNullObject'.
 	
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 7/3/2020 16:08:08'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/5/2020 14:43:59'!
 test45ReplacesIvarAsParamWithGetReference
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -4485,7 +4485,7 @@ test45ReplacesIvarAsParamWithGetReference
 	
 	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
-	expectedSource := expectedSource, nextLine, 'self do: ', self defaultInstVarName, ' getReference.'.
+	expectedSource := expectedSource, nextLine, 'self do: ', self defaultInstVarName, ' nilIfNullObject.'.
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 17:16:59'!
@@ -7117,14 +7117,14 @@ for: someReplacementParameters
 	nullClass := aNullClass.
 	replacementParameters := someReplacementParameters.! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/3/2020 19:02:38'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/5/2020 14:42:03'!
 apply
 
 	replacementParameters do: [:parameter | self applyWith: parameter].
 	self replaceAssignments.
 	self compileAssignOptionalField.
-	self replaceIvarWithGetReference.
-	self compileGetReference.! !
+	self replaceIvarWithNilIfNullObject.
+	self compileNilIfNullObject.! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 4/16/2019 15:37:36'!
 applyWith: replacementParameter
@@ -7170,11 +7170,11 @@ compileAssignOptionalField
 	
 	classToRefactor compile: header, body. ! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/3/2020 19:04:32'!
-compileGetReference
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/5/2020 14:42:03'!
+compileNilIfNullObject
 
-	nullClass compile: 'getReference', String newLineString, String tab, '^nil'.
-	concreteClass compile: 'getReference'! !
+	nullClass compile: 'nilIfNullObject', String newLineString, String tab, '^nil'.
+	concreteClass compile: 'nilIfNullObject', String newLineString, String tab, '^self'.! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 6/30/2020 18:57:22'!
 isAssignmentToNil: aNode
@@ -7239,14 +7239,14 @@ replaceAssignments
 		refactoredSource := replacementParameter methodSourceCode copyReplacing: rangesToReplacement.
 		methodNode methodClass compile: refactoredSource]! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/3/2020 11:45:53'!
-replaceIvarWithGetReference
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/5/2020 14:40:36'!
+replaceIvarWithNilIfNullObject
 
 	replacementParameters do: [:replacementParameter | | refactoredSource  finder methodNode |
 		methodNode := replacementParameter methodNode.
 		finder := ArgumentsAndReturnsFinder in: methodNode for: instVar.
 		finder value.	
-		refactoredSource := replacementParameter methodSourceCode copyReplacing: finder ranges with: instVar, ' getReference'.
+		refactoredSource := replacementParameter methodSourceCode copyReplacing: finder ranges with: instVar, ' nilIfNullObject'.
 		methodNode methodClass compile: refactoredSource]! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 6/30/2020 15:46:16'!

@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4365] on 5 September 2020 at 2:44:13 pm'!
+'From Cuis 5.0 [latest update: #4365] on 5 September 2020 at 2:47:51 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 546!
+!provides: 'Refactoring' 1 547!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -1547,7 +1547,7 @@ textModel: aTextModel
 
 	inputMorph model: aTextModel.! !
 
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'jmv 3/31/2020 18:12:08'!
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 9/5/2020 14:47:28'!
 withLabel: aLabel withWidth: aWidth withModel: aTextModel
 
 	| labelLayoutSpec inputMorphLayoutSpec |
@@ -1559,7 +1559,7 @@ withLabel: aLabel withWidth: aWidth withModel: aTextModel
 	labelLayoutSpec := LayoutSpec
 		fixedWidth: aWidth
 		fixedHeight: labelMorph morphHeight
-		minorDirectionPadding: #center.
+		offAxisEdgeWeight: #center.
 	self addMorph: labelMorph layoutSpec: labelLayoutSpec.
 
 	inputMorph := TextModelMorph withModel: aTextModel.

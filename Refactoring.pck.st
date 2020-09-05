@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4365] on 5 September 2020 at 2:47:51 pm'!
+'From Cuis 5.0 [latest update: #4365] on 5 September 2020 at 3:50:15 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 547!
+!provides: 'Refactoring' 1 548!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -581,10 +581,10 @@ minimumHeightToDisplay: aString on: aWidth
 
 	^lines * self textHeight! !
 
-!ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 19:43:22'!
+!ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/5/2020 15:43:58'!
 textHeight
 
-	^AbstractFont default height! !
+	^FontFamily defaultPointSize ! !
 
 !ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:25:08'!
 withText: aText withColor: aColor withWidth: aWidth
@@ -649,13 +649,13 @@ layoutSpecForSection: aSection
 
 	^LayoutSpec proportionalWidth: 1.0 fixedHeight: aSection recommendedHeight! !
 
-!ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 2/7/2019 13:03:15'!
+!ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 9/5/2020 15:43:44'!
 recommendedWidthForLabels: labels
 
 	| rightMargin |
 
 	rightMargin := 20.
-	^(labels collect: [:aLabel | AbstractFont default widthOfString: aLabel]) max + rightMargin! !
+	^(labels collect: [:aLabel | FontFamily defaultFamilyAndPointSize widthOfString: aLabel]) max + rightMargin! !
 
 !ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 16:50:26'!
 shouldStyle: text with: anSHTextStyler
@@ -7817,10 +7817,10 @@ in: methodNode for: instVar
 
 	^self new in: methodNode for: instVar.! !
 
-!AutocompletedTextProvider methodsFor: 'user interface support' stamp: 'FGJ 4/8/2019 17:09:38'!
+!AutocompletedTextProvider methodsFor: 'user interface support' stamp: 'FGJ 9/5/2020 14:50:17'!
 autoCompleterClassFor: aTextGetter
 
-	^SmalltalkCompleter! !
+	^ClassNameCompleter! !
 
 !ChangeRowOrderButtonModel methodsFor: 'initialization' stamp: 'FGJ 2/9/2019 16:33:36'!
 for: aRowIndex notifying: aTableModel

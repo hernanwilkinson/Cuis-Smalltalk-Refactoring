@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4365] on 6 September 2020 at 4:43:25 pm'!
+'From Cuis 5.0 [latest update: #4365] on 6 September 2020 at 6:28:35 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 550!
+!provides: 'Refactoring' 1 554!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -17,7 +17,7 @@ EntranceExitBlockEnumerator class
 
 !classDefinition: #MessageSendingBlocksVariablesToExtractFinder category: #Refactoring!
 ParseNodeVisitor subclass: #MessageSendingBlocksVariablesToExtractFinder
-	instanceVariableNames: 'messageNode variablesToExtract currentScopeTemporaries'
+	instanceVariableNames: 'messageNode variablesToExtract currentScopeTemporaries variableToExclude'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
@@ -467,7 +467,16 @@ initializeToFindIn: aMessageNode
 	currentScopeTemporaries := Bag new.
 	! !
 
-!MessageSendingBlocksVariablesToExtractFinder methodsFor: 'evaluating' stamp: 'FGJ 9/4/2020 10:48:58'!
+!MessageSendingBlocksVariablesToExtractFinder methodsFor: 'initialization' stamp: 'FGJ 9/6/2020 17:31:01'!
+initializeToFindIn: aMessageNode excluding: aVariableToExclude
+
+	messageNode := aMessageNode.
+	variableToExclude := aVariableToExclude.
+	variablesToExtract  := Set new.
+	currentScopeTemporaries := Bag new.
+	! !
+
+!MessageSendingBlocksVariablesToExtractFinder methodsFor: 'evaluating' stamp: 'FGJ 9/6/2020 17:33:36'!
 value
 
 	messageNode arguments do: [:argument |
@@ -477,7 +486,7 @@ value
 	variablesToExtract remove: 'true' ifAbsent: [nil].
 	variablesToExtract remove: 'false' ifAbsent: [nil].
 	variablesToExtract remove: 'nil' ifAbsent: [nil].
-
+	variablesToExtract remove: variableToExclude ifAbsent: [nil].
 
 	^OrderedCollection newFrom: variablesToExtract! !
 
@@ -523,6 +532,11 @@ visitVariableNode: aVariableNode
 valueIn: aMessageNode
 
 	^(self new initializeToFindIn: aMessageNode) value! !
+
+!MessageSendingBlocksVariablesToExtractFinder class methodsFor: 'instance creation' stamp: 'FGJ 9/6/2020 17:30:15'!
+valueIn: aMessageNode excluding: aVariableName 
+	
+	^(self new initializeToFindIn: aMessageNode excluding: aVariableName) value! !
 
 !VariablesToExtractFinder methodsFor: 'initialization' stamp: 'HAW 3/4/2019 13:35:48'!
 initializeIn: aMethodNode
@@ -1099,7 +1113,7 @@ buildCodePaneFor: anIfNilCheck
 
 	^codePane! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:16:48'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/6/2020 18:28:08'!
 buildIfNilCheckFormFor: anIfNilCheck
 
 	| layout variablesToExtract polymorphicSelectorSection codePane |
@@ -1111,7 +1125,7 @@ buildIfNilCheckFormFor: anIfNilCheck
 	codePane := self buildCodePaneFor: anIfNilCheck.
 	layout addMorph: codePane.
 
-	variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: anIfNilCheck messageNode.
+	variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: anIfNilCheck messageNode excluding: anIfNilCheck checkReceiver.
 	variablesToExtract
 		ifEmpty: [polymorphicSelectorSection := self buildPolymorphicSelectorInputFor: anIfNilCheck]
 		ifNotEmpty: [polymorphicSelectorSection := self buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor: variablesToExtract].
@@ -3932,13 +3946,13 @@ test13MessageNodesMustNotBeDuplicated
 		withMessageText: [
 			IntroduceNullObject messageNodesMustNotBeDuplicatedErrorMessage ].! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 14:24:35'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/6/2020 18:19:44'!
 test14MessageNodesReceiverMustBeTheInstVar
 
 	| aClassToRefactor replacementParameters sourceWithIf |
 
 	aClassToRefactor := self defaultClassToRefactor.
-	sourceWithIf := 'self ifNil: [', self defaultInstVarName, ' isNil ]'.
+	sourceWithIf := 'self ifNil: [ self isNil ]'.
 	replacementParameters := self
 		replacementParametersFrom: sourceWithIf
 		usingAsClassToRefactor: aClassToRefactor.
@@ -4464,8 +4478,8 @@ test43ReplacesMultipleAssignmentsInMultipleMethodsWithNullObject
 		expectedSource := expectedSource, nextLine, 'self assignOptionalField: (', secondRightSide withBlanksCondensed , ').'.
 		self assert: expectedSource equals: refactoredMethod sourceCode].! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/5/2020 14:43:42'!
-test44ReplacesReturnOfIvarWithGetReference
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/6/2020 17:02:15'!
+test44ReplacesReturnOfIvarWithNilIfNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
 
@@ -4482,8 +4496,8 @@ test44ReplacesReturnOfIvarWithGetReference
 	
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/5/2020 14:43:59'!
-test45ReplacesIvarAsParamWithGetReference
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/6/2020 17:02:30'!
+test45ReplacesIvarAsParamWithNilIfNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
 
@@ -4498,6 +4512,51 @@ test45ReplacesIvarAsParamWithGetReference
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
 	expectedSource := expectedSource, nextLine, 'self do: ', self defaultInstVarName, ' nilIfNullObject.'.
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/6/2020 17:22:50'!
+test46WhenIvarAppearsInNotNilBlockAsReceiverReplacesIvarWithSelf
+
+	| sourceWithIf definitions expectedSourceCode |
+
+	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [ self isNil ] ifFalse: [ self isNil. ', self defaultInstVarName, ' isNil ]'.
+	definitions := VariablesToParametrizeKeywordsDefinitions with: {
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
+	self applyRefactoringOn: sourceWithIf using: definitions.
+
+	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 isNil. self isNil'.
+	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
+	! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/6/2020 17:59:27'!
+test47WhenIvarAppearsInNotNilBlockAsArgumentReplacesIvarWithSelf
+
+	| sourceWithIf definitions expectedSourceCode |
+
+	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifTrue: [ self isNil ] ifFalse: [ self sendIvar: ', self defaultInstVarName, ' ]'.
+	definitions := VariablesToParametrizeKeywordsDefinitions with: {
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
+	self applyRefactoringOn: sourceWithIf using: definitions.
+
+	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 sendIvar: self'.
+	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
+	! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/6/2020 18:05:36'!
+test48WhenIvarAppearsInNilBlockAsArgumentReplacesIvarWithSelfNilIfNullObject
+
+	| sourceWithIf definitions expectedSourceCode |
+
+	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' isNil ifFalse: [ self isNil ] ifTrue: [ self sendIvar: ', self defaultInstVarName, ' ]'.
+	definitions := VariablesToParametrizeKeywordsDefinitions with: {
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+
+	self applyRefactoringOn: sourceWithIf using: definitions.
+
+	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 sendIvar: self nilIfNullObject'.
+	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #with:) sourceCode.
+	! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 17:16:59'!
 allClassCategoriesOfTestData
@@ -4569,7 +4628,7 @@ nullClass
 
 	^self findOrCreateEmptyClassNamed: #ANullClass! !
 
-!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/20/2019 11:42:53'!
+!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 9/6/2020 18:11:23'!
 replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass
 
 	| messageNode methodNode definitions |
@@ -4577,19 +4636,14 @@ replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass
 	aClass compile: 'm1 ', aSourceCode.
 	methodNode := (aClass compiledMethodAt: #m1) methodNode.
 	messageNode := methodNode block statements first.
-	definitions :=
-		VariablesToParametrizeKeywordsDefinitions
-			with: {VariableToParametrizeKeywordDefinition
-				forVariable: self defaultInstVarName
-				useKeyword: #with
-				withParameterName: 'paramName'}.
+	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #someSelector.
 
 	^ReplaceIfNilWithPolymorphismParameters
 		forIfNilMessageSending: messageNode
 		onMethod: methodNode
 		useKeywordsDefinitions: definitions.! !
 
-!IntroduceNullObjectTest methodsFor: 'assertions' stamp: 'FGJ 3/25/2019 13:49:09'!
+!IntroduceNullObjectTest methodsFor: 'assertions' stamp: 'FGJ 9/6/2020 18:10:42'!
 creationFromSourceCode: aSourceCodeBody failsWithMessageText: messageTextBlock
 
 	| aClassToRefactor ifMessageNode methodNode replacementParameters definitions |
@@ -4601,12 +4655,7 @@ creationFromSourceCode: aSourceCodeBody failsWithMessageText: messageTextBlock
 	methodNode := (aClassToRefactor compiledMethodAt: self methodToRefactorSelector) methodNode.
 	ifMessageNode := methodNode block statements first.
 
-	definitions :=
-		VariablesToParametrizeKeywordsDefinitions
-			with: {VariableToParametrizeKeywordDefinition
-					forVariable: self defaultInstVarName
-					useKeyword:  #with
-					withParameterName: 'paramName'}.
+	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #someSelector.
 	replacementParameters :=
 		ReplaceIfNilWithPolymorphismParameters
 			forIfNilMessageSending: ifMessageNode
@@ -4773,6 +4822,18 @@ test08WhenABlockReferencesArgumentsTheyAreFound
 	variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: messageNode.
 	self assert: 1 equals: variablesToExtract size.
 	self assert: (variablesToExtract includes: 'anArg').! !
+
+!MessageSendingBlocksVariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 9/6/2020 17:29:37'!
+test09ExcludingVariablesAreNotIncludedInTheResult
+
+	| messageClass messageNode variablesToExtract |
+
+	messageClass := self createClassNamed: #AClass.
+	messageClass compile: 'm1: anArg self ifNil: [| a | a := 2. a + anArg]'.
+	messageNode := (messageClass compiledMethodAt: #m1:) methodNode block statements first.
+	
+	variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: messageNode excluding: 'anArg'.
+	self assert: 0 equals: variablesToExtract size.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:52:30'!
 test01AbstractClassClassNameMustNotBeEmpty
@@ -7142,31 +7203,33 @@ apply
 	self replaceIvarWithNilIfNullObject.
 	self compileNilIfNullObject.! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 4/16/2019 15:37:36'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/6/2020 18:02:57'!
 applyWith: replacementParameter
 
 	self
 		compile: replacementParameter concreteBlockSourceCode
 		in: replacementParameter concreteBlockRange
 		asPolymorphicMessageOnClass: concreteClass
-		using: replacementParameter.
+		using: replacementParameter
+		with: (Association key: instVar value: 'self').
 	self
 		compile: replacementParameter nullBlockSourceCode
 		in: replacementParameter nullBlockRange
 		asPolymorphicMessageOnClass: nullClass
-		using: replacementParameter.
+		using: replacementParameter
+		with: (Association key: instVar value: 'self nilIfNullObject').
 
 	self replaceNilCheckWithPolymorphicMessageSendUsing: replacementParameter.
 	! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 4/16/2019 20:31:13'!
-compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass using: replacementParameter
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/6/2020 18:04:35'!
+compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass using: replacementParameter with: anExtraMapping
 
 	| polymorphicMessageSourceCode refactoredBlockSourceCode rangesToReplacingParameter |
 
 	aBlockRange ifEmpty: [^aClass compile: replacementParameter polymorphicMessageHeader].
 
-	rangesToReplacingParameter := self rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter.
+	rangesToReplacingParameter := self rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter with: anExtraMapping .
 	refactoredBlockSourceCode := (aBlockSourceCode copyReplacing: rangesToReplacingParameter) withBlanksTrimmed.
 	polymorphicMessageSourceCode  := replacementParameter polymorphicMessageHeader.
 	refactoredBlockSourceCode ifNotEmpty: [
@@ -7217,12 +7280,12 @@ rangeToReplaceToReplacementFrom: methodNode of: node
 	
 	^Association key: rangeToReplace value: replacement! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 4/16/2019 20:29:06'!
-rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/6/2020 18:05:05'!
+rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter with: anExtraMapping
 
 	| rangesInsideBlockRange rangesOffsetToBlock variableToParametrizeRangeToReplacingParameter offset |
 
-	variableToParametrizeRangeToReplacingParameter := replacementParameter rangesOfVariablesToParametrizeToReplacingParameter.
+	variableToParametrizeRangeToReplacingParameter := replacementParameter rangesOfVariablesToParametrizeToReplacingParameterWith: anExtraMapping.
 	rangesInsideBlockRange := variableToParametrizeRangeToReplacingParameter select: [:rangeToReplacement |
 		aBlockRange includes: rangeToReplacement key first].
 	offset := aBlockRange first - 1.
@@ -8000,6 +8063,16 @@ for: aCompiledMethod
 
 	^self new initializeFor: aCompiledMethod.! !
 
+!IfNilCheck methodsFor: 'initialization' stamp: 'FGJ 9/6/2020 18:27:53'!
+checkReceiver
+
+	| receiver |
+	
+	receiver := messageNode receiver.
+	receiver isMessageNode ifTrue: [receiver := receiver receiver].
+	
+	^receiver name.! !
+
 !IfNilCheck methodsFor: 'initialization' stamp: 'FGJ 3/29/2019 15:28:42'!
 initializeIn: aMethodNode representedBy: aMessageNode atIndex: anIndex
 
@@ -8387,6 +8460,25 @@ useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 	methodNode := aMethodNode.
 	definitions := variablesToParametrizeKeywordsDefinitions.! !
 
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 9/6/2020 17:54:20'!
+addAllRangesOf: aVariableName to: rangeToReplacementParameter usingAsReplacement: aNewName
+
+	| disregardType rangesOfVariable |
+
+	disregardType := [:aNode | true].
+	rangesOfVariable := self methodNode encoder
+		rangesForVariable: aVariableName
+		checkingType: disregardType
+		ifAbsent: [Set new].
+
+	rangesOfVariable addAll: (self methodNode encoder
+		rangesForLiteralVariableNode: aVariableName
+		ifAbsent: [Set new]).
+
+	rangesOfVariable do: [:aRange | | rangeToNewString |.
+		rangeToNewString := Association key: aRange value: aNewName.
+		rangeToReplacementParameter add: rangeToNewString].! !
+
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 4/16/2019 20:08:36'!
 concreteBlockRange
 
@@ -8545,6 +8637,20 @@ rangesOfVariablesToParametrizeToReplacingParameter
 	^rangeToReplacementParameter
 ! !
 
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 9/6/2020 17:55:22'!
+rangesOfVariablesToParametrizeToReplacingParameterWith: aMapping
+
+	| rangeToReplacementParameter |
+
+	rangeToReplacementParameter := SortedCollection sortBlock: [:rangeToStringA :rangeToStringB | rangeToStringA key first < rangeToStringB key first].
+	self variablesToParametrize do: [:aVariableName | 
+		self addAllRangesOf: aVariableName to: rangeToReplacementParameter usingAsReplacement: (self parameterNameFor: aVariableName)].
+	
+	self addAllRangesOf: aMapping key to: rangeToReplacementParameter usingAsReplacement: aMapping value.
+
+	^rangeToReplacementParameter
+! !
+
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 10/23/2019 09:53:14'!
 sourceRangeFor: aBlockNode in: aMethodNode
 
@@ -8562,17 +8668,19 @@ variablesToParametrize
 
 	^definitions variablesToParametrize! !
 
-!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'instance creation' stamp: 'FGJ 3/28/2019 18:19:53'!
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'instance creation' stamp: 'FGJ 9/6/2020 17:44:02'!
 forIfNilMessageSending: aMessageNode
 onMethod: aMethodNode
 useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 
-	| variablesToParametrize |
+	| variablesToParametrize receiver |
 
 	self assertMethodNode: aMethodNode includesMessageNode: aMessageNode.
 	self assertMessageNodeRepresentsSupportedMessageSending: aMessageNode.
 
-	variablesToParametrize := MessageSendingBlocksVariablesToExtractFinder valueIn: aMessageNode.
+	receiver := aMessageNode receiver.
+	receiver isMessageNode ifTrue: [ receiver := receiver receiver ].
+	variablesToParametrize := MessageSendingBlocksVariablesToExtractFinder valueIn: aMessageNode excluding: receiver name.
 	self
 		assertVariablesToParametrizeFrom: variablesToParametrize
 		haveACorrespondingKeywordOn: variablesToParametrizeKeywordsDefinitions.

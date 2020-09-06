@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4365] on 5 September 2020 at 3:50:15 pm'!
+'From Cuis 5.0 [latest update: #4365] on 6 September 2020 at 4:34:45 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 548!
+!provides: 'Refactoring' 1 549!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -243,6 +243,16 @@ RefactoringTest subclass: #VariablesToParametrizeKeywordsDefinitionsTest
 	category: 'Refactoring'!
 !classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: #Refactoring!
 VariablesToParametrizeKeywordsDefinitionsTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #FormsClassNameCompleter category: #Refactoring!
+ClassNameCompleter subclass: #FormsClassNameCompleter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'FormsClassNameCompleter class' category: #Refactoring!
+FormsClassNameCompleter class
 	instanceVariableNames: ''!
 
 !classDefinition: #ExtractToMethodObject category: #Refactoring!
@@ -1167,7 +1177,7 @@ buildMorphicWindow
 
 	self showFormForMessage: messageListModel messageListIndex.! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 4/11/2019 13:12:36'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/6/2020 16:20:43'!
 buildNullObjectHierarchyClassesSection
 
 	| section maxLabelWidth nullClassInput concreteClassInput |
@@ -1179,7 +1189,8 @@ buildNullObjectHierarchyClassesSection
 	nullClassInput := LabeledInput withLabel: 'Null Class' withWidth: maxLabelWidth withModel: introduceNullObjectRequest nullClassNameModel usingAs: self.
 	section addMorph: nullClassInput.
 
-	concreteClassInput := LabeledInput withLabel: 'Concrete Class' withWidth: maxLabelWidth withModel: introduceNullObjectRequest concreteClassNameModel usingAs: self. 	section addMorph: concreteClassInput.
+	concreteClassInput := LabeledInput withLabel: 'Concrete Class' withWidth: maxLabelWidth withModel: introduceNullObjectRequest concreteClassNameModel usingAs: self.
+	section addMorph: concreteClassInput.
 
 	section layoutSpec: (self layoutSpecForSection: section).
 
@@ -6219,6 +6230,11 @@ allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
+!FormsClassNameCompleter methodsFor: 'as yet unclassified' stamp: 'FGJ 9/6/2020 16:33:55'!
+selectedEntryFormatted
+
+	^super selectedEntryFormatted withBlanksTrimmed! !
+
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 5/26/2020 17:39:28'!
 apply
 
@@ -7817,10 +7833,10 @@ in: methodNode for: instVar
 
 	^self new in: methodNode for: instVar.! !
 
-!AutocompletedTextProvider methodsFor: 'user interface support' stamp: 'FGJ 9/5/2020 14:50:17'!
+!AutocompletedTextProvider methodsFor: 'user interface support' stamp: 'FGJ 9/6/2020 16:33:21'!
 autoCompleterClassFor: aTextGetter
 
-	^ClassNameCompleter! !
+	^FormsClassNameCompleter! !
 
 !ChangeRowOrderButtonModel methodsFor: 'initialization' stamp: 'FGJ 2/9/2019 16:33:36'!
 for: aRowIndex notifying: aTableModel
@@ -8169,7 +8185,7 @@ with: someIfNilChecks withForm: anIntroduceNullObjectForm
 
 	^self new initializeWith: someIfNilChecks withForm: anIntroduceNullObjectForm! !
 
-!IntroduceNullObjectRequest methodsFor: 'initialization' stamp: 'FGJ 4/8/2019 14:32:32'!
+!IntroduceNullObjectRequest methodsFor: 'initialization' stamp: 'FGJ 9/6/2020 16:26:38'!
 initializeFor: someIfNilChecks
 
 	messageKeywordsAndParametersModels := Dictionary new.
@@ -8180,8 +8196,8 @@ initializeFor: someIfNilChecks
 			ifNotEmpty: [messageKeywordsAndParametersModel := MessageKeywordsAndParametersModel for: variablesToExtract].
 		messageKeywordsAndParametersModels at: anIfNilCheck put: messageKeywordsAndParametersModel].
 
-	nullClassNameModel := PluggableTextModel on: self.
-	concreteClassNameModel := PluggableTextModel on: self.! !
+	nullClassNameModel := PluggableTextModel on: AutocompletedTextProvider new.
+	concreteClassNameModel := PluggableTextModel on: AutocompletedTextProvider new.! !
 
 !IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/8/2019 17:51:46'!
 concreteClass
@@ -8228,8 +8244,9 @@ replacementParameters
 
 	^parameters! !
 
-!IntroduceNullObjectRequest methodsFor: 'user interface support' stamp: 'FGJ 4/8/2019 14:38:47'!
+!IntroduceNullObjectRequest methodsFor: 'user interface support' stamp: 'FGJ 9/6/2020 16:25:35'!
 autoCompleterClassFor: textGetter
+	
 	^SmalltalkCompleter! !
 
 !IntroduceNullObjectRequest methodsFor: 'exceptions' stamp: 'FGJ 4/8/2019 17:51:22'!

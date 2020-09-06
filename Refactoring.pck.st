@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4365] on 6 September 2020 at 4:34:45 pm'!
+'From Cuis 5.0 [latest update: #4365] on 6 September 2020 at 4:43:25 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 549!
+!provides: 'Refactoring' 1 550!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -8199,12 +8199,17 @@ initializeFor: someIfNilChecks
 	nullClassNameModel := PluggableTextModel on: AutocompletedTextProvider new.
 	concreteClassNameModel := PluggableTextModel on: AutocompletedTextProvider new.! !
 
-!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/8/2019 17:51:46'!
+!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 9/6/2020 16:40:22'!
+classFrom: textModel
+
+	^Smalltalk classNamed: textModel actualContents string withBlanksTrimmed asSymbol.! !
+
+!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 9/6/2020 16:40:09'!
 concreteClass
 
 	| concreteClass |
 
-	concreteClass := Smalltalk classNamed: concreteClassNameModel actualContents string asSymbol.
+	concreteClass := self classFrom: concreteClassNameModel.
 	concreteClass ifNil: [self signalConcreteClassNameDoesNotExist] ifNotNil: [^concreteClass].! !
 
 !IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/5/2019 15:44:23'!
@@ -8217,12 +8222,12 @@ messgeKeywordsAndParametersModelFor: anIfNilCheck
 
 	^messageKeywordsAndParametersModels at: anIfNilCheck! !
 
-!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/9/2019 11:38:24'!
+!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 9/6/2020 16:39:24'!
 nullClass
 
 	| nullClass |
 
-	nullClass := Smalltalk classNamed: nullClassNameModel actualContents string asSymbol.
+	nullClass := self classFrom: nullClassNameModel.
 	nullClass ifNil: [self signalNullClassNameDoesNotExist] ifNotNil: [^nullClass].! !
 
 !IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 4/5/2019 15:56:36'!

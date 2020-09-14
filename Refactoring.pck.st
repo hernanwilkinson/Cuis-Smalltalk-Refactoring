@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4365] on 6 September 2020 at 6:28:35 pm'!
+'From Cuis 5.0 [latest update: #4365] on 14 September 2020 at 10:54:50 am'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 554!
+!provides: 'Refactoring' 1 555!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -8258,12 +8258,15 @@ with: someIfNilChecks withForm: anIntroduceNullObjectForm
 
 	^self new initializeWith: someIfNilChecks withForm: anIntroduceNullObjectForm! !
 
-!IntroduceNullObjectRequest methodsFor: 'initialization' stamp: 'FGJ 9/6/2020 16:26:38'!
+!IntroduceNullObjectRequest methodsFor: 'initialization' stamp: 'FGJ 9/14/2020 10:49:03'!
 initializeFor: someIfNilChecks
 
+	| instVar |
+	
 	messageKeywordsAndParametersModels := Dictionary new.
+	instVar := someIfNilChecks first checkReceiver.
 	someIfNilChecks do: [:anIfNilCheck | | messageKeywordsAndParametersModel variablesToExtract |
-		variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: anIfNilCheck messageNode.
+		variablesToExtract := MessageSendingBlocksVariablesToExtractFinder valueIn: anIfNilCheck messageNode excluding: instVar.
 		variablesToExtract
 			ifEmpty: [messageKeywordsAndParametersModel := MessageKeywordsAndParametersModel initializedForSelector]
 			ifNotEmpty: [messageKeywordsAndParametersModel := MessageKeywordsAndParametersModel for: variablesToExtract].
@@ -8308,7 +8311,7 @@ nullClassNameModel
 
 	^nullClassNameModel! !
 
-!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 3/29/2019 16:29:58'!
+!IntroduceNullObjectRequest methodsFor: 'accessing' stamp: 'FGJ 9/14/2020 10:38:57'!
 replacementParameters
 
 	| parameters |

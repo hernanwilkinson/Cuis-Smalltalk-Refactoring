@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4365] on 14 September 2020 at 10:54:50 am'!
+'From Cuis 5.0 [latest update: #4365] on 3 October 2020 at 8:23:39 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 555!
+!provides: 'Refactoring' 1 562!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: #Refactoring!
 
@@ -215,6 +215,16 @@ RefactoringTest subclass: #ReplaceIfNilWithPolymorphismParametersTest
 ReplaceIfNilWithPolymorphismParametersTest class
 	instanceVariableNames: ''!
 
+!classDefinition: #ReturnStatementAdderTest category: #Refactoring!
+RefactoringTest subclass: #ReturnStatementAdderTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ReturnStatementAdderTest class' category: #Refactoring!
+ReturnStatementAdderTest class
+	instanceVariableNames: ''!
+
 !classDefinition: #VariableToParametrizeKeywordDefinitionTest category: #Refactoring!
 RefactoringTest subclass: #VariableToParametrizeKeywordDefinitionTest
 	instanceVariableNames: ''
@@ -413,6 +423,16 @@ Object subclass: #ReplaceIfNilWithPolymorphismParameters
 	category: 'Refactoring'!
 !classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: #Refactoring!
 ReplaceIfNilWithPolymorphismParameters class
+	instanceVariableNames: ''!
+
+!classDefinition: #ReturnStatementAdder category: #Refactoring!
+Object subclass: #ReturnStatementAdder
+	instanceVariableNames: 'methodNode compiledMethod'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'ReturnStatementAdder class' category: #Refactoring!
+ReturnStatementAdder class
 	instanceVariableNames: ''!
 
 !classDefinition: #VariableToParametrizeKeywordDefinition category: #Refactoring!
@@ -4142,7 +4162,7 @@ test23PolymorphicMessageIsAddedToTheConcreteClassWithChosenParameterNames
 
 	self assert: 'p1' equals: (self concreteClass compiledMethodAt: #with:) methodNode arguments first name.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 13:59:53'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/15/2020 00:21:10'!
 test24PolymorphicMessageIsAddedToTheConcreteClassReplacingParametrizedVariables
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4153,7 +4173,7 @@ test24PolymorphicMessageIsAddedToTheConcreteClassReplacingParametrizedVariables
 
 	self applyRefactoringOn: sourceWithIf using: definitions.
 
-	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 isNil'.
+	expectedSourceCode := 'with: p1', String newLineString, String tab, '^p1 isNil'.
 	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
 	! !
 
@@ -4303,7 +4323,7 @@ test34PolymorphicMessageIsAddedToTheNullClassWithChosenParameterNames
 
 	self assert: 'p1' equals: (self nullClass compiledMethodAt: #with:) methodNode arguments first name.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 16:44:21'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/15/2020 00:21:53'!
 test35PolymorphicMessageIsAddedToTheNullClassReplacingParametrizedVariables
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4314,7 +4334,7 @@ test35PolymorphicMessageIsAddedToTheNullClassReplacingParametrizedVariables
 
 	self applyRefactoringOn: sourceWithIf using: definitions.
 
-	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 isNil'.
+	expectedSourceCode := 'with: p1', String newLineString, String tab, '^p1 isNil'.
 	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #with:) sourceCode.
 	! !
 
@@ -4348,7 +4368,7 @@ test37WhenNoConcreteBlockIsPresentEmptyPolymorphicMessageIsAddedToTheConcreteCla
 	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
 	! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 4/16/2019 20:18:42'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/15/2020 00:22:52'!
 test38WhenThereAreMultipleStatementsPolymorphicMessageIsAddedToTheNullClass
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4359,7 +4379,7 @@ test38WhenThereAreMultipleStatementsPolymorphicMessageIsAddedToTheNullClass
 	self applyRefactoringOn: sourceWithIf using: definitions.
 
 	expectedSourceCode := 'unaryPolymorphicSelector
-	1+1. 2+2'.
+	1+1. ^2+2'.
 	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #unaryPolymorphicSelector) sourceCode.
 	! !
 
@@ -4513,7 +4533,7 @@ test45ReplacesIvarAsParamWithNilIfNullObject
 	expectedSource := expectedSource, nextLine, 'self do: ', self defaultInstVarName, ' nilIfNullObject.'.
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/6/2020 17:22:50'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/3/2020 20:22:41'!
 test46WhenIvarAppearsInNotNilBlockAsReceiverReplacesIvarWithSelf
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4524,11 +4544,11 @@ test46WhenIvarAppearsInNotNilBlockAsReceiverReplacesIvarWithSelf
 
 	self applyRefactoringOn: sourceWithIf using: definitions.
 
-	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 isNil. self isNil'.
+	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 isNil. ^self isNil'.
 	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
 	! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/6/2020 17:59:27'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/3/2020 20:22:53'!
 test47WhenIvarAppearsInNotNilBlockAsArgumentReplacesIvarWithSelf
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4539,11 +4559,11 @@ test47WhenIvarAppearsInNotNilBlockAsArgumentReplacesIvarWithSelf
 
 	self applyRefactoringOn: sourceWithIf using: definitions.
 
-	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 sendIvar: self'.
+	expectedSourceCode := 'with: p1', String newLineString, String tab, '^p1 sendIvar: self'.
 	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
 	! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/6/2020 18:05:36'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/3/2020 20:23:07'!
 test48WhenIvarAppearsInNilBlockAsArgumentReplacesIvarWithSelfNilIfNullObject
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4554,7 +4574,7 @@ test48WhenIvarAppearsInNilBlockAsArgumentReplacesIvarWithSelfNilIfNullObject
 
 	self applyRefactoringOn: sourceWithIf using: definitions.
 
-	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 sendIvar: self nilIfNullObject'.
+	expectedSourceCode := 'with: p1', String newLineString, String tab, '^p1 sendIvar: self nilIfNullObject'.
 	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #with:) sourceCode.
 	! !
 
@@ -5796,6 +5816,101 @@ test34WhenThereAreMultipleStatementsNullBlockSourceCodeForIsNilIfTrue
 	parameters := self parametersForSourceCode: sourceWithIf.
 
 	self assert: '1+1. 2+2.' equals: parameters nullBlockSourceCode.! !
+
+!ReturnStatementAdderTest methodsFor: 'accessing' stamp: 'FGJ 10/3/2020 16:23:49'!
+allClassCategoriesOfTestData
+
+	^Array with: self classCategoryOfTestData ! !
+
+!ReturnStatementAdderTest methodsFor: 'testing' stamp: 'FGJ 10/3/2020 16:46:35'!
+test01whenTheMethodIsEmptyAddsNothing
+
+	| testClass compiledMethod methodSelector |
+
+	testClass := self createClassNamed: 'AClass'.
+	methodSelector := 'anEmptyMethod'.
+	testClass compile: methodSelector.
+	compiledMethod := testClass compiledMethodAt: methodSelector asSymbol.
+	
+	ReturnStatementAdder valueTo: compiledMethod.
+	
+	compiledMethod := testClass compiledMethodAt: methodSelector asSymbol.
+	self assert: methodSelector equals: compiledMethod sourceCode.! !
+
+!ReturnStatementAdderTest methodsFor: 'testing' stamp: 'FGJ 10/3/2020 16:46:51'!
+test02whenTheMethodHasOneStatementAddsReturnToThatStatement
+
+	| testClass compiledMethod methodSelector methodBody methodSource expectedSource |
+
+	testClass := self createClassNamed: 'AClass'.
+	methodSelector := 'methodWithOneStatement'.
+	methodBody := 'self value'.
+	methodSource := methodSelector, String newLineString, String tab, methodBody.
+	testClass compile: methodSource.
+	compiledMethod := testClass compiledMethodAt: methodSelector asSymbol.
+	
+	ReturnStatementAdder valueTo: compiledMethod.
+	
+	compiledMethod := testClass compiledMethodAt: methodSelector asSymbol.
+	expectedSource := methodSource := methodSelector, String newLineString, String tab, '^', methodBody.
+	self assert: expectedSource equals: compiledMethod sourceCode .! !
+
+!ReturnStatementAdderTest methodsFor: 'testing' stamp: 'FGJ 10/3/2020 19:47:11'!
+test03whenTheMethodHasOneStatementWithExplicitReturnDoesNotAddReturnToThatStatement
+
+	| testClass compiledMethod methodSelector methodBody methodSource expectedSource |
+
+	testClass := self createClassNamed: 'AClass'.
+	methodSelector := 'methodWithOneStatement'.
+	methodBody := '^self value'.
+	methodSource := methodSelector, String newLineString, String tab, methodBody.
+	testClass compile: methodSource.
+	compiledMethod := testClass compiledMethodAt: methodSelector asSymbol.
+	
+	ReturnStatementAdder valueTo: compiledMethod.
+	
+	compiledMethod := testClass compiledMethodAt: methodSelector asSymbol.
+	expectedSource := methodSource := methodSelector, String newLineString, String tab, methodBody.
+	self assert: expectedSource equals: compiledMethod sourceCode .! !
+
+!ReturnStatementAdderTest methodsFor: 'testing' stamp: 'FGJ 10/3/2020 19:52:16'!
+test04whenTheMethodHasMultipleStatementsAddsReturnToTheLastOne
+
+	| testClass compiledMethod methodSelector methodBody methodSource expectedSource allButLast last |
+
+	testClass := self createClassNamed: 'AClass'.
+	methodSelector := 'methodWithMultipleStatements'.
+	allButLast := 'self message: 1 with: 2.', String newLineString, String tab.
+	last := 'self value'.
+	methodBody := allButLast, last.
+	methodSource := methodSelector, String newLineString, String tab, methodBody.
+	testClass compile: methodSource.
+	compiledMethod := testClass compiledMethodAt: methodSelector asSymbol.
+	
+	ReturnStatementAdder valueTo: compiledMethod.
+	
+	compiledMethod := testClass compiledMethodAt: methodSelector asSymbol.
+	expectedSource := methodSelector, String newLineString, String tab, allButLast, '^', last.
+	self assert: expectedSource equals: compiledMethod sourceCode .! !
+
+!ReturnStatementAdderTest methodsFor: 'testing' stamp: 'FGJ 10/3/2020 20:20:09'!
+test05whenTheMethodHasMultipleStatementWithExplicitReturnDoesNotAddReturnToLastStatement
+
+	| testClass compiledMethod methodSelector methodBody methodSource allButLast last |
+
+	testClass := self createClassNamed: 'AClass'.
+	methodSelector := 'methodWithMultipleStatements'.
+	allButLast := 'self message: 1 with: 2.', String newLineString, String tab.
+	last := '^self value'.
+	methodBody := allButLast, last.
+	methodSource := methodSelector, String newLineString, String tab, methodBody.
+	testClass compile: methodSource.
+	compiledMethod := testClass compiledMethodAt: methodSelector asSymbol.
+	
+	ReturnStatementAdder valueTo: compiledMethod.
+	
+	compiledMethod := testClass compiledMethodAt: methodSelector asSymbol.
+	self assert: methodSource equals: compiledMethod sourceCode .! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'assertions' stamp: 'FGJ 3/18/2019 12:31:43'!
 creationWithKeyword: aKeyword failsWithMessageText: anErrorMessageBlock
@@ -7222,7 +7337,7 @@ applyWith: replacementParameter
 	self replaceNilCheckWithPolymorphicMessageSendUsing: replacementParameter.
 	! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/6/2020 18:04:35'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 10/3/2020 16:20:09'!
 compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass using: replacementParameter with: anExtraMapping
 
 	| polymorphicMessageSourceCode refactoredBlockSourceCode rangesToReplacingParameter |
@@ -7233,9 +7348,11 @@ compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass us
 	refactoredBlockSourceCode := (aBlockSourceCode copyReplacing: rangesToReplacingParameter) withBlanksTrimmed.
 	polymorphicMessageSourceCode  := replacementParameter polymorphicMessageHeader.
 	refactoredBlockSourceCode ifNotEmpty: [
-		polymorphicMessageSourceCode  := polymorphicMessageSourceCode, String newLineString, String tab, refactoredBlockSourceCode].
+		polymorphicMessageSourceCode  := polymorphicMessageSourceCode, String newLineString, String tab,  refactoredBlockSourceCode].
 
-	aClass compile: polymorphicMessageSourceCode.! !
+	aClass compile: polymorphicMessageSourceCode.
+	
+	ReturnStatementAdder valueTo: (aClass compiledMethodAt: replacementParameter polymorphicSelector).! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/2/2020 18:53:50'!
 compileAssignOptionalField
@@ -7280,7 +7397,7 @@ rangeToReplaceToReplacementFrom: methodNode of: node
 	
 	^Association key: rangeToReplace value: replacement! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/6/2020 18:05:05'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/24/2020 22:26:02'!
 rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter with: anExtraMapping
 
 	| rangesInsideBlockRange rangesOffsetToBlock variableToParametrizeRangeToReplacingParameter offset |
@@ -8482,13 +8599,13 @@ addAllRangesOf: aVariableName to: rangeToReplacementParameter usingAsReplacement
 		rangeToNewString := Association key: aRange value: aNewName.
 		rangeToReplacementParameter add: rangeToNewString].! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 4/16/2019 20:08:36'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 9/24/2020 21:54:52'!
 concreteBlockRange
-
+	
 	self isConcreteBlockFirstBlock ifTrue: [^self sourceRangeFor: messageNode arguments first in: methodNode].
 	self isConcreteBlockSecondBlock ifTrue: [^self sourceRangeFor: messageNode arguments second in: methodNode].
 
-	^Interval newFrom: #()! !
+	^Interval from: 0 to: 0 count: 0! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 14:52:32'!
 concreteBlockSourceCode
@@ -8509,6 +8626,16 @@ extractSourceCodeOfBlock: aBlockNode fromMethod: aMethodNode
 	^methodSourceCode copyFrom: blockRange first to: blockRange last
 
 	! !
+
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 9/24/2020 21:42:00'!
+indexOfFirstNonSeparatorStartingAt: index
+
+	| result |
+	
+	result := index.
+	[ (methodNode sourceText at: result) isSeparator] whileTrue: [ result := result + 1].
+	
+	^result! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/26/2019 17:34:29'!
 isConcreteBlockFirstBlock
@@ -8615,32 +8742,7 @@ rangeOfMessageSend
 
 	^Interval from: variableNodeRange first to: keywordsRange last! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 3/25/2019 15:08:23'!
-rangesOfVariablesToParametrizeToReplacingParameter
-
-	| disregardType rangeToReplacementParameter |
-
-	rangeToReplacementParameter := SortedCollection sortBlock: [:rangeToStringA :rangeToStringB | rangeToStringA key first < rangeToStringB key first].
-	disregardType := [:aNode | true].
-	self variablesToParametrize do: [:aVariableName | | rangesOfVariable |
-		rangesOfVariable := self methodNode encoder
-			rangesForVariable: aVariableName
-			checkingType: disregardType
-			ifAbsent: [Set new].
-
-		rangesOfVariable addAll: (self methodNode encoder
-			rangesForLiteralVariableNode: aVariableName
-			ifAbsent: [Set new]).
-
-		rangesOfVariable do: [:aRange | | rangeToNewString parameterNameForVar |
-			parameterNameForVar := self parameterNameFor: aVariableName.
-			rangeToNewString := Association key: aRange value: parameterNameForVar.
-			rangeToReplacementParameter add: rangeToNewString]].
-
-	^rangeToReplacementParameter
-! !
-
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 9/6/2020 17:55:22'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 9/24/2020 22:25:29'!
 rangesOfVariablesToParametrizeToReplacingParameterWith: aMapping
 
 	| rangeToReplacementParameter |
@@ -8857,6 +8959,104 @@ signalMethodNodeMustIncludeMessageNode
 signalParameterNamesMustNotBeEqualToBlocksTemporals
 
 	self refactoringError: self parameterNameMustNotBeEqualToBlockTemporaryErrorMessage.! !
+
+!ReturnStatementAdder methodsFor: 'initialization' stamp: 'FGJ 10/3/2020 17:08:17'!
+to: aCompiledMethod
+
+	compiledMethod := aCompiledMethod.
+	methodNode := compiledMethod methodNode.! !
+
+!ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 10/3/2020 20:17:51'!
+compileInsertingReturnAt: anIndex
+
+	| afterReturn beforeReturn source sourceWithReturn |
+
+	source := compiledMethod sourceCode.	
+
+	(source at: anIndex) = $^ ifTrue: [^self].
+
+	beforeReturn := source copyFrom: 1 to: anIndex - 1.
+	afterReturn := source copyFrom: anIndex to: (source size).
+	sourceWithReturn := beforeReturn, '^', afterReturn.
+	
+	compiledMethod methodClass compile: sourceWithReturn.
+	! !
+
+!ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 10/3/2020 20:15:56'!
+indexOfFirstNonSeparatorAfter: anIndex
+
+	| result |
+
+	result := anIndex.
+	[ (compiledMethod sourceCode at: result) isSeparator ] whileTrue: [result := result + 1].
+	
+	^result! !
+
+!ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 10/3/2020 19:55:47'!
+methodHasImplicitReturn
+
+	^methodNode block statements last isImplicitSelfReturnIn: methodNode.! !
+
+!ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 10/3/2020 20:11:59'!
+nextToLastStatement
+
+	| indexOfNextToLastStatement numberOfStatements |
+	
+	numberOfStatements := methodNode block statements size.
+	indexOfNextToLastStatement := numberOfStatements - 1.
+	self methodHasImplicitReturn ifTrue: [ indexOfNextToLastStatement :=  numberOfStatements - 2].
+	
+	^methodNode block statements at: indexOfNextToLastStatement.
+	! !
+
+!ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 10/3/2020 19:55:24'!
+nonImplicitNumberOfStatements
+
+	| totalStatements |
+	
+	totalStatements := methodNode block statements size.
+	
+	self methodHasImplicitReturn ifTrue: [ ^totalStatements - 1 ].
+
+	^totalStatements! !
+
+!ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 10/3/2020 17:09:40'!
+value
+	self nonImplicitNumberOfStatements = 1 ifTrue: [ self valueOneStatement ].
+	self nonImplicitNumberOfStatements > 1 ifTrue: [ self valueMultipleStatements ].	! !
+
+!ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 10/3/2020 20:16:48'!
+valueMultipleStatements
+
+	| nextToLastStatement range rightmostPosition positionToInsertReturn source |
+	
+	nextToLastStatement := self nextToLastStatement.
+	
+	range := methodNode encoder rangeForNode: nextToLastStatement ifAbsent: [self shouldNotHappen].
+	rightmostPosition := range last.
+
+	source := compiledMethod sourceCode.	
+	positionToInsertReturn := (source indexOf: $. startingAt: rightmostPosition) + 1.
+	positionToInsertReturn := self indexOfFirstNonSeparatorAfter: positionToInsertReturn.
+	
+	self compileInsertingReturnAt: positionToInsertReturn.! !
+
+!ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 10/3/2020 20:18:11'!
+valueOneStatement
+
+	| endOfHeader positionToInsertReturn source |
+	
+	source := compiledMethod sourceCode.
+	endOfHeader := Parser methodHeaderLengthFrom: source.
+	positionToInsertReturn := endOfHeader + 1.
+	positionToInsertReturn := self indexOfFirstNonSeparatorAfter: positionToInsertReturn.
+	
+	self compileInsertingReturnAt: positionToInsertReturn.! !
+
+!ReturnStatementAdder class methodsFor: 'as yet unclassified' stamp: 'FGJ 10/3/2020 16:20:52'!
+valueTo: aCompiledMethod
+	
+	(self new to: aCompiledMethod) value.! !
 
 !VariableToParametrizeKeywordDefinition methodsFor: 'initialization' stamp: 'FGJ 3/18/2019 12:47:50'!
 initializeForVariable: aVariableName useKeyword: aKeyword withParameterName: aParameterName

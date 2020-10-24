@@ -1,457 +1,457 @@
-'From Cuis 5.0 [latest update: #4365] on 3 October 2020 at 8:23:39 pm'!
+'From Cuis 5.0 [latest update: #4384] on 24 October 2020 at 10:47:48 am'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 562!
+!provides: 'Refactoring' 1 565!
 !requires: 'BaseImageTests' 1 184 nil!
-SystemOrganization addCategory: #Refactoring!
+SystemOrganization addCategory: 'Refactoring'!
 
 
-!classDefinition: #EntranceExitBlockEnumerator category: #Refactoring!
+!classDefinition: #EntranceExitBlockEnumerator category: 'Refactoring'!
 ParseNodeEnumerator subclass: #EntranceExitBlockEnumerator
 	instanceVariableNames: 'exitBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'EntranceExitBlockEnumerator class' category: #Refactoring!
+!classDefinition: 'EntranceExitBlockEnumerator class' category: 'Refactoring'!
 EntranceExitBlockEnumerator class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageSendingBlocksVariablesToExtractFinder category: #Refactoring!
+!classDefinition: #MessageSendingBlocksVariablesToExtractFinder category: 'Refactoring'!
 ParseNodeVisitor subclass: #MessageSendingBlocksVariablesToExtractFinder
 	instanceVariableNames: 'messageNode variablesToExtract currentScopeTemporaries variableToExclude'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageSendingBlocksVariablesToExtractFinder class' category: #Refactoring!
+!classDefinition: 'MessageSendingBlocksVariablesToExtractFinder class' category: 'Refactoring'!
 MessageSendingBlocksVariablesToExtractFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToExtractFinder category: #Refactoring!
+!classDefinition: #VariablesToExtractFinder category: 'Refactoring'!
 ParseNodeVisitor subclass: #VariablesToExtractFinder
 	instanceVariableNames: 'methodNode variablesToExtract'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToExtractFinder class' category: #Refactoring!
+!classDefinition: 'VariablesToExtractFinder class' category: 'Refactoring'!
 VariablesToExtractFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #IndependentlyColoredButton category: #Refactoring!
+!classDefinition: #IndependentlyColoredButton category: 'Refactoring'!
 PluggableButtonMorph subclass: #IndependentlyColoredButton
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IndependentlyColoredButton class' category: #Refactoring!
+!classDefinition: 'IndependentlyColoredButton class' category: 'Refactoring'!
 IndependentlyColoredButton class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImmutableTextModelMorph category: #Refactoring!
+!classDefinition: #ImmutableTextModelMorph category: 'Refactoring'!
 TextModelMorph subclass: #ImmutableTextModelMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ImmutableTextModelMorph class' category: #Refactoring!
+!classDefinition: 'ImmutableTextModelMorph class' category: 'Refactoring'!
 ImmutableTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreviewTextModelMorph category: #Refactoring!
+!classDefinition: #PreviewTextModelMorph category: 'Refactoring'!
 TextModelMorph subclass: #PreviewTextModelMorph
 	instanceVariableNames: 'previewModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'PreviewTextModelMorph class' category: #Refactoring!
+!classDefinition: 'PreviewTextModelMorph class' category: 'Refactoring'!
 PreviewTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #TabPassingTextModelMorph category: #Refactoring!
+!classDefinition: #TabPassingTextModelMorph category: 'Refactoring'!
 TextModelMorph subclass: #TabPassingTextModelMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'TabPassingTextModelMorph class' category: #Refactoring!
+!classDefinition: 'TabPassingTextModelMorph class' category: 'Refactoring'!
 TabPassingTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #ColoredScrollPane category: #Refactoring!
+!classDefinition: #ColoredScrollPane category: 'Refactoring'!
 PluggableScrollPane subclass: #ColoredScrollPane
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ColoredScrollPane class' category: #Refactoring!
+!classDefinition: 'ColoredScrollPane class' category: 'Refactoring'!
 ColoredScrollPane class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectForm category: #Refactoring!
+!classDefinition: #ExtractToMethodObjectForm category: 'Refactoring'!
 SystemWindow subclass: #ExtractToMethodObjectForm
 	instanceVariableNames: 'scrollPane formLayout inputTable preview variablesToParametrize extractToMethodObjectRequest discardEdits firstTimeBuild initialExtent focusMorphs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectForm class' category: #Refactoring!
+!classDefinition: 'ExtractToMethodObjectForm class' category: 'Refactoring'!
 ExtractToMethodObjectForm class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectForm category: #Refactoring!
+!classDefinition: #IntroduceNullObjectForm category: 'Refactoring'!
 SystemWindow subclass: #IntroduceNullObjectForm
 	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms discardEdits firstTimeBuild hierarchySection messageSendingListSection actionButtonsSection ifNilChecks focusMorphs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectForm class' category: #Refactoring!
+!classDefinition: 'IntroduceNullObjectForm class' category: 'Refactoring'!
 IntroduceNullObjectForm class
 	instanceVariableNames: ''!
 
-!classDefinition: #FormSection category: #Refactoring!
+!classDefinition: #FormSection category: 'Refactoring'!
 LayoutMorph subclass: #FormSection
 	instanceVariableNames: 'title borderMorph titleContainer titleMorph titleContainerLayoutSpec explanation explanationMorph explanationContainer explanationContainerLayoutSpec'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'FormSection class' category: #Refactoring!
+!classDefinition: 'FormSection class' category: 'Refactoring'!
 FormSection class
 	instanceVariableNames: ''!
 
-!classDefinition: #LabeledInput category: #Refactoring!
+!classDefinition: #LabeledInput category: 'Refactoring'!
 LayoutMorph subclass: #LabeledInput
 	instanceVariableNames: 'labelMorph inputMorph'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'LabeledInput class' category: #Refactoring!
+!classDefinition: 'LabeledInput class' category: 'Refactoring'!
 LabeledInput class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageKeywordsAndParametersTable category: #Refactoring!
+!classDefinition: #MessageKeywordsAndParametersTable category: 'Refactoring'!
 LayoutMorph subclass: #MessageKeywordsAndParametersTable
 	instanceVariableNames: 'rowModels previewModel backgroundColor refactoringModel columnWidths variablesToParametrize'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageKeywordsAndParametersTable class' category: #Refactoring!
+!classDefinition: 'MessageKeywordsAndParametersTable class' category: 'Refactoring'!
 MessageKeywordsAndParametersTable class
 	instanceVariableNames: ''!
 
-!classDefinition: #TabPassingInnerTextMorph category: #Refactoring!
+!classDefinition: #TabPassingInnerTextMorph category: 'Refactoring'!
 InnerTextMorph subclass: #TabPassingInnerTextMorph
 	instanceVariableNames: 'focusMover'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'TabPassingInnerTextMorph class' category: #Refactoring!
+!classDefinition: 'TabPassingInnerTextMorph class' category: 'Refactoring'!
 TabPassingInnerTextMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreviewInnerTextMorph category: #Refactoring!
+!classDefinition: #PreviewInnerTextMorph category: 'Refactoring'!
 TabPassingInnerTextMorph subclass: #PreviewInnerTextMorph
 	instanceVariableNames: 'previewModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'PreviewInnerTextMorph class' category: #Refactoring!
+!classDefinition: 'PreviewInnerTextMorph class' category: 'Refactoring'!
 PreviewInnerTextMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectTest category: #Refactoring!
+!classDefinition: #ExtractToMethodObjectTest category: 'Refactoring'!
 RefactoringTest subclass: #ExtractToMethodObjectTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectTest class' category: #Refactoring!
+!classDefinition: 'ExtractToMethodObjectTest class' category: 'Refactoring'!
 ExtractToMethodObjectTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilChecksFinderTest category: #Refactoring!
+!classDefinition: #IfNilChecksFinderTest category: 'Refactoring'!
 RefactoringTest subclass: #IfNilChecksFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilChecksFinderTest class' category: #Refactoring!
+!classDefinition: 'IfNilChecksFinderTest class' category: 'Refactoring'!
 IfNilChecksFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectTest category: #Refactoring!
+!classDefinition: #IntroduceNullObjectTest category: 'Refactoring'!
 RefactoringTest subclass: #IntroduceNullObjectTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectTest class' category: #Refactoring!
+!classDefinition: 'IntroduceNullObjectTest class' category: 'Refactoring'!
 IntroduceNullObjectTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageSendingBlocksVariablesToExtractFinderTest category: #Refactoring!
+!classDefinition: #MessageSendingBlocksVariablesToExtractFinderTest category: 'Refactoring'!
 RefactoringTest subclass: #MessageSendingBlocksVariablesToExtractFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageSendingBlocksVariablesToExtractFinderTest class' category: #Refactoring!
+!classDefinition: 'MessageSendingBlocksVariablesToExtractFinderTest class' category: 'Refactoring'!
 MessageSendingBlocksVariablesToExtractFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #NullObjectHierarchyCreatorTest category: #Refactoring!
+!classDefinition: #NullObjectHierarchyCreatorTest category: 'Refactoring'!
 RefactoringTest subclass: #NullObjectHierarchyCreatorTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'NullObjectHierarchyCreatorTest class' category: #Refactoring!
+!classDefinition: 'NullObjectHierarchyCreatorTest class' category: 'Refactoring'!
 NullObjectHierarchyCreatorTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: #Refactoring!
+!classDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: 'Refactoring'!
 RefactoringTest subclass: #ReplaceIfNilWithPolymorphismParametersTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ReplaceIfNilWithPolymorphismParametersTest class' category: #Refactoring!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParametersTest class' category: 'Refactoring'!
 ReplaceIfNilWithPolymorphismParametersTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReturnStatementAdderTest category: #Refactoring!
+!classDefinition: #ReturnStatementAdderTest category: 'Refactoring'!
 RefactoringTest subclass: #ReturnStatementAdderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ReturnStatementAdderTest class' category: #Refactoring!
+!classDefinition: 'ReturnStatementAdderTest class' category: 'Refactoring'!
 ReturnStatementAdderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariableToParametrizeKeywordDefinitionTest category: #Refactoring!
+!classDefinition: #VariableToParametrizeKeywordDefinitionTest category: 'Refactoring'!
 RefactoringTest subclass: #VariableToParametrizeKeywordDefinitionTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariableToParametrizeKeywordDefinitionTest class' category: #Refactoring!
+!classDefinition: 'VariableToParametrizeKeywordDefinitionTest class' category: 'Refactoring'!
 VariableToParametrizeKeywordDefinitionTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToExtractFinderTest category: #Refactoring!
+!classDefinition: #VariablesToExtractFinderTest category: 'Refactoring'!
 RefactoringTest subclass: #VariablesToExtractFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToExtractFinderTest class' category: #Refactoring!
+!classDefinition: 'VariablesToExtractFinderTest class' category: 'Refactoring'!
 VariablesToExtractFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: #Refactoring!
+!classDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: 'Refactoring'!
 RefactoringTest subclass: #VariablesToParametrizeKeywordsDefinitionsTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: #Refactoring!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: 'Refactoring'!
 VariablesToParametrizeKeywordsDefinitionsTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #FormsClassNameCompleter category: #Refactoring!
+!classDefinition: #FormsClassNameCompleter category: 'Refactoring'!
 ClassNameCompleter subclass: #FormsClassNameCompleter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'FormsClassNameCompleter class' category: #Refactoring!
+!classDefinition: 'FormsClassNameCompleter class' category: 'Refactoring'!
 FormsClassNameCompleter class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObject category: #Refactoring!
+!classDefinition: #ExtractToMethodObject category: 'Refactoring'!
 Refactoring subclass: #ExtractToMethodObject
 	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract methodVariableNamesToInstanceVariableNames methodObjectInstanceVariables keywordsDefinitions methodObjectEvaluationSelector'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObject class' category: #Refactoring!
+!classDefinition: 'ExtractToMethodObject class' category: 'Refactoring'!
 ExtractToMethodObject class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObject category: #Refactoring!
+!classDefinition: #IntroduceNullObject category: 'Refactoring'!
 Refactoring subclass: #IntroduceNullObject
 	instanceVariableNames: 'instVar classToRefactor concreteClass nullClass replacementParameters'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObject class' category: #Refactoring!
+!classDefinition: 'IntroduceNullObject class' category: 'Refactoring'!
 IntroduceNullObject class
 	instanceVariableNames: ''!
 
-!classDefinition: #NullObjectHierarchyCreator category: #Refactoring!
+!classDefinition: #NullObjectHierarchyCreator category: 'Refactoring'!
 Refactoring subclass: #NullObjectHierarchyCreator
 	instanceVariableNames: 'concreteClass abstractClassName nullObjectClassName category'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'NullObjectHierarchyCreator class' category: #Refactoring!
+!classDefinition: 'NullObjectHierarchyCreator class' category: 'Refactoring'!
 NullObjectHierarchyCreator class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectApplier category: #Refactoring!
+!classDefinition: #ExtractToMethodObjectApplier category: 'Refactoring'!
 RefactoringApplier subclass: #ExtractToMethodObjectApplier
 	instanceVariableNames: 'smalltalkEditor classToRefactor methodNode panel done compiledMethodToExtract extractToMethodObjectRequest'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectApplier class' category: #Refactoring!
+!classDefinition: 'ExtractToMethodObjectApplier class' category: 'Refactoring'!
 ExtractToMethodObjectApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectApplier category: #Refactoring!
+!classDefinition: #IntroduceNullObjectApplier category: 'Refactoring'!
 RefactoringApplier subclass: #IntroduceNullObjectApplier
 	instanceVariableNames: 'classToRefactor instanceVariable form done ifNilChecks introduceNullObjectRequest'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectApplier class' category: #Refactoring!
+!classDefinition: 'IntroduceNullObjectApplier class' category: 'Refactoring'!
 IntroduceNullObjectApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #ArgumentsAndReturnsFinder category: #Refactoring!
+!classDefinition: #ArgumentsAndReturnsFinder category: 'Refactoring'!
 Object subclass: #ArgumentsAndReturnsFinder
 	instanceVariableNames: 'methodNode ranges instVar'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ArgumentsAndReturnsFinder class' category: #Refactoring!
+!classDefinition: 'ArgumentsAndReturnsFinder class' category: 'Refactoring'!
 ArgumentsAndReturnsFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #AutocompletedTextProvider category: #Refactoring!
+!classDefinition: #AutocompletedTextProvider category: 'Refactoring'!
 Object subclass: #AutocompletedTextProvider
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'AutocompletedTextProvider class' category: #Refactoring!
+!classDefinition: 'AutocompletedTextProvider class' category: 'Refactoring'!
 AutocompletedTextProvider class
 	instanceVariableNames: ''!
 
-!classDefinition: #ChangeRowOrderButtonModel category: #Refactoring!
+!classDefinition: #ChangeRowOrderButtonModel category: 'Refactoring'!
 Object subclass: #ChangeRowOrderButtonModel
 	instanceVariableNames: 'tableModel rowPosition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ChangeRowOrderButtonModel class' category: #Refactoring!
+!classDefinition: 'ChangeRowOrderButtonModel class' category: 'Refactoring'!
 ChangeRowOrderButtonModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectRequest category: #Refactoring!
+!classDefinition: #ExtractToMethodObjectRequest category: 'Refactoring'!
 Object subclass: #ExtractToMethodObjectRequest
 	instanceVariableNames: 'methodObjectClassNameModel methodObjectCategoryModel methodObjectSuperclassNameModel methodObjectEvaluationMessageSelectorModel variableToParametrizeToInstVarNameModel instanceCreationMessageModels'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ExtractToMethodObjectRequest class' category: #Refactoring!
+!classDefinition: 'ExtractToMethodObjectRequest class' category: 'Refactoring'!
 ExtractToMethodObjectRequest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilCheck category: #Refactoring!
+!classDefinition: #IfNilCheck category: 'Refactoring'!
 Object subclass: #IfNilCheck
 	instanceVariableNames: 'messageNode index methodNode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilCheck class' category: #Refactoring!
+!classDefinition: 'IfNilCheck class' category: 'Refactoring'!
 IfNilCheck class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilChecksFinder category: #Refactoring!
+!classDefinition: #IfNilChecksFinder category: 'Refactoring'!
 Object subclass: #IfNilChecksFinder
 	instanceVariableNames: 'contextClass instanceVariable'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilChecksFinder class' category: #Refactoring!
+!classDefinition: 'IfNilChecksFinder class' category: 'Refactoring'!
 IfNilChecksFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilMessageListModel category: #Refactoring!
+!classDefinition: #IfNilMessageListModel category: 'Refactoring'!
 Object subclass: #IfNilMessageListModel
 	instanceVariableNames: 'listIndex ifNilChecks introduceNullObjectForm'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IfNilMessageListModel class' category: #Refactoring!
+!classDefinition: 'IfNilMessageListModel class' category: 'Refactoring'!
 IfNilMessageListModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectRequest category: #Refactoring!
+!classDefinition: #IntroduceNullObjectRequest category: 'Refactoring'!
 Object subclass: #IntroduceNullObjectRequest
 	instanceVariableNames: 'nullClassNameModel concreteClassNameModel messageKeywordsAndParametersModels'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'IntroduceNullObjectRequest class' category: #Refactoring!
+!classDefinition: 'IntroduceNullObjectRequest class' category: 'Refactoring'!
 IntroduceNullObjectRequest class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageKeywordsAndParametersModel category: #Refactoring!
+!classDefinition: #MessageKeywordsAndParametersModel category: 'Refactoring'!
 Object subclass: #MessageKeywordsAndParametersModel
 	instanceVariableNames: 'models selectorModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'MessageKeywordsAndParametersModel class' category: #Refactoring!
+!classDefinition: 'MessageKeywordsAndParametersModel class' category: 'Refactoring'!
 MessageKeywordsAndParametersModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #RefactoringPackageRefactoringMenues category: #Refactoring!
+!classDefinition: #RefactoringPackageRefactoringMenues category: 'Refactoring'!
 Object subclass: #RefactoringPackageRefactoringMenues
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'RefactoringPackageRefactoringMenues class' category: #Refactoring!
+!classDefinition: 'RefactoringPackageRefactoringMenues class' category: 'Refactoring'!
 RefactoringPackageRefactoringMenues class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: #Refactoring!
+!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: 'Refactoring'!
 Object subclass: #ReplaceIfNilWithPolymorphismParameters
 	instanceVariableNames: 'messageNode methodNode definitions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: #Refactoring!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: 'Refactoring'!
 ReplaceIfNilWithPolymorphismParameters class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReturnStatementAdder category: #Refactoring!
+!classDefinition: #ReturnStatementAdder category: 'Refactoring'!
 Object subclass: #ReturnStatementAdder
 	instanceVariableNames: 'methodNode compiledMethod'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'ReturnStatementAdder class' category: #Refactoring!
+!classDefinition: 'ReturnStatementAdder class' category: 'Refactoring'!
 ReturnStatementAdder class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariableToParametrizeKeywordDefinition category: #Refactoring!
+!classDefinition: #VariableToParametrizeKeywordDefinition category: 'Refactoring'!
 Object subclass: #VariableToParametrizeKeywordDefinition
 	instanceVariableNames: 'variableName keyword parameterName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: #Refactoring!
+!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: 'Refactoring'!
 VariableToParametrizeKeywordDefinition class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: #Refactoring!
+!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: 'Refactoring'!
 Object subclass: #VariablesToParametrizeKeywordsDefinitions
 	instanceVariableNames: 'selector definitions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Refactoring'!
-!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: #Refactoring!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: 'Refactoring'!
 VariablesToParametrizeKeywordsDefinitions class
 	instanceVariableNames: ''!
 
@@ -4061,7 +4061,7 @@ test16NullClassMustNotContainAnyPolymorphicSelector
 		withMessageText: [
 			IntroduceNullObject polymorphicSelectorsMustNotBeDefinedInTheNullObjectClassesErrorMessage].! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 13:45:19'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test17WhenThereAreNoVariablesToParametrizeReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode polymorphicSelector |
@@ -4070,13 +4070,13 @@ test17WhenThereAreNoVariablesToParametrizeReplacesIfNilWithPolymorphicMessageSen
 	polymorphicSelector := #replaceIfNilSelector.
 	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: polymorphicSelector.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ', polymorphicSelector asString.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 13:51:21'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test18WhenThereAreVariablesToParametrizeReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4085,13 +4085,13 @@ test18WhenThereAreVariablesToParametrizeReplacesIfNilWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 13:53:48'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test19WhenIfNilCheckHasOneKeywordReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4100,13 +4100,13 @@ test19WhenIfNilCheckHasOneKeywordReplacesIfNilWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 13:54:35'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test20WhenIfNilCheckHasTwoKeywordsReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4115,13 +4115,13 @@ test20WhenIfNilCheckHasTwoKeywordsReplacesIfNilWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 13:55:32'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test21WhenIfNilCheckHasIsNilReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4130,13 +4130,13 @@ test21WhenIfNilCheckHasIsNilReplacesIfNilWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 13:56:38'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test22PolymorphicMessageIsAddedToTheConcreteClass
 
 	| sourceWithIf definitions |
@@ -4145,11 +4145,11 @@ test22PolymorphicMessageIsAddedToTheConcreteClass
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	self assert: (self concreteClass selectors includes: #with:).! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 13:59:00'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test23PolymorphicMessageIsAddedToTheConcreteClassWithChosenParameterNames
 
 	| sourceWithIf definitions |
@@ -4158,11 +4158,11 @@ test23PolymorphicMessageIsAddedToTheConcreteClassWithChosenParameterNames
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	self assert: 'p1' equals: (self concreteClass compiledMethodAt: #with:) methodNode arguments first name.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/15/2020 00:21:10'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test24PolymorphicMessageIsAddedToTheConcreteClassReplacingParametrizedVariables
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4171,13 +4171,13 @@ test24PolymorphicMessageIsAddedToTheConcreteClassReplacingParametrizedVariables
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedSourceCode := 'with: p1', String newLineString, String tab, '^p1 isNil'.
 	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
 	! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 14:19:14'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test25ReplacesIfNilIfNotNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4186,13 +4186,13 @@ test25ReplacesIfNilIfNotNilWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 14:19:50'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test26ReplacesIfNotNilIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4201,13 +4201,13 @@ test26ReplacesIfNotNilIfNilWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 14:20:31'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test27ReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4216,13 +4216,13 @@ test27ReplacesIfNilWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 14:20:55'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test28ReplacesIfNotNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4231,13 +4231,13 @@ test28ReplacesIfNotNilWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 14:21:34'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test29ReplacesIsNilIfTrueWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4246,13 +4246,13 @@ test29ReplacesIsNilIfTrueWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 14:21:56'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test30ReplacesIsNilIfFalseWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4261,13 +4261,13 @@ test30ReplacesIsNilIfFalseWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 14:22:36'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test31ReplacesIsNilIfTrueIfFalseWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4276,13 +4276,13 @@ test31ReplacesIsNilIfTrueIfFalseWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 14:23:19'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test32ReplacesIsNilIfFalseIfTrueWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4291,13 +4291,13 @@ test32ReplacesIsNilIfFalseIfTrueWithPolymorphicMessageSend
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedRefactoredSourceCode := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' with: self'.
 	actualRefactoredSourceCode := self compiledMethodToRefactor sourceCode.
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 14:24:23'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test33PolymorphicMessageIsAddedToTheNullClass
 
 	| sourceWithIf definitions |
@@ -4306,11 +4306,11 @@ test33PolymorphicMessageIsAddedToTheNullClass
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	self assert: (self nullClass selectors includes: #with:).! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 16:43:46'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test34PolymorphicMessageIsAddedToTheNullClassWithChosenParameterNames
 
 	| sourceWithIf definitions |
@@ -4319,11 +4319,11 @@ test34PolymorphicMessageIsAddedToTheNullClassWithChosenParameterNames
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	self assert: 'p1' equals: (self nullClass compiledMethodAt: #with:) methodNode arguments first name.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/15/2020 00:21:53'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test35PolymorphicMessageIsAddedToTheNullClassReplacingParametrizedVariables
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4332,13 +4332,13 @@ test35PolymorphicMessageIsAddedToTheNullClassReplacingParametrizedVariables
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedSourceCode := 'with: p1', String newLineString, String tab, '^p1 isNil'.
 	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #with:) sourceCode.
 	! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 16:47:42'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test36WhenNoNullBlockIsPresentEmptyPolymorphicMessageIsAddedToTheNullClass
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4347,13 +4347,13 @@ test36WhenNoNullBlockIsPresentEmptyPolymorphicMessageIsAddedToTheNullClass
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedSourceCode := 'with: p1'.
 	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #with:) sourceCode.
 	! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 3/25/2019 16:53:08'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test37WhenNoConcreteBlockIsPresentEmptyPolymorphicMessageIsAddedToTheConcreteClass
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4362,13 +4362,13 @@ test37WhenNoConcreteBlockIsPresentEmptyPolymorphicMessageIsAddedToTheConcreteCla
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedSourceCode := 'with: p1'.
 	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
 	! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/15/2020 00:22:52'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test38WhenThereAreMultipleStatementsPolymorphicMessageIsAddedToTheNullClass
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4376,14 +4376,14 @@ test38WhenThereAreMultipleStatementsPolymorphicMessageIsAddedToTheNullClass
 	sourceWithIf := self methodToRefactorSelector asString, ' ', self defaultInstVarName, ' ifNil: [1+1. 2+2]'.
 	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unaryPolymorphicSelector.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedSourceCode := 'unaryPolymorphicSelector
 	1+1. ^2+2'.
 	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #unaryPolymorphicSelector) sourceCode.
 	! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 6/30/2020 16:25:11'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test39ReplacesNilAssignmentsWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -4393,14 +4393,14 @@ test39ReplacesNilAssignmentsWithNullObject
 	sourceWithAssignment := sourceWithAssignment, nextLine, self defaultInstVarName, ' := nil.'.
 	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unaryPolymorphicSelector.
 
-	self applyRefactoringOn: sourceWithAssignment using: definitions.
+	self applyRefactoringOn: sourceWithAssignment withOneIfNilCheckUsing: definitions.
 	
 	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
 	expectedSource := expectedSource, nextLine, self defaultInstVarName, ' := ', self nullClass name, ' new.'.
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 6/30/2020 18:52:34'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test40ReplacesMultipleNilAssignmentsWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -4410,14 +4410,14 @@ test40ReplacesMultipleNilAssignmentsWithNullObject
 	2 timesRepeat: [ sourceWithAssignment := sourceWithAssignment, nextLine, self defaultInstVarName, ' := nil.'].
 	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unaryPolymorphicSelector.
 
-	self applyRefactoringOn: sourceWithAssignment using: definitions.
+	self applyRefactoringOn: sourceWithAssignment withOneIfNilCheckUsing: definitions.
 	
 	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
 	2 timesRepeat: [expectedSource := expectedSource, nextLine, self defaultInstVarName, ' := ', self nullClass name, ' new.'].
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 7/2/2020 18:08:49'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test41ReplacesAssignmentWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -4427,14 +4427,14 @@ test41ReplacesAssignmentWithNullObject
 	sourceWithAssignment := sourceWithAssignment, nextLine, self defaultInstVarName, ' := self doSomething.'.
 	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unaryPolymorphicSelector.
 
-	self applyRefactoringOn: sourceWithAssignment using: definitions.
+	self applyRefactoringOn: sourceWithAssignment withOneIfNilCheckUsing: definitions.
 	
 	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
 	expectedSource := expectedSource, nextLine, 'self assignOptionalField: (self doSomething).'.
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 7/2/2020 18:13:37'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test42ReplacesMultipleAssignmentsInTheSameMethodWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine firstRightSide secondRightSide |
@@ -4447,7 +4447,7 @@ test42ReplacesMultipleAssignmentsInTheSameMethodWithNullObject
 	sourceWithAssignment := sourceWithAssignment, nextLine, self defaultInstVarName, ' := ', secondRightSide, '.'.
 	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unaryPolymorphicSelector.
 
-	self applyRefactoringOn: sourceWithAssignment using: definitions.
+	self applyRefactoringOn: sourceWithAssignment withOneIfNilCheckUsing: definitions.
 	
 	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
@@ -4498,7 +4498,7 @@ test43ReplacesMultipleAssignmentsInMultipleMethodsWithNullObject
 		expectedSource := expectedSource, nextLine, 'self assignOptionalField: (', secondRightSide withBlanksCondensed , ').'.
 		self assert: expectedSource equals: refactoredMethod sourceCode].! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/6/2020 17:02:15'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test44ReplacesReturnOfIvarWithNilIfNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -4508,7 +4508,7 @@ test44ReplacesReturnOfIvarWithNilIfNullObject
 	sourceWithAssignment := sourceWithAssignment, nextLine, '^', self defaultInstVarName.
 	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unaryPolymorphicSelector.
 
-	self applyRefactoringOn: sourceWithAssignment using: definitions.
+	self applyRefactoringOn: sourceWithAssignment withOneIfNilCheckUsing: definitions.
 	
 	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
@@ -4516,7 +4516,7 @@ test44ReplacesReturnOfIvarWithNilIfNullObject
 	
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 9/6/2020 17:02:30'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test45ReplacesIvarAsParamWithNilIfNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -4526,14 +4526,14 @@ test45ReplacesIvarAsParamWithNilIfNullObject
 	sourceWithAssignment := sourceWithAssignment, nextLine, 'self do: ', self defaultInstVarName, '.'.
 	definitions := VariablesToParametrizeKeywordsDefinitions withSelector: #unaryPolymorphicSelector.
 
-	self applyRefactoringOn: sourceWithAssignment using: definitions.
+	self applyRefactoringOn: sourceWithAssignment withOneIfNilCheckUsing: definitions.
 	
 	refactoredMethod := self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector.
 	expectedSource := self methodToRefactorSelector asString, nextLine, self defaultInstVarName, ' unaryPolymorphicSelector.'.
 	expectedSource := expectedSource, nextLine, 'self do: ', self defaultInstVarName, ' nilIfNullObject.'.
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/3/2020 20:22:41'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test46WhenIvarAppearsInNotNilBlockAsReceiverReplacesIvarWithSelf
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4542,13 +4542,13 @@ test46WhenIvarAppearsInNotNilBlockAsReceiverReplacesIvarWithSelf
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedSourceCode := 'with: p1', String newLineString, String tab, 'p1 isNil. ^self isNil'.
 	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
 	! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/3/2020 20:22:53'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test47WhenIvarAppearsInNotNilBlockAsArgumentReplacesIvarWithSelf
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4557,13 +4557,13 @@ test47WhenIvarAppearsInNotNilBlockAsArgumentReplacesIvarWithSelf
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedSourceCode := 'with: p1', String newLineString, String tab, '^p1 sendIvar: self'.
 	self assert: expectedSourceCode equals: (self concreteClass compiledMethodAt: #with:) sourceCode.
 	! !
 
-!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/3/2020 20:23:07'!
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 09:34:08'!
 test48WhenIvarAppearsInNilBlockAsArgumentReplacesIvarWithSelfNilIfNullObject
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4572,10 +4572,57 @@ test48WhenIvarAppearsInNilBlockAsArgumentReplacesIvarWithSelfNilIfNullObject
 	definitions := VariablesToParametrizeKeywordsDefinitions with: {
 		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
 
-	self applyRefactoringOn: sourceWithIf using: definitions.
+	self applyRefactoringOn: sourceWithIf withOneIfNilCheckUsing: definitions.
 
 	expectedSourceCode := 'with: p1', String newLineString, String tab, '^p1 sendIvar: self nilIfNullObject'.
 	self assert: expectedSourceCode equals: (self nullClass compiledMethodAt: #with:) sourceCode.
+	! !
+
+!IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 10/24/2020 10:30:56'!
+test49WhenThereAreMultipleIfNilChecksInTheSameMethodsReplacesAllOfThem
+
+	| expectedSourceCode firstIfNilCheck nextLine secondIfNilCheck sourceWithIfs aClassToRefactor firstDefinition firstIfMessageNode methodNode refactoring replacementParameters secondDefinition secondIfMessageNode refactoredMethod |
+
+	firstIfNilCheck := self defaultInstVarName, ' isNil ifFalse: [ 1 = 1 ] ifTrue: [ self = 2 ].'.
+	secondIfNilCheck := self defaultInstVarName, ' isNil ifFalse: [ self > 3 ] ifTrue: [ 4 = 4 ].'.
+	nextLine := String newLineString, String tab.
+	sourceWithIfs := self methodToRefactorSelector asString, nextLine, firstIfNilCheck, nextLine, secondIfNilCheck.
+	firstDefinition := VariablesToParametrizeKeywordsDefinitions with: {
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #with withParameterName: 'p1'}.
+	secondDefinition := VariablesToParametrizeKeywordsDefinitions with: {
+		VariableToParametrizeKeywordDefinition forVariable: 'self' useKeyword: #withSecond withParameterName: 'p2'}.
+
+	aClassToRefactor := self defaultClassToRefactor.
+	aClassToRefactor compile: sourceWithIfs.
+	methodNode := (aClassToRefactor compiledMethodAt: self methodToRefactorSelector) methodNode.
+	firstIfMessageNode :=  methodNode block statements first.
+	secondIfMessageNode :=  methodNode block statements second.
+
+	replacementParameters := {
+		ReplaceIfNilWithPolymorphismParameters
+			forIfNilMessageSending: firstIfMessageNode
+			onMethod: methodNode
+			useKeywordsDefinitions: firstDefinition.
+		ReplaceIfNilWithPolymorphismParameters
+			forIfNilMessageSending: secondIfMessageNode
+			onMethod: methodNode
+			useKeywordsDefinitions: secondDefinition.
+	}.
+
+	refactoring := IntroduceNullObject
+		on: self defaultInstVarName
+		of: aClassToRefactor
+		usingAsConcreteClass: self concreteClass
+		usingAsNullClass: self nullClass
+		for: replacementParameters.
+
+	refactoring apply.
+
+	expectedSourceCode := self methodToRefactorSelector asString, nextLine,
+		self defaultInstVarName, ' ', 'with: self.', nextLine,
+		self defaultInstVarName, ' ', 'withSecond: self.'.
+	refactoredMethod := aClassToRefactor compiledMethodAt: self methodToRefactorSelector.
+	self assert: expectedSourceCode equals: refactoredMethod sourceCode.
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/19/2019 17:16:59'!
@@ -4583,8 +4630,8 @@ allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
-!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 3/25/2019 14:24:35'!
-applyRefactoringOn: source using: definitions
+!IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 10/24/2020 09:34:08'!
+applyRefactoringOn: source withOneIfNilCheckUsing: definitions
 
 	| aClassToRefactor ifMessageNode methodNode refactoring replacementParameters |
 
@@ -7309,16 +7356,28 @@ for: someReplacementParameters
 	nullClass := aNullClass.
 	replacementParameters := someReplacementParameters.! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/5/2020 14:42:03'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 10/24/2020 10:44:33'!
+addTo: aDictionary defaultFor: ifNilParameter
+
+	| key |
+	
+	key := ifNilParameter methodNode selector.
+	(aDictionary includesKey: key) ifFalse: [ | sortedByRanges |
+		sortedByRanges := SortedCollection sortBlock: [:intA :intB | intA key first < intB key first].
+		aDictionary add: (Association key: key value: sortedByRanges)
+	].! !
+
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 10/24/2020 09:49:51'!
 apply
 
 	replacementParameters do: [:parameter | self applyWith: parameter].
+	self replaceIfNilChecks.
 	self replaceAssignments.
 	self compileAssignOptionalField.
 	self replaceIvarWithNilIfNullObject.
 	self compileNilIfNullObject.! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/6/2020 18:02:57'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 10/24/2020 10:21:11'!
 applyWith: replacementParameter
 
 	self
@@ -7332,10 +7391,26 @@ applyWith: replacementParameter
 		in: replacementParameter nullBlockRange
 		asPolymorphicMessageOnClass: nullClass
 		using: replacementParameter
-		with: (Association key: instVar value: 'self nilIfNullObject').
+		with: (Association key: instVar value: 'self nilIfNullObject').	! !
 
-	self replaceNilCheckWithPolymorphicMessageSendUsing: replacementParameter.
-	! !
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 10/24/2020 10:46:29'!
+buildSelectorToReplacements
+
+	| result |
+	
+	result := Dictionary new.
+	replacementParameters do: [:parameter |
+		| key replacement replacementAssoc replacements |
+		self addTo: result defaultFor: parameter.
+		key := parameter methodNode selector.
+		replacements := result at: key.
+		replacement := instVar, ' ', parameter polymorphicMessageSend.
+		replacementAssoc := Association
+			key: parameter rangeOfMessageSend
+			value: replacement.
+		replacements add: replacementAssoc].
+	
+	^result! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 10/3/2020 16:20:09'!
 compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass using: replacementParameter with: anExtraMapping
@@ -7435,6 +7510,20 @@ replaceAssignments
 		refactoredSource := replacementParameter methodSourceCode copyReplacing: rangesToReplacement.
 		methodNode methodClass compile: refactoredSource]! !
 
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 10/24/2020 10:34:55'!
+replaceIfNilChecks
+
+	| selectorToReplacements |
+	
+	selectorToReplacements := self buildSelectorToReplacements.
+	
+	selectorToReplacements keysAndValuesDo: [:selector :replacements |
+		| originalSourceCode refactoredSourceCode |
+		originalSourceCode := (classToRefactor compiledMethodAt: selector) sourceCode.
+		refactoredSourceCode := originalSourceCode copyReplacing: replacements.
+		classToRefactor compile: refactoredSourceCode
+	].! !
+
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 9/5/2020 14:40:36'!
 replaceIvarWithNilIfNullObject
 
@@ -7444,19 +7533,6 @@ replaceIvarWithNilIfNullObject
 		finder value.	
 		refactoredSource := replacementParameter methodSourceCode copyReplacing: finder ranges with: instVar, ' nilIfNullObject'.
 		methodNode methodClass compile: refactoredSource]! !
-
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 6/30/2020 15:46:16'!
-replaceNilCheckWithPolymorphicMessageSendUsing: replacementParameter
-
-	| originalSourceCode refactoredSourceCode |
-
-	originalSourceCode := replacementParameter methodSourceCode.
-	refactoredSourceCode := originalSourceCode copyReplacing: {
-		Association
-			key: replacementParameter rangeOfMessageSend
-			value: instVar, Character space asString, replacementParameter polymorphicMessageSend}.
-
-	classToRefactor compile: refactoredSourceCode.! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 2/20/2019 11:01:56'!
 assert: methodNodes belongToTheHierarchyToRefactorRootedOn: aClass

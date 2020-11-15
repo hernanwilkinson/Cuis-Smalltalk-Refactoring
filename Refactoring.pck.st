@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4384] on 24 October 2020 at 10:47:48 am'!
+'From Cuis 5.0 [latest update: #4384] on 14 November 2020 at 10:54:48 pm'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 565!
+!provides: 'Refactoring' 1 566!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: 'Refactoring'!
 
@@ -625,10 +625,10 @@ minimumHeightToDisplay: aString on: aWidth
 
 	^lines * self textHeight! !
 
-!ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/5/2020 15:43:58'!
+!ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:36:29'!
 textHeight
 
-	^FontFamily defaultPointSize ! !
+	^Preferences windowTitleFont lineSpacing+1 ! !
 
 !ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:25:08'!
 withText: aText withColor: aColor withWidth: aWidth
@@ -688,10 +688,13 @@ initialExtent
 
 	^initialExtent! !
 
-!ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 20:07:25'!
+!ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:54:33'!
 layoutSpecForSection: aSection
 
-	^LayoutSpec proportionalWidth: 1.0 fixedHeight: aSection recommendedHeight! !
+	| bottomMargin |
+	
+	bottomMargin := (Preferences windowTitleFont lineSpacing+1) * 1.5.
+	^LayoutSpec proportionalWidth: 1.0 fixedHeight: aSection recommendedHeight + bottomMargin.! !
 
 !ExtractToMethodObjectForm methodsFor: 'as yet unclassified' stamp: 'FGJ 9/5/2020 15:43:44'!
 recommendedWidthForLabels: labels
@@ -772,7 +775,7 @@ buildCancelButton
 
 	^button! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:23:30'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 11/14/2020 22:52:53'!
 buildInstanceCreationMessageSection
 
 	| section previewExplanation previewLayoutSpec |
@@ -1018,10 +1021,10 @@ moveFrom: anInnerTextMorph
 
 	self world activeHand newKeyboardFocus: newFocusMorph.! !
 
-!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:35:48'!
+!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:42:53'!
 fontProportionalUnitOfReferenceForHeight
 
-	^FontFamily defaultPointSize ! !
+	^Preferences windowTitleFont lineSpacing+1 ! !
 
 !ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:32:55'!
 fontProportionalUnitOfReferenceForWidth
@@ -1481,10 +1484,10 @@ moveFrom: anInnerTextMorph
 
 	self world activeHand newKeyboardFocus: newFocusMorph.! !
 
-!IntroduceNullObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:33:32'!
+!IntroduceNullObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:43:00'!
 fontProportionalUnitOfReferenceForHeight
 
-	^FontFamily defaultPointSize ! !
+	^Preferences windowTitleFont lineSpacing+1! !
 
 !IntroduceNullObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 14:32:21'!
 fontProportionalUnitOfReferenceForWidth
@@ -1551,7 +1554,7 @@ fixedWidthForTexts
 
 	^ExtractToMethodObjectForm recommendedWidth * 0.7! !
 
-!FormSection methodsFor: 'as yet unclassified' stamp: 'jmv 3/31/2020 18:13:12'!
+!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:24:06'!
 recommendedHeight
 
 	^((self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutHeight]) sum) + ( (self submorphs size + 1) * self ySeparation) + self verticalMargins! !
@@ -1561,12 +1564,12 @@ recommendedWidth
 
 	^(self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutWidth]) max + (self xSeparation * 2) max: self fixedWidthForTexts + 65! !
 
-!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:54:23'!
+!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:39:43'!
 textHeight
 
-	^AbstractFont default height! !
+	^Preferences windowTitleFont lineSpacing+1! !
 
-!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 17:14:53'!
+!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:50:11'!
 verticalMargins
 
 	^20! !
@@ -1653,10 +1656,10 @@ inputWidth
 
 	^ExtractToMethodObjectForm fontProportionalUnitOfReferenceForWidth * 30! !
 
-!LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:31:03'!
+!LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:45:39'!
 recommendedHeight
 
-	^FontFamily defaultPointSize * 1.8! !
+	^(Preferences windowTitleFont lineSpacing+1) * 1.8! !
 
 !LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 16:32:52'!
 withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel

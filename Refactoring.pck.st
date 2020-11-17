@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4384] on 14 November 2020 at 10:54:48 pm'!
+'From Cuis 5.0 [latest update: #4384] on 17 November 2020 at 11:12:35 am'!
 'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 566!
+!provides: 'Refactoring' 1 567!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: 'Refactoring'!
 
@@ -865,7 +865,7 @@ buildMethodObjectClassSection
 	^section
 ! !
 
-!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:13:09'!
+!ExtractToMethodObjectForm methodsFor: 'GUI building' stamp: 'FGJ 11/16/2020 20:43:13'!
 buildMorphicWindow
 
 	| requiredExtent instanceCreationMessageSection requiredHeight methodObjectClassSection instanceVariablesSection actionButtonsSection requiredWidth sections windowElementsExtent xtraBorderToAvoidScrollbars |
@@ -901,6 +901,7 @@ buildMorphicWindow
 	requiredHeight := (sections collect: [:aSection | aSection recommendedHeight]) sum
 		+ actionButtonsSection layoutSpec fixedOrMinimumLayoutHeight
 		+ (formLayout ySeparation * 4).
+	requiredHeight := requiredHeight * 1.2.
 	requiredWidth := (sections collect: [:aSection | aSection recommendedWidth]) max + (formLayout xSeparation * 2).
 
 	requiredExtent := requiredWidth@requiredHeight.
@@ -1336,7 +1337,7 @@ initializeScrollableContainer
 	scrollPane color: self backgroundColor.
 	self layoutMorph addMorphUseAll: scrollPane.! !
 
-!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'jmv 3/31/2020 18:13:36'!
+!IntroduceNullObjectForm methodsFor: 'GUI building' stamp: 'FGJ 11/16/2020 21:31:12'!
 setExtents
 
 
@@ -1347,6 +1348,7 @@ setExtents
 		+ (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedOrMinimumLayoutHeight
 		+ actionButtonsSection layoutSpec fixedOrMinimumLayoutHeight
 		+ (formLayout ySeparation * (formLayout submorphs size + 1)).
+	requiredHeight := requiredHeight * 1.2.
 	requiredWidth := {hierarchySection recommendedWidth. (ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedOrMinimumLayoutHeight} max.
 	(ifNilChecksForms at: messageListModel messageListIndex) layoutSpec fixedWidth: requiredWidth.
 	requiredWidth := requiredWidth + (formLayout xSeparation * 2).
@@ -7489,10 +7491,10 @@ rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter with: an
 
 	^rangesOffsetToBlock! !
 
-!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 7/3/2020 15:26:59'!
+!IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 11/17/2020 10:19:08'!
 replaceAssignments
 
-	| encoder rangesToReplacement nilAssignmentsFinder nullObjectNew methodNode |
+	| encoder rangesToReplacement nilAssignmentsFinder nullObjectNew methodNode selectorsChecked |
 
 	nullObjectNew := (nullClass name, ' new').
 	nilAssignmentsFinder := ParseNodeEnumerator ofBlock: [ :node |
@@ -7504,14 +7506,16 @@ replaceAssignments
 		
 		(self isAssignmentToNonNil: node) ifTrue: [ 
 			rangesToReplacement add: (self rangeToReplaceToReplacementFrom: methodNode of: node)]].
-	
+	selectorsChecked := Set new.
 	replacementParameters do: [:replacementParameter | | refactoredSource  |
-		rangesToReplacement := SortedCollection sortBlock: [:intA :intB | intA key first < intB key first].
-		methodNode := replacementParameter methodNode.
-		encoder := methodNode encoder.
-		methodNode accept: nilAssignmentsFinder.
-		refactoredSource := replacementParameter methodSourceCode copyReplacing: rangesToReplacement.
-		methodNode methodClass compile: refactoredSource]! !
+		(selectorsChecked includes: replacementParameter methodNode selector) ifFalse: [
+			selectorsChecked add: replacementParameter methodNode selector.
+			rangesToReplacement := SortedCollection sortBlock: [:intA :intB | intA key first < intB key first].
+			methodNode := replacementParameter methodNode.
+			encoder := methodNode encoder.
+			methodNode accept: nilAssignmentsFinder.
+			refactoredSource := replacementParameter methodSourceCode copyReplacing: rangesToReplacement.
+			methodNode methodClass compile: refactoredSource]]! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 10/24/2020 10:34:55'!
 replaceIfNilChecks

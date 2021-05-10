@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4384] on 17 November 2020 at 11:36:17 am'!
-'Description Fix to rename of fixedWidth and fixedHeight to fixedOrMinimumLayoutWidth and fixedOrMinimumLayoutHeight'!
-!provides: 'Refactoring' 1 568!
+'From Cuis 5.0 [latest update: #4532] on 10 May 2021 at 5:45:37 pm'!
+'Description Change StringMorph by LabelMorph'!
+!provides: 'Refactoring' 1 569!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: 'Refactoring'!
 
@@ -33,6 +33,56 @@ ParseNodeVisitor subclass: #VariablesToExtractFinder
 	category: 'Refactoring'!
 !classDefinition: 'VariablesToExtractFinder class' category: 'Refactoring'!
 VariablesToExtractFinder class
+	instanceVariableNames: ''!
+
+!classDefinition: #FormSection category: 'Refactoring'!
+LayoutMorph subclass: #FormSection
+	instanceVariableNames: 'title borderMorph titleContainer titleMorph titleContainerLayoutSpec explanation explanationMorph explanationContainer explanationContainerLayoutSpec'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'FormSection class' category: 'Refactoring'!
+FormSection class
+	instanceVariableNames: ''!
+
+!classDefinition: #LabeledInput category: 'Refactoring'!
+LayoutMorph subclass: #LabeledInput
+	instanceVariableNames: 'labelMorph inputMorph'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'LabeledInput class' category: 'Refactoring'!
+LabeledInput class
+	instanceVariableNames: ''!
+
+!classDefinition: #MessageKeywordsAndParametersTable category: 'Refactoring'!
+LayoutMorph subclass: #MessageKeywordsAndParametersTable
+	instanceVariableNames: 'rowModels previewModel backgroundColor refactoringModel columnWidths variablesToParametrize'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'MessageKeywordsAndParametersTable class' category: 'Refactoring'!
+MessageKeywordsAndParametersTable class
+	instanceVariableNames: ''!
+
+!classDefinition: #TabPassingInnerTextMorph category: 'Refactoring'!
+InnerTextMorph subclass: #TabPassingInnerTextMorph
+	instanceVariableNames: 'focusMover'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'TabPassingInnerTextMorph class' category: 'Refactoring'!
+TabPassingInnerTextMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #PreviewInnerTextMorph category: 'Refactoring'!
+TabPassingInnerTextMorph subclass: #PreviewInnerTextMorph
+	instanceVariableNames: 'previewModel'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Refactoring'!
+!classDefinition: 'PreviewInnerTextMorph class' category: 'Refactoring'!
+PreviewInnerTextMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #IndependentlyColoredButton category: 'Refactoring'!
@@ -103,56 +153,6 @@ SystemWindow subclass: #IntroduceNullObjectForm
 	category: 'Refactoring'!
 !classDefinition: 'IntroduceNullObjectForm class' category: 'Refactoring'!
 IntroduceNullObjectForm class
-	instanceVariableNames: ''!
-
-!classDefinition: #FormSection category: 'Refactoring'!
-LayoutMorph subclass: #FormSection
-	instanceVariableNames: 'title borderMorph titleContainer titleMorph titleContainerLayoutSpec explanation explanationMorph explanationContainer explanationContainerLayoutSpec'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'FormSection class' category: 'Refactoring'!
-FormSection class
-	instanceVariableNames: ''!
-
-!classDefinition: #LabeledInput category: 'Refactoring'!
-LayoutMorph subclass: #LabeledInput
-	instanceVariableNames: 'labelMorph inputMorph'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'LabeledInput class' category: 'Refactoring'!
-LabeledInput class
-	instanceVariableNames: ''!
-
-!classDefinition: #MessageKeywordsAndParametersTable category: 'Refactoring'!
-LayoutMorph subclass: #MessageKeywordsAndParametersTable
-	instanceVariableNames: 'rowModels previewModel backgroundColor refactoringModel columnWidths variablesToParametrize'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'MessageKeywordsAndParametersTable class' category: 'Refactoring'!
-MessageKeywordsAndParametersTable class
-	instanceVariableNames: ''!
-
-!classDefinition: #TabPassingInnerTextMorph category: 'Refactoring'!
-InnerTextMorph subclass: #TabPassingInnerTextMorph
-	instanceVariableNames: 'focusMover'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'TabPassingInnerTextMorph class' category: 'Refactoring'!
-TabPassingInnerTextMorph class
-	instanceVariableNames: ''!
-
-!classDefinition: #PreviewInnerTextMorph category: 'Refactoring'!
-TabPassingInnerTextMorph subclass: #PreviewInnerTextMorph
-	instanceVariableNames: 'previewModel'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Refactoring'!
-!classDefinition: 'PreviewInnerTextMorph class' category: 'Refactoring'!
-PreviewInnerTextMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #ExtractToMethodObjectTest category: 'Refactoring'!
@@ -608,6 +608,448 @@ in: aCompiledMethod
 	^self new initializeIn: aCompiledMethod methodNode.
 
 	! !
+
+!FormSection methodsFor: 'initialization' stamp: 'HAW 5/10/2021 17:43:40'!
+initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
+
+	| titleLayoutSpec |
+
+	title := aTitle.
+	explanation := anExplanation.
+
+	self separation: 3.
+	self color: aColor.
+
+	titleMorph := LabelMorph 
+		contents: title
+		font: Preferences windowTitleFont
+		emphasis: 1.
+	titleLayoutSpec := LayoutSpec
+		fixedWidth: titleMorph morphWidth
+		fixedHeight: titleMorph morphHeight.
+	titleLayoutSpec offAxisEdgeWeight: 0.03.
+
+	self addMorph: titleMorph layoutSpec: titleLayoutSpec.
+
+	explanation isEmpty ifFalse: [
+		explanationMorph := ImmutableTextModelMorph
+			withText: anExplanation
+			withColor: aColor
+			withWidth: self fixedWidthForTexts.
+		self addMorph: explanationMorph.
+	].! !
+
+!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/4/2019 12:53:57'!
+drawOn: aCanvas
+	aCanvas
+		fillRectangle: self morphLocalBounds
+		color: color
+		borderWidth: 2
+		borderStyleSymbol: #simple
+		baseColorForBorder: Color darkGray ! !
+
+!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:35:56'!
+fixedWidthForTexts
+
+	^ExtractToMethodObjectForm recommendedWidth * 0.7! !
+
+!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:24:06'!
+recommendedHeight
+
+	^((self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutHeight]) sum) + ( (self submorphs size + 1) * self ySeparation) + self verticalMargins! !
+
+!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 6/8/2020 15:42:48'!
+recommendedWidth
+
+	^(self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutWidth]) max + (self xSeparation * 2) max: self fixedWidthForTexts + 65! !
+
+!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:39:43'!
+textHeight
+
+	^Preferences windowTitleFont lineSpacing+1! !
+
+!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:50:11'!
+verticalMargins
+
+	^20! !
+
+!FormSection class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/5/2019 17:01:17'!
+withTitle: aTitle withColor: aColor
+
+	^self withTitle: aTitle withExplanation: '' withColor: aColor.! !
+
+!FormSection class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:36:16'!
+withTitle: aTitle withExplanation: anExplanation withColor: aColor
+
+	^FormSection newColumn initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor.! !
+
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 1/22/2019 13:37:24'!
+drawOn: aCanvas
+	aCanvas
+		fillRectangle: self morphLocalBounds
+		color: Color lightGray.! !
+
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 15:43:39'!
+textModel: aTextModel
+
+	inputMorph model: aTextModel.! !
+
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'HAW 5/10/2021 17:44:44'!
+withLabel: aLabel withWidth: aWidth withModel: aTextModel
+
+	| labelLayoutSpec inputMorphLayoutSpec |
+
+	self separation: 5.
+	self layoutSpec: (LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight).
+
+	labelMorph := LabelMorph contents: aLabel.
+	labelLayoutSpec := LayoutSpec
+		fixedWidth: aWidth
+		fixedHeight: labelMorph morphHeight
+		offAxisEdgeWeight: #center.
+	self addMorph: labelMorph layoutSpec: labelLayoutSpec.
+
+	inputMorph := TextModelMorph withModel: aTextModel.
+	inputMorph hideScrollBarsIndefinitely.
+	inputMorphLayoutSpec :=
+		LayoutSpec
+			fixedWidth: LabeledInput inputWidth
+			fixedHeight: labelMorph morphHeight + 2.
+	self addMorph: inputMorph layoutSpec: inputMorphLayoutSpec.
+
+
+
+	! !
+
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'HAW 5/10/2021 17:43:51'!
+withLabel: aLabel withWidth: aWidth withModel: aTextModel usingAs: focusMover
+
+	| labelLayoutSpec inputMorphLayoutSpec |
+
+	self separation: 5.
+	self layoutSpec: (LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight).
+
+	labelMorph := LabelMorph contents: aLabel.
+	labelLayoutSpec := LayoutSpec
+		fixedWidth: aWidth
+		fixedHeight: labelMorph morphHeight
+		offAxisEdgeWeight: #center.
+	self addMorph: labelMorph layoutSpec: labelLayoutSpec.
+
+	inputMorph := TabPassingTextModelMorph withModel: aTextModel.
+	inputMorph textMorph focusMover: focusMover.
+	focusMover addFocusReceiver: inputMorph textMorph.
+	inputMorph hideScrollBarsIndefinitely.
+	inputMorphLayoutSpec :=
+		LayoutSpec
+			fixedWidth: LabeledInput inputWidth * 0.7
+			fixedHeight: labelMorph morphHeight + 2.
+	self addMorph: inputMorph layoutSpec: inputMorphLayoutSpec.
+
+
+
+	! !
+
+!LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 18:08:29'!
+inputWidth
+
+	^ExtractToMethodObjectForm fontProportionalUnitOfReferenceForWidth * 30! !
+
+!LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:45:39'!
+recommendedHeight
+
+	^(Preferences windowTitleFont lineSpacing+1) * 1.8! !
+
+!LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 16:32:52'!
+withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel
+
+	^self newRow withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel! !
+
+!LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 4/11/2019 12:47:10'!
+withLabel: aLabel withWidth: aWidth withModel: aPreviewModel usingAs: aFocusMover
+
+	^self newRow withLabel: aLabel withWidth: aWidth withModel: aPreviewModel usingAs: aFocusMover! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 14:16:02'!
+backgroundColor
+
+	^backgroundColor ! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 9/4/2020 10:56:07'!
+columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: numberOfInputColumns
+
+	| widths maxRowTitleWidth widthForInputs |
+
+	widths := OrderedCollection new.
+
+	maxRowTitleWidth := (rowsTitles collect: [:aRowTitle | FontFamily defaultFamilyAndPointSize widthOfString: aRowTitle]) max + 20.
+	widths add: maxRowTitleWidth.
+
+	widthForInputs := ExtractToMethodObjectForm fontProportionalUnitOfReferenceForWidth * 20.
+	numberOfInputColumns timesRepeat: [widths add: widthForInputs].
+
+	rowsTitles size > 1 ifTrue: [widths add: (FontFamily defaultFamilyAndPointSize widthOfString: 'Change order')].
+
+	^widths
+
+	! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 1/22/2019 15:30:47'!
+drawOn: aCanvas
+
+	aCanvas
+		fillRectangle: self morphLocalBounds
+		color: Color lightGray.! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 17:15:41'!
+isBottomRow: aRowIndex
+
+	^aRowIndex == 1! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 4/10/2019 18:36:30'!
+keywordsAndParametersDo: aBlock
+
+	| hasChangeOrderColumn |
+	hasChangeOrderColumn := self needsToReorderRows.
+
+	self submorphs allButLast do: [:aSubmorph | | keyword parameterName keywordMorph parameterMorph |
+		keywordMorph := aSubmorph submorphs at: (hasChangeOrderColumn ifTrue: [3] ifFalse: [2]).
+		parameterMorph := aSubmorph submorphs at: (hasChangeOrderColumn ifTrue: [2] ifFalse: [1]).
+		keyword := keywordMorph model actualContents string withBlanksTrimmed.
+		parameterName := parameterMorph model actualContents string withBlanksTrimmed.
+
+		aBlock value: keyword value: parameterName].! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:01:04'!
+moveDownRow: aRowIndex
+
+	(self isBottomRow: aRowIndex) ifFalse: [
+		self swapRow: aRowIndex with: aRowIndex -1.
+		self rowWasMovedDown: aRowIndex - 1.
+		self rowWasMovedUp: aRowIndex.].! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:01:10'!
+moveUpRow: aRowIndex
+
+	aRowIndex <  self numberOfRowsWithoutHeaders ifTrue: [
+		self swapRow: aRowIndex with: aRowIndex + 1.
+		self rowWasMovedUp: aRowIndex + 1.
+		self rowWasMovedDown: aRowIndex.].! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 4/10/2019 18:17:14'!
+needsToReorderRows
+
+	^variablesToParametrize size > 1! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/10/2019 18:49:07'!
+notifyPreviewModelThat: aRowIndex wasSwappedWith: anotherRowIndex
+
+	previewModel row: aRowIndex wasSwappedWith: anotherRowIndex.! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:03:43'!
+notifyRefactoringModelThat: aRowIndex wasSwappedWith: anotherRowIndex
+
+	refactoringModel keywordOfIndex: aRowIndex wasSwappedWithKeywordOfIndex: anotherRowIndex.! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 16:59:36'!
+numberOfRowsWithoutHeaders
+
+	^self submorphs size - 1! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 12:11:01'!
+rowsLayoutSpec
+
+	^LayoutSpec fixedHeight: self rowHeight! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:01:38'!
+swapRow: aRowIndex with: anotherRowIndex
+
+	self swapRowSubmorph: aRowIndex with: anotherRowIndex.
+	self swapRowModel: aRowIndex with: anotherRowIndex.
+	self notifyPreviewModelThat: aRowIndex wasSwappedWith: anotherRowIndex.
+	self notifyRefactoringModelThat: aRowIndex wasSwappedWith: anotherRowIndex.! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 17:16:44'!
+swapRowModel: aRowIndex with: anotherRowIndex
+
+	rowModels swap: aRowIndex with: anotherRowIndex.! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 17:48:55'!
+swapRowSubmorph: aRowIndex with: anotherRowIndex
+
+	self privateSubmorphs swap: aRowIndex with: anotherRowIndex.
+
+	self flag: #todofgj.
+	"It seems that the redraw isn't needed. Remove later if that's the case."
+	"self redrawNeeded."
+	self layoutSubmorphs.! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'HAW 5/10/2021 17:44:12'!
+withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
+
+	| rowsSeparation recommendedHeight numberOfRows columnsTitlesRow changeOrderButtons tableWidth inputColumnsTitles |
+
+	backgroundColor := aColor.
+	rowModels := OrderedCollection new.
+	previewModel := aPreviewModel.
+	refactoringModel := aRefactoringModel.
+	variablesToParametrize := rowsTitles.
+
+	rowsSeparation := 4.
+	self separation: rowsSeparation.
+
+	"Calculate table height"
+	numberOfRows := (rowsTitles size + 1).
+	recommendedHeight :=  self rowHeight * numberOfRows + (rowsSeparation * (numberOfRows + 1)) * 1.1.
+
+	"Calculate column widths"
+	inputColumnsTitles := #('Keyword' 'Parameter name').
+	columnWidths := self columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: inputColumnsTitles size.
+
+	"Calculate table width"
+	tableWidth := columnWidths sum + (self columnSeparation * (columnWidths size + 1)) * 1.1.
+
+	self layoutSpec: (LayoutSpec fixedWidth: tableWidth fixedHeight: recommendedHeight).
+
+	"Buid the columns titles row"
+	columnsTitlesRow := self buildColumnTitlesRowFor: inputColumnsTitles.
+	self addMorph: columnsTitlesRow layoutSpec: self rowsLayoutSpec.
+
+	"Build the input rows"
+	rowsTitles withIndexDo: [:aRowTitle :index | | aRow changeOrderModel keywordInputMorph inputMorphLayoutSpec parameternameInputMorph |
+		aRow := LayoutMorph newRow.
+		aRow color: self backgroundColor; separation: self columnSeparation.
+
+		aRow
+			addMorph: (LabelMorph contents: aRowTitle)
+			layoutSpec: (LayoutSpec fixedWidth: (columnWidths at: 1)).
+
+		inputMorphLayoutSpec := LayoutSpec fixedWidth: (columnWidths at: 2) fixedHeight: self rowHeight.
+
+		keywordInputMorph := self buildInputMorphWith: (aRefactoringModel keywordModelOf: aRowTitle).
+		aRow addMorph: keywordInputMorph layoutSpec: inputMorphLayoutSpec.
+
+		parameternameInputMorph := self buildInputMorphWith: (aRefactoringModel parameterModelOf: aRowTitle).
+		aRow addMorph: parameternameInputMorph layoutSpec: inputMorphLayoutSpec.
+
+		self needsToReorderRows ifTrue: [
+			changeOrderModel := ChangeRowOrderButtonModel for: (rowsTitles size - (index - 1)) notifying: self.
+			rowModels addFirst: changeOrderModel.
+			changeOrderButtons := self buildChangeOrderButtonsWith: changeOrderModel.
+			aRow addMorph: changeOrderButtons layoutSpec: (LayoutSpec fixedWidth: (columnWidths last))].
+
+		self addMorph: aRow layoutSpec: self rowsLayoutSpec.
+	].! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'events' stamp: 'FGJ 2/9/2019 17:20:09'!
+rowWasMovedDown: aRowIndex
+
+	(rowModels at: aRowIndex) wasMovedDown.! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'events' stamp: 'FGJ 2/9/2019 17:20:24'!
+rowWasMovedUp: aRowIndex
+
+	(rowModels at: aRowIndex) wasMovedUp.! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 9/4/2020 10:56:45'!
+buildChangeOrderButtonsWith: aModel
+
+	| downButton layoutButtons upButton |
+
+	upButton := PluggableButtonMorph new.
+	upButton icon: Theme current goUpIcon.
+	upButton model: aModel.
+	upButton action: #moveUp.
+
+	downButton := PluggableButtonMorph new.
+	downButton icon: Theme current goDownIcon.
+	downButton model: aModel.
+	downButton action: #moveDown.
+
+	layoutButtons := LayoutMorph newRow.
+	layoutButtons axisEdgeWeight: #center; color: self backgroundColor.
+	layoutButtons addMorph: downButton; addMorph: upButton.
+
+	^layoutButtons! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'HAW 5/10/2021 17:44:02'!
+buildColumnTitlesRowFor: inputColumnsTitles
+
+	| columnsTitles row |
+
+	row := LayoutMorph newRow.
+	row color: self backgroundColor.
+	row separation: self columnSeparation.
+
+	columnsTitles := OrderedCollection newFrom: inputColumnsTitles.
+	columnsTitles addFirst: ''.
+	self needsToReorderRows ifTrue: [columnsTitles addLast: 'Change order'].
+	columnsTitles withIndexDo: [:aColumnTitle :columnIndex | | columnTitleLayoutSpec titleLayout |
+		titleLayout := LayoutMorph newRow.
+		titleLayout color: self backgroundColor .
+		titleLayout axisEdgeWeight: #center.
+		titleLayout addMorph: (LabelMorph contents: aColumnTitle).
+		columnTitleLayoutSpec := LayoutSpec fixedWidth: (columnWidths at: columnIndex).
+		row
+			addMorph: titleLayout
+			layoutSpec: columnTitleLayoutSpec].
+
+	^row
+
+	! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 4/11/2019 13:09:23'!
+buildInputMorphWith: aModel
+
+	| inputMorph |
+
+	inputMorph := PreviewTextModelMorph withModel: aModel.
+	inputMorph textMorph previewModel: previewModel.
+	inputMorph textMorph focusMover: previewModel.
+	previewModel addFocusReceiver: inputMorph textMorph.
+
+	inputMorph hideScrollBarsIndefinitely.
+
+	^inputMorph! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'accessing' stamp: 'FGJ 2/14/2019 12:14:23'!
+columnSeparation
+
+	^4! !
+
+!MessageKeywordsAndParametersTable methodsFor: 'accessing' stamp: 'FGJ 9/3/2020 14:33:48'!
+rowHeight
+
+	^FontFamily defaultPointSize * 1.6! !
+
+!MessageKeywordsAndParametersTable class methodsFor: 'instance creation' stamp: 'FGJ 4/10/2019 18:05:01'!
+withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
+
+	^self newColumn withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel.
+
+	! !
+
+!TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:31:07'!
+focusMover: aFocusMover
+
+	focusMover := aFocusMover.! !
+
+!TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:28:05'!
+keyStroke: aKeyboardEvent
+
+	aKeyboardEvent isTab ifTrue: [focusMover moveFrom: self] ifFalse: [super keyStroke: aKeyboardEvent].! !
+
+!PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:37:10'!
+keyStroke: aKeyboardEvent
+
+	super keyStroke: aKeyboardEvent.
+
+	previewModel previewTextInputReceivedKeyStroke.! !
+
+!PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 10:40:05'!
+previewModel: aPreviewModel
+
+	previewModel := aPreviewModel.! !
 
 !IndependentlyColoredButton methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 12:38:30'!
 adoptWidgetsColor: paneColor! !
@@ -1511,448 +1953,6 @@ open: aModel label: aString
 withModel: aModel
 
 	^self new initializeWithModel: aModel! !
-
-!FormSection methodsFor: 'initialization' stamp: 'FGJ 9/3/2020 14:23:42'!
-initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
-
-	| titleLayoutSpec |
-
-	title := aTitle.
-	explanation := anExplanation.
-
-	self separation: 3.
-	self color: aColor.
-
-	titleMorph := StringMorph
-		contents: title
-		font: Preferences windowTitleFont
-		emphasis: 1.
-	titleLayoutSpec := LayoutSpec
-		fixedWidth: titleMorph morphWidth
-		fixedHeight: titleMorph morphHeight.
-	titleLayoutSpec offAxisEdgeWeight: 0.03.
-
-	self addMorph: titleMorph layoutSpec: titleLayoutSpec.
-
-	explanation isEmpty ifFalse: [
-		explanationMorph := ImmutableTextModelMorph
-			withText: anExplanation
-			withColor: aColor
-			withWidth: self fixedWidthForTexts.
-		self addMorph: explanationMorph.
-	].! !
-
-!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/4/2019 12:53:57'!
-drawOn: aCanvas
-	aCanvas
-		fillRectangle: self morphLocalBounds
-		color: color
-		borderWidth: 2
-		borderStyleSymbol: #simple
-		baseColorForBorder: Color darkGray ! !
-
-!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:35:56'!
-fixedWidthForTexts
-
-	^ExtractToMethodObjectForm recommendedWidth * 0.7! !
-
-!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:24:06'!
-recommendedHeight
-
-	^((self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutHeight]) sum) + ( (self submorphs size + 1) * self ySeparation) + self verticalMargins! !
-
-!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 6/8/2020 15:42:48'!
-recommendedWidth
-
-	^(self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutWidth]) max + (self xSeparation * 2) max: self fixedWidthForTexts + 65! !
-
-!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:39:43'!
-textHeight
-
-	^Preferences windowTitleFont lineSpacing+1! !
-
-!FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:50:11'!
-verticalMargins
-
-	^20! !
-
-!FormSection class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/5/2019 17:01:17'!
-withTitle: aTitle withColor: aColor
-
-	^self withTitle: aTitle withExplanation: '' withColor: aColor.! !
-
-!FormSection class methodsFor: 'as yet unclassified' stamp: 'FGJ 2/16/2019 11:36:16'!
-withTitle: aTitle withExplanation: anExplanation withColor: aColor
-
-	^FormSection newColumn initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor.! !
-
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 1/22/2019 13:37:24'!
-drawOn: aCanvas
-	aCanvas
-		fillRectangle: self morphLocalBounds
-		color: Color lightGray.! !
-
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 4/5/2019 15:43:39'!
-textModel: aTextModel
-
-	inputMorph model: aTextModel.! !
-
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 9/5/2020 14:47:28'!
-withLabel: aLabel withWidth: aWidth withModel: aTextModel
-
-	| labelLayoutSpec inputMorphLayoutSpec |
-
-	self separation: 5.
-	self layoutSpec: (LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight).
-
-	labelMorph := StringMorph contents: aLabel.
-	labelLayoutSpec := LayoutSpec
-		fixedWidth: aWidth
-		fixedHeight: labelMorph morphHeight
-		offAxisEdgeWeight: #center.
-	self addMorph: labelMorph layoutSpec: labelLayoutSpec.
-
-	inputMorph := TextModelMorph withModel: aTextModel.
-	inputMorph hideScrollBarsIndefinitely.
-	inputMorphLayoutSpec :=
-		LayoutSpec
-			fixedWidth: LabeledInput inputWidth
-			fixedHeight: labelMorph morphHeight + 2.
-	self addMorph: inputMorph layoutSpec: inputMorphLayoutSpec.
-
-
-
-	! !
-
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:31:59'!
-withLabel: aLabel withWidth: aWidth withModel: aTextModel usingAs: focusMover
-
-	| labelLayoutSpec inputMorphLayoutSpec |
-
-	self separation: 5.
-	self layoutSpec: (LayoutSpec proportionalWidth: 0.95 fixedHeight: LabeledInput recommendedHeight).
-
-	labelMorph := StringMorph contents: aLabel.
-	labelLayoutSpec := LayoutSpec
-		fixedWidth: aWidth
-		fixedHeight: labelMorph morphHeight
-		offAxisEdgeWeight: #center.
-	self addMorph: labelMorph layoutSpec: labelLayoutSpec.
-
-	inputMorph := TabPassingTextModelMorph withModel: aTextModel.
-	inputMorph textMorph focusMover: focusMover.
-	focusMover addFocusReceiver: inputMorph textMorph.
-	inputMorph hideScrollBarsIndefinitely.
-	inputMorphLayoutSpec :=
-		LayoutSpec
-			fixedWidth: LabeledInput inputWidth * 0.7
-			fixedHeight: labelMorph morphHeight + 2.
-	self addMorph: inputMorph layoutSpec: inputMorphLayoutSpec.
-
-
-
-	! !
-
-!LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 4/4/2019 18:08:29'!
-inputWidth
-
-	^ExtractToMethodObjectForm fontProportionalUnitOfReferenceForWidth * 30! !
-
-!LabeledInput class methodsFor: 'as yet unclassified' stamp: 'FGJ 11/14/2020 22:45:39'!
-recommendedHeight
-
-	^(Preferences windowTitleFont lineSpacing+1) * 1.8! !
-
-!LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 4/5/2019 16:32:52'!
-withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel
-
-	^self newRow withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel! !
-
-!LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 4/11/2019 12:47:10'!
-withLabel: aLabel withWidth: aWidth withModel: aPreviewModel usingAs: aFocusMover
-
-	^self newRow withLabel: aLabel withWidth: aWidth withModel: aPreviewModel usingAs: aFocusMover! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 14:16:02'!
-backgroundColor
-
-	^backgroundColor ! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 9/4/2020 10:56:07'!
-columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: numberOfInputColumns
-
-	| widths maxRowTitleWidth widthForInputs |
-
-	widths := OrderedCollection new.
-
-	maxRowTitleWidth := (rowsTitles collect: [:aRowTitle | FontFamily defaultFamilyAndPointSize widthOfString: aRowTitle]) max + 20.
-	widths add: maxRowTitleWidth.
-
-	widthForInputs := ExtractToMethodObjectForm fontProportionalUnitOfReferenceForWidth * 20.
-	numberOfInputColumns timesRepeat: [widths add: widthForInputs].
-
-	rowsTitles size > 1 ifTrue: [widths add: (FontFamily defaultFamilyAndPointSize widthOfString: 'Change order')].
-
-	^widths
-
-	! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 1/22/2019 15:30:47'!
-drawOn: aCanvas
-
-	aCanvas
-		fillRectangle: self morphLocalBounds
-		color: Color lightGray.! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 17:15:41'!
-isBottomRow: aRowIndex
-
-	^aRowIndex == 1! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 4/10/2019 18:36:30'!
-keywordsAndParametersDo: aBlock
-
-	| hasChangeOrderColumn |
-	hasChangeOrderColumn := self needsToReorderRows.
-
-	self submorphs allButLast do: [:aSubmorph | | keyword parameterName keywordMorph parameterMorph |
-		keywordMorph := aSubmorph submorphs at: (hasChangeOrderColumn ifTrue: [3] ifFalse: [2]).
-		parameterMorph := aSubmorph submorphs at: (hasChangeOrderColumn ifTrue: [2] ifFalse: [1]).
-		keyword := keywordMorph model actualContents string withBlanksTrimmed.
-		parameterName := parameterMorph model actualContents string withBlanksTrimmed.
-
-		aBlock value: keyword value: parameterName].! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:01:04'!
-moveDownRow: aRowIndex
-
-	(self isBottomRow: aRowIndex) ifFalse: [
-		self swapRow: aRowIndex with: aRowIndex -1.
-		self rowWasMovedDown: aRowIndex - 1.
-		self rowWasMovedUp: aRowIndex.].! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:01:10'!
-moveUpRow: aRowIndex
-
-	aRowIndex <  self numberOfRowsWithoutHeaders ifTrue: [
-		self swapRow: aRowIndex with: aRowIndex + 1.
-		self rowWasMovedUp: aRowIndex + 1.
-		self rowWasMovedDown: aRowIndex.].! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 4/10/2019 18:17:14'!
-needsToReorderRows
-
-	^variablesToParametrize size > 1! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/10/2019 18:49:07'!
-notifyPreviewModelThat: aRowIndex wasSwappedWith: anotherRowIndex
-
-	previewModel row: aRowIndex wasSwappedWith: anotherRowIndex.! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:03:43'!
-notifyRefactoringModelThat: aRowIndex wasSwappedWith: anotherRowIndex
-
-	refactoringModel keywordOfIndex: aRowIndex wasSwappedWithKeywordOfIndex: anotherRowIndex.! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 16:59:36'!
-numberOfRowsWithoutHeaders
-
-	^self submorphs size - 1! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 12:11:01'!
-rowsLayoutSpec
-
-	^LayoutSpec fixedHeight: self rowHeight! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 17:01:38'!
-swapRow: aRowIndex with: anotherRowIndex
-
-	self swapRowSubmorph: aRowIndex with: anotherRowIndex.
-	self swapRowModel: aRowIndex with: anotherRowIndex.
-	self notifyPreviewModelThat: aRowIndex wasSwappedWith: anotherRowIndex.
-	self notifyRefactoringModelThat: aRowIndex wasSwappedWith: anotherRowIndex.! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 17:16:44'!
-swapRowModel: aRowIndex with: anotherRowIndex
-
-	rowModels swap: aRowIndex with: anotherRowIndex.! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 2/9/2019 17:48:55'!
-swapRowSubmorph: aRowIndex with: anotherRowIndex
-
-	self privateSubmorphs swap: aRowIndex with: anotherRowIndex.
-
-	self flag: #todofgj.
-	"It seems that the redraw isn't needed. Remove later if that's the case."
-	"self redrawNeeded."
-	self layoutSubmorphs.! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'FGJ 6/9/2020 12:30:27'!
-withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
-
-	| rowsSeparation recommendedHeight numberOfRows columnsTitlesRow changeOrderButtons tableWidth inputColumnsTitles |
-
-	backgroundColor := aColor.
-	rowModels := OrderedCollection new.
-	previewModel := aPreviewModel.
-	refactoringModel := aRefactoringModel.
-	variablesToParametrize := rowsTitles.
-
-	rowsSeparation := 4.
-	self separation: rowsSeparation.
-
-	"Calculate table height"
-	numberOfRows := (rowsTitles size + 1).
-	recommendedHeight :=  self rowHeight * numberOfRows + (rowsSeparation * (numberOfRows + 1)) * 1.1.
-
-	"Calculate column widths"
-	inputColumnsTitles := #('Keyword' 'Parameter name').
-	columnWidths := self columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: inputColumnsTitles size.
-
-	"Calculate table width"
-	tableWidth := columnWidths sum + (self columnSeparation * (columnWidths size + 1)) * 1.1.
-
-	self layoutSpec: (LayoutSpec fixedWidth: tableWidth fixedHeight: recommendedHeight).
-
-	"Buid the columns titles row"
-	columnsTitlesRow := self buildColumnTitlesRowFor: inputColumnsTitles.
-	self addMorph: columnsTitlesRow layoutSpec: self rowsLayoutSpec.
-
-	"Build the input rows"
-	rowsTitles withIndexDo: [:aRowTitle :index | | aRow changeOrderModel keywordInputMorph inputMorphLayoutSpec parameternameInputMorph |
-		aRow := LayoutMorph newRow.
-		aRow color: self backgroundColor; separation: self columnSeparation.
-
-		aRow
-			addMorph: (StringMorph contents: aRowTitle)
-			layoutSpec: (LayoutSpec fixedWidth: (columnWidths at: 1)).
-
-		inputMorphLayoutSpec := LayoutSpec fixedWidth: (columnWidths at: 2) fixedHeight: self rowHeight.
-
-		keywordInputMorph := self buildInputMorphWith: (aRefactoringModel keywordModelOf: aRowTitle).
-		aRow addMorph: keywordInputMorph layoutSpec: inputMorphLayoutSpec.
-
-		parameternameInputMorph := self buildInputMorphWith: (aRefactoringModel parameterModelOf: aRowTitle).
-		aRow addMorph: parameternameInputMorph layoutSpec: inputMorphLayoutSpec.
-
-		self needsToReorderRows ifTrue: [
-			changeOrderModel := ChangeRowOrderButtonModel for: (rowsTitles size - (index - 1)) notifying: self.
-			rowModels addFirst: changeOrderModel.
-			changeOrderButtons := self buildChangeOrderButtonsWith: changeOrderModel.
-			aRow addMorph: changeOrderButtons layoutSpec: (LayoutSpec fixedWidth: (columnWidths last))].
-
-		self addMorph: aRow layoutSpec: self rowsLayoutSpec.
-	].! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'events' stamp: 'FGJ 2/9/2019 17:20:09'!
-rowWasMovedDown: aRowIndex
-
-	(rowModels at: aRowIndex) wasMovedDown.! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'events' stamp: 'FGJ 2/9/2019 17:20:24'!
-rowWasMovedUp: aRowIndex
-
-	(rowModels at: aRowIndex) wasMovedUp.! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 9/4/2020 10:56:45'!
-buildChangeOrderButtonsWith: aModel
-
-	| downButton layoutButtons upButton |
-
-	upButton := PluggableButtonMorph new.
-	upButton icon: Theme current goUpIcon.
-	upButton model: aModel.
-	upButton action: #moveUp.
-
-	downButton := PluggableButtonMorph new.
-	downButton icon: Theme current goDownIcon.
-	downButton model: aModel.
-	downButton action: #moveDown.
-
-	layoutButtons := LayoutMorph newRow.
-	layoutButtons axisEdgeWeight: #center; color: self backgroundColor.
-	layoutButtons addMorph: downButton; addMorph: upButton.
-
-	^layoutButtons! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 9/3/2020 14:35:28'!
-buildColumnTitlesRowFor: inputColumnsTitles
-
-	| columnsTitles row |
-
-	row := LayoutMorph newRow.
-	row color: self backgroundColor.
-	row separation: self columnSeparation.
-
-	columnsTitles := OrderedCollection newFrom: inputColumnsTitles.
-	columnsTitles addFirst: ''.
-	self needsToReorderRows ifTrue: [columnsTitles addLast: 'Change order'].
-	columnsTitles withIndexDo: [:aColumnTitle :columnIndex | | columnTitleLayoutSpec titleLayout |
-		titleLayout := LayoutMorph newRow.
-		titleLayout color: self backgroundColor .
-		titleLayout axisEdgeWeight: #center.
-		titleLayout addMorph: (StringMorph contents: aColumnTitle).
-		columnTitleLayoutSpec := LayoutSpec fixedWidth: (columnWidths at: columnIndex).
-		row
-			addMorph: titleLayout
-			layoutSpec: columnTitleLayoutSpec].
-
-	^row
-
-	! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 4/11/2019 13:09:23'!
-buildInputMorphWith: aModel
-
-	| inputMorph |
-
-	inputMorph := PreviewTextModelMorph withModel: aModel.
-	inputMorph textMorph previewModel: previewModel.
-	inputMorph textMorph focusMover: previewModel.
-	previewModel addFocusReceiver: inputMorph textMorph.
-
-	inputMorph hideScrollBarsIndefinitely.
-
-	^inputMorph! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'accessing' stamp: 'FGJ 2/14/2019 12:14:23'!
-columnSeparation
-
-	^4! !
-
-!MessageKeywordsAndParametersTable methodsFor: 'accessing' stamp: 'FGJ 9/3/2020 14:33:48'!
-rowHeight
-
-	^FontFamily defaultPointSize * 1.6! !
-
-!MessageKeywordsAndParametersTable class methodsFor: 'instance creation' stamp: 'FGJ 4/10/2019 18:05:01'!
-withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
-
-	^self newColumn withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel.
-
-	! !
-
-!TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:31:07'!
-focusMover: aFocusMover
-
-	focusMover := aFocusMover.! !
-
-!TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:28:05'!
-keyStroke: aKeyboardEvent
-
-	aKeyboardEvent isTab ifTrue: [focusMover moveFrom: self] ifFalse: [super keyStroke: aKeyboardEvent].! !
-
-!PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:37:10'!
-keyStroke: aKeyboardEvent
-
-	super keyStroke: aKeyboardEvent.
-
-	previewModel previewTextInputReceivedKeyStroke.! !
-
-!PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 10:40:05'!
-previewModel: aPreviewModel
-
-	previewModel := aPreviewModel.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 1/23/2019 14:29:26'!
 test01MethodObjectClassNameMustNotBeEmpty

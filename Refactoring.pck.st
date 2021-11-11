@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4532] on 10 May 2021 at 5:45:37 pm'!
-'Description Change StringMorph by LabelMorph'!
-!provides: 'Refactoring' 1 569!
+'From Cuis 5.0 [latest update: #4966] on 11 November 2021 at 4:03:43 pm'!
+'Description Change to innerTextMorph'!
+!provides: 'Refactoring' 1 570!
 !requires: 'BaseImageTests' 1 184 nil!
 SystemOrganization addCategory: 'Refactoring'!
 
@@ -721,7 +721,7 @@ withLabel: aLabel withWidth: aWidth withModel: aTextModel
 
 	! !
 
-!LabeledInput methodsFor: 'as yet unclassified' stamp: 'HAW 5/10/2021 17:43:51'!
+!LabeledInput methodsFor: 'as yet unclassified' stamp: 'HAW 11/3/2021 21:26:57'!
 withLabel: aLabel withWidth: aWidth withModel: aTextModel usingAs: focusMover
 
 	| labelLayoutSpec inputMorphLayoutSpec |
@@ -737,8 +737,8 @@ withLabel: aLabel withWidth: aWidth withModel: aTextModel usingAs: focusMover
 	self addMorph: labelMorph layoutSpec: labelLayoutSpec.
 
 	inputMorph := TabPassingTextModelMorph withModel: aTextModel.
-	inputMorph textMorph focusMover: focusMover.
-	focusMover addFocusReceiver: inputMorph textMorph.
+	inputMorph innerTextMorph focusMover: focusMover.
+	focusMover addFocusReceiver: inputMorph innerTextMorph.
 	inputMorph hideScrollBarsIndefinitely.
 	inputMorphLayoutSpec :=
 		LayoutSpec
@@ -998,15 +998,15 @@ buildColumnTitlesRowFor: inputColumnsTitles
 
 	! !
 
-!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 4/11/2019 13:09:23'!
+!MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'HAW 11/3/2021 21:27:12'!
 buildInputMorphWith: aModel
 
 	| inputMorph |
 
 	inputMorph := PreviewTextModelMorph withModel: aModel.
-	inputMorph textMorph previewModel: previewModel.
-	inputMorph textMorph focusMover: previewModel.
-	previewModel addFocusReceiver: inputMorph textMorph.
+	inputMorph innerTextMorph previewModel: previewModel.
+	inputMorph innerTextMorph focusMover: previewModel.
+	previewModel addFocusReceiver: inputMorph innerTextMorph.
 
 	inputMorph hideScrollBarsIndefinitely.
 

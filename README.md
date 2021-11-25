@@ -1,4 +1,7 @@
 # Cuis-Smalltalk-Refactoring
+All the refactorings that used to be in this package are now part of the Cuis image.
+The only refactorings left in this package are Extract to Method Object and Introduce Null Object.
+
 Implementation of refactoring for Cuis Smalltalk (https://github.com/Cuis-Smalltalk/Cuis-Smalltalk-Dev).
 
 ## Motivation

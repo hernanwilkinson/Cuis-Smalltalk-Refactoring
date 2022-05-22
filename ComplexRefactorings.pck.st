@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5173] on 21 May 2022 at 8:08:58 pm'!
-'Description Sync with PreferenceNG'!
-!provides: 'ComplexRefactorings' 1 1!
+'From Cuis 6.0 [latest update: #5173] on 21 May 2022 at 11:30:42 pm'!
+'Description Rename of #messageRefactoringMenuOptions'!
+!provides: 'ComplexRefactorings' 1 3!
 SystemOrganization addCategory: 'ComplexRefactorings'!
 
 
@@ -4140,8 +4140,8 @@ classRefactoringMenuOptions
 
 	}`! !
 
-!RefactoringPackageRefactoringMenues class methodsFor: 'as yet unclassified' stamp: 'HAW 11/12/2019 15:52:07'!
-messsageRefactoringMenuOptions
+!RefactoringPackageRefactoringMenues class methodsFor: 'as yet unclassified' stamp: 'HAW 5/21/2022 23:24:16'!
+messageRefactoringMenuOptions
 
 	^ `{
 			{

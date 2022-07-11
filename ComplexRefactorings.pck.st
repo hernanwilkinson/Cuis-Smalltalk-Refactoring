@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5173] on 21 May 2022 at 11:30:42 pm'!
-'Description Rename of #messageRefactoringMenuOptions'!
-!provides: 'ComplexRefactorings' 1 3!
+'From Cuis 6.0 [latest update: #5324] on 11 July 2022 at 8:01:57 pm'!
+'Description Sync with PreferenceSet'!
+!provides: 'ComplexRefactorings' 1 4!
 SystemOrganization addCategory: 'ComplexRefactorings'!
 
 
@@ -608,7 +608,7 @@ in: aCompiledMethod
 
 	! !
 
-!FormSection methodsFor: 'initialization' stamp: 'HAW 5/21/2022 19:25:31'!
+!FormSection methodsFor: 'initialization' stamp: 'HAW 7/11/2022 20:01:02'!
 initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
 
 	| titleLayoutSpec |
@@ -621,7 +621,7 @@ initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
 
 	titleMorph := LabelMorph 
 		contents: title
-		font: (PreferenceNG at: #windowTitleFont)
+		font: (Preferences at: #windowTitleFont)
 		emphasis: 1.
 	titleLayoutSpec := LayoutSpec
 		fixedWidth: titleMorph morphWidth
@@ -1468,10 +1468,10 @@ moveFrom: anInnerTextMorph
 
 	self world activeHand newKeyboardFocus: newFocusMorph.! !
 
-!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'HAW 5/21/2022 18:48:28'!
+!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'HAW 7/11/2022 20:01:22'!
 fontProportionalUnitOfReferenceForHeight
 
-	^(PreferenceNG at: #windowTitleFont) lineSpacing+1 ! !
+	^(Preferences at: #windowTitleFont) lineSpacing+1 ! !
 
 !ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/3/2020 14:32:55'!
 fontProportionalUnitOfReferenceForWidth

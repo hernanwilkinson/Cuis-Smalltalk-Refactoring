@@ -1,4 +1,4 @@
-'From Cuis 6.0 [latest update: #5324] on 11 July 2022 at 8:01:57 pm'!
+'From Cuis 6.0 [latest update: #5387] on 11 July 2022 at 8:19:12 pm'!
 'Description Sync with PreferenceSet'!
 !provides: 'ComplexRefactorings' 1 4!
 SystemOrganization addCategory: 'ComplexRefactorings'!
@@ -608,7 +608,7 @@ in: aCompiledMethod
 
 	! !
 
-!FormSection methodsFor: 'initialization' stamp: 'HAW 7/11/2022 20:01:02'!
+!FormSection methodsFor: 'initialization' stamp: 'HAW 7/11/2022 20:17:56'!
 initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
 
 	| titleLayoutSpec |
@@ -1468,7 +1468,7 @@ moveFrom: anInnerTextMorph
 
 	self world activeHand newKeyboardFocus: newFocusMorph.! !
 
-!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'HAW 7/11/2022 20:01:22'!
+!ExtractToMethodObjectForm class methodsFor: 'as yet unclassified' stamp: 'HAW 7/11/2022 20:18:15'!
 fontProportionalUnitOfReferenceForHeight
 
 	^(Preferences at: #windowTitleFont) lineSpacing+1 ! !

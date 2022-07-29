@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5387] on 11 July 2022 at 8:19:12 pm'!
-'Description Sync with PreferenceSet'!
-!provides: 'ComplexRefactorings' 1 4!
+'From Cuis 6.0 [latest update: #5401] on 29 July 2022 at 12:29:47 pm'!
+'Description New submenus options'!
+!provides: 'ComplexRefactorings' 1 5!
 SystemOrganization addCategory: 'ComplexRefactorings'!
 
 
@@ -244,6 +244,16 @@ Object subclass: #ChangeRowOrderButtonModel
 ChangeRowOrderButtonModel class
 	instanceVariableNames: ''!
 
+!classDefinition: #ComplexRefactoringsMenues category: 'ComplexRefactorings'!
+Object subclass: #ComplexRefactoringsMenues
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ComplexRefactorings'!
+!classDefinition: 'ComplexRefactoringsMenues class' category: 'ComplexRefactorings'!
+ComplexRefactoringsMenues class
+	instanceVariableNames: ''!
+
 !classDefinition: #ExtractToMethodObjectRequest category: 'ComplexRefactorings'!
 Object subclass: #ExtractToMethodObjectRequest
 	instanceVariableNames: 'methodObjectClassNameModel methodObjectCategoryModel methodObjectSuperclassNameModel methodObjectEvaluationMessageSelectorModel variableToParametrizeToInstVarNameModel instanceCreationMessageModels'
@@ -302,16 +312,6 @@ Object subclass: #MessageKeywordsAndParametersModel
 	category: 'ComplexRefactorings'!
 !classDefinition: 'MessageKeywordsAndParametersModel class' category: 'ComplexRefactorings'!
 MessageKeywordsAndParametersModel class
-	instanceVariableNames: ''!
-
-!classDefinition: #RefactoringPackageRefactoringMenues category: 'ComplexRefactorings'!
-Object subclass: #RefactoringPackageRefactoringMenues
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ComplexRefactorings'!
-!classDefinition: 'RefactoringPackageRefactoringMenues class' category: 'ComplexRefactorings'!
-RefactoringPackageRefactoringMenues class
 	instanceVariableNames: ''!
 
 !classDefinition: #ReplaceIfNilWithPolymorphismParameters category: 'ComplexRefactorings'!
@@ -3632,6 +3632,36 @@ for: aRowIndex notifying: aTableModel
 
 	^self new for: aRowIndex notifying: aTableModel! !
 
+!ComplexRefactoringsMenues class methodsFor: 'browser menues' stamp: 'HAW 7/28/2022 18:29:23'!
+classListMenuOptions
+
+	^ `{
+			{
+				#submenuOf -> RefactoringMenues refactoringsLabel.
+				#itemGroup 	-> 		40.
+				#itemOrder 		-> 		10.
+				#label 			-> 		'introduce null object'.
+				#selector 		-> 		#introduceNullObject.
+				#icon 			-> 		#newFolderIcon
+			} asDictionary.
+
+	}`! !
+
+!ComplexRefactoringsMenues class methodsFor: 'browser menues' stamp: 'HAW 7/28/2022 18:34:16'!
+messageListMenuOptions
+
+	^ `{
+			{
+				#submenuOf -> RefactoringMenues refactoringsLabel.
+				#itemGroup 	-> 		30.
+				#itemOrder 		-> 		10.
+				#label 			-> 		'extract to method object'.
+				#selector 		-> 		#extractMethodToMethodObject.
+				#icon 			-> 		#newFolderIcon
+			} asDictionary.
+
+	}`! !
+
 !ExtractToMethodObjectRequest methodsFor: 'accessing' stamp: 'FGJ 2/17/2019 16:22:39'!
 keywordsDefinitions
 
@@ -4125,34 +4155,6 @@ for: someVariablesToExtract
 initializedForSelector
 
 	^self new initializeForSelector! !
-
-!RefactoringPackageRefactoringMenues class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/26/2019 11:30:10'!
-classRefactoringMenuOptions
-
-	^ `{
-			{
-				#itemGroup 	-> 		10.
-				#itemOrder 		-> 		50.
-				#label 			-> 		'introduce null object'.
-				#selector 		-> 		#introduceNullObject.
-				#icon 			-> 		#newFolderIcon
-			} asDictionary.
-
-	}`! !
-
-!RefactoringPackageRefactoringMenues class methodsFor: 'as yet unclassified' stamp: 'HAW 5/21/2022 23:24:16'!
-messageRefactoringMenuOptions
-
-	^ `{
-			{
-				#itemGroup 	-> 		10.
-				#itemOrder 		-> 		60.
-				#label 			-> 		'extract to method object'.
-				#selector 		-> 		#extractMethodToMethodObject.
-				#icon 			-> 		#newFolderIcon
-			} asDictionary.
-
-	}`! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'initialization' stamp: 'FGJ 3/18/2019 16:28:14'!
 initializeForIfNilMessageSending: aMessageNode

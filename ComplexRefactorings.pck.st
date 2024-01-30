@@ -1,460 +1,460 @@
-'From Cuis 6.0 [latest update: #5950] on 28 July 2023 at 4:06:19 pm'!
-'Description Use of notCompiledMethodNode - Many improvements in code - Requiered BaseImageTests'!
-!provides: 'ComplexRefactorings' 1 7!
+'From Cuis6.3 [latest update: #6200] on 30 January 2024 at 4:52:08 pm'!
+'Description Aligment with Cuis 6200'!
+!provides: 'ComplexRefactorings' 1 8!
 !requires: 'BaseImageTests' 1 365 nil!
-SystemOrganization addCategory: 'ComplexRefactorings'!
-SystemOrganization addCategory: 'ComplexRefactorings-Tests'!
-SystemOrganization addCategory: 'ComplexRefactorings-Model'!
-SystemOrganization addCategory: 'ComplexRefactorings-UI'!
+SystemOrganization addCategory: #ComplexRefactorings!
+SystemOrganization addCategory: #'ComplexRefactorings-Tests'!
+SystemOrganization addCategory: #'ComplexRefactorings-Model'!
+SystemOrganization addCategory: #'ComplexRefactorings-UI'!
 
 
-!classDefinition: #EntranceExitBlockEnumerator category: 'ComplexRefactorings-Model'!
+!classDefinition: #EntranceExitBlockEnumerator category: #'ComplexRefactorings-Model'!
 ParseNodeEnumerator subclass: #EntranceExitBlockEnumerator
 	instanceVariableNames: 'exitBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'EntranceExitBlockEnumerator class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'EntranceExitBlockEnumerator class' category: #'ComplexRefactorings-Model'!
 EntranceExitBlockEnumerator class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageSendingBlocksVariablesToExtractFinder category: 'ComplexRefactorings-Model'!
+!classDefinition: #MessageSendingBlocksVariablesToExtractFinder category: #'ComplexRefactorings-Model'!
 ParseNodeVisitor subclass: #MessageSendingBlocksVariablesToExtractFinder
 	instanceVariableNames: 'messageNode variablesToExtract currentScopeTemporaries variableToExclude'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'MessageSendingBlocksVariablesToExtractFinder class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'MessageSendingBlocksVariablesToExtractFinder class' category: #'ComplexRefactorings-Model'!
 MessageSendingBlocksVariablesToExtractFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToExtractFinder category: 'ComplexRefactorings-Model'!
+!classDefinition: #VariablesToExtractFinder category: #'ComplexRefactorings-Model'!
 ParseNodeVisitor subclass: #VariablesToExtractFinder
 	instanceVariableNames: 'methodNode variablesToExtract'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'VariablesToExtractFinder class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'VariablesToExtractFinder class' category: #'ComplexRefactorings-Model'!
 VariablesToExtractFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #FormSection category: 'ComplexRefactorings-UI'!
+!classDefinition: #FormSection category: #'ComplexRefactorings-UI'!
 LayoutMorph subclass: #FormSection
 	instanceVariableNames: 'title borderMorph titleContainer titleMorph titleContainerLayoutSpec explanation explanationMorph explanationContainer explanationContainerLayoutSpec'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'FormSection class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'FormSection class' category: #'ComplexRefactorings-UI'!
 FormSection class
 	instanceVariableNames: ''!
 
-!classDefinition: #LabeledInput category: 'ComplexRefactorings-UI'!
+!classDefinition: #LabeledInput category: #'ComplexRefactorings-UI'!
 LayoutMorph subclass: #LabeledInput
 	instanceVariableNames: 'labelMorph inputMorph'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'LabeledInput class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'LabeledInput class' category: #'ComplexRefactorings-UI'!
 LabeledInput class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageKeywordsAndParametersTable category: 'ComplexRefactorings-UI'!
+!classDefinition: #MessageKeywordsAndParametersTable category: #'ComplexRefactorings-UI'!
 LayoutMorph subclass: #MessageKeywordsAndParametersTable
 	instanceVariableNames: 'rowModels previewModel backgroundColor refactoringModel columnWidths variablesToParametrize'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'MessageKeywordsAndParametersTable class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'MessageKeywordsAndParametersTable class' category: #'ComplexRefactorings-UI'!
 MessageKeywordsAndParametersTable class
 	instanceVariableNames: ''!
 
-!classDefinition: #TabPassingInnerTextMorph category: 'ComplexRefactorings-UI'!
+!classDefinition: #TabPassingInnerTextMorph category: #'ComplexRefactorings-UI'!
 InnerTextMorph subclass: #TabPassingInnerTextMorph
 	instanceVariableNames: 'focusMover'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'TabPassingInnerTextMorph class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'TabPassingInnerTextMorph class' category: #'ComplexRefactorings-UI'!
 TabPassingInnerTextMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreviewInnerTextMorph category: 'ComplexRefactorings-UI'!
+!classDefinition: #PreviewInnerTextMorph category: #'ComplexRefactorings-UI'!
 TabPassingInnerTextMorph subclass: #PreviewInnerTextMorph
 	instanceVariableNames: 'previewModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'PreviewInnerTextMorph class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'PreviewInnerTextMorph class' category: #'ComplexRefactorings-UI'!
 PreviewInnerTextMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #IndependentlyColoredButton category: 'ComplexRefactorings-UI'!
+!classDefinition: #IndependentlyColoredButton category: #'ComplexRefactorings-UI'!
 PluggableButtonMorph subclass: #IndependentlyColoredButton
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'IndependentlyColoredButton class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'IndependentlyColoredButton class' category: #'ComplexRefactorings-UI'!
 IndependentlyColoredButton class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImmutableTextModelMorph category: 'ComplexRefactorings-UI'!
+!classDefinition: #ImmutableTextModelMorph category: #'ComplexRefactorings-UI'!
 TextModelMorph subclass: #ImmutableTextModelMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'ImmutableTextModelMorph class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'ImmutableTextModelMorph class' category: #'ComplexRefactorings-UI'!
 ImmutableTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreviewTextModelMorph category: 'ComplexRefactorings-UI'!
+!classDefinition: #PreviewTextModelMorph category: #'ComplexRefactorings-UI'!
 TextModelMorph subclass: #PreviewTextModelMorph
 	instanceVariableNames: 'previewModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'PreviewTextModelMorph class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'PreviewTextModelMorph class' category: #'ComplexRefactorings-UI'!
 PreviewTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #TabPassingTextModelMorph category: 'ComplexRefactorings-UI'!
+!classDefinition: #TabPassingTextModelMorph category: #'ComplexRefactorings-UI'!
 TextModelMorph subclass: #TabPassingTextModelMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'TabPassingTextModelMorph class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'TabPassingTextModelMorph class' category: #'ComplexRefactorings-UI'!
 TabPassingTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #ColoredScrollPane category: 'ComplexRefactorings-UI'!
+!classDefinition: #ColoredScrollPane category: #'ComplexRefactorings-UI'!
 PluggableScrollPane subclass: #ColoredScrollPane
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'ColoredScrollPane class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'ColoredScrollPane class' category: #'ComplexRefactorings-UI'!
 ColoredScrollPane class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectForm category: 'ComplexRefactorings-UI'!
+!classDefinition: #ExtractToMethodObjectForm category: #'ComplexRefactorings-UI'!
 SystemWindow subclass: #ExtractToMethodObjectForm
 	instanceVariableNames: 'scrollPane formLayout inputTable preview variablesToParametrize extractToMethodObjectRequest discardEdits firstTimeBuild initialExtent focusMorphs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'ExtractToMethodObjectForm class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'ExtractToMethodObjectForm class' category: #'ComplexRefactorings-UI'!
 ExtractToMethodObjectForm class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectForm category: 'ComplexRefactorings-UI'!
+!classDefinition: #IntroduceNullObjectForm category: #'ComplexRefactorings-UI'!
 SystemWindow subclass: #IntroduceNullObjectForm
 	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms discardEdits firstTimeBuild hierarchySection messageSendingListSection actionButtonsSection ifNilChecks focusMorphs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'IntroduceNullObjectForm class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'IntroduceNullObjectForm class' category: #'ComplexRefactorings-UI'!
 IntroduceNullObjectForm class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectTest category: 'ComplexRefactorings-Tests'!
+!classDefinition: #ExtractToMethodObjectTest category: #'ComplexRefactorings-Tests'!
 RefactoringTest subclass: #ExtractToMethodObjectTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Tests'!
-!classDefinition: 'ExtractToMethodObjectTest class' category: 'ComplexRefactorings-Tests'!
+!classDefinition: 'ExtractToMethodObjectTest class' category: #'ComplexRefactorings-Tests'!
 ExtractToMethodObjectTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilChecksFinderTest category: 'ComplexRefactorings-Tests'!
+!classDefinition: #IfNilChecksFinderTest category: #'ComplexRefactorings-Tests'!
 RefactoringTest subclass: #IfNilChecksFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Tests'!
-!classDefinition: 'IfNilChecksFinderTest class' category: 'ComplexRefactorings-Tests'!
+!classDefinition: 'IfNilChecksFinderTest class' category: #'ComplexRefactorings-Tests'!
 IfNilChecksFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectTest category: 'ComplexRefactorings-Tests'!
+!classDefinition: #IntroduceNullObjectTest category: #'ComplexRefactorings-Tests'!
 RefactoringTest subclass: #IntroduceNullObjectTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Tests'!
-!classDefinition: 'IntroduceNullObjectTest class' category: 'ComplexRefactorings-Tests'!
+!classDefinition: 'IntroduceNullObjectTest class' category: #'ComplexRefactorings-Tests'!
 IntroduceNullObjectTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageSendingBlocksVariablesToExtractFinderTest category: 'ComplexRefactorings-Tests'!
+!classDefinition: #MessageSendingBlocksVariablesToExtractFinderTest category: #'ComplexRefactorings-Tests'!
 RefactoringTest subclass: #MessageSendingBlocksVariablesToExtractFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Tests'!
-!classDefinition: 'MessageSendingBlocksVariablesToExtractFinderTest class' category: 'ComplexRefactorings-Tests'!
+!classDefinition: 'MessageSendingBlocksVariablesToExtractFinderTest class' category: #'ComplexRefactorings-Tests'!
 MessageSendingBlocksVariablesToExtractFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #NullObjectHierarchyCreatorTest category: 'ComplexRefactorings-Tests'!
+!classDefinition: #NullObjectHierarchyCreatorTest category: #'ComplexRefactorings-Tests'!
 RefactoringTest subclass: #NullObjectHierarchyCreatorTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Tests'!
-!classDefinition: 'NullObjectHierarchyCreatorTest class' category: 'ComplexRefactorings-Tests'!
+!classDefinition: 'NullObjectHierarchyCreatorTest class' category: #'ComplexRefactorings-Tests'!
 NullObjectHierarchyCreatorTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: 'ComplexRefactorings-Tests'!
+!classDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: #'ComplexRefactorings-Tests'!
 RefactoringTest subclass: #ReplaceIfNilWithPolymorphismParametersTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Tests'!
-!classDefinition: 'ReplaceIfNilWithPolymorphismParametersTest class' category: 'ComplexRefactorings-Tests'!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParametersTest class' category: #'ComplexRefactorings-Tests'!
 ReplaceIfNilWithPolymorphismParametersTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReturnStatementAdderTest category: 'ComplexRefactorings-Tests'!
+!classDefinition: #ReturnStatementAdderTest category: #'ComplexRefactorings-Tests'!
 RefactoringTest subclass: #ReturnStatementAdderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Tests'!
-!classDefinition: 'ReturnStatementAdderTest class' category: 'ComplexRefactorings-Tests'!
+!classDefinition: 'ReturnStatementAdderTest class' category: #'ComplexRefactorings-Tests'!
 ReturnStatementAdderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariableToParametrizeKeywordDefinitionTest category: 'ComplexRefactorings-Tests'!
+!classDefinition: #VariableToParametrizeKeywordDefinitionTest category: #'ComplexRefactorings-Tests'!
 RefactoringTest subclass: #VariableToParametrizeKeywordDefinitionTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Tests'!
-!classDefinition: 'VariableToParametrizeKeywordDefinitionTest class' category: 'ComplexRefactorings-Tests'!
+!classDefinition: 'VariableToParametrizeKeywordDefinitionTest class' category: #'ComplexRefactorings-Tests'!
 VariableToParametrizeKeywordDefinitionTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToExtractFinderTest category: 'ComplexRefactorings-Tests'!
+!classDefinition: #VariablesToExtractFinderTest category: #'ComplexRefactorings-Tests'!
 RefactoringTest subclass: #VariablesToExtractFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Tests'!
-!classDefinition: 'VariablesToExtractFinderTest class' category: 'ComplexRefactorings-Tests'!
+!classDefinition: 'VariablesToExtractFinderTest class' category: #'ComplexRefactorings-Tests'!
 VariablesToExtractFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: 'ComplexRefactorings-Tests'!
+!classDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: #'ComplexRefactorings-Tests'!
 RefactoringTest subclass: #VariablesToParametrizeKeywordsDefinitionsTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Tests'!
-!classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: 'ComplexRefactorings-Tests'!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: #'ComplexRefactorings-Tests'!
 VariablesToParametrizeKeywordsDefinitionsTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #FormsClassNameCompleter category: 'ComplexRefactorings-UI'!
+!classDefinition: #FormsClassNameCompleter category: #'ComplexRefactorings-UI'!
 ClassNameCompleter subclass: #FormsClassNameCompleter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'FormsClassNameCompleter class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'FormsClassNameCompleter class' category: #'ComplexRefactorings-UI'!
 FormsClassNameCompleter class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObject category: 'ComplexRefactorings-Model'!
+!classDefinition: #ExtractToMethodObject category: #'ComplexRefactorings-Model'!
 Refactoring subclass: #ExtractToMethodObject
 	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract methodVariableNamesToInstanceVariableNames methodObjectInstanceVariables keywordsDefinitions methodObjectEvaluationSelector'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'ExtractToMethodObject class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'ExtractToMethodObject class' category: #'ComplexRefactorings-Model'!
 ExtractToMethodObject class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObject category: 'ComplexRefactorings-Model'!
+!classDefinition: #IntroduceNullObject category: #'ComplexRefactorings-Model'!
 Refactoring subclass: #IntroduceNullObject
 	instanceVariableNames: 'instVar classToRefactor concreteClass nullClass replacementParameters'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'IntroduceNullObject class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'IntroduceNullObject class' category: #'ComplexRefactorings-Model'!
 IntroduceNullObject class
 	instanceVariableNames: ''!
 
-!classDefinition: #NullObjectHierarchyCreator category: 'ComplexRefactorings-Model'!
+!classDefinition: #NullObjectHierarchyCreator category: #'ComplexRefactorings-Model'!
 Refactoring subclass: #NullObjectHierarchyCreator
 	instanceVariableNames: 'concreteClass abstractClassName nullObjectClassName category'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'NullObjectHierarchyCreator class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'NullObjectHierarchyCreator class' category: #'ComplexRefactorings-Model'!
 NullObjectHierarchyCreator class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectApplier category: 'ComplexRefactorings-UI'!
+!classDefinition: #ExtractToMethodObjectApplier category: #'ComplexRefactorings-UI'!
 RefactoringApplier subclass: #ExtractToMethodObjectApplier
 	instanceVariableNames: 'panel compiledMethodToExtract extractToMethodObjectRequest'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'ExtractToMethodObjectApplier class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'ExtractToMethodObjectApplier class' category: #'ComplexRefactorings-UI'!
 ExtractToMethodObjectApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectApplier category: 'ComplexRefactorings-UI'!
+!classDefinition: #IntroduceNullObjectApplier category: #'ComplexRefactorings-UI'!
 RefactoringApplier subclass: #IntroduceNullObjectApplier
 	instanceVariableNames: 'classToRefactor instanceVariable form done ifNilChecks introduceNullObjectRequest'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'IntroduceNullObjectApplier class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'IntroduceNullObjectApplier class' category: #'ComplexRefactorings-UI'!
 IntroduceNullObjectApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #ArgumentsAndReturnsFinder category: 'ComplexRefactorings-Model'!
+!classDefinition: #ArgumentsAndReturnsFinder category: #'ComplexRefactorings-Model'!
 Object subclass: #ArgumentsAndReturnsFinder
 	instanceVariableNames: 'methodNode ranges instVar'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'ArgumentsAndReturnsFinder class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'ArgumentsAndReturnsFinder class' category: #'ComplexRefactorings-Model'!
 ArgumentsAndReturnsFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #ChangeRowOrderButtonModel category: 'ComplexRefactorings-Model'!
+!classDefinition: #ChangeRowOrderButtonModel category: #'ComplexRefactorings-Model'!
 Object subclass: #ChangeRowOrderButtonModel
 	instanceVariableNames: 'tableModel rowPosition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'ChangeRowOrderButtonModel class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'ChangeRowOrderButtonModel class' category: #'ComplexRefactorings-Model'!
 ChangeRowOrderButtonModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilCheck category: 'ComplexRefactorings-Model'!
+!classDefinition: #IfNilCheck category: #'ComplexRefactorings-Model'!
 Object subclass: #IfNilCheck
 	instanceVariableNames: 'messageNode index methodNode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'IfNilCheck class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'IfNilCheck class' category: #'ComplexRefactorings-Model'!
 IfNilCheck class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilChecksFinder category: 'ComplexRefactorings-Model'!
+!classDefinition: #IfNilChecksFinder category: #'ComplexRefactorings-Model'!
 Object subclass: #IfNilChecksFinder
 	instanceVariableNames: 'contextClass instanceVariable'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'IfNilChecksFinder class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'IfNilChecksFinder class' category: #'ComplexRefactorings-Model'!
 IfNilChecksFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilMessageListModel category: 'ComplexRefactorings-Model'!
+!classDefinition: #IfNilMessageListModel category: #'ComplexRefactorings-Model'!
 Object subclass: #IfNilMessageListModel
 	instanceVariableNames: 'listIndex ifNilChecks introduceNullObjectForm'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'IfNilMessageListModel class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'IfNilMessageListModel class' category: #'ComplexRefactorings-Model'!
 IfNilMessageListModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageKeywordsAndParametersModel category: 'ComplexRefactorings-Model'!
+!classDefinition: #MessageKeywordsAndParametersModel category: #'ComplexRefactorings-Model'!
 Object subclass: #MessageKeywordsAndParametersModel
 	instanceVariableNames: 'models selectorModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'MessageKeywordsAndParametersModel class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'MessageKeywordsAndParametersModel class' category: #'ComplexRefactorings-Model'!
 MessageKeywordsAndParametersModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: 'ComplexRefactorings-Model'!
+!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: #'ComplexRefactorings-Model'!
 Object subclass: #ReplaceIfNilWithPolymorphismParameters
 	instanceVariableNames: 'messageNode methodNode definitions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: #'ComplexRefactorings-Model'!
 ReplaceIfNilWithPolymorphismParameters class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReturnStatementAdder category: 'ComplexRefactorings-Model'!
+!classDefinition: #ReturnStatementAdder category: #'ComplexRefactorings-Model'!
 Object subclass: #ReturnStatementAdder
 	instanceVariableNames: 'methodNode compiledMethod'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'ReturnStatementAdder class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'ReturnStatementAdder class' category: #'ComplexRefactorings-Model'!
 ReturnStatementAdder class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariableToParametrizeKeywordDefinition category: 'ComplexRefactorings-Model'!
+!classDefinition: #VariableToParametrizeKeywordDefinition category: #'ComplexRefactorings-Model'!
 Object subclass: #VariableToParametrizeKeywordDefinition
 	instanceVariableNames: 'variableName keyword parameterName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: #'ComplexRefactorings-Model'!
 VariableToParametrizeKeywordDefinition class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: 'ComplexRefactorings-Model'!
+!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: #'ComplexRefactorings-Model'!
 Object subclass: #VariablesToParametrizeKeywordsDefinitions
 	instanceVariableNames: 'selector definitions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-Model'!
-!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: 'ComplexRefactorings-Model'!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: #'ComplexRefactorings-Model'!
 VariablesToParametrizeKeywordsDefinitions class
 	instanceVariableNames: ''!
 
-!classDefinition: #AutocompletedTextProvider category: 'ComplexRefactorings-UI'!
+!classDefinition: #AutocompletedTextProvider category: #'ComplexRefactorings-UI'!
 Object subclass: #AutocompletedTextProvider
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'AutocompletedTextProvider class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'AutocompletedTextProvider class' category: #'ComplexRefactorings-UI'!
 AutocompletedTextProvider class
 	instanceVariableNames: ''!
 
-!classDefinition: #ComplexRefactoringsMenues category: 'ComplexRefactorings-UI'!
+!classDefinition: #ComplexRefactoringsMenues category: #'ComplexRefactorings-UI'!
 Object subclass: #ComplexRefactoringsMenues
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'ComplexRefactoringsMenues class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'ComplexRefactoringsMenues class' category: #'ComplexRefactorings-UI'!
 ComplexRefactoringsMenues class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectRequest category: 'ComplexRefactorings-UI'!
+!classDefinition: #ExtractToMethodObjectRequest category: #'ComplexRefactorings-UI'!
 Object subclass: #ExtractToMethodObjectRequest
 	instanceVariableNames: 'methodObjectClassNameModel methodObjectCategoryModel methodObjectSuperclassNameModel methodObjectEvaluationMessageSelectorModel variableToParametrizeToInstVarNameModel instanceCreationMessageModels'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'ExtractToMethodObjectRequest class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'ExtractToMethodObjectRequest class' category: #'ComplexRefactorings-UI'!
 ExtractToMethodObjectRequest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectRequest category: 'ComplexRefactorings-UI'!
+!classDefinition: #IntroduceNullObjectRequest category: #'ComplexRefactorings-UI'!
 Object subclass: #IntroduceNullObjectRequest
 	instanceVariableNames: 'nullClassNameModel concreteClassNameModel messageKeywordsAndParametersModels'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'IntroduceNullObjectRequest class' category: 'ComplexRefactorings-UI'!
+!classDefinition: 'IntroduceNullObjectRequest class' category: #'ComplexRefactorings-UI'!
 IntroduceNullObjectRequest class
 	instanceVariableNames: ''!
 
@@ -6598,12 +6598,12 @@ methodHeaderFrom: aCompiledMethod
 	^methodToExtractSourceCode first: headerLength.
 	! !
 
-!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'HAW 7/27/2023 18:42:54'!
+!ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'HAW 1/30/2024 13:26:47'!
 methodToExtractBodySourceCode
 
 	| aStream methodBodyAsBlock |
 
-	aStream := RWBinaryOrTextStream initializeWith: ''.
+	aStream := WriteStream with: String new.
 	methodBodyAsBlock := methodToExtract notOptimizedMethodNode block.
 	methodBodyAsBlock printOn: aStream indent: 0.
 	^self removeBlockEnclosingCharacters: aStream contents.! !
@@ -8672,12 +8672,12 @@ refactoringErrorClass
 
 	^RefactoringError! !
 
-!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/29/2019 15:15:51'!
+!ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'HAW 1/30/2024 13:26:36'!
 sourceOfMessageNode: aMessageNode
 
 	| stream |
 
-	stream := RWBinaryOrTextStream with: Array new.
+	stream := WriteStream with: String new.
 	aMessageNode printOn: stream indent: 0.
 
 	^stream contents asString.! !

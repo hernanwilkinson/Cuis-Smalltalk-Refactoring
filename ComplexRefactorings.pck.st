@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6578] on 10 August 2024 at 4:31:50 pm'!
-'Description Udated to Cuis 7.1'!
-!provides: 'ComplexRefactorings' 1 9!
+'From Cuis7.3 [latest update: #6960] on 31 December 2024 at 7:04:49 pm'!
+'Description Udated to Cuis 7.3 '!
+!provides: 'ComplexRefactorings' 1 10!
 !requires: 'BaseImageTests' 1 365 nil!
 SystemOrganization addCategory: #ComplexRefactorings!
 SystemOrganization addCategory: #'ComplexRefactorings-Tests'!
@@ -208,26 +208,6 @@ LayoutMorph subclass: #MessageKeywordsAndParametersTable
 MessageKeywordsAndParametersTable class
 	instanceVariableNames: ''!
 
-!classDefinition: #TabPassingInnerTextMorph category: #'ComplexRefactorings-UI'!
-InnerTextMorph subclass: #TabPassingInnerTextMorph
-	instanceVariableNames: 'focusMover'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'TabPassingInnerTextMorph class' category: #'ComplexRefactorings-UI'!
-TabPassingInnerTextMorph class
-	instanceVariableNames: ''!
-
-!classDefinition: #PreviewInnerTextMorph category: #'ComplexRefactorings-UI'!
-TabPassingInnerTextMorph subclass: #PreviewInnerTextMorph
-	instanceVariableNames: 'previewModel'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ComplexRefactorings-UI'!
-!classDefinition: 'PreviewInnerTextMorph class' category: #'ComplexRefactorings-UI'!
-PreviewInnerTextMorph class
-	instanceVariableNames: ''!
-
 !classDefinition: #IndependentlyColoredButton category: #'ComplexRefactorings-UI'!
 PluggableButtonMorph subclass: #IndependentlyColoredButton
 	instanceVariableNames: ''
@@ -296,6 +276,26 @@ SystemWindow subclass: #IntroduceNullObjectForm
 	category: 'ComplexRefactorings-UI'!
 !classDefinition: 'IntroduceNullObjectForm class' category: #'ComplexRefactorings-UI'!
 IntroduceNullObjectForm class
+	instanceVariableNames: ''!
+
+!classDefinition: #TabPassingInnerTextMorph category: #'ComplexRefactorings-UI'!
+InnerTextMorph subclass: #TabPassingInnerTextMorph
+	instanceVariableNames: 'focusMover'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ComplexRefactorings-UI'!
+!classDefinition: 'TabPassingInnerTextMorph class' category: #'ComplexRefactorings-UI'!
+TabPassingInnerTextMorph class
+	instanceVariableNames: ''!
+
+!classDefinition: #PreviewInnerTextMorph category: #'ComplexRefactorings-UI'!
+TabPassingInnerTextMorph subclass: #PreviewInnerTextMorph
+	instanceVariableNames: 'previewModel'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ComplexRefactorings-UI'!
+!classDefinition: 'PreviewInnerTextMorph class' category: #'ComplexRefactorings-UI'!
+PreviewInnerTextMorph class
 	instanceVariableNames: ''!
 
 !classDefinition: #FormsClassNameCompleter category: #'ComplexRefactorings-UI'!
@@ -1747,28 +1747,19 @@ autoCompleterClassFor: aTextGetter
 
 	^FormsClassNameCompleter! !
 
-!ComplexRefactoringsMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'jmv 7/30/2024 12:27:08'!
+!ComplexRefactoringsMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 12/31/2024 18:50:23'!
 classListMenuSpec
-	"
-	BrowserWindow at: #classListMenuSpec registerMenuAndShortcutsSpecProvider:
-		(MessageSend receiver: ComplexRefactoringsMenues selector: #classListMenuSpec).
-	Do this in ComplexRefactoringsMenues class >> initialize
-	"
+	
 	^#(
 		#(1120 		'-----')
-		#(1121		'introduce null object' 					nil 		window 			introduceNullObject 						newFolderIcon)
+		#(1121		'Introduce Null Object' 					nil 		window 			introduceNullObject 						newFolderIcon)
 	)! !
 
-!ComplexRefactoringsMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'jmv 7/30/2024 12:25:30'!
+!ComplexRefactoringsMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 12/31/2024 18:57:49'!
 messageListMenuSpec
-	"
-	BrowserWindow at: #messageListMenuSpec registerMenuAndShortcutsSpecProvider:
-		(MessageSend receiver: ComplexRefactoringsMenues selector: #messageListMenuSpec).
-	Do this in ComplexRefactoringsMenues class >> initialize
-	"
+
 	^#(
-		#(1120 		'-----')
-		#(1121		'extract to method object' 					nil 		window 			extractMethodToMethodObject 						newFolderIcon)
+		#(1077		'Extract to Method Object' 					nil 		window 			extractMethodToMethodObject 						newFolderIcon)
 	)! !
 
 !ComplexRefactoringsMenues class methodsFor: 'initialization' stamp: 'jmv 7/30/2024 14:53:38'!
@@ -2438,28 +2429,6 @@ withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefac
 	^self newColumn withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel.
 
 	! !
-
-!TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:31:07'!
-focusMover: aFocusMover
-
-	focusMover := aFocusMover.! !
-
-!TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:28:05'!
-keyStroke: aKeyboardEvent
-
-	aKeyboardEvent isTab ifTrue: [focusMover moveFrom: self] ifFalse: [super keyStroke: aKeyboardEvent].! !
-
-!PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:37:10'!
-keyStroke: aKeyboardEvent
-
-	super keyStroke: aKeyboardEvent.
-
-	previewModel previewTextInputReceivedKeyStroke.! !
-
-!PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 10:40:05'!
-previewModel: aPreviewModel
-
-	previewModel := aPreviewModel.! !
 
 !IndependentlyColoredButton methodsFor: 'as yet unclassified' stamp: 'FGJ 2/13/2019 12:38:30'!
 adoptWidgetsColor: paneColor! !
@@ -3379,6 +3348,28 @@ open: aModel label: aString
 withModel: aModel
 
 	^self new initializeWithModel: aModel! !
+
+!TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:31:07'!
+focusMover: aFocusMover
+
+	focusMover := aFocusMover.! !
+
+!TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 4/11/2019 12:28:05'!
+keyStroke: aKeyboardEvent
+
+	aKeyboardEvent isTab ifTrue: [focusMover moveFrom: self] ifFalse: [super keyStroke: aKeyboardEvent].! !
+
+!PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/14/2019 11:37:10'!
+keyStroke: aKeyboardEvent
+
+	super keyStroke: aKeyboardEvent.
+
+	previewModel previewTextInputReceivedKeyStroke.! !
+
+!PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 2/11/2019 10:40:05'!
+previewModel: aPreviewModel
+
+	previewModel := aPreviewModel.! !
 
 !FormsClassNameCompleter methodsFor: 'as yet unclassified' stamp: 'FGJ 9/6/2020 16:33:55'!
 selectedEntryFormatted

@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7095] on 28 April 2025 at 5:38:01 pm'!
-'Description Initial Version'!
-!provides: 'ExtraRefactoringsLiveTyping' 1 0!
+'From Cuis7.3 [latest update: #7095] on 28 April 2025 at 6:08:42 pm'!
+'Description Fix loading'!
+!provides: 'ExtraRefactoringsLiveTyping' 1 1!
 !requires: 'ExtraRefactorings' 1 0 nil!
 !requires: 'LiveTyping' 1 128 nil!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTyping-ExtractParameterObject-Model'!
@@ -103,10 +103,10 @@ scopeOptionLabels
 
 	^super scopeOptionLabels, self actualScopeOptionLabels! !
 
-!ExtractParameterObjectWithActualScopeApplier class methodsFor: 'as yet unclassified' stamp: 'HAW 3/23/2025 13:12:48'!
+!ExtractParameterObjectWithActualScopeApplier class methodsFor: 'as yet unclassified' stamp: 'HAW 4/28/2025 18:07:37'!
 initialize
 	
-	RefactoringApplier registerExtractParameterObjectApplier: ExtractParameterObjectWithActualScopeApplier! !
+	RefactoringApplier registerExtractParameterObjectApplier: self! !
 
 !MoveInstanceVariableWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 6/17/2024 15:53:03'!
 initialAnswerForInstanceVariable: anAccessingThroughinstanceVariableName in: aSourceClass 
@@ -116,6 +116,11 @@ initialAnswerForInstanceVariable: anAccessingThroughinstanceVariableName in: aSo
 	accessingThroughinstanceVariableName ifNil: [^''].
 	liveTypingTypes := classToRefactor commonSupertypeOfInstanceVariableNamed: accessingThroughinstanceVariableName ifNoTypes: [^''].
 	^liveTypingTypes name asString ! !
+
+!MoveInstanceVariableWithActualScopeApplier class methodsFor: 'as yet unclassified' stamp: 'HAW 4/28/2025 18:07:50'!
+initialize
+	
+	RefactoringApplier registerMoveInstanceVariableApplier: self ! !
 
 !MoveMethodWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 4/28/2025 16:51:51'!
 initialAnswerForInstanceVariable: anAccessingThroughVariableName in: aSourceClass 
@@ -131,10 +136,10 @@ initialAnswerForInstanceVariable: anAccessingThroughVariableName in: aSourceClas
 	^liveTypingTypes name asString 
 ! !
 
-!MoveMethodWithActualScopeApplier class methodsFor: 'instance creation' stamp: 'HAW 3/22/2025 20:42:57'!
+!MoveMethodWithActualScopeApplier class methodsFor: 'instance creation' stamp: 'HAW 4/28/2025 18:08:13'!
 initialize
 	
-	RefactoringApplier registerMoveMethodApplier: MoveMethodWithActualScopeApplier! !
+	RefactoringApplier registerMoveMethodApplier: self! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/11/2024 11:20:47'!
 extractParameterObjectApplier
@@ -196,4 +201,5 @@ resetMoveMethodApplier
 	
 	self resetApplierAt: self moveMethodApplierId ! !
 ExtractParameterObjectWithActualScopeApplier initialize!
+MoveInstanceVariableWithActualScopeApplier initialize!
 MoveMethodWithActualScopeApplier initialize!

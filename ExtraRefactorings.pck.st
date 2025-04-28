@@ -1,8 +1,7 @@
-'From Cuis7.3 [latest update: #7095] on 28 April 2025 at 5:42:15 pm'!
-'Description Initial version'!
-!provides: 'ExtraRefactorings' 1 1!
+'From Cuis7.3 [latest update: #7095] on 28 April 2025 at 6:08:58 pm'!
+'Description Fix loading'!
+!provides: 'ExtraRefactorings' 1 3!
 !requires: 'BaseImageTests' 1 447 nil!
-!requires: '__Refactoring-TestData__' 1 3 nil!
 SystemOrganization addCategory: 'ExtraRefactorings'!
 SystemOrganization addCategory: 'ExtraRefactorings-ExtractClass-Model'!
 SystemOrganization addCategory: 'ExtraRefactorings-ExtractClass-Tests'!
@@ -8641,13 +8640,6 @@ selectVariableLabel
 !MoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 4/4/2024 01:39:10'!
 selectVariableToMoveLabel
 	^'Choose instance variable to move'! !
-
-!MoveInstanceVariableApplier class methodsFor: 'as yet unclassified' stamp: 'mc 4/4/2024 01:39:10'!
-initialize
-	(Smalltalk classNamed: #LiveTyping) ifNotNil: [
-		RefactoringApplier 
-			registerMoveInstanceVariableApplier: MoveInstanceVariableWithActualScopeApplier .
-	].! !
 
 !MoveMethodApplier methodsFor: 'initialization' stamp: 'HAW 3/22/2025 20:44:12'!
 initializeOn: aModel forMethod: aMethodReference
@@ -18668,4 +18660,3 @@ moveInstanceVariableOn: aBrowser for: anInstanceVariableName at: aClassToRefacto
 	
 	(RefactoringApplier moveInstanceVariableApplier on: aBrowser for: anInstanceVariableName at: aClassToRefactor) value! !
 CuisProRefactoringMenues initialize!
-MoveInstanceVariableApplier initialize!

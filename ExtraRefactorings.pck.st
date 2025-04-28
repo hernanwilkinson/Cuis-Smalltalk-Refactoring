@@ -1,7 +1,8 @@
-'From Cuis7.3 [latest update: #7095] on 28 April 2025 at 5:38:20 pm'!
+'From Cuis7.3 [latest update: #7095] on 28 April 2025 at 5:42:15 pm'!
 'Description Initial version'!
-!provides: 'ExtraRefactorings' 1 0!
+!provides: 'ExtraRefactorings' 1 1!
 !requires: 'BaseImageTests' 1 447 nil!
+!requires: '__Refactoring-TestData__' 1 3 nil!
 SystemOrganization addCategory: 'ExtraRefactorings'!
 SystemOrganization addCategory: 'ExtraRefactorings-ExtractClass-Model'!
 SystemOrganization addCategory: 'ExtraRefactorings-ExtractClass-Tests'!

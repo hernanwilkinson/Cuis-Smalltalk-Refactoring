@@ -1,765 +1,765 @@
-'From Cuis7.3 [latest update: #7095] on 28 April 2025 at 6:08:58 pm'!
-'Description Fix loading'!
-!provides: 'ExtraRefactorings' 1 3!
+'From Cuis7.3 [latest update: #7102] on 29 April 2025 at 8:30:48 am'!
+'Description Unload menues'!
+!provides: 'ExtraRefactorings' 1 4!
 !requires: 'BaseImageTests' 1 447 nil!
-SystemOrganization addCategory: 'ExtraRefactorings'!
-SystemOrganization addCategory: 'ExtraRefactorings-ExtractClass-Model'!
-SystemOrganization addCategory: 'ExtraRefactorings-ExtractClass-Tests'!
-SystemOrganization addCategory: 'ExtraRefactorings-ExtractClass-UI'!
-SystemOrganization addCategory: 'ExtraRefactorings-ExtractToMethodObject-Model'!
-SystemOrganization addCategory: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
-SystemOrganization addCategory: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-SystemOrganization addCategory: 'ExtraRefactorings-ExtractParameterObject-Model'!
-SystemOrganization addCategory: 'ExtraRefactorings-ExtractParameterObject-Tests'!
-SystemOrganization addCategory: 'ExtraRefactorings-ExtractParameterObject-UI'!
-SystemOrganization addCategory: 'ExtraRefactorings-IntroduceNullObject-Model'!
-SystemOrganization addCategory: 'ExtraRefactorings-IntroduceNullObject-Tests'!
-SystemOrganization addCategory: 'ExtraRefactorings-IntroduceNullObject-UI'!
-SystemOrganization addCategory: 'ExtraRefactorings-MoveInstanceVariable-Model'!
-SystemOrganization addCategory: 'ExtraRefactorings-MoveInstanceVariable-Tests'!
-SystemOrganization addCategory: 'ExtraRefactorings-MoveInstanceVariable-UI'!
-SystemOrganization addCategory: 'ExtraRefactorings-MoveMethod-Model'!
-SystemOrganization addCategory: 'ExtraRefactorings-MoveMethod-Tests'!
-SystemOrganization addCategory: 'ExtraRefactorings-MoveMethod-UI'!
+SystemOrganization addCategory: #ExtraRefactorings!
+SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
+SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Tests'!
+SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-UI'!
+SystemOrganization addCategory: #'ExtraRefactorings-ExtractToMethodObject-Model'!
+SystemOrganization addCategory: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
+SystemOrganization addCategory: #'ExtraRefactorings-ExtractToMethodObject-UI'!
+SystemOrganization addCategory: #'ExtraRefactorings-ExtractParameterObject-Model'!
+SystemOrganization addCategory: #'ExtraRefactorings-ExtractParameterObject-Tests'!
+SystemOrganization addCategory: #'ExtraRefactorings-ExtractParameterObject-UI'!
+SystemOrganization addCategory: #'ExtraRefactorings-IntroduceNullObject-Model'!
+SystemOrganization addCategory: #'ExtraRefactorings-IntroduceNullObject-Tests'!
+SystemOrganization addCategory: #'ExtraRefactorings-IntroduceNullObject-UI'!
+SystemOrganization addCategory: #'ExtraRefactorings-MoveInstanceVariable-Model'!
+SystemOrganization addCategory: #'ExtraRefactorings-MoveInstanceVariable-Tests'!
+SystemOrganization addCategory: #'ExtraRefactorings-MoveInstanceVariable-UI'!
+SystemOrganization addCategory: #'ExtraRefactorings-MoveMethod-Model'!
+SystemOrganization addCategory: #'ExtraRefactorings-MoveMethod-Tests'!
+SystemOrganization addCategory: #'ExtraRefactorings-MoveMethod-UI'!
 
 
-!classDefinition: #EntranceExitBlockEnumerator category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: #EntranceExitBlockEnumerator category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 ParseNodeEnumerator subclass: #EntranceExitBlockEnumerator
 	instanceVariableNames: 'exitBlock'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
-!classDefinition: 'EntranceExitBlockEnumerator class' category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: 'EntranceExitBlockEnumerator class' category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 EntranceExitBlockEnumerator class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageSendingBlocksVariablesToExtractFinder category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: #MessageSendingBlocksVariablesToExtractFinder category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 ParseNodeVisitor subclass: #MessageSendingBlocksVariablesToExtractFinder
 	instanceVariableNames: 'messageNode variablesToExtract currentScopeTemporaries variableToExclude'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
-!classDefinition: 'MessageSendingBlocksVariablesToExtractFinder class' category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: 'MessageSendingBlocksVariablesToExtractFinder class' category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 MessageSendingBlocksVariablesToExtractFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToExtractFinder category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: #VariablesToExtractFinder category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 ParseNodeVisitor subclass: #VariablesToExtractFinder
 	instanceVariableNames: 'methodNode variablesToExtract'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
-!classDefinition: 'VariablesToExtractFinder class' category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: 'VariablesToExtractFinder class' category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 VariablesToExtractFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #CodeForNodeOnMethod category: 'ExtraRefactorings-MoveInstanceVariable-Model'!
+!classDefinition: #CodeForNodeOnMethod category: #'ExtraRefactorings-MoveInstanceVariable-Model'!
 ParseNodeVisitor subclass: #CodeForNodeOnMethod
 	instanceVariableNames: 'node instanceVariableName compiledMethod intervalsToModify methodNode instVarNameTargetClass nodeInterval newCodeForNode nodeOffsetInSourceCode intervalsToReject modifiedReads modifiedWrites getterToUse setterToUse'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveInstanceVariable-Model'!
-!classDefinition: 'CodeForNodeOnMethod class' category: 'ExtraRefactorings-MoveInstanceVariable-Model'!
+!classDefinition: 'CodeForNodeOnMethod class' category: #'ExtraRefactorings-MoveInstanceVariable-Model'!
 CodeForNodeOnMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #ClassVarAssignationChecker category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: #ClassVarAssignationChecker category: #'ExtraRefactorings-MoveMethod-Model'!
 ParseNodeVisitor subclass: #ClassVarAssignationChecker
 	instanceVariableNames: 'compiledMethod returnBlockTrue classVarNamed'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-Model'!
-!classDefinition: 'ClassVarAssignationChecker class' category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: 'ClassVarAssignationChecker class' category: #'ExtraRefactorings-MoveMethod-Model'!
 ClassVarAssignationChecker class
 	instanceVariableNames: ''!
 
-!classDefinition: #CodeForNodeToMove category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: #CodeForNodeToMove category: #'ExtraRefactorings-MoveMethod-Model'!
 ParseNodeVisitor subclass: #CodeForNodeToMove
 	instanceVariableNames: 'methodNode node intervalsToModify nodeInterval nodeOffsetInSourceCode parameterNeeded variableToAccesThrough hasImplicitSelfReturn targetClass methodToCompileOnSourceClass'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-Model'!
-!classDefinition: 'CodeForNodeToMove class' category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: 'CodeForNodeToMove class' category: #'ExtraRefactorings-MoveMethod-Model'!
 CodeForNodeToMove class
 	instanceVariableNames: ''!
 
-!classDefinition: #MethodWorksAsGetterVisitor category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: #MethodWorksAsGetterVisitor category: #'ExtraRefactorings-MoveMethod-Model'!
 ParseNodeVisitor subclass: #MethodWorksAsGetterVisitor
 	instanceVariableNames: 'getterCandidate classVariableName returnMethodIsNotGetterClousure returnMethodIsGetterClousure'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-Model'!
-!classDefinition: 'MethodWorksAsGetterVisitor class' category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: 'MethodWorksAsGetterVisitor class' category: #'ExtraRefactorings-MoveMethod-Model'!
 MethodWorksAsGetterVisitor class
 	instanceVariableNames: ''!
 
-!classDefinition: #NeedParameterName category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: #NeedParameterName category: #'ExtraRefactorings-MoveMethod-Model'!
 ParseNodeVisitor subclass: #NeedParameterName
 	instanceVariableNames: 'needParameterName methodNode compiledMethod instanceVariableNameToAccessThrough'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-Model'!
-!classDefinition: 'NeedParameterName class' category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: 'NeedParameterName class' category: #'ExtraRefactorings-MoveMethod-Model'!
 NeedParameterName class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractClassConfiguration category: 'ExtraRefactorings-ExtractClass-UI'!
+!classDefinition: #ExtractClassConfiguration category: #'ExtraRefactorings-ExtractClass-UI'!
 Object subclass: #ExtractClassConfiguration
 	instanceVariableNames: 'newClassNameModel methodsToMoveModel instanceVariblesToMoveModel messageListModel instanceVariableListModel variableNameToAccessNewClassModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractClass-UI'!
-!classDefinition: 'ExtractClassConfiguration class' category: 'ExtraRefactorings-ExtractClass-UI'!
+!classDefinition: 'ExtractClassConfiguration class' category: #'ExtraRefactorings-ExtractClass-UI'!
 ExtractClassConfiguration class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractParameterObjectConfiguration category: 'ExtraRefactorings-ExtractParameterObject-UI'!
+!classDefinition: #ExtractParameterObjectConfiguration category: #'ExtraRefactorings-ExtractParameterObject-UI'!
 Object subclass: #ExtractParameterObjectConfiguration
 	instanceVariableNames: 'classNameModel categoryModel superclassNameModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractParameterObject-UI'!
-!classDefinition: 'ExtractParameterObjectConfiguration class' category: 'ExtraRefactorings-ExtractParameterObject-UI'!
+!classDefinition: 'ExtractParameterObjectConfiguration class' category: #'ExtraRefactorings-ExtractParameterObject-UI'!
 ExtractParameterObjectConfiguration class
 	instanceVariableNames: ''!
 
-!classDefinition: #ArgumentsAndReturnsFinder category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: #ArgumentsAndReturnsFinder category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 Object subclass: #ArgumentsAndReturnsFinder
 	instanceVariableNames: 'methodNode ranges instVar'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
-!classDefinition: 'ArgumentsAndReturnsFinder class' category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: 'ArgumentsAndReturnsFinder class' category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 ArgumentsAndReturnsFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #ChangeRowOrderButtonModel category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: #ChangeRowOrderButtonModel category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 Object subclass: #ChangeRowOrderButtonModel
 	instanceVariableNames: 'tableModel rowPosition'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
-!classDefinition: 'ChangeRowOrderButtonModel class' category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: 'ChangeRowOrderButtonModel class' category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 ChangeRowOrderButtonModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageKeywordsAndParametersModel category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: #MessageKeywordsAndParametersModel category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 Object subclass: #MessageKeywordsAndParametersModel
 	instanceVariableNames: 'models selectorModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
-!classDefinition: 'MessageKeywordsAndParametersModel class' category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: 'MessageKeywordsAndParametersModel class' category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 MessageKeywordsAndParametersModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReturnStatementAdder category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: #ReturnStatementAdder category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 Object subclass: #ReturnStatementAdder
 	instanceVariableNames: 'methodNode compiledMethod'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
-!classDefinition: 'ReturnStatementAdder class' category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: 'ReturnStatementAdder class' category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 ReturnStatementAdder class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariableToParametrizeKeywordDefinition category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: #VariableToParametrizeKeywordDefinition category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 Object subclass: #VariableToParametrizeKeywordDefinition
 	instanceVariableNames: 'variableName keyword parameterName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
-!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: 'VariableToParametrizeKeywordDefinition class' category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 VariableToParametrizeKeywordDefinition class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: #VariablesToParametrizeKeywordsDefinitions category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 Object subclass: #VariablesToParametrizeKeywordsDefinitions
 	instanceVariableNames: 'selector definitions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
-!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitions class' category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 VariablesToParametrizeKeywordsDefinitions class
 	instanceVariableNames: ''!
 
-!classDefinition: #AutocompletedTextProvider category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #AutocompletedTextProvider category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 Object subclass: #AutocompletedTextProvider
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'AutocompletedTextProvider class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'AutocompletedTextProvider class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 AutocompletedTextProvider class
 	instanceVariableNames: ''!
 
-!classDefinition: #CuisProRefactoringMenues category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-Object subclass: #CuisProRefactoringMenues
+!classDefinition: #ExtraRefactoringMenues category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
+Object subclass: #ExtraRefactoringMenues
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'CuisProRefactoringMenues class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-CuisProRefactoringMenues class
+!classDefinition: 'ExtraRefactoringMenues class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
+ExtraRefactoringMenues class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectConfiguration category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #ExtractToMethodObjectConfiguration category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 Object subclass: #ExtractToMethodObjectConfiguration
 	instanceVariableNames: 'methodObjectClassNameModel methodObjectCategoryModel methodObjectSuperclassNameModel methodObjectEvaluationMessageSelectorModel variableToParametrizeToInstVarNameModel instanceCreationMessageModels'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'ExtractToMethodObjectConfiguration class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'ExtractToMethodObjectConfiguration class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 ExtractToMethodObjectConfiguration class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilCheck category: 'ExtraRefactorings-IntroduceNullObject-Model'!
+!classDefinition: #IfNilCheck category: #'ExtraRefactorings-IntroduceNullObject-Model'!
 Object subclass: #IfNilCheck
 	instanceVariableNames: 'messageNode index methodNode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-Model'!
-!classDefinition: 'IfNilCheck class' category: 'ExtraRefactorings-IntroduceNullObject-Model'!
+!classDefinition: 'IfNilCheck class' category: #'ExtraRefactorings-IntroduceNullObject-Model'!
 IfNilCheck class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilChecksFinder category: 'ExtraRefactorings-IntroduceNullObject-Model'!
+!classDefinition: #IfNilChecksFinder category: #'ExtraRefactorings-IntroduceNullObject-Model'!
 Object subclass: #IfNilChecksFinder
 	instanceVariableNames: 'contextClass instanceVariable'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-Model'!
-!classDefinition: 'IfNilChecksFinder class' category: 'ExtraRefactorings-IntroduceNullObject-Model'!
+!classDefinition: 'IfNilChecksFinder class' category: #'ExtraRefactorings-IntroduceNullObject-Model'!
 IfNilChecksFinder class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilMessageListModel category: 'ExtraRefactorings-IntroduceNullObject-UI'!
+!classDefinition: #IfNilMessageListModel category: #'ExtraRefactorings-IntroduceNullObject-UI'!
 Object subclass: #IfNilMessageListModel
 	instanceVariableNames: 'listIndex ifNilChecks introduceNullObjectForm'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-UI'!
-!classDefinition: 'IfNilMessageListModel class' category: 'ExtraRefactorings-IntroduceNullObject-UI'!
+!classDefinition: 'IfNilMessageListModel class' category: #'ExtraRefactorings-IntroduceNullObject-UI'!
 IfNilMessageListModel class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectConfiguration category: 'ExtraRefactorings-IntroduceNullObject-UI'!
+!classDefinition: #IntroduceNullObjectConfiguration category: #'ExtraRefactorings-IntroduceNullObject-UI'!
 Object subclass: #IntroduceNullObjectConfiguration
 	instanceVariableNames: 'nullClassNameModel concreteClassNameModel messageKeywordsAndParametersModels'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-UI'!
-!classDefinition: 'IntroduceNullObjectConfiguration class' category: 'ExtraRefactorings-IntroduceNullObject-UI'!
+!classDefinition: 'IntroduceNullObjectConfiguration class' category: #'ExtraRefactorings-IntroduceNullObject-UI'!
 IntroduceNullObjectConfiguration class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: 'ExtraRefactorings-IntroduceNullObject-UI'!
+!classDefinition: #ReplaceIfNilWithPolymorphismParameters category: #'ExtraRefactorings-IntroduceNullObject-UI'!
 Object subclass: #ReplaceIfNilWithPolymorphismParameters
 	instanceVariableNames: 'messageNode methodNode definitions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-UI'!
-!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: 'ExtraRefactorings-IntroduceNullObject-UI'!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParameters class' category: #'ExtraRefactorings-IntroduceNullObject-UI'!
 ReplaceIfNilWithPolymorphismParameters class
 	instanceVariableNames: ''!
 
-!classDefinition: #CodeForNodeResult category: 'ExtraRefactorings-MoveInstanceVariable-Model'!
+!classDefinition: #CodeForNodeResult category: #'ExtraRefactorings-MoveInstanceVariable-Model'!
 Object subclass: #CodeForNodeResult
 	instanceVariableNames: 'modifiedReads modifiedWrites resultCode'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveInstanceVariable-Model'!
-!classDefinition: 'CodeForNodeResult class' category: 'ExtraRefactorings-MoveInstanceVariable-Model'!
+!classDefinition: 'CodeForNodeResult class' category: #'ExtraRefactorings-MoveInstanceVariable-Model'!
 CodeForNodeResult class
 	instanceVariableNames: ''!
 
-!classDefinition: #CodeForNodeToMoveResult category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: #CodeForNodeToMoveResult category: #'ExtraRefactorings-MoveMethod-Model'!
 Object subclass: #CodeForNodeToMoveResult
 	instanceVariableNames: 'sourceCode sourceClass targetClass methodsToCompileOnSourceClass'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-Model'!
-!classDefinition: 'CodeForNodeToMoveResult class' category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: 'CodeForNodeToMoveResult class' category: #'ExtraRefactorings-MoveMethod-Model'!
 CodeForNodeToMoveResult class
 	instanceVariableNames: ''!
 
-!classDefinition: #MoveMethodExtraParameterName category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: #MoveMethodExtraParameterName category: #'ExtraRefactorings-MoveMethod-Model'!
 Object subclass: #MoveMethodExtraParameterName
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-Model'!
-!classDefinition: 'MoveMethodExtraParameterName class' category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: 'MoveMethodExtraParameterName class' category: #'ExtraRefactorings-MoveMethod-Model'!
 MoveMethodExtraParameterName class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtraParameterNameNeeded category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: #ExtraParameterNameNeeded category: #'ExtraRefactorings-MoveMethod-Model'!
 MoveMethodExtraParameterName subclass: #ExtraParameterNameNeeded
 	instanceVariableNames: 'parameterName'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-Model'!
-!classDefinition: 'ExtraParameterNameNeeded class' category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: 'ExtraParameterNameNeeded class' category: #'ExtraRefactorings-MoveMethod-Model'!
 ExtraParameterNameNeeded class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtraParameterNameNeededAndExtraKeyword category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: #ExtraParameterNameNeededAndExtraKeyword category: #'ExtraRefactorings-MoveMethod-Model'!
 MoveMethodExtraParameterName subclass: #ExtraParameterNameNeededAndExtraKeyword
 	instanceVariableNames: 'parameterName extraKeyword'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-Model'!
-!classDefinition: 'ExtraParameterNameNeededAndExtraKeyword class' category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: 'ExtraParameterNameNeededAndExtraKeyword class' category: #'ExtraRefactorings-MoveMethod-Model'!
 ExtraParameterNameNeededAndExtraKeyword class
 	instanceVariableNames: ''!
 
-!classDefinition: #NonExtraParameterNameNeeded category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: #NonExtraParameterNameNeeded category: #'ExtraRefactorings-MoveMethod-Model'!
 MoveMethodExtraParameterName subclass: #NonExtraParameterNameNeeded
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-Model'!
-!classDefinition: 'NonExtraParameterNameNeeded class' category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: 'NonExtraParameterNameNeeded class' category: #'ExtraRefactorings-MoveMethod-Model'!
 NonExtraParameterNameNeeded class
 	instanceVariableNames: ''!
 
-!classDefinition: #FormSection category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #FormSection category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 LayoutMorph subclass: #FormSection
 	instanceVariableNames: 'title borderMorph titleContainer titleMorph titleContainerLayoutSpec explanation explanationMorph explanationContainer explanationContainerLayoutSpec'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'FormSection class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'FormSection class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 FormSection class
 	instanceVariableNames: ''!
 
-!classDefinition: #LabeledInput category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #LabeledInput category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 LayoutMorph subclass: #LabeledInput
 	instanceVariableNames: 'labelMorph inputMorph'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'LabeledInput class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'LabeledInput class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 LabeledInput class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageKeywordsAndParametersTable category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #MessageKeywordsAndParametersTable category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 LayoutMorph subclass: #MessageKeywordsAndParametersTable
 	instanceVariableNames: 'rowModels previewModel backgroundColor refactoringModel columnWidths variablesToParametrize'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'MessageKeywordsAndParametersTable class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'MessageKeywordsAndParametersTable class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 MessageKeywordsAndParametersTable class
 	instanceVariableNames: ''!
 
-!classDefinition: #MVCMenuMorphWithSubtitles category: 'ExtraRefactorings-MoveMethod-UI'!
+!classDefinition: #MVCMenuMorphWithSubtitles category: #'ExtraRefactorings-MoveMethod-UI'!
 MVCMenuMorph subclass: #MVCMenuMorphWithSubtitles
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-UI'!
-!classDefinition: 'MVCMenuMorphWithSubtitles class' category: 'ExtraRefactorings-MoveMethod-UI'!
+!classDefinition: 'MVCMenuMorphWithSubtitles class' category: #'ExtraRefactorings-MoveMethod-UI'!
 MVCMenuMorphWithSubtitles class
 	instanceVariableNames: ''!
 
-!classDefinition: #IndependentlyColoredButton category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #IndependentlyColoredButton category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 PluggableButtonMorph subclass: #IndependentlyColoredButton
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'IndependentlyColoredButton class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'IndependentlyColoredButton class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 IndependentlyColoredButton class
 	instanceVariableNames: ''!
 
-!classDefinition: #ColoredScrollPane category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #ColoredScrollPane category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 PluggableScrollPane subclass: #ColoredScrollPane
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'ColoredScrollPane class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'ColoredScrollPane class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 ColoredScrollPane class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImmutableTextModelMorph category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #ImmutableTextModelMorph category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 TextModelMorph subclass: #ImmutableTextModelMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'ImmutableTextModelMorph class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'ImmutableTextModelMorph class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 ImmutableTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreviewTextModelMorph category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #PreviewTextModelMorph category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 TextModelMorph subclass: #PreviewTextModelMorph
 	instanceVariableNames: 'previewModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'PreviewTextModelMorph class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'PreviewTextModelMorph class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 PreviewTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #TabPassingTextModelMorph category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #TabPassingTextModelMorph category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 TextModelMorph subclass: #TabPassingTextModelMorph
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'TabPassingTextModelMorph class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'TabPassingTextModelMorph class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 TabPassingTextModelMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractClassWindow category: 'ExtraRefactorings-ExtractClass-UI'!
+!classDefinition: #ExtractClassWindow category: #'ExtraRefactorings-ExtractClass-UI'!
 SystemWindow subclass: #ExtractClassWindow
 	instanceVariableNames: 'messageSendingListSection newClassNameModel variableNameToAccessNewClassModel indexVariableList variableList messageList indexMessageList labelHasReferencesToVariables buttonsSection newClassNameLabeledInput variableNameToAccessNewClassLabeledInput instanceVariableListSection instanceVariablesToMoveTitle methodsToMoveTitle'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractClass-UI'!
-!classDefinition: 'ExtractClassWindow class' category: 'ExtraRefactorings-ExtractClass-UI'!
+!classDefinition: 'ExtractClassWindow class' category: #'ExtraRefactorings-ExtractClass-UI'!
 ExtractClassWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractParameterObjectConfigurationWindow category: 'ExtraRefactorings-ExtractParameterObject-UI'!
+!classDefinition: #ExtractParameterObjectConfigurationWindow category: #'ExtraRefactorings-ExtractParameterObject-UI'!
 SystemWindow subclass: #ExtractParameterObjectConfigurationWindow
 	instanceVariableNames: 'initialExtent configuration parametersToExtractIndex parametersToExtract focusMorphs parametersSelectionTitle parametersSelectionList parameterObjectClassTitle parameterObjectClassNameInput parameterObjectSubclassNameInput parameterObjectCategoryNameInput buttonsSection'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractParameterObject-UI'!
-!classDefinition: 'ExtractParameterObjectConfigurationWindow class' category: 'ExtraRefactorings-ExtractParameterObject-UI'!
+!classDefinition: 'ExtractParameterObjectConfigurationWindow class' category: #'ExtraRefactorings-ExtractParameterObject-UI'!
 ExtractParameterObjectConfigurationWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectWindow category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #ExtractToMethodObjectWindow category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 SystemWindow subclass: #ExtractToMethodObjectWindow
 	instanceVariableNames: 'scrollPane formLayout inputTable preview variablesToParametrize configuration discardEdits firstTimeBuild initialExtent focusMorphs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'ExtractToMethodObjectWindow class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'ExtractToMethodObjectWindow class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 ExtractToMethodObjectWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectWindow category: 'ExtraRefactorings-IntroduceNullObject-UI'!
+!classDefinition: #IntroduceNullObjectWindow category: #'ExtraRefactorings-IntroduceNullObject-UI'!
 SystemWindow subclass: #IntroduceNullObjectWindow
 	instanceVariableNames: 'initialExtent scrollPane formLayout introduceNullObjectRequest messageSendingList messageListModel ifNilChecksForms discardEdits firstTimeBuild hierarchySection messageSendingListSection actionButtonsSection ifNilChecks focusMorphs'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-UI'!
-!classDefinition: 'IntroduceNullObjectWindow class' category: 'ExtraRefactorings-IntroduceNullObject-UI'!
+!classDefinition: 'IntroduceNullObjectWindow class' category: #'ExtraRefactorings-IntroduceNullObject-UI'!
 IntroduceNullObjectWindow class
 	instanceVariableNames: ''!
 
-!classDefinition: #TabPassingInnerTextMorph category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #TabPassingInnerTextMorph category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 InnerTextMorph subclass: #TabPassingInnerTextMorph
 	instanceVariableNames: 'focusMover'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'TabPassingInnerTextMorph class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'TabPassingInnerTextMorph class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 TabPassingInnerTextMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #PreviewInnerTextMorph category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #PreviewInnerTextMorph category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 TabPassingInnerTextMorph subclass: #PreviewInnerTextMorph
 	instanceVariableNames: 'previewModel'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'PreviewInnerTextMorph class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'PreviewInnerTextMorph class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 PreviewInnerTextMorph class
 	instanceVariableNames: ''!
 
-!classDefinition: #FormsClassNameCompleter category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #FormsClassNameCompleter category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 ClassNameCompleter subclass: #FormsClassNameCompleter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'FormsClassNameCompleter class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'FormsClassNameCompleter class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 FormsClassNameCompleter class
 	instanceVariableNames: ''!
 
-!classDefinition: #SelectionMenuWithSubtitles category: 'ExtraRefactorings-MoveMethod-UI'!
+!classDefinition: #SelectionMenuWithSubtitles category: #'ExtraRefactorings-MoveMethod-UI'!
 SelectionMenu subclass: #SelectionMenuWithSubtitles
 	instanceVariableNames: 'subtitles'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-UI'!
-!classDefinition: 'SelectionMenuWithSubtitles class' category: 'ExtraRefactorings-MoveMethod-UI'!
+!classDefinition: 'SelectionMenuWithSubtitles class' category: #'ExtraRefactorings-MoveMethod-UI'!
 SelectionMenuWithSubtitles class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractClass category: 'ExtraRefactorings-ExtractClass-Model'!
+!classDefinition: #ExtractClass category: #'ExtraRefactorings-ExtractClass-Model'!
 Refactoring subclass: #ExtractClass
 	instanceVariableNames: 'sourceClass targetClassName instVarsToExtract methodsToExtract variableToAccessToNewClass'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractClass-Model'!
-!classDefinition: 'ExtractClass class' category: 'ExtraRefactorings-ExtractClass-Model'!
+!classDefinition: 'ExtractClass class' category: #'ExtraRefactorings-ExtractClass-Model'!
 ExtractClass class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObject category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: #ExtractToMethodObject category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 Refactoring subclass: #ExtractToMethodObject
 	instanceVariableNames: 'methodObjectSuperclass methodObjectClassName methodObjectCategory methodToExtract methodVariableNamesToInstanceVariableNames methodObjectInstanceVariables keywordsDefinitions methodObjectEvaluationSelector'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
-!classDefinition: 'ExtractToMethodObject class' category: 'ExtraRefactorings-ExtractToMethodObject-Model'!
+!classDefinition: 'ExtractToMethodObject class' category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 ExtractToMethodObject class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObject category: 'ExtraRefactorings-IntroduceNullObject-Model'!
+!classDefinition: #IntroduceNullObject category: #'ExtraRefactorings-IntroduceNullObject-Model'!
 Refactoring subclass: #IntroduceNullObject
 	instanceVariableNames: 'instVar classToRefactor concreteClass nullClass replacementParameters'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-Model'!
-!classDefinition: 'IntroduceNullObject class' category: 'ExtraRefactorings-IntroduceNullObject-Model'!
+!classDefinition: 'IntroduceNullObject class' category: #'ExtraRefactorings-IntroduceNullObject-Model'!
 IntroduceNullObject class
 	instanceVariableNames: ''!
 
-!classDefinition: #NullObjectHierarchyCreator category: 'ExtraRefactorings-IntroduceNullObject-Model'!
+!classDefinition: #NullObjectHierarchyCreator category: #'ExtraRefactorings-IntroduceNullObject-Model'!
 Refactoring subclass: #NullObjectHierarchyCreator
 	instanceVariableNames: 'concreteClass abstractClassName nullObjectClassName category'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-Model'!
-!classDefinition: 'NullObjectHierarchyCreator class' category: 'ExtraRefactorings-IntroduceNullObject-Model'!
+!classDefinition: 'NullObjectHierarchyCreator class' category: #'ExtraRefactorings-IntroduceNullObject-Model'!
 NullObjectHierarchyCreator class
 	instanceVariableNames: ''!
 
-!classDefinition: #MoveInstanceVariable category: 'ExtraRefactorings-MoveInstanceVariable-Model'!
+!classDefinition: #MoveInstanceVariable category: #'ExtraRefactorings-MoveInstanceVariable-Model'!
 Refactoring subclass: #MoveInstanceVariable
 	instanceVariableNames: 'instVarNameSourceClass sourceClass targetClass instVarNameTargetClass modifiedReads modifiedWrites getterToUse setterToUse'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveInstanceVariable-Model'!
-!classDefinition: 'MoveInstanceVariable class' category: 'ExtraRefactorings-MoveInstanceVariable-Model'!
+!classDefinition: 'MoveInstanceVariable class' category: #'ExtraRefactorings-MoveInstanceVariable-Model'!
 MoveInstanceVariable class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractParameterObject category: 'ExtraRefactorings-ExtractParameterObject-Model'!
+!classDefinition: #ExtractParameterObject category: #'ExtraRefactorings-ExtractParameterObject-Model'!
 ScopedRefactoring subclass: #ExtractParameterObject
 	instanceVariableNames: 'method parameterObjectClassName parameterObjectSuperclassName parameterObjectCategoryName parameters parameterObjectClass parameterPositions parameterObjectPlaceHolder parameterObjectInstanceVariables parameterObjectName originalSenders originalImplementors changes newImplementors newSenders'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractParameterObject-Model'!
-!classDefinition: 'ExtractParameterObject class' category: 'ExtraRefactorings-ExtractParameterObject-Model'!
+!classDefinition: 'ExtractParameterObject class' category: #'ExtraRefactorings-ExtractParameterObject-Model'!
 ExtractParameterObject class
 	instanceVariableNames: ''!
 
-!classDefinition: #MoveMethod category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: #MoveMethod category: #'ExtraRefactorings-MoveMethod-Model'!
 TransferMethod subclass: #MoveMethod
 	instanceVariableNames: 'methodName sourceClass targetClass variableToAccessTarget parameterNeeded compiledMethodToMove resultAfterReplaceDependencies messageSendForDelegation codeForDelegation methodNodeToMove'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-Model'!
-!classDefinition: 'MoveMethod class' category: 'ExtraRefactorings-MoveMethod-Model'!
+!classDefinition: 'MoveMethod class' category: #'ExtraRefactorings-MoveMethod-Model'!
 MoveMethod class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractClassApplier category: 'ExtraRefactorings-ExtractClass-UI'!
+!classDefinition: #ExtractClassApplier category: #'ExtraRefactorings-ExtractClass-UI'!
 RefactoringApplier subclass: #ExtractClassApplier
 	instanceVariableNames: 'class classToRefactor form extractClassRequest'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractClass-UI'!
-!classDefinition: 'ExtractClassApplier class' category: 'ExtraRefactorings-ExtractClass-UI'!
+!classDefinition: 'ExtractClassApplier class' category: #'ExtraRefactorings-ExtractClass-UI'!
 ExtractClassApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectApplier category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: #ExtractToMethodObjectApplier category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 RefactoringApplier subclass: #ExtractToMethodObjectApplier
 	instanceVariableNames: 'panel compiledMethodToExtract refactoringConfiguration'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
-!classDefinition: 'ExtractToMethodObjectApplier class' category: 'ExtraRefactorings-ExtractToMethodObject-UI'!
+!classDefinition: 'ExtractToMethodObjectApplier class' category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
 ExtractToMethodObjectApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectApplier category: 'ExtraRefactorings-IntroduceNullObject-UI'!
+!classDefinition: #IntroduceNullObjectApplier category: #'ExtraRefactorings-IntroduceNullObject-UI'!
 RefactoringApplier subclass: #IntroduceNullObjectApplier
 	instanceVariableNames: 'classToRefactor instanceVariable form done ifNilChecks introduceNullObjectRequest'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-UI'!
-!classDefinition: 'IntroduceNullObjectApplier class' category: 'ExtraRefactorings-IntroduceNullObject-UI'!
+!classDefinition: 'IntroduceNullObjectApplier class' category: #'ExtraRefactorings-IntroduceNullObject-UI'!
 IntroduceNullObjectApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractParameterObjectApplier category: 'ExtraRefactorings-ExtractParameterObject-UI'!
+!classDefinition: #ExtractParameterObjectApplier category: #'ExtraRefactorings-ExtractParameterObject-UI'!
 ChangeSelectorApplier subclass: #ExtractParameterObjectApplier
 	instanceVariableNames: 'configurationWindow methodToRefactor refactoringConfiguration'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractParameterObject-UI'!
-!classDefinition: 'ExtractParameterObjectApplier class' category: 'ExtraRefactorings-ExtractParameterObject-UI'!
+!classDefinition: 'ExtractParameterObjectApplier class' category: #'ExtraRefactorings-ExtractParameterObject-UI'!
 ExtractParameterObjectApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #MoveInstanceVariableApplier category: 'ExtraRefactorings-MoveInstanceVariable-UI'!
+!classDefinition: #MoveInstanceVariableApplier category: #'ExtraRefactorings-MoveInstanceVariable-UI'!
 TransferInstanceVariableApplier subclass: #MoveInstanceVariableApplier
 	instanceVariableNames: 'accessingThroughinstanceVariableName targetClass'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveInstanceVariable-UI'!
-!classDefinition: 'MoveInstanceVariableApplier class' category: 'ExtraRefactorings-MoveInstanceVariable-UI'!
+!classDefinition: 'MoveInstanceVariableApplier class' category: #'ExtraRefactorings-MoveInstanceVariable-UI'!
 MoveInstanceVariableApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #MoveMethodApplier category: 'ExtraRefactorings-MoveMethod-UI'!
+!classDefinition: #MoveMethodApplier category: #'ExtraRefactorings-MoveMethod-UI'!
 TransferMethodApplier subclass: #MoveMethodApplier
 	instanceVariableNames: 'model methodReference methodToMove sourceClass accessingThroughVariableName targetClass extraParameter'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-UI'!
-!classDefinition: 'MoveMethodApplier class' category: 'ExtraRefactorings-MoveMethod-UI'!
+!classDefinition: 'MoveMethodApplier class' category: #'ExtraRefactorings-MoveMethod-UI'!
 MoveMethodApplier class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractClassTest category: 'ExtraRefactorings-ExtractClass-Tests'!
+!classDefinition: #ExtractClassTest category: #'ExtraRefactorings-ExtractClass-Tests'!
 RefactoringTest subclass: #ExtractClassTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractClass-Tests'!
-!classDefinition: 'ExtractClassTest class' category: 'ExtraRefactorings-ExtractClass-Tests'!
+!classDefinition: 'ExtractClassTest class' category: #'ExtraRefactorings-ExtractClass-Tests'!
 ExtractClassTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractParameterObjectTest category: 'ExtraRefactorings-ExtractParameterObject-Tests'!
+!classDefinition: #ExtractParameterObjectTest category: #'ExtraRefactorings-ExtractParameterObject-Tests'!
 RefactoringTest subclass: #ExtractParameterObjectTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractParameterObject-Tests'!
-!classDefinition: 'ExtractParameterObjectTest class' category: 'ExtraRefactorings-ExtractParameterObject-Tests'!
+!classDefinition: 'ExtractParameterObjectTest class' category: #'ExtraRefactorings-ExtractParameterObject-Tests'!
 ExtractParameterObjectTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractToMethodObjectTest category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: #ExtractToMethodObjectTest category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 RefactoringTest subclass: #ExtractToMethodObjectTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
-!classDefinition: 'ExtractToMethodObjectTest class' category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: 'ExtractToMethodObjectTest class' category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 ExtractToMethodObjectTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #MessageSendingBlocksVariablesToExtractFinderTest category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: #MessageSendingBlocksVariablesToExtractFinderTest category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 RefactoringTest subclass: #MessageSendingBlocksVariablesToExtractFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
-!classDefinition: 'MessageSendingBlocksVariablesToExtractFinderTest class' category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: 'MessageSendingBlocksVariablesToExtractFinderTest class' category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 MessageSendingBlocksVariablesToExtractFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReturnStatementAdderTest category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: #ReturnStatementAdderTest category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 RefactoringTest subclass: #ReturnStatementAdderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
-!classDefinition: 'ReturnStatementAdderTest class' category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: 'ReturnStatementAdderTest class' category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 ReturnStatementAdderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariableToParametrizeKeywordDefinitionTest category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: #VariableToParametrizeKeywordDefinitionTest category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 RefactoringTest subclass: #VariableToParametrizeKeywordDefinitionTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
-!classDefinition: 'VariableToParametrizeKeywordDefinitionTest class' category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: 'VariableToParametrizeKeywordDefinitionTest class' category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 VariableToParametrizeKeywordDefinitionTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToExtractFinderTest category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: #VariablesToExtractFinderTest category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 RefactoringTest subclass: #VariablesToExtractFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
-!classDefinition: 'VariablesToExtractFinderTest class' category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: 'VariablesToExtractFinderTest class' category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 VariablesToExtractFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: #VariablesToParametrizeKeywordsDefinitionsTest category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 RefactoringTest subclass: #VariablesToParametrizeKeywordsDefinitionsTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
-!classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: 'ExtraRefactorings-ExtractToMethodObject-Tests'!
+!classDefinition: 'VariablesToParametrizeKeywordsDefinitionsTest class' category: #'ExtraRefactorings-ExtractToMethodObject-Tests'!
 VariablesToParametrizeKeywordsDefinitionsTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IfNilChecksFinderTest category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
+!classDefinition: #IfNilChecksFinderTest category: #'ExtraRefactorings-IntroduceNullObject-Tests'!
 RefactoringTest subclass: #IfNilChecksFinderTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
-!classDefinition: 'IfNilChecksFinderTest class' category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
+!classDefinition: 'IfNilChecksFinderTest class' category: #'ExtraRefactorings-IntroduceNullObject-Tests'!
 IfNilChecksFinderTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntroduceNullObjectTest category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
+!classDefinition: #IntroduceNullObjectTest category: #'ExtraRefactorings-IntroduceNullObject-Tests'!
 RefactoringTest subclass: #IntroduceNullObjectTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
-!classDefinition: 'IntroduceNullObjectTest class' category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
+!classDefinition: 'IntroduceNullObjectTest class' category: #'ExtraRefactorings-IntroduceNullObject-Tests'!
 IntroduceNullObjectTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #NullObjectHierarchyCreatorTest category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
+!classDefinition: #NullObjectHierarchyCreatorTest category: #'ExtraRefactorings-IntroduceNullObject-Tests'!
 RefactoringTest subclass: #NullObjectHierarchyCreatorTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
-!classDefinition: 'NullObjectHierarchyCreatorTest class' category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
+!classDefinition: 'NullObjectHierarchyCreatorTest class' category: #'ExtraRefactorings-IntroduceNullObject-Tests'!
 NullObjectHierarchyCreatorTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
+!classDefinition: #ReplaceIfNilWithPolymorphismParametersTest category: #'ExtraRefactorings-IntroduceNullObject-Tests'!
 RefactoringTest subclass: #ReplaceIfNilWithPolymorphismParametersTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
-!classDefinition: 'ReplaceIfNilWithPolymorphismParametersTest class' category: 'ExtraRefactorings-IntroduceNullObject-Tests'!
+!classDefinition: 'ReplaceIfNilWithPolymorphismParametersTest class' category: #'ExtraRefactorings-IntroduceNullObject-Tests'!
 ReplaceIfNilWithPolymorphismParametersTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #MoveInstanceVariableTest category: 'ExtraRefactorings-MoveInstanceVariable-Tests'!
+!classDefinition: #MoveInstanceVariableTest category: #'ExtraRefactorings-MoveInstanceVariable-Tests'!
 RefactoringTest subclass: #MoveInstanceVariableTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveInstanceVariable-Tests'!
-!classDefinition: 'MoveInstanceVariableTest class' category: 'ExtraRefactorings-MoveInstanceVariable-Tests'!
+!classDefinition: 'MoveInstanceVariableTest class' category: #'ExtraRefactorings-MoveInstanceVariable-Tests'!
 MoveInstanceVariableTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #MoveMethodTest category: 'ExtraRefactorings-MoveMethod-Tests'!
+!classDefinition: #MoveMethodTest category: #'ExtraRefactorings-MoveMethod-Tests'!
 RefactoringTest subclass: #MoveMethodTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-MoveMethod-Tests'!
-!classDefinition: 'MoveMethodTest class' category: 'ExtraRefactorings-MoveMethod-Tests'!
+!classDefinition: 'MoveMethodTest class' category: #'ExtraRefactorings-MoveMethod-Tests'!
 MoveMethodTest class
 	instanceVariableNames: ''!
 
@@ -2221,7 +2221,7 @@ autoCompleterClassFor: aTextGetter
 
 	^FormsClassNameCompleter! !
 
-!CuisProRefactoringMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 3/28/2025 14:43:38'!
+!ExtraRefactoringMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 3/28/2025 14:43:38'!
 classListMenuSpec
 	
 	^#(
@@ -2231,7 +2231,7 @@ classListMenuSpec
 		#(1095		'Move Inst Var...' 			nil 	window 	contextualMoveInstanceVariable 	saveAsIcon)
 	)! !
 
-!CuisProRefactoringMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 3/28/2025 14:54:33'!
+!ExtraRefactoringMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 3/28/2025 14:54:33'!
 messageListMenuSpec
 
 	^#(
@@ -2240,7 +2240,7 @@ messageListMenuSpec
 		#(1078 	'Extract Parameter Object'	nil 	window 	extractParameterObject 			newFolderIcon)
 	)! !
 
-!CuisProRefactoringMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 3/28/2025 14:55:14'!
+!ExtraRefactoringMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 3/28/2025 14:55:14'!
 smalltalkEditorMenuSpec
 	
 	^#(
@@ -2248,17 +2248,37 @@ smalltalkEditorMenuSpec
 		#(2170		'Move Method' 			$7 	editor 	contextualMoveMethod saveAsIcon 	'Move Method what is under cursor')
 	)! !
 
-!CuisProRefactoringMenues class methodsFor: 'initialization' stamp: 'HAW 3/28/2025 14:46:15'!
+!ExtraRefactoringMenues class methodsFor: 'initialization' stamp: 'HAW 4/28/2025 21:11:49'!
 initialize
 
-	BrowserWindow at: #classListMenuSpec registerMenuAndShortcutsSpecProvider:
-		(MessageSend receiver: self selector: #classListMenuSpec).
+	 BrowserWindow registerAll: self menuAndShortcutsSpecs! !
 
-	BrowserWindow at: #messageListMenuSpec registerMenuAndShortcutsSpecProvider:
-		(MessageSend receiver: self selector: #messageListMenuSpec).
-		
-	BrowserWindow at: #SmalltalkEditor registerMenuAndShortcutsSpecProvider:
-		(MessageSend receiver: self selector: #smalltalkEditorMenuSpec).! !
+!ExtraRefactoringMenues class methodsFor: 'initialization' stamp: 'HAW 4/28/2025 21:12:01'!
+unload 
+
+	 BrowserWindow unregisterAll: self menuAndShortcutsSpecs! !
+
+!ExtraRefactoringMenues class methodsFor: 'menues' stamp: 'HAW 4/28/2025 21:04:19'!
+classListMenuSpecSend
+
+	^ MessageSend receiver: self selector: #classListMenuSpec! !
+
+!ExtraRefactoringMenues class methodsFor: 'menues' stamp: 'HAW 4/28/2025 21:08:42'!
+menuAndShortcutsSpecs
+
+	^{ 	{ #classListMenuSpec. self classListMenuSpecSend }.
+		{ #messageListMenuSpec. self messageListMenuSpecSend }.
+		{ #SmalltalkEditor. self smalltalkEditorMenuSpecSend }}! !
+
+!ExtraRefactoringMenues class methodsFor: 'menues' stamp: 'HAW 4/28/2025 21:04:30'!
+messageListMenuSpecSend
+
+	^ MessageSend receiver: self selector: #messageListMenuSpec! !
+
+!ExtraRefactoringMenues class methodsFor: 'menues' stamp: 'HAW 4/28/2025 21:04:43'!
+smalltalkEditorMenuSpecSend
+
+	^ MessageSend receiver: self selector: #smalltalkEditorMenuSpec! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 2/17/2019 16:22:39'!
 keywordsDefinitions
@@ -18659,4 +18679,4 @@ moveInstanceVariableOn: aBrowser at: aClassToRefactor
 moveInstanceVariableOn: aBrowser for: anInstanceVariableName at: aClassToRefactor
 	
 	(RefactoringApplier moveInstanceVariableApplier on: aBrowser for: anInstanceVariableName at: aClassToRefactor) value! !
-CuisProRefactoringMenues initialize!
+ExtraRefactoringMenues initialize!

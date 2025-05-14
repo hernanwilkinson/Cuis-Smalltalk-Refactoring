@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7095] on 28 April 2025 at 6:08:42 pm'!
-'Description Fix loading'!
-!provides: 'ExtraRefactoringsLiveTyping' 1 1!
+'From Cuis7.3 [latest update: #7146] on 14 May 2025 at 11:58:13 am'!
+'Description fix sent unimplemented messages'!
+!provides: 'ExtraRefactoringsLiveTyping' 1 2!
 !requires: 'ExtraRefactorings' 1 0 nil!
 !requires: 'LiveTyping' 1 128 nil!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTyping-ExtractParameterObject-Model'!
@@ -80,10 +80,10 @@ actualScopeOptionLabels
 
 	^{ 'Actual Scope' }! !
 
-!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 3/23/2025 13:23:34'!
+!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 5/13/2025 16:43:30'!
 calculateImplementorsAndSenders
 
-	self isActualScope
+	self isActualScopeChoice 
 		ifTrue: [ self actualImplementorsAndSenders ]
 		ifFalse: [ super calculateImplementorsAndSenders ]
 ! !

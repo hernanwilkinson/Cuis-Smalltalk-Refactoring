@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7102] on 29 April 2025 at 8:30:48 am'!
-'Description Unload menues'!
-!provides: 'ExtraRefactorings' 1 4!
+'From Cuis7.5 [latest update: #7296] on 30 June 2025 at 4:45:07 pm'!
+'Description New way to check if a method is a setter'!
+!provides: 'ExtraRefactorings' 1 5!
 !requires: 'BaseImageTests' 1 447 nil!
 SystemOrganization addCategory: #ExtraRefactorings!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
@@ -1391,22 +1391,19 @@ method: getterCandidate isGetterOf: anInstanceVariableName
 method: getterCandidate isGetterOfClassVariable: aClassVariableName 
 	^(MethodWorksAsGetterVisitor method: getterCandidate forClassVariable: aClassVariableName) value! !
 
-!CodeForNodeToMove methodsFor: 'private' stamp: 'mc 12/29/2024 17:00:02'!
+!CodeForNodeToMove methodsFor: 'private' stamp: 'HAW 6/30/2025 16:36:32'!
 method: setterCandidate isSetterOf: anInstVarName 
-	| anInstVarIndex varIndexCode scanner |
 
-	anInstVarIndex := methodNode methodClass allInstVarNames indexOf: anInstVarName.
+	| anInstVarIndex  scanner |
 
-	"setterCandidate selector = (anInstVarName, ':') ifFalse: [ ^false ]."
-	
-	"I could have use the AST of the method, but parsing the source code could generate errors
-	that it is why I decided to check the bytecodes - Hernan"
-	varIndexCode := anInstVarIndex - 1.
+	anInstVarIndex := (methodNode methodClass allInstVarNames indexOf: anInstVarName) - 1.
 	scanner := InstructionStream on: setterCandidate.
 	scanner nextByte = 16r10 ifFalse: [ ^false ].
 	scanner movePcForward.
-	(setterCandidate writesFieldCode: varIndexCode with: scanner nextByte using: scanner) ifFalse: [ ^false ].
+	(scanner scanFor:
+		(setterCandidate encoderClass instVarWriteScanBlockFor: anInstVarIndex using: scanner)) ifFalse: [ ^false ].
 	scanner movePcForward.
+	
 	^scanner nextByte = 16r7C! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 7/14/2024 02:17:01'!
@@ -5770,22 +5767,21 @@ isGoingToMove: setterCandidate andIsSetterOf: anInstanceVariableToMove
 	^(methodsToExtract includes: setterCandidate) 
 	and: [self method: (sourceClass compiledMethodAt: setterCandidate) isSetterOf: anInstanceVariableToMove]! !
 
-!ExtractClass methodsFor: 'private' stamp: 'mc 2/25/2024 23:52:19'!
+!ExtractClass methodsFor: 'private' stamp: 'HAW 6/30/2025 16:37:12'!
 method: setterCandidate isSetterOf: anInstVarName 
-	| anInstVarIndex varIndexCode scanner |
 
-	anInstVarIndex := sourceClass allInstVarNames indexOf: anInstVarName.
+	| anInstVarIndex  scanner |
 
-	"setterCandidate selector = (anInstVarName, ':') ifFalse: [ ^false ]."
+	"Review duplicate code with CodeForNodeToMove>>method:isSetterOf: - Hernan"
 	
-	"I could have use the AST of the method, but parsing the source code could generate errors
-	that it is why I decided to check the bytecodes - Hernan"
-	varIndexCode := anInstVarIndex - 1.
+	anInstVarIndex := (sourceClass allInstVarNames indexOf: anInstVarName) - 1.
 	scanner := InstructionStream on: setterCandidate.
 	scanner nextByte = 16r10 ifFalse: [ ^false ].
 	scanner movePcForward.
-	(setterCandidate writesFieldCode: varIndexCode with: scanner nextByte using: scanner) ifFalse: [ ^false ].
+	(scanner scanFor:
+		(setterCandidate encoderClass instVarWriteScanBlockFor: anInstVarIndex using: scanner)) ifFalse: [ ^false ].
 	scanner movePcForward.
+	
 	^scanner nextByte = 16r7C or: [scanner nextByte = 16r78]! !
 
 !ExtractClass methodsFor: 'private' stamp: 'HAW 3/28/2025 14:52:28'!
@@ -17126,8 +17122,8 @@ test108CanMoveMethodWhenReferencesAnInstanceVariableAndHasAParameter
 	self deny: (sourceClass includesSelector: #iv1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:52:51'!
-test109AfterMovingMethodWhichReferencesAnInstanceVariableForReadingShouldUseTheExistentGetter
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 6/30/2025 16:39:34'!
+test109AfterMovingMethodWhichReferencesAnInstanceVariableForReadingShouldUseTheExistingGetter
 	
 	| sourceClass targetClass refactoring |
 	
@@ -17153,8 +17149,8 @@ test109AfterMovingMethodWhichReferencesAnInstanceVariableForReadingShouldUseTheE
 	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
 	self deny: (sourceClass includesSelector: #iv1).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:52:51'!
-test110AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistentSetter
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 6/30/2025 16:39:44'!
+test110AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter
 	
 	| sourceClass targetClass refactoring |
 	
@@ -17176,8 +17172,8 @@ test110AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	
 	self assert: 'iv3: anObject ^iv3 := anObject.' equals: (sourceClass sourceCodeAt: #iv3:)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:52:51'!
-test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistentSetter
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 6/30/2025 16:32:56'!
+test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter
 	
 	| sourceClass targetClass refactoring |
 	
@@ -17202,8 +17198,8 @@ test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	self assert: 'm1
 	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:52:52'!
-test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistentSetter2
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 6/30/2025 16:39:56'!
+test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter2
 	
 	| sourceClass targetClass refactoring |
 	
@@ -17231,8 +17227,8 @@ test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	self assert: 'iv3_: anObject
 	^iv1 iv3_: anObject originalObject: self.' equals: (sourceClass sourceCodeAt: #iv3_:).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:52:52'!
-test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistentSetter3
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 6/30/2025 16:40:03'!
+test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter3
 	
 	| sourceClass targetClass refactoring |
 	
@@ -17260,8 +17256,8 @@ test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	self assert: 'iv3_: anObject
 	^iv1 iv3_: anObject originalObject: self.' equals: (sourceClass sourceCodeAt: #iv3_:).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:52:52'!
-test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistentSetter4
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 6/30/2025 16:40:12'!
+test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter4
 	
 	| sourceClass targetClass refactoring |
 	

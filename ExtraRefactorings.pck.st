@@ -1,6 +1,6 @@
-'From Cuis7.5 [latest update: #7296] on 30 June 2025 at 4:45:07 pm'!
-'Description New way to check if a method is a setter'!
-!provides: 'ExtraRefactorings' 1 5!
+'From Cuis7.5 [latest update: #7474] on 5 September 2025 at 4:25:11 pm'!
+'Description Updates due to new layout morph'!
+!provides: 'ExtraRefactorings' 1 6!
 !requires: 'BaseImageTests' 1 447 nil!
 SystemOrganization addCategory: #ExtraRefactorings!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
@@ -334,7 +334,7 @@ FormSection class
 	instanceVariableNames: ''!
 
 !classDefinition: #LabeledInput category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
-LayoutMorph subclass: #LabeledInput
+LinearLayoutMorph subclass: #LabeledInput
 	instanceVariableNames: 'labelMorph inputMorph'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -344,7 +344,7 @@ LabeledInput class
 	instanceVariableNames: ''!
 
 !classDefinition: #MessageKeywordsAndParametersTable category: #'ExtraRefactorings-ExtractToMethodObject-UI'!
-LayoutMorph subclass: #MessageKeywordsAndParametersTable
+LinearLayoutMorph subclass: #MessageKeywordsAndParametersTable
 	instanceVariableNames: 'rowModels previewModel backgroundColor refactoringModel columnWidths variablesToParametrize'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -4103,12 +4103,12 @@ buildMethodsToMoveListSection
 	self layoutMorph addMorph: messageSendingListSection.
 	! !
 
-!ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 2/8/2024 01:14:54'!
+!ExtractClassWindow methodsFor: 'GUI building' stamp: 'HAW 9/4/2025 16:26:16'!
 buildMethodsToMoveListTitle
 	 
 	methodsToMoveTitle := LabelMorph contents: self labelSelectMethodsToMove.
-	methodsToMoveTitle layoutSpec offAxisEdgeWeight: 0.0.
 	self layoutMorph addMorph: methodsToMoveTitle.
+	methodsToMoveTitle layoutSpec offAxisEdgeWeight: 0.0.
 	! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'HAW 3/28/2025 13:45:31'!
@@ -4146,15 +4146,16 @@ buildNewClassNameSection
 	self layoutMorph addMorph: newClassNameLabeledInput.
 	! !
 
-!ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 1/17/2024 20:40:42'!
+!ExtractClassWindow methodsFor: 'GUI building' stamp: 'HAW 9/4/2025 16:26:36'!
 buildReferencesToVariablesLabel
 
 	labelHasReferencesToVariables := LabelMorph new.
 	labelHasReferencesToVariables contents: self labelReferenceToSelectedInstanceVariable.
 	labelHasReferencesToVariables color: Color blue.
-	labelHasReferencesToVariables layoutSpec offAxisEdgeWeight: 0.0.
 	labelHasReferencesToVariables visible: false.
-	self layoutMorph addMorph: labelHasReferencesToVariables! !
+	self layoutMorph addMorph: labelHasReferencesToVariables.
+	labelHasReferencesToVariables layoutSpec offAxisEdgeWeight: 0.0.
+! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 1/17/2024 23:07:22'!
 buildSubmitButton
@@ -4204,13 +4205,13 @@ buildinstanceVariableListSection
 	self layoutMorph addMorph: instanceVariableListSection.
 ! !
 
-!ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 2/8/2024 01:13:08'!
+!ExtractClassWindow methodsFor: 'GUI building' stamp: 'HAW 9/4/2025 16:26:02'!
 buildinstanceVariableListTitle
 	
 	instanceVariablesToMoveTitle := LabelMorph contents: self labelSelectInstVarToMove.
-	instanceVariablesToMoveTitle layoutSpec offAxisEdgeWeight: 0.0.
 	self layoutMorph addMorph: instanceVariablesToMoveTitle.
-! !
+	instanceVariablesToMoveTitle layoutSpec offAxisEdgeWeight: 0.0.
+	! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 2/10/2024 20:55:18'!
 initialHeight
@@ -4481,12 +4482,12 @@ buildParameterObjectClassSection
 	self layoutMorph addMorph: parameterObjectCategoryNameInput.
 ! !
 
-!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 5/15/2024 01:08:59'!
+!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 9/5/2025 16:20:53'!
 buildParameterObjectClassTitle
 	
 	parameterObjectClassTitle := LabelMorph contents: self labelParameterObjectClassTitle.
-	parameterObjectClassTitle layoutSpec offAxisEdgeWeight: 0.0.
 	self layoutMorph addMorph: parameterObjectClassTitle.
+	parameterObjectClassTitle layoutSpec offAxisEdgeWeight: 0.0.
 ! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 3/27/2025 11:56:33'!
@@ -4505,13 +4506,12 @@ buildParametersSelectionSection
 
 	self layoutMorph addMorph: parametersSelectionList.! !
 
-!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 5/15/2024 16:02:03'!
+!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 9/5/2025 16:20:42'!
 buildParametersSelectionTitle
 
 	parametersSelectionTitle := LabelMorph contents: self labelParametersSectionTitle.
-	parametersSelectionTitle layoutSpec offAxisEdgeWeight: 0.0.
-
 	self layoutMorph addMorph: parametersSelectionTitle.
+	parametersSelectionTitle layoutSpec offAxisEdgeWeight: 0.0.
 ! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 3/28/2025 13:43:21'!

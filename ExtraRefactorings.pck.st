@@ -1,6 +1,6 @@
-'From Cuis7.5 [latest update: #7474] on 5 September 2025 at 4:25:11 pm'!
-'Description Updates due to new layout morph'!
-!provides: 'ExtraRefactorings' 1 6!
+'From Cuis7.5 [latest update: #7594] on 20 September 2025 at 6:48:42 pm'!
+'Description Removes addtional dot'!
+!provides: 'ExtraRefactorings' 1 7!
 !requires: 'BaseImageTests' 1 447 nil!
 SystemOrganization addCategory: #ExtraRefactorings!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
@@ -2722,7 +2722,7 @@ useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 	methodNode := aMethodNode.
 	definitions := variablesToParametrizeKeywordsDefinitions.! !
 
-!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 9/6/2020 17:54:20'!
+!ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 9/20/2025 18:06:45'!
 addAllRangesOf: aVariableName to: rangeToReplacementParameter usingAsReplacement: aNewName
 
 	| disregardType rangesOfVariable |
@@ -2737,7 +2737,7 @@ addAllRangesOf: aVariableName to: rangeToReplacementParameter usingAsReplacement
 		rangesForLiteralVariableNode: aVariableName
 		ifAbsent: [Set new]).
 
-	rangesOfVariable do: [:aRange | | rangeToNewString |.
+	rangesOfVariable do: [:aRange | | rangeToNewString |
 		rangeToNewString := Association key: aRange value: aNewName.
 		rangeToReplacementParameter add: rangeToNewString].! !
 

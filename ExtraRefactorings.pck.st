@@ -1,6 +1,6 @@
-'From Cuis7.5 [latest update: #7594] on 20 September 2025 at 6:48:42 pm'!
-'Description Removes addtional dot'!
-!provides: 'ExtraRefactorings' 1 7!
+'From Cuis7.5 [latest update: #7671] on 29 October 2025 at 3:05:20 pm'!
+'Description Extract parameter object window color fix'!
+!provides: 'ExtraRefactorings' 1 8!
 !requires: 'BaseImageTests' 1 447 nil!
 SystemOrganization addCategory: #ExtraRefactorings!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
@@ -4410,7 +4410,12 @@ acceptButtonColor
 
 	^ Theme current acceptButton! !
 
-!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 3/23/2025 13:19:22'!
+!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 10/29/2025 14:41:25'!
+backgroundColor
+
+	^Color lightGray! !
+
+!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 10/29/2025 14:43:05'!
 buildActionButtonsSection
 
 	| sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
@@ -4428,6 +4433,8 @@ buildActionButtonsSection
 	sectionLayoutSpec offAxisEdgeWeight: 0.95.
 
 	buttonsSection layoutSpec: sectionLayoutSpec.
+	buttonsSection color: self backgroundColor.
+	
 	self layoutMorph addMorph: buttonsSection.
 	! !
 
@@ -4579,11 +4586,12 @@ recommendedWidthForLabels: labels
 	rightMargin := 20.
 	^(labels collect: [:aLabel | FontFamily defaultFamilyAndPointSize widthOfString: aLabel]) max + rightMargin! !
 
-!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 5/15/2024 16:45:35'!
+!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 10/29/2025 14:41:05'!
 setConfigurationOnLayoutMorph
 
 	self layoutMorph separation: 5.
 	
+	self layoutMorph color: self backgroundColor.
 	self layoutMorph axisEdgeWeight: #columnTop! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 5/15/2024 17:37:11'!

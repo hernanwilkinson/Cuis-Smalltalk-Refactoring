@@ -1,6 +1,6 @@
-'From Cuis7.5 [latest update: #7671] on 29 October 2025 at 3:05:20 pm'!
-'Description Extract parameter object window color fix'!
-!provides: 'ExtraRefactorings' 1 8!
+'From Cuis7.5 [latest update: #7671] on 3 December 2025 at 3:59:28 pm'!
+'Description support for siste bytecodes'!
+!provides: 'ExtraRefactorings' 1 9!
 !requires: 'BaseImageTests' 1 447 nil!
 SystemOrganization addCategory: #ExtraRefactorings!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
@@ -1391,20 +1391,13 @@ method: getterCandidate isGetterOf: anInstanceVariableName
 method: getterCandidate isGetterOfClassVariable: aClassVariableName 
 	^(MethodWorksAsGetterVisitor method: getterCandidate forClassVariable: aClassVariableName) value! !
 
-!CodeForNodeToMove methodsFor: 'private' stamp: 'HAW 6/30/2025 16:36:32'!
+!CodeForNodeToMove methodsFor: 'private' stamp: 'HAW 12/3/2025 15:42:55'!
 method: setterCandidate isSetterOf: anInstVarName 
 
-	| anInstVarIndex  scanner |
-
-	anInstVarIndex := (methodNode methodClass allInstVarNames indexOf: anInstVarName) - 1.
-	scanner := InstructionStream on: setterCandidate.
-	scanner nextByte = 16r10 ifFalse: [ ^false ].
-	scanner movePcForward.
-	(scanner scanFor:
-		(setterCandidate encoderClass instVarWriteScanBlockFor: anInstVarIndex using: scanner)) ifFalse: [ ^false ].
-	scanner movePcForward.
-	
-	^scanner nextByte = 16r7C! !
+	^setterCandidate 
+		isRelaxedSetterOf: anInstVarName
+		at:  (methodNode methodClass allInstVarNames indexOf: anInstVarName)
+		allowsReturnReceiver: false! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 7/14/2024 02:17:01'!
 newKeywordSelector: aMessageNode
@@ -4410,12 +4403,12 @@ acceptButtonColor
 
 	^ Theme current acceptButton! !
 
-!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 10/29/2025 14:41:25'!
+!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 12/3/2025 15:58:56'!
 backgroundColor
 
 	^Color lightGray! !
 
-!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 10/29/2025 14:43:05'!
+!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 12/3/2025 15:57:48'!
 buildActionButtonsSection
 
 	| sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
@@ -4586,7 +4579,7 @@ recommendedWidthForLabels: labels
 	rightMargin := 20.
 	^(labels collect: [:aLabel | FontFamily defaultFamilyAndPointSize widthOfString: aLabel]) max + rightMargin! !
 
-!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 10/29/2025 14:41:05'!
+!ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 12/3/2025 15:58:20'!
 setConfigurationOnLayoutMorph
 
 	self layoutMorph separation: 5.
@@ -5775,22 +5768,13 @@ isGoingToMove: setterCandidate andIsSetterOf: anInstanceVariableToMove
 	^(methodsToExtract includes: setterCandidate) 
 	and: [self method: (sourceClass compiledMethodAt: setterCandidate) isSetterOf: anInstanceVariableToMove]! !
 
-!ExtractClass methodsFor: 'private' stamp: 'HAW 6/30/2025 16:37:12'!
+!ExtractClass methodsFor: 'private' stamp: 'HAW 12/3/2025 15:42:55'!
 method: setterCandidate isSetterOf: anInstVarName 
 
-	| anInstVarIndex  scanner |
-
-	"Review duplicate code with CodeForNodeToMove>>method:isSetterOf: - Hernan"
-	
-	anInstVarIndex := (sourceClass allInstVarNames indexOf: anInstVarName) - 1.
-	scanner := InstructionStream on: setterCandidate.
-	scanner nextByte = 16r10 ifFalse: [ ^false ].
-	scanner movePcForward.
-	(scanner scanFor:
-		(setterCandidate encoderClass instVarWriteScanBlockFor: anInstVarIndex using: scanner)) ifFalse: [ ^false ].
-	scanner movePcForward.
-	
-	^scanner nextByte = 16r7C or: [scanner nextByte = 16r78]! !
+	^setterCandidate 
+		isRelaxedSetterOf: anInstVarName
+		at:  (sourceClass allInstVarNames indexOf: anInstVarName)
+		allowsReturnReceiver: true! !
 
 !ExtractClass methodsFor: 'private' stamp: 'HAW 3/28/2025 14:52:28'!
 moveInstanceVariables
@@ -9050,7 +9034,7 @@ test011InstVarToCreateShouldntBeAsTmpInManyMethods
 		failsWith: [ExtractClass variable: 'aCounter' alreadyExistsOnMethods: {#m1. #m2}].
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 15:47:44'!
 test100extractClassWithNoVariablesAndNoMethodShouldOnlyCreateClass
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9069,13 +9053,13 @@ test100extractClassWithNoVariablesAndNoMethodShouldOnlyCreateClass
 	refactoring apply.
 	
 	targetClass := Smalltalk classNamed: #TargetClass.
-	self assert: [ targetClass notNil ].
-	self assert: [sourceClass instVarNames includes: 'aTargetClass'].
+	self assert: targetClass notNil.
+	self assert: (sourceClass instVarNames includes: 'aTargetClass').
 	self assert: 'initialize
 	aTargetClass := TargetClass new.
 	super initialize.' equals: (sourceClass sourceCodeAt: #initialize).! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 15:47:22'!
 test101ExtractClassShouldReuseInitialize
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9095,13 +9079,13 @@ test101ExtractClassShouldReuseInitialize
 	refactoring apply.
 	
 	targetClass := Smalltalk classNamed: #TargetClass.
-	self assert: [ targetClass notNil ].
-	self assert: [sourceClass instVarNames includes: 'aTargetClass'].
+	self assert: targetClass notNil.
+	self assert: (sourceClass instVarNames includes: 'aTargetClass').
 	self assert: 'initialize
 	aTargetClass := TargetClass new.
 	^self.' equals: (sourceClass sourceCodeAt: #initialize).! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 15:47:32'!
 test102ExtractClassShouldReuseInitialize
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9123,15 +9107,15 @@ test102ExtractClassShouldReuseInitialize
 	refactoring apply.
 	
 	targetClass := Smalltalk classNamed: #TargetClass.
-	self assert: [ targetClass notNil ].
-	self assert: [sourceClass instVarNames includes: 'aTargetClass'].
+	self assert: targetClass notNil.
+	self assert: (sourceClass instVarNames includes: 'aTargetClass').
 	self assert: 'initialize
 	| tmpvar |
 	aTargetClass := TargetClass new.
 	tmpvar := 1.
 	^self.' equals: (sourceClass sourceCodeAt: #initialize).! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test103GivenSourceClassAndTwoInstanceVariableWhenExtractClassThenInstanceVariablesShouldBeInTargetClass
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9151,12 +9135,12 @@ test103GivenSourceClassAndTwoInstanceVariableWhenExtractClassThenInstanceVariabl
 	refactoring apply.
 	
 	targetClass := Smalltalk classNamed: #TargetClass.
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 2 equals: targetClass instVarNames size.
 	self assert: targetClass instVarNames includes: 'iv1'.
 	self assert: targetClass instVarNames includes: 'iv2'.! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test104GivenMethodAndInstanceVariableWhenExtractClassThenInstanceVariableShouldBeInTargetClass
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9176,12 +9160,12 @@ test104GivenMethodAndInstanceVariableWhenExtractClassThenInstanceVariableShouldB
 	refactoring apply.
 	
 	targetClass := Smalltalk classNamed: #TargetClass.
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: targetClass instVarNames includes: 'iv1'.
 	self assert: 'm1 ^aTargetClass iv1+1.' equals: (sourceClass sourceCodeAt: #m1).! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test105GivenSourceClassAndOneInstanceVariableWhenExtractClassThenInstanceVariableShouldBeInTargetClass
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9200,11 +9184,11 @@ test105GivenSourceClassAndOneInstanceVariableWhenExtractClassThenInstanceVariabl
 	refactoring apply.
 	
 	targetClass := Smalltalk classNamed: #TargetClass.
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'iv1' equals: targetClass instVarNames first.! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test106GivenMethodWhenExtractClassThenMoveMethodShouldBePerformed
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9225,13 +9209,13 @@ test106GivenMethodWhenExtractClassThenMoveMethodShouldBePerformed
 	refactoring apply.
 	
 	targetClass := Smalltalk classNamed: #TargetClass.
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 0 equals: targetClass instVarNames size.
 	self assert: 'm1
 	^aTargetClass m1: self.' equals: (sourceClass sourceCodeAt: #m1).
 	self assert: 'm1: aSourceClass ^aSourceClass iv1+1.' equals: (targetClass sourceCodeAt: #m1:).! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test107Given2MethodsWhenExtractClassThenMoveMethodShouldBePerformed
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9254,7 +9238,7 @@ test107Given2MethodsWhenExtractClassThenMoveMethodShouldBePerformed
 	refactoring apply.
 	
 	targetClass := (Smalltalk classNamed: #TargetClass).
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 0 equals: targetClass instVarNames size.
 	self assert: 'm1
 	^aTargetClass m1: self.' equals: (sourceClass sourceCodeAt: #m1).
@@ -9263,7 +9247,7 @@ test107Given2MethodsWhenExtractClassThenMoveMethodShouldBePerformed
 	^aTargetClass m2.' equals: (sourceClass sourceCodeAt: #m2).
 	self assert: 'm2 ^1.' equals: (targetClass sourceCodeAt: #m2).! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test108GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9285,7 +9269,7 @@ test108GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSam
 	refactoring apply.
 	
 	targetClass := (Smalltalk classNamed: #TargetClass).
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'cbu ^aCbu cbu.' equals: (sourceClass sourceCodeAt: #cbu).
 	self assert: 'cbuPlusOne ^aCbu cbu+1 .' equals: (sourceClass sourceCodeAt: #cbuPlusOne).
@@ -9294,7 +9278,7 @@ test108GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSam
 
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test109GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9318,7 +9302,7 @@ test109GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSam
 	refactoring apply.
 	
 	targetClass := (Smalltalk classNamed: #TargetClass).
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'cbu ^aCbu cbu.' equals: (sourceClass sourceCodeAt: #cbu).
 	self assert: 'cbu_
@@ -9328,7 +9312,7 @@ test109GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSam
 	^cbu' equals: (targetClass sourceCodeAt: #cbu).
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test110GivenANonGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveUndescore
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9352,7 +9336,7 @@ test110GivenANonGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHave
 	refactoring apply.
 	
 	targetClass := (Smalltalk classNamed: #TargetClass).
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'cbu
 	^aCbu cbu.' equals: (sourceClass sourceCodeAt: #cbu).
@@ -9366,7 +9350,7 @@ test110GivenANonGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHave
 	
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test111GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9390,7 +9374,7 @@ test111GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSam
 	refactoring apply.
 	
 	targetClass := (Smalltalk classNamed: #TargetClass).
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'counter: anInt ^aCounter counter: anInt.' equals: (sourceClass sourceCodeAt: #counter:).
 	self assert: 'counterReset
@@ -9400,7 +9384,7 @@ test111GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSam
 	^counter := anObject.' equals: (targetClass sourceCodeAt: #counter:).
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test112GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9426,7 +9410,7 @@ test112GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSam
 	refactoring apply.
 	
 	targetClass := (Smalltalk classNamed: #TargetClass).
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'counter: anInt ^aCounter counter: anInt.' equals: (sourceClass sourceCodeAt: #counter:).
 	self assert: 'counter_: anInt
@@ -9440,7 +9424,7 @@ test112GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSam
 
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test113GivenASetterWhichDoesntReturnAssigmentAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9464,7 +9448,7 @@ test113GivenASetterWhichDoesntReturnAssigmentAndInstvarWithSameNameWhenExtractCl
 	refactoring apply.
 	
 	targetClass := (Smalltalk classNamed: #TargetClass).
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'counter: anInt aCounter counter: anInt.' equals: (sourceClass sourceCodeAt: #counter:).
 	self assert: 'counterReset
@@ -9474,7 +9458,7 @@ test113GivenASetterWhichDoesntReturnAssigmentAndInstvarWithSameNameWhenExtractCl
 	^counter := anObject.' equals: (targetClass sourceCodeAt: #counter:).
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test114GivenANonSetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveUndescore
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9500,7 +9484,7 @@ test114GivenANonSetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHave
 	refactoring apply.
 	
 	targetClass := (Smalltalk classNamed: #TargetClass).
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'counter: anInt
 	^aCounter counter: anInt.' equals: (sourceClass sourceCodeAt: #counter:).
@@ -9516,7 +9500,7 @@ test114GivenANonSetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHave
 
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test115InstVarToCreateCanBeAsTmpInOneMethodButThatMethodShouldBeMoved
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9540,7 +9524,7 @@ test115InstVarToCreateCanBeAsTmpInOneMethodButThatMethodShouldBeMoved
 	refactoring apply.
 	
 	targetClass := (Smalltalk classNamed: #TargetClass).
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'm1 |aCounter_| ^aCounter_ := 1.' equals: (targetClass sourceCodeAt: #m1).
 	self assert: 'counterReset
@@ -9548,7 +9532,7 @@ test115InstVarToCreateCanBeAsTmpInOneMethodButThatMethodShouldBeMoved
 	^aCounter counter' equals: (sourceClass sourceCodeAt: #counterReset).
 ! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test116InstVarToCreateCanBeAsTmpInOneMethodButThatMethodShouldBeMoved
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9572,7 +9556,7 @@ test116InstVarToCreateCanBeAsTmpInOneMethodButThatMethodShouldBeMoved
 	refactoring apply.
 	
 	targetClass := (Smalltalk classNamed: #TargetClass).
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'm1 |aaTmp aCounter_| ^aCounter_ := 1.' equals: (targetClass sourceCodeAt: #m1).
 	self assert: 'counterReset
@@ -9580,7 +9564,7 @@ test116InstVarToCreateCanBeAsTmpInOneMethodButThatMethodShouldBeMoved
 	^aCounter counter' equals: (sourceClass sourceCodeAt: #counterReset).
 ! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test117InstVarToCreateCanBeAsParameterInOneMethodButThatMethodShouldBeMoved
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9604,7 +9588,7 @@ test117InstVarToCreateCanBeAsParameterInOneMethodButThatMethodShouldBeMoved
 	refactoring apply.
 	
 	targetClass := (Smalltalk classNamed: #TargetClass).
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'm1: aSourceClass withSourceClass: aSourceClass_ aSourceClass+1.
 	^aSourceClass_.' equals: (targetClass sourceCodeAt: #m1:withSourceClass:).
@@ -9613,7 +9597,7 @@ test117InstVarToCreateCanBeAsParameterInOneMethodButThatMethodShouldBeMoved
 	^aCounter counter' equals: (sourceClass sourceCodeAt: #counterReset).
 ! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/28/2025 14:36:49'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 12/3/2025 13:57:37'!
 test118ExtractClassCanOverrideMethodsOfObjectClass
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -9634,7 +9618,7 @@ test118ExtractClassCanOverrideMethodsOfObjectClass
 	refactoring apply.
 	
 	targetClass := Smalltalk classNamed: #TargetClass.
-	self assert: [ targetClass notNil ].
+	self assert: targetClass notNil.
 	self assert: 0 equals: targetClass instVarNames size.
 	self assert: 'name
 	^aTargetClass name.' equals: (sourceClass sourceCodeAt: #name).
@@ -18525,6 +18509,30 @@ test700CanMoveInstanceMethodToClass
 	self assert: 'm1
 	^TargetClass m1.' equals: (sourceClass sourceCodeAt: #m1).
 	! !
+
+!CompiledMethod methodsFor: '*ExtraRefactorings-testing' stamp: 'HAW 12/3/2025 15:43:02'!
+isRelaxedSetterOf: anInstVarName at: anInstVarIndex allowsReturnReceiver: allowsReturnReceiver
+	"This method is copy of #isSetterOf:at: with some changes, not nice... but the easiest way
+	without modifing Cuis.
+	
+	This check relaxes what is the smalltalk way to define a setter.
+	It returns true even if the selector does not have the same name as the variable and even if it does not returns self"
+
+	| scanner instruction |
+	
+	self isQuick ifTrue: [ ^false ].
+	scanner := InstructionStream on: self.
+	instruction := scanner nextInstruction.
+	(instruction selector == #pushTemporaryVariable: and: [instruction argument = 0]) 
+		ifFalse: [^false].
+	instruction := scanner nextInstruction.
+	((instruction selector == #popIntoReceiverVariable: or: [ instruction selector == #storeIntoReceiverVariable:])
+		and: [instruction argument = (anInstVarIndex - 1)]) 
+		ifFalse: [^false].
+	scanner peekInstruction selector == #doNop 
+		ifTrue: [scanner nextInstruction ].
+	instruction := scanner nextInstruction.
+	^instruction selector == #methodReturnTop or: [allowsReturnReceiver and: [instruction selector == #methodReturnReceiver ]]! !
 
 !CharacterSequence methodsFor: '*ExtraRefactorings' stamp: 'HAW 3/24/2025 18:30:53'!
 asInstanceVariableNameWithoutChangeMe

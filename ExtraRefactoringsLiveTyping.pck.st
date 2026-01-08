@@ -1,7 +1,7 @@
 'From Cuis7.3 [latest update: #7146] on 14 May 2025 at 11:58:13 am'!
 'Description fix sent unimplemented messages'!
 !provides: 'ExtraRefactoringsLiveTyping' 1 2!
-!requires: 'ExtraRefactorings' 1 0 nil!
+!requires: 'ExtraRefactoringsTests' 1 0 nil!
 !requires: 'LiveTyping' 1 128 nil!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTyping-ExtractParameterObject-Model'!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTyping-ExtractParameterObject-UI'!

@@ -1,8 +1,8 @@
-'From Cuis7.7 [latest update: #7783] on 6 January 2026 at 12:14:25 pm'!
-'Description Split into two packages. One for tests only'!
-!provides: 'ExtraRefactorings' 1 11!
+'From Cuis7.7 [latest update: #7797] on 26 June 2026 at 9:11:56 am'!
+'Description Refactoring cleanning'!
+!provides: 'ExtraRefactorings' 1 12!
 SystemOrganization addCategory: #ExtraRefactorings!
-SystemOrganization addCategory: 'ExtraRefactorings-ExtractClass-Model'!
+SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-UI'!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractToMethodObject-Model'!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractToMethodObject-UI'!
@@ -486,13 +486,13 @@ SelectionMenu subclass: #SelectionMenuWithSubtitles
 SelectionMenuWithSubtitles class
 	instanceVariableNames: ''!
 
-!classDefinition: #ExtractClass category: 'ExtraRefactorings-ExtractClass-Model'!
+!classDefinition: #ExtractClass category: #'ExtraRefactorings-ExtractClass-Model'!
 Refactoring subclass: #ExtractClass
 	instanceVariableNames: 'sourceClass targetClassName instVarsToExtract methodsToExtract variableToAccessToNewClass'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ExtraRefactorings-ExtractClass-Model'!
-!classDefinition: 'ExtractClass class' category: 'ExtraRefactorings-ExtractClass-Model'!
+!classDefinition: 'ExtractClass class' category: #'ExtraRefactorings-ExtractClass-Model'!
 ExtractClass class
 	instanceVariableNames: ''!
 
@@ -8836,4 +8836,24 @@ moveInstanceVariableOn: aBrowser at: aClassToRefactor
 moveInstanceVariableOn: aBrowser for: anInstanceVariableName at: aClassToRefactor
 	
 	(RefactoringApplier moveInstanceVariableApplier on: aBrowser for: anInstanceVariableName at: aClassToRefactor) value! !
+
+!ParametersSizeChange methodsFor: '*ExtraRefactorings-changes' stamp: 'HAW 23/Mar/2025 19:43:09'!
+changedSenders
+	
+	^changedSenders! !
+
+!ParametersSizeChange methodsFor: '*ExtraRefactorings-changes' stamp: 'HAW 23/Mar/2025 19:42:55'!
+newImplementors
+	
+	^newImplementors! !
+
+!NewInstanceVariablePrecondition methodsFor: '*ExtraRefactorings-evaluating' stamp: 'HAW 13/Nov/2019 20:46:26'!
+valueForSuperclass
+	
+	self assertIsNotEmpty.
+	self assertIsNotAReservedName.
+	self assertIsValidInstanceVariableName.
+	self assertIsNotAlreadyDefinedInSuperclasses.
+
+	! !
 ExtraRefactoringMenues initialize!

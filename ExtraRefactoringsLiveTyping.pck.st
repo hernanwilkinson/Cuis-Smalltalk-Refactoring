@@ -1,6 +1,6 @@
-'From Cuis7.3 [latest update: #7146] on 14 May 2025 at 11:58:13 am'!
+'From Cuis7.9 [latest update: #8134] on 27 August 2026 at 2:06:43 pm'!
 'Description fix sent unimplemented messages'!
-!provides: 'ExtraRefactoringsLiveTyping' 1 2!
+!provides: 'ExtraRefactoringsLiveTyping' 1 3!
 !requires: 'ExtraRefactoringsTests' 1 0 nil!
 !requires: 'LiveTyping' 1 128 nil!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTyping-ExtractParameterObject-Model'!
@@ -50,8 +50,19 @@ MoveMethodWithActualScopeApplier class
 	instanceVariableNames: ''!
 
 
-!ExtractParameterObjectWithActualScope methodsFor: 'as yet unclassified' stamp: 'HAW 3/25/2025 11:56:56'!
+!ExtractParameterObjectWithActualScope methodsFor: 'initialization' stamp: 'HAW 25/Aug/2026, 12:27:06 pm (UTC)'!
+!methodProperties: {}!
+initializeWithPossibleMessageSends: aShouldChangePossibleMessageSends
+
+	shouldChangePossibleMessageSends := aShouldChangePossibleMessageSends
+! !
+
+!ExtractParameterObjectWithActualScope methodsFor: 'refactoring-changes' stamp: 'HAW 25/Aug/2026, 12:27:06 pm (UTC)'!
+!methodProperties: {}!
 createAddParameterRefactoring
+
+	"The add parameter is the first change made, so the implementors and the senders to give it
+	are the ones I was created with. The new ones are not known until it has been applied."
 
 	 ^ AddParameterWithActualScope 
 		named: parameterObjectName 
@@ -59,28 +70,60 @@ createAddParameterRefactoring
 		initializedWith: parameterObjectPlaceHolder 
 		using: self parameterObjectKeyword 
 		toKeywordSelector: method selector
-		implementors: newImplementors
-		senders: newSenders
-		withPossibleMessageSends: shouldChangePossibleMessageSends! !
+		implementors: originalImplementors
+		senders: originalSenders
+		withPossibleMessageSends: shouldChangePossibleMessageSends
 
-!ExtractParameterObjectWithActualScope methodsFor: 'as yet unclassified' stamp: 'HAW 3/25/2025 11:56:45'!
-createRemoveParameterRefactoringFor: aParameter at: anIndex 
-
-	^ RemoveParameterWithActualScope 
-		atIndex: anIndex
-		named: aParameter
-		from: method
-		implementors: newImplementors
-		senders: newSenders
-		withPossibleMessageSends: shouldChangePossibleMessageSends 
 ! !
 
-!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 5/17/2024 11:19:52'!
+!ExtractParameterObjectWithActualScope methodsFor: 'refactoring-changes' stamp: 'HAW 25/Aug/2026, 12:30:18 pm (UTC)'!
+!methodProperties: {}!
+createRemoveParameterRefactoringFor: aParameter at: anIndex 
+
+	"The index I was made with is where the parameter stood before any other was removed, so
+	the one to remove at is where it stands in the method as it is now."
+
+	^ RemoveParameterWithActualScope 
+		atIndex: (RemoveParameterWithActualScope assert: aParameter isDefinedIn: method notOptimizedMethodNode)
+		named: aParameter
+		from: method selector
+		implementors: newImplementors
+		senders: newSenders
+		withPossibleMessageSends: shouldChangePossibleMessageSends
+
+! !
+
+!ExtractParameterObjectWithActualScope class methodsFor: 'instance creation' stamp: 'HAW 25/Aug/2026, 12:26:54 pm (UTC)'!
+!methodProperties: {}!
+from: aCompiledMethod
+toClassNamed: aClassName
+subclassing: aSuperclassName
+onCategory: aCategoryName
+withParameters: someParameters
+placedAt: someParameterPositions
+implementors: someImplementors
+senders: someSenders
+withPossibleMessageSends: aShouldChangePossibleMessageSends
+
+	^(self
+		from: aCompiledMethod
+		toClassNamed: aClassName
+		subclassing: aSuperclassName
+		onCategory: aCategoryName
+		withParameters: someParameters
+		placedAt: someParameterPositions
+		implementors: someImplementors
+		senders: someSenders) initializeWithPossibleMessageSends: aShouldChangePossibleMessageSends
+! !
+
+!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 17/May/2024, 2:19:52 pm (UTC)'!
+!methodProperties: {}!
 actualScopeOptionLabels
 
 	^{ 'Actual Scope' }! !
 
-!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 5/13/2025 16:43:30'!
+!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 13/May/2025, 7:43:30 pm (UTC)'!
+!methodProperties: {}!
 calculateImplementorsAndSenders
 
 	self isActualScopeChoice 
@@ -88,27 +131,32 @@ calculateImplementorsAndSenders
 		ifFalse: [ super calculateImplementorsAndSenders ]
 ! !
 
-!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 11/25/2024 20:44:07'!
+!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 25/Nov/2024, 11:44:07 pm (UTC)'!
+!methodProperties: {}!
 convertSendersToCompiledMethods
 
 	self filterSenders! !
 
-!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 11/25/2024 20:04:19'!
+!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 25/Nov/2024, 11:04:19 pm (UTC)'!
+!methodProperties: {}!
 messageNode
 
 	^nil! !
 
-!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 5/17/2024 11:24:47'!
+!ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 17/May/2024, 2:24:47 pm (UTC)'!
+!methodProperties: {}!
 scopeOptionLabels
 
 	^super scopeOptionLabels, self actualScopeOptionLabels! !
 
-!ExtractParameterObjectWithActualScopeApplier class methodsFor: 'as yet unclassified' stamp: 'HAW 4/28/2025 18:07:37'!
+!ExtractParameterObjectWithActualScopeApplier class methodsFor: 'as yet unclassified' stamp: 'HAW 28/Apr/2025, 9:07:37 pm (UTC)'!
+!methodProperties: {}!
 initialize
 	
 	RefactoringApplier registerExtractParameterObjectApplier: self! !
 
-!MoveInstanceVariableWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 6/17/2024 15:53:03'!
+!MoveInstanceVariableWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 17/Jun/2024, 6:53:03 pm (UTC)'!
+!methodProperties: {}!
 initialAnswerForInstanceVariable: anAccessingThroughinstanceVariableName in: aSourceClass 
 	
 	| liveTypingTypes |
@@ -117,12 +165,14 @@ initialAnswerForInstanceVariable: anAccessingThroughinstanceVariableName in: aSo
 	liveTypingTypes := classToRefactor commonSupertypeOfInstanceVariableNamed: accessingThroughinstanceVariableName ifNoTypes: [^''].
 	^liveTypingTypes name asString ! !
 
-!MoveInstanceVariableWithActualScopeApplier class methodsFor: 'as yet unclassified' stamp: 'HAW 4/28/2025 18:07:50'!
+!MoveInstanceVariableWithActualScopeApplier class methodsFor: 'as yet unclassified' stamp: 'HAW 28/Apr/2025, 9:07:50 pm (UTC)'!
+!methodProperties: {}!
 initialize
 	
 	RefactoringApplier registerMoveInstanceVariableApplier: self ! !
 
-!MoveMethodWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 4/28/2025 16:51:51'!
+!MoveMethodWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 28/Apr/2025, 7:51:51 pm (UTC)'!
+!methodProperties: {}!
 initialAnswerForInstanceVariable: anAccessingThroughVariableName in: aSourceClass 
 	
 	| liveTypingTypes |
@@ -136,67 +186,80 @@ initialAnswerForInstanceVariable: anAccessingThroughVariableName in: aSourceClas
 	^liveTypingTypes name asString 
 ! !
 
-!MoveMethodWithActualScopeApplier class methodsFor: 'instance creation' stamp: 'HAW 4/28/2025 18:08:13'!
+!MoveMethodWithActualScopeApplier class methodsFor: 'instance creation' stamp: 'HAW 28/Apr/2025, 9:08:13 pm (UTC)'!
+!methodProperties: {}!
 initialize
 	
 	RefactoringApplier registerMoveMethodApplier: self! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/11/2024 11:20:47'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/Nov/2024, 2:20:47 pm (UTC)'!
+!methodProperties: {}!
 extractParameterObjectApplier
 	
 	^self applierAt: self extractParameterObjectApplierId ifAbsent: [ ExtractParameterObjectApplier ]! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/11/2024 11:20:31'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/Nov/2024, 2:20:31 pm (UTC)'!
+!methodProperties: {}!
 extractParameterObjectApplierId
 
 	^#extractParameterObjectApplier! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 12/11/2023 01:54:26'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 11/Dec/2023, 4:54:26 am (UTC)'!
+!methodProperties: {}!
 moveInstanceVariableApplier
 	"self halt."
 	^self applierAt: self moveInstanceVariableApplierId ifAbsent: [ MoveInstanceVariableApplier ]! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 12/11/2023 01:55:07'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 11/Dec/2023, 4:55:07 am (UTC)'!
+!methodProperties: {}!
 moveInstanceVariableApplierId
 	
 	^#moveInstanceVariableApplier! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'HAW 4/28/2025 16:36:34'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'HAW 28/Apr/2025, 7:36:34 pm (UTC)'!
+!methodProperties: {}!
 moveMethodApplier
 	
 	^self applierAt: self moveMethodApplierId ifAbsent: [ MoveMethodApplier ]! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 8/6/2023 15:07:01'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 6/Aug/2023, 6:07:01 pm (UTC)'!
+!methodProperties: {}!
 moveMethodApplierId
 	^#moveMethodApplier! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/11/2024 11:21:06'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/Nov/2024, 2:21:06 pm (UTC)'!
+!methodProperties: {}!
 registerExtractParameterObjectApplier: aExtractParameterObjectApplierClass
 
 	self registerApplierAt: self extractParameterObjectApplierId with: aExtractParameterObjectApplierClass! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 12/11/2023 01:57:01'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 11/Dec/2023, 4:57:01 am (UTC)'!
+!methodProperties: {}!
 registerMoveInstanceVariableApplier: aMoveInstanceVariableApplierClass
 
 	self registerApplierAt: self moveInstanceVariableApplierId with: aMoveInstanceVariableApplierClass! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 8/6/2023 15:13:19'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 6/Aug/2023, 6:13:19 pm (UTC)'!
+!methodProperties: {}!
 registerMoveMethodApplier: aMoveMethodApplierClass
 
 	self registerApplierAt: self moveMethodApplierId with: aMoveMethodApplierClass
 ! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/11/2024 11:21:12'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/Nov/2024, 2:21:12 pm (UTC)'!
+!methodProperties: {}!
 resetExtractParameterObjectApplier
 	
 	self resetApplierAt: self extractParameterObjectApplierId! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'HAW 4/28/2025 16:38:42'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'HAW 28/Apr/2025, 7:38:42 pm (UTC)'!
+!methodProperties: {}!
 resetMoveInstanceVariableApplier
 	
 	self resetApplierAt: self moveInstanceVariableApplierId ! !
 
-!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'HAW 4/28/2025 16:38:57'!
+!RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'HAW 28/Apr/2025, 7:38:57 pm (UTC)'!
+!methodProperties: {}!
 resetMoveMethodApplier
 	
 	self resetApplierAt: self moveMethodApplierId ! !

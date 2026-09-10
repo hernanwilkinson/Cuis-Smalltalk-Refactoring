@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8134] on 27 August 2026 at 2:06:24 pm'!
-'Description First version'!
-!provides: 'ExtraRefactoringsTests' 1 3!
+'From Cuis7.9 [latest update: #8160] on 10 September 2026 at 2:55:29 pm'!
+'Description Let a method be moved to the class of what a global holds'!
+!provides: 'ExtraRefactoringsTests' 1 4!
 !requires: 'BaseImageTests' 1 473 nil!
 !requires: 'ExtraRefactorings' 1 11 nil!
 SystemOrganization addCategory: #'ExtraRefactoringsTests-ExtractClass'!
@@ -153,7 +153,6 @@ MoveMethodTest class
 
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test001TargetClassNameShouldNotBeEmpty
 	
 	| targetClassName instVarToExtract sourceClass |
@@ -173,7 +172,6 @@ test001TargetClassNameShouldNotBeEmpty
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test001TargetClassNameShouldStartWithUppercase
 	
 	| targetClassName instVarToExtract sourceClass |
@@ -193,7 +191,6 @@ test001TargetClassNameShouldStartWithUppercase
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test001TargetClassShouldNotExist
 	
 	| targetClassName instVarToExtract sourceClass |
@@ -208,7 +205,6 @@ test001TargetClassShouldNotExist
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test002InstanceVariableToExtractShouldExists
 	
 	| targetClassName sourceClass instVarToExtract |
@@ -224,7 +220,6 @@ test002InstanceVariableToExtractShouldExists
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test003InstanceVariableToExtractShouldExists
 	
 	| targetClassName sourceClass instVarToExtract |
@@ -240,7 +235,6 @@ test003InstanceVariableToExtractShouldExists
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test004methodToExtractShouldExists
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract |
@@ -256,7 +250,6 @@ test004methodToExtractShouldExists
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test005methodToExtractShouldExists
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract |
@@ -274,7 +267,6 @@ test005methodToExtractShouldExists
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test006variableToAccessNewClassShouldBeInLowercase
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract |
@@ -294,7 +286,6 @@ test006variableToAccessNewClassShouldBeInLowercase
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test007variableToAccessNewClassShouldNotBeEmpty
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract |
@@ -315,7 +306,6 @@ test007variableToAccessNewClassShouldNotBeEmpty
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test008variableToAccessNewClassShouldNotBeInUse
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract |
@@ -330,7 +320,6 @@ test008variableToAccessNewClassShouldNotBeInUse
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test009variableToAccessNewClassShouldNotBeNil
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract |
@@ -345,7 +334,6 @@ test009variableToAccessNewClassShouldNotBeNil
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test010InstVarToCreateShouldntBeAsTmpInOneMethod
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract |
@@ -371,7 +359,6 @@ test010InstVarToCreateShouldntBeAsTmpInOneMethod
 	! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 test011InstVarToCreateShouldntBeAsTmpInManyMethods
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract |
@@ -398,7 +385,6 @@ test011InstVarToCreateShouldntBeAsTmpInManyMethods
 	! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 6:47:44 pm (UTC)'!
-!methodProperties: {}!
 test100extractClassWithNoVariablesAndNoMethodShouldOnlyCreateClass
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -424,7 +410,6 @@ test100extractClassWithNoVariablesAndNoMethodShouldOnlyCreateClass
 	super initialize.' equals: (sourceClass sourceCodeAt: #initialize).! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 6:47:22 pm (UTC)'!
-!methodProperties: {}!
 test101ExtractClassShouldReuseInitialize
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -451,7 +436,6 @@ test101ExtractClassShouldReuseInitialize
 	^self.' equals: (sourceClass sourceCodeAt: #initialize).! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 6:47:32 pm (UTC)'!
-!methodProperties: {}!
 test102ExtractClassShouldReuseInitialize
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -482,7 +466,6 @@ test102ExtractClassShouldReuseInitialize
 	^self.' equals: (sourceClass sourceCodeAt: #initialize).! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test103GivenSourceClassAndTwoInstanceVariableWhenExtractClassThenInstanceVariablesShouldBeInTargetClass
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -508,7 +491,6 @@ test103GivenSourceClassAndTwoInstanceVariableWhenExtractClassThenInstanceVariabl
 	self assert: targetClass instVarNames includes: 'iv2'.! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test104GivenMethodAndInstanceVariableWhenExtractClassThenInstanceVariableShouldBeInTargetClass
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -534,7 +516,6 @@ test104GivenMethodAndInstanceVariableWhenExtractClassThenInstanceVariableShouldB
 	self assert: 'm1 ^aTargetClass iv1+1.' equals: (sourceClass sourceCodeAt: #m1).! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test105GivenSourceClassAndOneInstanceVariableWhenExtractClassThenInstanceVariableShouldBeInTargetClass
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -558,7 +539,6 @@ test105GivenSourceClassAndOneInstanceVariableWhenExtractClassThenInstanceVariabl
 	self assert: 'iv1' equals: targetClass instVarNames first.! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test106GivenMethodWhenExtractClassThenMoveMethodShouldBePerformed
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -586,7 +566,6 @@ test106GivenMethodWhenExtractClassThenMoveMethodShouldBePerformed
 	self assert: 'm1: aSourceClass ^aSourceClass iv1+1.' equals: (targetClass sourceCodeAt: #m1:).! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test107Given2MethodsWhenExtractClassThenMoveMethodShouldBePerformed
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -619,7 +598,6 @@ test107Given2MethodsWhenExtractClassThenMoveMethodShouldBePerformed
 	self assert: 'm2 ^1.' equals: (targetClass sourceCodeAt: #m2).! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test108GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -651,7 +629,6 @@ test108GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSam
 	! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test109GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -686,7 +663,6 @@ test109GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSam
 	! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test110GivenANonGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveUndescore
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -725,7 +701,6 @@ test110GivenANonGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHave
 	! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test111GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -760,7 +735,6 @@ test111GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSam
 	! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test112GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -801,7 +775,6 @@ test112GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSam
 	! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test113GivenASetterWhichDoesntReturnAssigmentAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -836,7 +809,6 @@ test113GivenASetterWhichDoesntReturnAssigmentAndInstvarWithSameNameWhenExtractCl
 	! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test114GivenANonSetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveUndescore
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -879,7 +851,6 @@ test114GivenANonSetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHave
 	! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test115InstVarToCreateCanBeAsTmpInOneMethodButThatMethodShouldBeMoved
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -912,7 +883,6 @@ test115InstVarToCreateCanBeAsTmpInOneMethodButThatMethodShouldBeMoved
 ! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test116InstVarToCreateCanBeAsTmpInOneMethodButThatMethodShouldBeMoved
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -945,7 +915,6 @@ test116InstVarToCreateCanBeAsTmpInOneMethodButThatMethodShouldBeMoved
 ! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test117InstVarToCreateCanBeAsParameterInOneMethodButThatMethodShouldBeMoved
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -979,7 +948,6 @@ test117InstVarToCreateCanBeAsParameterInOneMethodButThatMethodShouldBeMoved
 ! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
-!methodProperties: {}!
 test118ExtractClassCanOverrideMethodsOfObjectClass
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -1007,7 +975,6 @@ test118ExtractClassCanOverrideMethodsOfObjectClass
 	self assert: 'name ^1.' equals: (targetClass sourceCodeAt: #name).! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:08:31 pm (UTC)'!
-!methodProperties: {}!
 test01CannotExtractWithoutParameters
 
 	| selector classToRefactor parameters |
@@ -1034,7 +1001,6 @@ test01CannotExtractWithoutParameters
 			parametersMustNotBeEmptyErrorMessage ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:08:37 pm (UTC)'!
-!methodProperties: {}!
 test02CannotExtractParametersThatAreNotFromTheMethod
 
 	| selector classToRefactor parameters positions |
@@ -1062,7 +1028,6 @@ test02CannotExtractParametersThatAreNotFromTheMethod
 			parametersAreNotInMethodErrorMessage: parameters ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:08:52 pm (UTC)'!
-!methodProperties: {}!
 test03CannotPartiallyExtractParametersThatAreNotFromTheMethod
 
 	| selector classToRefactor parameters positions |
@@ -1090,7 +1055,6 @@ test03CannotPartiallyExtractParametersThatAreNotFromTheMethod
 			parametersAreNotInMethodErrorMessage: #('anotherObject') ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:08:58 pm (UTC)'!
-!methodProperties: {}!
 test04CannotExtractWithoutAValidClassName
 
 	| selector classToRefactor className parameters positions |
@@ -1118,7 +1082,6 @@ test04CannotExtractWithoutAValidClassName
 		failsWith: [ NewClassPrecondition newNameMustStartWithRightLetterErrorMessage ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:09:04 pm (UTC)'!
-!methodProperties: {}!
 test05CannotExtractWithAnEmptySuperclassName
 
 	| selector classToRefactor superclassName parameters positions |
@@ -1144,7 +1107,6 @@ test05CannotExtractWithAnEmptySuperclassName
 		failsWith: [ ExtractParameterObject superclassMustNotBeEmptyErrorMessage ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:09:11 pm (UTC)'!
-!methodProperties: {}!
 test06CannotExtractWithANotExistentSuperclassName
 
 	| selector classToRefactor superclassName parameters positions |
@@ -1170,7 +1132,6 @@ test06CannotExtractWithANotExistentSuperclassName
 		failsWith: [ ExtractParameterObject superclassMustExistErrorMessage ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:09:17 pm (UTC)'!
-!methodProperties: {}!
 test07CannotExtractWithInvalidParameterPositions
 
 	| selector classToRefactor parameters positions |
@@ -1197,7 +1158,6 @@ test07CannotExtractWithInvalidParameterPositions
 		failsWith: [ ExtractParameterObject parameterPositionsAreInvalidErrorMessage ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
-!methodProperties: {}!
 test08ExtractParametersFromEmptyMessageToParameterObject
 
 	| selector classToRefactor parameters positions refactor|
@@ -1228,7 +1188,6 @@ test08ExtractParametersFromEmptyMessageToParameterObject
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
-!methodProperties: {}!
 test09ExtractParametersFromMessageShouldBeExtractedToParameterObject
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCode |
@@ -1270,7 +1229,6 @@ test09ExtractParametersFromMessageShouldBeExtractedToParameterObject
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
-!methodProperties: {}!
 test10ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSenders
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCodeM1 newSenderCodeM2 |
@@ -1318,7 +1276,6 @@ test10ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSenders
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
-!methodProperties: {}!
 test11ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSendersInOtherClasses
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCodeM1 newSenderCodeM2 anotherClass |
@@ -1368,7 +1325,6 @@ test11ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSendersI
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
-!methodProperties: {}!
 test12ExtractAllParametersFromMessageShouldBeExtractedToParameterObject
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCode |
@@ -1410,7 +1366,6 @@ test12ExtractAllParametersFromMessageShouldBeExtractedToParameterObject
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
-!methodProperties: {}!
 test13ExtractOnlyOneParameterFromMessageShouldBeExtractedToParameterObject
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCode |
@@ -1452,7 +1407,6 @@ test13ExtractOnlyOneParameterFromMessageShouldBeExtractedToParameterObject
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
-!methodProperties: {}!
 test14ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSendersAndImplementors
 
 	| selector classToRefactor parameters positions refactor newImplementorCode anotherImplementorCode newAnotherImplementorCode newSenderCodeM1 newSenderCodeM2 anotherClass |
@@ -1511,7 +1465,6 @@ test14ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSendersA
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
-!methodProperties: {}!
 test15ExtractParametersFromMessageShouldNotBeReplacedFromOtherClassesWhenNotIncludedInImplementors
 
 	| selector classToRefactor parameters positions refactor newImplementorCode anotherClassSenderCode newSenderCode anotherClass |
@@ -1564,7 +1517,6 @@ test15ExtractParametersFromMessageShouldNotBeReplacedFromOtherClassesWhenNotIncl
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:09:56 pm (UTC)'!
-!methodProperties: {}!
 test16CannotExtractParametersThatAreNotInOneOfTheImplementors
 
 	| selector classToRefactor anotherClass anotherImplementorCode parameters positions |
@@ -1600,7 +1552,6 @@ test16CannotExtractParametersThatAreNotInOneOfTheImplementors
 			parametersAreNotInMethodErrorMessage: parameters ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:10:05 pm (UTC)'!
-!methodProperties: {}!
 test17CannotExtractWithInvalidParameterPositionsSize
 
 	| selector classToRefactor parameters positions |
@@ -1627,7 +1578,6 @@ test17CannotExtractWithInvalidParameterPositionsSize
 		failsWith: [ ExtractParameterObject parameterPositionsMustHaveSameSizeAsParametersErrorMessage ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:10:11 pm (UTC)'!
-!methodProperties: {}!
 test18CannotExtractWithParametersOnSuperclass
 
 	| selector classToRefactor parameters positions |
@@ -1654,7 +1604,6 @@ test18CannotExtractWithParametersOnSuperclass
 		failsWith: [ ExtractParameterObject parameterMustNotExistOnSuperClassErrorMessage: parameters ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:10:17 pm (UTC)'!
-!methodProperties: {}!
 test19CannotExtractWithABlankParameter
 
 	| selector classToRefactor parameters positions |
@@ -1682,7 +1631,6 @@ test19CannotExtractWithABlankParameter
 			parametersMustNotBeBlankErrorMessage ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:10:23 pm (UTC)'!
-!methodProperties: {}!
 test20CannotExtractWithAReservedNameParameter
 
 	| selector classToRefactor parameters positions |
@@ -1710,7 +1658,6 @@ test20CannotExtractWithAReservedNameParameter
 			parameterMustNotBeAReservedNameErrorMessage: #('true') ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:10:29 pm (UTC)'!
-!methodProperties: {}!
 test21CannotExtractWithAnInvalidInstanceVariableNameParameter
 
 	| selector classToRefactor parameters positions |
@@ -1738,7 +1685,6 @@ test21CannotExtractWithAnInvalidInstanceVariableNameParameter
 			parameterMustBeAValidInstanceVariableNameErrorMessage: #('2a' 'a b') ].! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
-!methodProperties: {}!
 test22ExtractParametersFromMessageWithImplementorThatIsAlsoASenderShouldBeExtractedToParameterObject
 
 	| selector classToRefactor parameters positions refactor classToRefactorNewImplementorCode anotherClassToRefactorNewImplementorCode anotherClass |
@@ -1785,7 +1731,6 @@ test22ExtractParametersFromMessageWithImplementorThatIsAlsoASenderShouldBeExtrac
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
-!methodProperties: {}!
 test23ExtractParametersFromMessageWithArticleShouldBeExtractedToParameterObjectWithoutArticle
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCode |
@@ -1828,13 +1773,11 @@ test23ExtractParametersFromMessageWithArticleShouldBeExtractedToParameterObjectW
 		(parameters collect: [ :parameter | parameter asInstanceVariableNameWithoutChangeMe ]).! !
 
 !ExtractParameterObjectTest methodsFor: 'factories' stamp: 'MEGL 14/May/2024, 6:36:44 pm (UTC)'!
-!methodProperties: {}!
 classToRefactorName	
 
 	^#ClassToExtractParameter! !
 
 !ExtractParameterObjectTest methodsFor: 'factories' stamp: 'MEGL 24/Jan/2024, 12:54:44 am (UTC)'!
-!methodProperties: {}!
 createMethodNamed: aMethodName
 
 	| class |
@@ -1847,25 +1790,21 @@ createMethodNamed: aMethodName
 	! !
 
 !ExtractParameterObjectTest methodsFor: 'factories' stamp: 'MEGL 14/May/2024, 7:20:29 pm (UTC)'!
-!methodProperties: {}!
 parameterClass
 
 	^Smalltalk at: self parameterClassName.! !
 
 !ExtractParameterObjectTest methodsFor: 'factories' stamp: 'MEGL 14/May/2024, 3:35:34 pm (UTC)'!
-!methodProperties: {}!
 parameterClassName
 
 	^#ParameterClass! !
 
 !ExtractParameterObjectTest methodsFor: 'factories' stamp: 'MEGL 14/May/2024, 3:55:24 pm (UTC)'!
-!methodProperties: {}!
 parameterClassSuperclassName
 
 	^#ParameterClassSuperclass! !
 
 !ExtractParameterObjectTest methodsFor: 'assertions' stamp: 'MEGL 14/May/2024, 7:42:42 pm (UTC)'!
-!methodProperties: {}!
 assertParameterClassHasSelectorsFrom: parameters
 
 	| buildSelector |
@@ -1880,7 +1819,6 @@ assertParameterClassHasSelectorsFrom: parameters
 	! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 5:29:26 pm (UTC)'!
-!methodProperties: {}!
 test01MethodObjectClassNameMustNotBeEmpty
 
 	| anEmptyClassName |
@@ -1892,7 +1830,6 @@ test01MethodObjectClassNameMustNotBeEmpty
 		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 17/Dec/2018, 9:05:25 pm (UTC)'!
-!methodProperties: {}!
 test02MethodObjectClassNameMustBeASymbol
 
 	| aStringClassName |
@@ -1904,7 +1841,6 @@ test02MethodObjectClassNameMustBeASymbol
 		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'HAW 23/Oct/2019, 12:51:26 pm (UTC)'!
-!methodProperties: {}!
 test03MethodObjectClassNameMustStartWithUppercaseLetter
 
 	| nonCapitalizedClassName |
@@ -1916,7 +1852,6 @@ test03MethodObjectClassNameMustStartWithUppercaseLetter
 		failsWithMessageText:[ NewClassPrecondition newNameMustStartWithRightLetterErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 17/Dec/2018, 9:01:52 pm (UTC)'!
-!methodProperties: {}!
 test04MethodObjectClassNameMustNotHaveSeparators
 
 	| classNameWithSeparators |
@@ -1927,7 +1862,6 @@ test04MethodObjectClassNameMustNotHaveSeparators
 		  failsWithMessageText: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 17/Dec/2018, 9:06:57 pm (UTC)'!
-!methodProperties: {}!
 test05MethodObjectClassNameMustNotExist
 
 	| anExistingClassName |
@@ -1938,7 +1872,6 @@ test05MethodObjectClassNameMustNotExist
 		  failsWithMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: anExistingClassName ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 9/Apr/2019, 3:15:20 pm (UTC)'!
-!methodProperties: {}!
 test06AllVariablesToParametrizeMustHaveACorrespondingMethodObjectInstanceVariableName
 
 	| namesForParametrizedMissingSelf keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName |
@@ -1954,7 +1887,6 @@ test06AllVariablesToParametrizeMustHaveACorrespondingMethodObjectInstanceVariabl
 			variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesToParametrizeWithoutInstVarName].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 9/Apr/2019, 3:15:30 pm (UTC)'!
-!methodProperties: {}!
 test07AllInstanceVariableNamesMustCorrespondToVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeWithoutInstVarName namesForParametrizedVariables |
@@ -1973,7 +1905,6 @@ test07AllInstanceVariableNamesMustCorrespondToVariableToParametrize
 			unknownVariablesToParametrizeErrorMessage: variablesToParametrizeWithoutInstVarName].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 5:48:24 pm (UTC)'!
-!methodProperties: {}!
 test08MethodObjectInstanceVariableNamesMustNotBeEmpty
 
 	| keywordToParametrizedVariable namesWithEmptyInstanceVariable |
@@ -1987,7 +1918,6 @@ test08MethodObjectInstanceVariableNamesMustNotBeEmpty
 		failsWithMessageText: [ NewInstanceVariablePrecondition newVariableCanNotBeEmptyErrorMessage].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 5:48:44 pm (UTC)'!
-!methodProperties: {}!
 test09MethodObjectInstanceVariableNamesCanNotContainBlanks
 
 	| keywordToParametrizedVariable namesWithBlanksInstanceVariable anInstVarNameWithBlanks |
@@ -2002,7 +1932,6 @@ test09MethodObjectInstanceVariableNamesCanNotContainBlanks
 		failsWithMessageText: [ NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: anInstVarNameWithBlanks].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 5:48:54 pm (UTC)'!
-!methodProperties: {}!
 test10MethodObjectInstanceVariableNamesCanNotContainInvalidCharacters
 
 	| keywordToParametrizedVariable anInstVarNameWithInvalidCharacters namesWithInvalidCharsInstanceVariable |
@@ -2017,7 +1946,6 @@ test10MethodObjectInstanceVariableNamesCanNotContainInvalidCharacters
 		failsWithMessageText: [ NewInstanceVariablePrecondition errorMessageForInvalidInstanceVariable: anInstVarNameWithInvalidCharacters].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 5:49:08 pm (UTC)'!
-!methodProperties: {}!
 test11MethodObjectInstanceVariableNamesCanNotBeDefinedInSuperclasses
 
 	| keywordToParametrizedVariable anInstVarName methodObjectSuperclass namesWithAlreadyDefinedInstanceVariable |
@@ -2046,7 +1974,6 @@ test11MethodObjectInstanceVariableNamesCanNotBeDefinedInSuperclasses
 				alreadyDefinedInAll: {methodObjectSuperclass} ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 5:49:57 pm (UTC)'!
-!methodProperties: {}!
 test12MethodObjectInstanceVariableNamesCanNotBeDuplicated
 
 	| keywordToParametrizedVariable anInstVarName namesWithDuplicatedInstanceVariable aClassToRefactor aDuplicatedInstVarName aCompiledMethodToRefactor sourceCode |
@@ -2075,7 +2002,6 @@ test12MethodObjectInstanceVariableNamesCanNotBeDuplicated
 			ExtractToMethodObject duplicatedInstanceVariablesErrorMessageFor: {aDuplicatedInstVarName} ].	! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 5:50:12 pm (UTC)'!
-!methodProperties: {}!
 test13MethodObjectInstanceVariableNamesCanNotBeNamedAsMethodTemporal
 
 	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor aTemporalName namesWithSameAsTemporal |
@@ -2103,7 +2029,6 @@ test13MethodObjectInstanceVariableNamesCanNotBeNamedAsMethodTemporal
 			ExtractToMethodObject instanceVariableNamesSameAsTemporalsErrorMessageFor: {aTemporalName} ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 5:50:23 pm (UTC)'!
-!methodProperties: {}!
 test14MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockTemporal
 
 	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor namesWithSameAsTemporal aBlockTemporalName |
@@ -2130,7 +2055,6 @@ test14MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockTemporal
 			ExtractToMethodObject instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: {aBlockTemporalName} ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 5:50:36 pm (UTC)'!
-!methodProperties: {}!
 test15MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockArgument
 
 	| keywordToParametrizedVariable aClassToRefactor aCompiledMethodToRefactor aBlockArgumentName namesWithSameAsArgument |
@@ -2155,7 +2079,6 @@ test15MethodObjectInstanceVariableNamesCanNotBeNamedAsBlockArgument
 			ExtractToMethodObject instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: {aBlockArgumentName} ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 19/Dec/2018, 2:10:34 pm (UTC)'!
-!methodProperties: {}!
 test16MethodObjectInstanceCreationMessageMustHaveAKeywordForEveryVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
@@ -2171,7 +2094,6 @@ test16MethodObjectInstanceCreationMessageMustHaveAKeywordForEveryVariableToParam
 			ExtractToMethodObject variablesToParametrizeHaveNoKeywordErrorMessage: #('self') ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 5:51:37 pm (UTC)'!
-!methodProperties: {}!
 test17MethodObjectInstanceCreationMessageMustHaveOnlyOneKeywordForEveryVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
@@ -2189,7 +2111,6 @@ test17MethodObjectInstanceCreationMessageMustHaveOnlyOneKeywordForEveryVariableT
 			ExtractToMethodObject variablesToParametrizeHaveMultipleKeywordsErrorMessage: #('self') ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 5:52:26 pm (UTC)'!
-!methodProperties: {}!
 test18MethodObjectInstanceCreationMessageMustNotHaveKeywordForAnUnknownVariableToParametrize
 
 	| keywordToParametrizedVariable variablesToParametrizeToInstanceVariables anUnknownVariableToParametrize |
@@ -2208,7 +2129,6 @@ test18MethodObjectInstanceCreationMessageMustNotHaveKeywordForAnUnknownVariableT
 			ExtractToMethodObject keywordForUnknownVariablesToParametrizeErrorMessage: {anUnknownVariableToParametrize} ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:04:55 pm (UTC)'!
-!methodProperties: {}!
 test19MethodObjectInstanceCreationMessageKeywordsCanNotHaveInvalidCharacters
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables keywordWithInvalidCharacters |
@@ -2226,7 +2146,6 @@ test19MethodObjectInstanceCreationMessageKeywordsCanNotHaveInvalidCharacters
 			ExtractToMethodObject keywordsContainInvalidCharactersErrorMessage: {keywordWithInvalidCharacters} ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:06:51 pm (UTC)'!
-!methodProperties: {}!
 test20MethodObjectInstanceCreationMessageSelectorStartsWithAnInvalidStartOfSelector
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables keyword |
@@ -2243,7 +2162,6 @@ test20MethodObjectInstanceCreationMessageSelectorStartsWithAnInvalidStartOfSelec
 			ExtractToMethodObject selectorStartsWithInvalidStartOfSelectorCharacterErrorMessage].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:07:32 pm (UTC)'!
-!methodProperties: {}!
 test21MethodObjectInstanceCreationMessageKeywordsCannotBeEmpty
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables keyword |
@@ -2260,7 +2178,6 @@ test21MethodObjectInstanceCreationMessageKeywordsCannotBeEmpty
 			ExtractToMethodObject instanceCreationMessageKeywordsCannotBeEmptyErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 4/Jan/2019, 4:25:39 pm (UTC)'!
-!methodProperties: {}!
 test22MethodObjectSuperclassCannotBeMeta
 
 	| aMetaClass |
@@ -2279,7 +2196,6 @@ test22MethodObjectSuperclassCannotBeMeta
 		withMessageText: [ ExtractToMethodObject methodObjectSuperclassCannotBeMetaErrorMessage].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 21/Dec/2018, 7:10:15 pm (UTC)'!
-!methodProperties: {}!
 test23CreatesMethodObjectClass
 
 	| refactor |
@@ -2297,7 +2213,6 @@ test23CreatesMethodObjectClass
 	self assert: (Smalltalk hasClassNamed: self methodObjectClassName).! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/Jan/2019, 7:04:04 pm (UTC)'!
-!methodProperties: {}!
 test24CreatesMethodObjectClassAsSubclassOfTheChosenSuperclass
 
 	| refactor methodObjectClass methodObjectSuperclass |
@@ -2317,7 +2232,6 @@ test24CreatesMethodObjectClassAsSubclassOfTheChosenSuperclass
 	self assert: methodObjectSuperclass equals: methodObjectClass superclass.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 3/Jan/2019, 7:04:14 pm (UTC)'!
-!methodProperties: {}!
 test25CreatesMethodObjectClassInTheChosenCategory
 
 	| refactor methodObjectClass |
@@ -2336,7 +2250,6 @@ test25CreatesMethodObjectClassInTheChosenCategory
 	self assert: self classCategoryOfTestData equals: methodObjectClass category.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 9/Apr/2019, 3:17:45 pm (UTC)'!
-!methodProperties: {}!
 test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAsVariablesToParametrizeInMethodToExtract
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
@@ -2359,7 +2272,6 @@ test26MethodObjectClassInstanceCreationMessageReceivesTheSameNumberOfArgumentsAs
 	self assert: (methodObjectClass class selectors anySatisfy: [:aSelector | aSelector = #with:]).! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 9/Apr/2019, 3:17:54 pm (UTC)'!
-!methodProperties: {}!
 test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeywords
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
@@ -2382,7 +2294,6 @@ test27MethodObjectClassInstanceCreationMessageSelectorConsistsOfTheChosenKeyword
 	self assert: (methodObjectClass class includesSelector: #with:).! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 10/Apr/2019, 7:13:47 pm (UTC)'!
-!methodProperties: {}!
 test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables newRefactoringSourceCode |
@@ -2409,7 +2320,6 @@ test28MethodObjectClassInstanceCreationMessageCreatesARefactoringInstance
 	self assert: newRefactoringSourceCode equals: (methodObjectClass class compiledMethodAt: #with:) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 9/Apr/2019, 3:26:02 pm (UTC)'!
-!methodProperties: {}!
 test29MethodObjectInitializationMessageReceivesTheSameNumberOfArgumentsAsVariablesToParametrizeInMethodToExtract
 
 	| refactor methodObjectClass keywordToParametrizedVariable variablesToParametrizeToInstanceVariables |
@@ -2432,7 +2342,6 @@ test29MethodObjectInitializationMessageReceivesTheSameNumberOfArgumentsAsVariabl
 	self assert: (methodObjectClass selectors anySatisfy: [:aSelector | aSelector = #initializeWith:]).! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 9/Apr/2019, 3:20:13 pm (UTC)'!
-!methodProperties: {}!
 test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywordsPrefixedWithInitializationPrefix
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables |
@@ -2455,7 +2364,6 @@ test30MethodObjectInitializationMessageSelectorConsistsOfTheChosenKeywordsPrefix
 	self assert: (methodObjectClass includesSelector: #initializeWith:).! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 9/Apr/2019, 3:25:35 pm (UTC)'!
-!methodProperties: {}!
 test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables intializationSourceCode |
@@ -2480,7 +2388,6 @@ test31MethodObjectInitializationMessageAssignsTheInstanceVariables
 	self assert: intializationSourceCode equals: (methodObjectClass compiledMethodAt: #initializeWith:) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:14:51 pm (UTC)'!
-!methodProperties: {}!
 test32MethodObjectEvaluationMessageHasTheChosenSelector
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables customEvaluationSelector |
@@ -2504,7 +2411,6 @@ test32MethodObjectEvaluationMessageHasTheChosenSelector
 	self assert: (methodObjectClass includesSelector: customEvaluationSelector).! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:15:13 pm (UTC)'!
-!methodProperties: {}!
 test33MethodObjectEvaluationMethodSourceCodeHasTheSameFormatAsTheExtractedMethod
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
@@ -2531,7 +2437,6 @@ test33MethodObjectEvaluationMethodSourceCodeHasTheSameFormatAsTheExtractedMethod
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:15:41 pm (UTC)'!
-!methodProperties: {}!
 test34MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfSelf
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToExtractSourceCode |
@@ -2560,7 +2465,6 @@ test34MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:16:10 pm (UTC)'!
-!methodProperties: {}!
 test35MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorInstanceVariable
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode anInstVar correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass |
@@ -2593,7 +2497,6 @@ test35MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:16:40 pm (UTC)'!
-!methodProperties: {}!
 test36MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfExtractedMethodArgument
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
@@ -2622,7 +2525,6 @@ test36MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:19:21 pm (UTC)'!
-!methodProperties: {}!
 test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorPoolVariable
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass aPool aPoolVar |
@@ -2669,7 +2571,6 @@ test37MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:19:41 pm (UTC)'!
-!methodProperties: {}!
 test38MethodObjectEvaluationMethodSourceCodeCommentsReferencingParametrizedVariableAreNotReplaced
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode compiledMethodToRefactor methodToRefactorSourceCode |
@@ -2700,7 +2601,6 @@ test38MethodObjectEvaluationMethodSourceCodeCommentsReferencingParametrizedVaria
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/Apr/2019, 3:09:05 pm (UTC)'!
-!methodProperties: {}!
 test39MethodObjectEvaluationMethodSourceCodePreservesBlockArgumentsShadowing
 
 	"This case must not be considered because shadowing is not longer allowed - FGJ"
@@ -2738,7 +2638,6 @@ test39MethodObjectEvaluationMethodSourceCodePreservesBlockArgumentsShadowing
 	]! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/Apr/2019, 3:09:15 pm (UTC)'!
-!methodProperties: {}!
 test40MethodObjectEvaluationMethodSourceCodePreservesBlockTemporalsShadowing
 
 	"This case must not be considered because shadowing is not longer allowed - FGJ"
@@ -2776,7 +2675,6 @@ test40MethodObjectEvaluationMethodSourceCodePreservesBlockTemporalsShadowing
 	]! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:21:04 pm (UTC)'!
-!methodProperties: {}!
 test41RefactoredMethodUnarySelectorIsPreserved
 
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
@@ -2801,7 +2699,6 @@ test41RefactoredMethodUnarySelectorIsPreserved
 	self assert: (aClass includesSelector: #m1).! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:21:38 pm (UTC)'!
-!methodProperties: {}!
 test42RefactoredMethodBinarySelectorIsPreserved
 
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
@@ -2827,7 +2724,6 @@ test42RefactoredMethodBinarySelectorIsPreserved
 	self assert: 'anArg' equals: (aClass compiledMethodAt: #!!@) methodNode arguments first name.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:22:07 pm (UTC)'!
-!methodProperties: {}!
 test43RefactoredMethodKeywordSelectorIsPreserved
 
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
@@ -2853,7 +2749,6 @@ test43RefactoredMethodKeywordSelectorIsPreserved
 	self assert: 'anArg' equals: (aClass compiledMethodAt: #m1:) methodNode arguments first name.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:22:23 pm (UTC)'!
-!methodProperties: {}!
 test44WhenBinaryMethodIsRefactoredArgumentNameIsPreserved
 
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
@@ -2877,7 +2772,6 @@ test44WhenBinaryMethodIsRefactoredArgumentNameIsPreserved
 	self assert: 'anArg' equals: (aClass compiledMethodAt: #!!@) methodNode arguments first name.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:22:40 pm (UTC)'!
-!methodProperties: {}!
 test45WhenKeywordsMethodIsRefactoredArgumentNamesArePreserved
 
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass |
@@ -2901,7 +2795,6 @@ test45WhenKeywordsMethodIsRefactoredArgumentNamesArePreserved
 	self assert: 'anArg' equals: (aClass compiledMethodAt: #m1:) methodNode arguments first name.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:22:52 pm (UTC)'!
-!methodProperties: {}!
 test46WhenThereAreNoVariablesToParametrizeTheRefactoredMethodUsesTheNewMessageToCreateTheMethodObjectInstance
 
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
@@ -2931,7 +2824,6 @@ test46WhenThereAreNoVariablesToParametrizeTheRefactoredMethodUsesTheNewMessageTo
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:23:24 pm (UTC)'!
-!methodProperties: {}!
 test47WhenThereAreVariablesToParametrizeTheRefactoredMethodUsesTheChosenMessageToCreateTheMethodObjectInstance
 
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
@@ -2961,7 +2853,6 @@ test47WhenThereAreVariablesToParametrizeTheRefactoredMethodUsesTheChosenMessageT
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 17/Feb/2019, 6:33:39 pm (UTC)'!
-!methodProperties: {}!
 test48WhenThereAreMultipleVariablesToParametrizeTheRefactoredMethodPassesTheVariablesInTheChosenOrderToTheMessageToCreateTheMethodObjectInstance
 
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
@@ -2997,7 +2888,6 @@ test48WhenThereAreMultipleVariablesToParametrizeTheRefactoredMethodPassesTheVari
 		equals: (aClass compiledMethodAt: #m1:) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:24:19 pm (UTC)'!
-!methodProperties: {}!
 test49TheRefactoredMethodUsesTheChosenEvaluationSelectorToEvaluateTheMethodObjectInstance
 
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
@@ -3027,7 +2917,6 @@ test49TheRefactoredMethodUsesTheChosenEvaluationSelectorToEvaluateTheMethodObjec
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:24:33 pm (UTC)'!
-!methodProperties: {}!
 test50TheRefactoredMethodPreservesTheImplicitReturn
 
 	| refactor keywordsDefinitions variablesToParametrizeToInstanceVariables aClass expectedRefactoredSourceCode |
@@ -3060,7 +2949,6 @@ test50TheRefactoredMethodPreservesTheImplicitReturn
 		equals: (aClass compiledMethodAt: #m1) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:24:57 pm (UTC)'!
-!methodProperties: {}!
 test51TheMethodToExtractMustNotReferenceSuper
 
 	| keywordsDefinitions variablesToParametrizeToInstVars aClass |
@@ -3084,7 +2972,6 @@ test51TheMethodToExtractMustNotReferenceSuper
 		withMessageText: [ ExtractToMethodObject methodCanNotReferenceSuperErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:25:34 pm (UTC)'!
-!methodProperties: {}!
 test52TheMethodToExtractMustNotContainInstVarAssignments
 
 	| keywordsDefinitions variablesToParametrizeToInstVars aClass |
@@ -3109,7 +2996,6 @@ test52TheMethodToExtractMustNotContainInstVarAssignments
 		withMessageText: [ ExtractToMethodObject methodCannotContainInstVarAssignmentsErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:26:10 pm (UTC)'!
-!methodProperties: {}!
 test53TheMethodToExtractMustNotContainClassVarAssignments
 
 	| keywordsDefinitions variablesToParametrizeToInstVars aClass classVarName |
@@ -3142,7 +3028,6 @@ test53TheMethodToExtractMustNotContainClassVarAssignments
 		withMessageText: [ ExtractToMethodObject methodCannotContainClassVarAssignmentsErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:26:40 pm (UTC)'!
-!methodProperties: {}!
 test54TheMethodToExtractMustNotContainPoolVarAssignments
 
 	| keywordsDefinitions aClass aPool aPoolVar compiledMethodToRefactor correspondingInstVar methodToRefactorSourceCode variablesToParametrizeToInstanceVariables |
@@ -3187,7 +3072,6 @@ test54TheMethodToExtractMustNotContainPoolVarAssignments
 		withMessageText: [ ExtractToMethodObject methodCannotContainPoolVarAssignmentsErrorMessage ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 6:27:08 pm (UTC)'!
-!methodProperties: {}!
 test55MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVariableInsteadOfClassToRefactorClassVariable
 
 	| refactor methodObjectClass keywordsDefinitions variablesToParametrizeToInstanceVariables evaluationSourceCode correspondingInstVar compiledMethodToRefactor methodToRefactorSourceCode aClass aClassVar |
@@ -3226,7 +3110,6 @@ test55MethodObjectEvaluationMethodSourceCodeReferencesCorrespondingInstanceVaria
 	self assert: evaluationSourceCode equals: (methodObjectClass compiledMethodAt: self defaultEvaluationSelector ) sourceCode.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 16/Feb/2019, 7:20:08 pm (UTC)'!
-!methodProperties: {}!
 test56MethodObjectInstanceCreationMessageParameterNamesMustNotRepeat
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables aClassToRefactor |
@@ -3249,7 +3132,6 @@ test56MethodObjectInstanceCreationMessageParameterNamesMustNotRepeat
 			ExtractToMethodObject instanceCreationMessageParameterNamesAreDuplicated: #('aParamName') ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 17/Feb/2019, 5:30:06 pm (UTC)'!
-!methodProperties: {}!
 test57MethodObjectInstanceCreationMessageParameterNamesMustNotBeEmpty
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables |
@@ -3265,7 +3147,6 @@ test57MethodObjectInstanceCreationMessageParameterNamesMustNotBeEmpty
 			ExtractToMethodObject invalidParameterNamesErrorMessage: #('') ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 9/Apr/2019, 3:16:35 pm (UTC)'!
-!methodProperties: {}!
 test58MethodObjectInstanceCreationMessageParameterNamesMustNotContainSeparators
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables aParameterName |
@@ -3282,7 +3163,6 @@ test58MethodObjectInstanceCreationMessageParameterNamesMustNotContainSeparators
 			ExtractToMethodObject invalidParameterNamesErrorMessage: (Array with: aParameterName) ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 9/Apr/2019, 3:16:52 pm (UTC)'!
-!methodProperties: {}!
 test59MethodObjectInstanceCreationMessageParameterNamesMustNotContainInvalidCharacters
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables aParameterName |
@@ -3299,7 +3179,6 @@ test59MethodObjectInstanceCreationMessageParameterNamesMustNotContainInvalidChar
 			ExtractToMethodObject invalidParameterNamesErrorMessage: (Array with: aParameterName) ].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 17/Feb/2019, 5:48:32 pm (UTC)'!
-!methodProperties: {}!
 test60MethodObjectInstanceCreationMessageParameterNamesMustNotBeEqualToAMethodObjectInstanceVariable
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables aClassToRefactor |
@@ -3322,7 +3201,6 @@ test60MethodObjectInstanceCreationMessageParameterNamesMustNotBeEqualToAMethodOb
 			ExtractToMethodObject parameterNamesOverlapWithInstanceVariableNamesErrorMessage: #('theInstVar')].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 9/Apr/2019, 3:17:03 pm (UTC)'!
-!methodProperties: {}!
 test61MethodObjectClassInstanceCreationMessageParameterNamesAreTheChosenOnes
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor methodObjectClass instanceCreationMethod |
@@ -3347,7 +3225,6 @@ test61MethodObjectClassInstanceCreationMessageParameterNamesAreTheChosenOnes
 	self assert: 'aParamName' equals: instanceCreationMethod methodNode arguments first name.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 9/Apr/2019, 3:25:53 pm (UTC)'!
-!methodProperties: {}!
 test62MethodObjectInstanceCreationMessageParameterNamesAreTheChosenOnes
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor instanceCreationMethod methodObject |
@@ -3372,7 +3249,6 @@ test62MethodObjectInstanceCreationMessageParameterNamesAreTheChosenOnes
 	self assert: 'aParamName' equals: instanceCreationMethod methodNode arguments first name.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 10/Apr/2019, 7:16:32 pm (UTC)'!
-!methodProperties: {}!
 test63MethodObjectInstanceInitializationMessageIsCategorizedAsInitialization
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor instanceInitializationMethod methodObject |
@@ -3397,7 +3273,6 @@ test63MethodObjectInstanceInitializationMessageIsCategorizedAsInitialization
 	self assert: #initialization equals: instanceInitializationMethod category.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'HAW 23/Mar/2025, 10:29:00 pm (UTC)'!
-!methodProperties: {}!
 test64MethodObjectInstanceCreationMessageIsCategorizedAsInstanceCreation
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor instanceCreationMethod methodObject |
@@ -3422,7 +3297,6 @@ test64MethodObjectInstanceCreationMessageIsCategorizedAsInstanceCreation
 	self assert: Categorizer instanceCreation equals: instanceCreationMethod category.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 10/Apr/2019, 7:19:03 pm (UTC)'!
-!methodProperties: {}!
 test65MethodObjectEvaluationMessageIsCategorizedAsEvaluating
 
 	| keywordsDefinitions variablesToParametrizeToInstanceVariables refactor evaluationMethod methodObject |
@@ -3447,7 +3321,6 @@ test65MethodObjectEvaluationMessageIsCategorizedAsEvaluating
 	self assert: #'evaluating' equals: evaluationMethod category.! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/Apr/2019, 2:42:37 pm (UTC)'!
-!methodProperties: {}!
 test66MethodObjectEvaluationSelectorMustNotBeEmpty
 
 	self should: [
@@ -3463,7 +3336,6 @@ test66MethodObjectEvaluationSelectorMustNotBeEmpty
 		withMessageText: [ExtractToMethodObject evaluationSelectorMustNotBeEmptyErrorMessage].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/Apr/2019, 2:50:57 pm (UTC)'!
-!methodProperties: {}!
 test67MethodObjectEvaluationSelectorMustNotContainInvalidCharacters
 
 	self should: [
@@ -3479,7 +3351,6 @@ test67MethodObjectEvaluationSelectorMustNotContainInvalidCharacters
 		withMessageText: [ExtractToMethodObject evaluationSelectorMustNotInvalidCharactersErrorMessage].! !
 
 !ExtractToMethodObjectTest methodsFor: 'tests' stamp: 'FGJ 11/Apr/2019, 2:52:08 pm (UTC)'!
-!methodProperties: {}!
 test68MethodObjectEvaluationSelectorMustNotStartWithAnInvalidStartOfSelector
 
 	self should: [
@@ -3495,7 +3366,6 @@ test68MethodObjectEvaluationSelectorMustNotStartWithAnInvalidStartOfSelector
 		withMessageText: [ExtractToMethodObject evaluationSelectorMustNotStartWithAnInvalidStartOfSelectorErrorMessage].! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 14/Jan/2019, 2:55:33 pm (UTC)'!
-!methodProperties: {}!
 compiledMethodFrom: aSourceCode
 
 	| aClass |
@@ -3506,7 +3376,6 @@ compiledMethodFrom: aSourceCode
 	^aClass compiledMethodAt: (Parser selectorFrom: aSourceCode).! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 14/Jan/2019, 2:04:52 pm (UTC)'!
-!methodProperties: {}!
 compiledMethodReferencingSelf
 
 	| aClass aMessageSelector aMessageSourceCode |
@@ -3519,7 +3388,6 @@ compiledMethodReferencingSelf
 	^aClass compiledMethodAt: aMessageSelector! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 18/Dec/2018, 8:07:18 pm (UTC)'!
-!methodProperties: {}!
 creationFrom: aCompiledMethodToRefactor
 withExtractedVariablesToInstanceVariables: namesWithDuplicatedInstanceVariable
 withInstanceCreationMessageFrom: keywordToParametrizedVariable
@@ -3539,13 +3407,11 @@ failsWithMessageText: aMessageTextBlock
 		withMessageText: aMessageTextBlock .! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 17/Dec/2018, 2:21:23 pm (UTC)'!
-!methodProperties: {}!
 defaultEvaluationSelector
 
 	^#defaultEvaluationSelector! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 17/Dec/2018, 8:51:55 pm (UTC)'!
-!methodProperties: {}!
 emptyCompiledMethod
 
 	| aClass |
@@ -3557,7 +3423,6 @@ emptyCompiledMethod
 	! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 16/Feb/2019, 5:46:39 pm (UTC)'!
-!methodProperties: {}!
 keyword: aKeyword varName: aVariableName paramName: aParameterName
 
 	^{
@@ -3567,26 +3432,22 @@ keyword: aKeyword varName: aVariableName paramName: aParameterName
 	} asDictionary! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 17/Dec/2018, 2:19:01 pm (UTC)'!
-!methodProperties: {}!
 methodObjectClassName
 
 	^#MethodObject! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 21/Dec/2018, 9:04:09 pm (UTC)'!
-!methodProperties: {}!
 methodObjectSuperclass
 
 	^self createClassNamed: #MethodObjectSuperclass! !
 
 !ExtractToMethodObjectTest methodsFor: 'factories' stamp: 'FGJ 14/Jan/2019, 2:05:30 pm (UTC)'!
-!methodProperties: {}!
 sourceCodeBodyOfMethodReferencingSelf
 
 	^'
 		self isNil.'! !
 
 !ExtractToMethodObjectTest methodsFor: 'assertions' stamp: 'FGJ 17/Dec/2018, 9:44:40 pm (UTC)'!
-!methodProperties: {}!
 creationWithExtractedVariablesToInstanceVariables: parametrizedVariablesToInstanceVariables
 withInstanceCreationMessageFrom: keywordToParametrizedVariable
 failsWithMessageText: aMessageTextBlock
@@ -3606,7 +3467,6 @@ failsWithMessageText: aMessageTextBlock
 		! !
 
 !ExtractToMethodObjectTest methodsFor: 'assertions' stamp: 'FGJ 17/Dec/2018, 9:03:06 pm (UTC)'!
-!methodProperties: {}!
 creationWithMethodObjectClassName: aClassName
 failsWithMessageText: aMessageTextBlock
 
@@ -3622,7 +3482,6 @@ failsWithMessageText: aMessageTextBlock
 		withMessageText: aMessageTextBlock.! !
 
 !MessageSendingBlocksVariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 28/Mar/2019, 9:00:00 pm (UTC)'!
-!methodProperties: {}!
 test01WhenThereAreNoVariablesToExtractFindsNothing
 
 	| messageClass messageNode |
@@ -3634,7 +3493,6 @@ test01WhenThereAreNoVariablesToExtractFindsNothing
 	self assert: (MessageSendingBlocksVariablesToExtractFinder valueIn: messageNode) isEmpty.! !
 
 !MessageSendingBlocksVariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 28/Mar/2019, 9:01:05 pm (UTC)'!
-!methodProperties: {}!
 test02WhenThereAreOnlyTemporariesFindsNothing
 
 	| messageClass messageNode |
@@ -3646,7 +3504,6 @@ test02WhenThereAreOnlyTemporariesFindsNothing
 	self assert: (MessageSendingBlocksVariablesToExtractFinder valueIn: messageNode) isEmpty.! !
 
 !MessageSendingBlocksVariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 28/Mar/2019, 9:07:50 pm (UTC)'!
-!methodProperties: {}!
 test03WhenABlockReferencesNonTemporariesTheyAreFound
 
 	| messageClass messageNode variablesToExtract |
@@ -3660,7 +3517,6 @@ test03WhenABlockReferencesNonTemporariesTheyAreFound
 	self assert: (variablesToExtract includes: 'self').! !
 
 !MessageSendingBlocksVariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 28/Mar/2019, 9:10:04 pm (UTC)'!
-!methodProperties: {}!
 test04WhenANestedBlockReferencesNonTemporariesTheyAreFound
 
 	| messageClass messageNode variablesToExtract |
@@ -3674,7 +3530,6 @@ test04WhenANestedBlockReferencesNonTemporariesTheyAreFound
 	self assert: (variablesToExtract includes: 'self').! !
 
 !MessageSendingBlocksVariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 28/Mar/2019, 9:10:59 pm (UTC)'!
-!methodProperties: {}!
 test05NilIsNotFound
 
 	| messageClass messageNode |
@@ -3686,7 +3541,6 @@ test05NilIsNotFound
 	self assert: (MessageSendingBlocksVariablesToExtractFinder valueIn: messageNode) isEmpty.! !
 
 !MessageSendingBlocksVariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 28/Mar/2019, 10:07:28 pm (UTC)'!
-!methodProperties: {}!
 test06TrueAndFalseAreNotFound
 
 	| messageClass messageNode |
@@ -3698,7 +3552,6 @@ test06TrueAndFalseAreNotFound
 	self assert: (MessageSendingBlocksVariablesToExtractFinder valueIn: messageNode) isEmpty.! !
 
 !MessageSendingBlocksVariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 28/Mar/2019, 10:08:33 pm (UTC)'!
-!methodProperties: {}!
 test07WhenABlockReferencesInstanceVariablesTheyAreFound
 
 	| messageClass messageNode variablesToExtract |
@@ -3712,7 +3565,6 @@ test07WhenABlockReferencesInstanceVariablesTheyAreFound
 	self assert: (variablesToExtract includes: 'anInstVar').! !
 
 !MessageSendingBlocksVariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 4/Sep/2020, 1:54:05 pm (UTC)'!
-!methodProperties: {}!
 test08WhenABlockReferencesArgumentsTheyAreFound
 
 	| messageClass messageNode variablesToExtract |
@@ -3726,7 +3578,6 @@ test08WhenABlockReferencesArgumentsTheyAreFound
 	self assert: (variablesToExtract includes: 'anArg').! !
 
 !MessageSendingBlocksVariablesToExtractFinderTest methodsFor: 'as yet unclassified' stamp: 'FGJ 6/Sep/2020, 8:29:37 pm (UTC)'!
-!methodProperties: {}!
 test09ExcludingVariablesAreNotIncludedInTheResult
 
 	| messageClass messageNode variablesToExtract |
@@ -3739,13 +3590,11 @@ test09ExcludingVariablesAreNotIncludedInTheResult
 	self assert: 0 equals: variablesToExtract size.! !
 
 !ReturnStatementAdderTest methodsFor: 'accessing' stamp: 'FGJ 3/Oct/2020, 7:23:49 pm (UTC)'!
-!methodProperties: {}!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
 !ReturnStatementAdderTest methodsFor: 'testing' stamp: 'FGJ 3/Oct/2020, 7:46:35 pm (UTC)'!
-!methodProperties: {}!
 test01whenTheMethodIsEmptyAddsNothing
 
 	| testClass compiledMethod methodSelector |
@@ -3761,7 +3610,6 @@ test01whenTheMethodIsEmptyAddsNothing
 	self assert: methodSelector equals: compiledMethod sourceCode.! !
 
 !ReturnStatementAdderTest methodsFor: 'testing' stamp: 'FGJ 3/Oct/2020, 7:46:51 pm (UTC)'!
-!methodProperties: {}!
 test02whenTheMethodHasOneStatementAddsReturnToThatStatement
 
 	| testClass compiledMethod methodSelector methodBody methodSource expectedSource |
@@ -3780,7 +3628,6 @@ test02whenTheMethodHasOneStatementAddsReturnToThatStatement
 	self assert: expectedSource equals: compiledMethod sourceCode .! !
 
 !ReturnStatementAdderTest methodsFor: 'testing' stamp: 'FGJ 3/Oct/2020, 10:47:11 pm (UTC)'!
-!methodProperties: {}!
 test03whenTheMethodHasOneStatementWithExplicitReturnDoesNotAddReturnToThatStatement
 
 	| testClass compiledMethod methodSelector methodBody methodSource expectedSource |
@@ -3799,7 +3646,6 @@ test03whenTheMethodHasOneStatementWithExplicitReturnDoesNotAddReturnToThatStatem
 	self assert: expectedSource equals: compiledMethod sourceCode .! !
 
 !ReturnStatementAdderTest methodsFor: 'testing' stamp: 'FGJ 3/Oct/2020, 10:52:16 pm (UTC)'!
-!methodProperties: {}!
 test04whenTheMethodHasMultipleStatementsAddsReturnToTheLastOne
 
 	| testClass compiledMethod methodSelector methodBody methodSource expectedSource allButLast last |
@@ -3820,7 +3666,6 @@ test04whenTheMethodHasMultipleStatementsAddsReturnToTheLastOne
 	self assert: expectedSource equals: compiledMethod sourceCode .! !
 
 !ReturnStatementAdderTest methodsFor: 'testing' stamp: 'FGJ 3/Oct/2020, 11:20:09 pm (UTC)'!
-!methodProperties: {}!
 test05whenTheMethodHasMultipleStatementWithExplicitReturnDoesNotAddReturnToLastStatement
 
 	| testClass compiledMethod methodSelector methodBody methodSource allButLast last |
@@ -3840,7 +3685,6 @@ test05whenTheMethodHasMultipleStatementWithExplicitReturnDoesNotAddReturnToLastS
 	self assert: methodSource equals: compiledMethod sourceCode .! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 3:31:43 pm (UTC)'!
-!methodProperties: {}!
 creationWithKeyword: aKeyword failsWithMessageText: anErrorMessageBlock
 
 	self
@@ -3853,7 +3697,6 @@ creationWithKeyword: aKeyword failsWithMessageText: anErrorMessageBlock
 		withMessageText: anErrorMessageBlock.! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 3:13:23 pm (UTC)'!
-!methodProperties: {}!
 creationWithParameterName: aParameterName failsWithMessageText: anErrorMessageBlock
 
 	self
@@ -3866,13 +3709,11 @@ creationWithParameterName: aParameterName failsWithMessageText: anErrorMessageBl
 		withMessageText: anErrorMessageBlock.! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'accessing' stamp: 'FGJ 19/Mar/2019, 8:18:25 pm (UTC)'!
-!methodProperties: {}!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'testing' stamp: 'FGJ 18/Mar/2019, 3:14:39 pm (UTC)'!
-!methodProperties: {}!
 test01ParameterNameMustNotBeEmpty
 
 	| emptyParameterName |
@@ -3884,7 +3725,6 @@ test01ParameterNameMustNotBeEmpty
 		failsWithMessageText: [VariableToParametrizeKeywordDefinition invalidParameterNameErrorMessage].! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'testing' stamp: 'FGJ 18/Mar/2019, 3:14:06 pm (UTC)'!
-!methodProperties: {}!
 test02ParameterNameMustNotContainInvalidCharacters
 
 	| parameterNameWithInvalidCharacters |
@@ -3897,7 +3737,6 @@ test02ParameterNameMustNotContainInvalidCharacters
 			VariableToParametrizeKeywordDefinition invalidParameterNameErrorMessage].! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'testing' stamp: 'FGJ 18/Mar/2019, 3:12:26 pm (UTC)'!
-!methodProperties: {}!
 test03ParameterNameMustNotContainSeparators
 
 	| parameterNameWithSeparators |
@@ -3910,7 +3749,6 @@ test03ParameterNameMustNotContainSeparators
 			VariableToParametrizeKeywordDefinition invalidParameterNameErrorMessage].! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'testing' stamp: 'FGJ 18/Mar/2019, 3:34:48 pm (UTC)'!
-!methodProperties: {}!
 test04KeywordMustNotBeEmpty
 
 	| emptyKeyword |
@@ -3922,7 +3760,6 @@ test04KeywordMustNotBeEmpty
 		failsWithMessageText: [VariableToParametrizeKeywordDefinition keywordMustNotBeEmptyErrorMessage].! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'testing' stamp: 'FGJ 18/Mar/2019, 3:36:37 pm (UTC)'!
-!methodProperties: {}!
 test05KeywordMustNotContainInvalidCharacters
 
 	| keywordWithInvalidCharacters |
@@ -3934,7 +3771,6 @@ test05KeywordMustNotContainInvalidCharacters
 		failsWithMessageText: [VariableToParametrizeKeywordDefinition keywordMustNotContainInvalidCharactersErrorMessage].! !
 
 !VariableToParametrizeKeywordDefinitionTest methodsFor: 'testing' stamp: 'FGJ 18/Mar/2019, 3:46:03 pm (UTC)'!
-!methodProperties: {}!
 test06CreatesADefinition
 
 	| definition keyword parameterName variableName |
@@ -3950,7 +3786,6 @@ test06CreatesADefinition
 	self assert: parameterName equals: definition parameterName.! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 4/Mar/2019, 5:42:02 pm (UTC)'!
-!methodProperties: {}!
 test01WhenTheMethodHasNoVariablesItReturnsAnEmptySet
 
 	| classToAnalize variablesToExtract |
@@ -3961,7 +3796,6 @@ test01WhenTheMethodHasNoVariablesItReturnsAnEmptySet
 	self assert: variablesToExtract isEmpty.! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 4/Mar/2019, 5:41:54 pm (UTC)'!
-!methodProperties: {}!
 test02WhenTheMethodHasOnlyTemporaryVariablesItReturnsAnEmptySet
 
 	| classToAnalize variablesToExtract sourceCode |
@@ -3979,7 +3813,6 @@ test02WhenTheMethodHasOnlyTemporaryVariablesItReturnsAnEmptySet
 	self assert: variablesToExtract isEmpty.! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 4/Mar/2019, 5:43:15 pm (UTC)'!
-!methodProperties: {}!
 test03WhenTheMethodReferencesSelfPseudoVariableItFindsIt
 
 	| classToAnalize variablesToExtract sourceCode |
@@ -3995,7 +3828,6 @@ test03WhenTheMethodReferencesSelfPseudoVariableItFindsIt
 	self assert: (variablesToExtract includes: 'self').! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 4/Mar/2019, 5:43:58 pm (UTC)'!
-!methodProperties: {}!
 test04WhenTheMethodHasArgumentsTheyAreIncludedAsVariablesToExtract
 
 	| classToAnalize variablesToExtract sourceCode |
@@ -4011,7 +3843,6 @@ test04WhenTheMethodHasArgumentsTheyAreIncludedAsVariablesToExtract
 	self assert: (variablesToExtract includes: 'anArg').! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 4/Mar/2019, 5:44:56 pm (UTC)'!
-!methodProperties: {}!
 test05WhenTheMethodReferencesAnInstanceVariableItFindsIt
 
 	| classToAnalize variablesToExtract sourceCode instVarName |
@@ -4028,7 +3859,6 @@ test05WhenTheMethodReferencesAnInstanceVariableItFindsIt
 	self assert: (variablesToExtract includes: instVarName).! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 3/Apr/2025, 11:19:02 pm (UTC)'!
-!methodProperties: {}!
 test06WhenTheMethodReferencesAClassVariableItFindsIt
 
 	| classToAnalize variablesToExtract sourceCode classVarName |
@@ -4052,7 +3882,6 @@ test06WhenTheMethodReferencesAClassVariableItFindsIt
 	self assert: (variablesToExtract includes: classVarName).! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 3/Apr/2025, 11:21:09 pm (UTC)'!
-!methodProperties: {}!
 test07WhenTheMethodReferencesAPoolVariableItFindsIt
 
 	| classToAnalize variablesToExtract sourceCode aSharedPoolName aPoolVariableName |
@@ -4084,7 +3913,6 @@ test07WhenTheMethodReferencesAPoolVariableItFindsIt
 	self assert: (variablesToExtract includes: aPoolVariableName). ! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'FGJ 28/Mar/2019, 9:12:23 pm (UTC)'!
-!methodProperties: {}!
 test08DoesNotFindPseudoVariablesButSelf
 
 	| classToAnalize variablesToExtract sourceCode |
@@ -4099,7 +3927,6 @@ test08DoesNotFindPseudoVariablesButSelf
 	self assert: variablesToExtract isEmpty! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 4/Mar/2019, 5:48:04 pm (UTC)'!
-!methodProperties: {}!
 test09WhenReturnsAnInstVarFindsIt
 
 	| aClass variablesToExtract aMethodReferencingInstVarSourceCode instVarName |
@@ -4115,7 +3942,6 @@ test09WhenReturnsAnInstVarFindsIt
 	self assert: (variablesToExtract includes: instVarName).! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 4/Mar/2019, 5:48:45 pm (UTC)'!
-!methodProperties: {}!
 test10DoesNotFindClasses
 
 	| classToAnalize variablesToExtract sourceCode |
@@ -4129,7 +3955,6 @@ test10DoesNotFindClasses
 	self assert: variablesToExtract isEmpty! !
 
 !VariablesToExtractFinderTest methodsFor: 'tests' stamp: 'HAW 4/Mar/2019, 5:49:29 pm (UTC)'!
-!methodProperties: {}!
 test11DoesNotFindGlobals
 
 	| classToAnalize variablesToExtract sourceCode |
@@ -4143,7 +3968,6 @@ test11DoesNotFindGlobals
 	self assert: variablesToExtract isEmpty! !
 
 !VariablesToExtractFinderTest methodsFor: 'variables to extract' stamp: 'HAW 27/Jul/2023, 9:54:34 pm (UTC)'!
-!methodProperties: {}!
 variablesToExtractIn: aSourceCode at: aClass
 
 	| selector |
@@ -4154,7 +3978,6 @@ variablesToExtractIn: aSourceCode at: aClass
 ! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:35:24 pm (UTC)'!
-!methodProperties: {}!
 creationWithSelector: aSelector failsWithMessageText: anErrorMessageBlock
 
 	self
@@ -4163,7 +3986,6 @@ creationWithSelector: aSelector failsWithMessageText: anErrorMessageBlock
 		withMessageText: anErrorMessageBlock.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 13/Mar/2019, 5:16:54 pm (UTC)'!
-!methodProperties: {}!
 test01SelectorMustNotBeEmpty
 
 	self
@@ -4172,7 +3994,6 @@ test01SelectorMustNotBeEmpty
 			VariablesToParametrizeKeywordsDefinitions selectorMustNotBeEmptyErrorMessage].! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 13/Mar/2019, 5:14:45 pm (UTC)'!
-!methodProperties: {}!
 test02SelectorMustNotContainInvalidCharacters
 
 	self
@@ -4181,7 +4002,6 @@ test02SelectorMustNotContainInvalidCharacters
 			VariablesToParametrizeKeywordsDefinitions selectorMustNotContainInvalidCharactersErrorMessage].! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 13/Mar/2019, 5:19:07 pm (UTC)'!
-!methodProperties: {}!
 test03SelectorMustNotStartWithInvalidStartOfSelector
 
 	self
@@ -4190,7 +4010,6 @@ test03SelectorMustNotStartWithInvalidStartOfSelector
 			VariablesToParametrizeKeywordsDefinitions selectorMustNotStartWithInvalidStartOfSelectorErrorMessage].! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:35:28 pm (UTC)'!
-!methodProperties: {}!
 test04CreatesVariablesToParametrizeKeywordsDefinitionsWithSelector
 
 	| variablesToParametrizeKeywordsDefinitions |
@@ -4200,7 +4019,6 @@ test04CreatesVariablesToParametrizeKeywordsDefinitionsWithSelector
 	self assert: #polymorphicSelector asString equals: variablesToParametrizeKeywordsDefinitions messageSending.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:32:48 pm (UTC)'!
-!methodProperties: {}!
 test05FirstKeywordMustNotStartWithAnInvalidStartOfSelector
 
 	| orderedDefinitions |
@@ -4216,7 +4034,6 @@ test05FirstKeywordMustNotStartWithAnInvalidStartOfSelector
 		withMessageText: [VariablesToParametrizeKeywordsDefinitions firstKeywordMustNoStartWithInvalidStartOfSelectorErrorMessage].! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:32:52 pm (UTC)'!
-!methodProperties: {}!
 test06ParameterNamesMustNotBeRepeated
 
 	| orderedDefinitionsWithRepeatedParameterNames |
@@ -4237,7 +4054,6 @@ test06ParameterNamesMustNotBeRepeated
 		withMessageText: [VariablesToParametrizeKeywordsDefinitions parameterNamesMustNotBeRepeatedErrorMessage].! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:32:55 pm (UTC)'!
-!methodProperties: {}!
 test07VariablesToParametrizeMustNotBeRepeated
 
 	| orderedDefinitionsWithRepeatedVariableNames |
@@ -4258,7 +4074,6 @@ test07VariablesToParametrizeMustNotBeRepeated
 		withMessageText: [VariablesToParametrizeKeywordsDefinitions variableNamesMustNotBeRepeatedErrorMessage].! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:32:58 pm (UTC)'!
-!methodProperties: {}!
 test08CreatesVariablesToParametrizeKeywordsDefinitionsWithDefinitions
 
 	| definitions orderedDefinitions |
@@ -4279,7 +4094,6 @@ test08CreatesVariablesToParametrizeKeywordsDefinitionsWithDefinitions
 	self assert: (definitions variablesToParametrize includesAllOf: #('v1' 'v2')).! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:35:31 pm (UTC)'!
-!methodProperties: {}!
 test09WhenNoVariablesToParametrizeBuildsSelector
 
 	| definitions |
@@ -4290,7 +4104,6 @@ test09WhenNoVariablesToParametrizeBuildsSelector
 	self assert: #theSelector equals: definitions selector.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:33:02 pm (UTC)'!
-!methodProperties: {}!
 test10WhenVariablesToParametrizeBuildsSelectorFromKeywordsInOrder
 
 	| definitions orderedDefinitions |
@@ -4311,7 +4124,6 @@ test10WhenVariablesToParametrizeBuildsSelectorFromKeywordsInOrder
 	self assert: #k1:k2: equals: definitions selector.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:39:50 pm (UTC)'!
-!methodProperties: {}!
 test11WhenVariablesToParametrizeBuildsMessageSending
 
 	| definitions orderedDefinitions |
@@ -4332,7 +4144,6 @@ test11WhenVariablesToParametrizeBuildsMessageSending
 	self assert: 'k1: v1 k2: v2' equals: definitions messageSending.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 6:56:46 pm (UTC)'!
-!methodProperties: {}!
 test12WhenNoVariablesToParametrizeBuildsMessageHeader
 
 	| definitions |
@@ -4343,7 +4154,6 @@ test12WhenNoVariablesToParametrizeBuildsMessageHeader
 	self assert: 'aRandomSelector' equals: definitions messageHeader.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 6:56:07 pm (UTC)'!
-!methodProperties: {}!
 test13WhenVariablesToParametrizeBuildsMessageHeader
 
 	| definitions orderedDefinitions |
@@ -4364,25 +4174,21 @@ test13WhenVariablesToParametrizeBuildsMessageHeader
 	self assert: 'k1: p1 k2: p2' equals: definitions messageHeader.! !
 
 !VariablesToParametrizeKeywordsDefinitionsTest methodsFor: 'as yet unclassified' stamp: 'FGJ 19/Mar/2019, 8:16:19 pm (UTC)'!
-!methodProperties: {}!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
 !IfNilChecksFinderTest methodsFor: 'accessing' stamp: 'FGJ 26/Mar/2019, 6:09:26 pm (UTC)'!
-!methodProperties: {}!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
 !IfNilChecksFinderTest methodsFor: 'accessing' stamp: 'FGJ 27/Mar/2019, 5:54:16 pm (UTC)'!
-!methodProperties: {}!
 instVar
 
 	^'randomInstVar'! !
 
 !IfNilChecksFinderTest methodsFor: 'assertions' stamp: 'FGJ 29/Mar/2019, 8:40:26 pm (UTC)'!
-!methodProperties: {}!
 assertLookUpOnSource: aMethodSource includesMessageAtIndex: anIndex
 
 	| contextClass result |
@@ -4397,7 +4203,6 @@ assertLookUpOnSource: aMethodSource includesMessageAtIndex: anIndex
 	self assert: #m1 equals: result first methodNode selector.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 26/Mar/2019, 6:27:56 pm (UTC)'!
-!methodProperties: {}!
 test01InstanceVariableMustBelongToTheClass
 
 	| contextClass nonExistentInstVar |
@@ -4411,7 +4216,6 @@ test01InstanceVariableMustBelongToTheClass
 		withMessageText: [IfNilChecksFinder instVarMustBelongToClassErrorMessage].! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 26/Mar/2019, 6:26:59 pm (UTC)'!
-!methodProperties: {}!
 test02WhenThereAreNoIfNilChecksTheResultIsEmpty
 
 	| contextClass instVar |
@@ -4422,7 +4226,6 @@ test02WhenThereAreNoIfNilChecksTheResultIsEmpty
 	self assert: (IfNilChecksFinder on: contextClass for: instVar) value isEmpty.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 27/Mar/2019, 6:52:05 pm (UTC)'!
-!methodProperties: {}!
 test03ResultIncludesIfNilMessageSending
 
 	| source nilCheckIndex |
@@ -4432,7 +4235,6 @@ test03ResultIncludesIfNilMessageSending
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 27/Mar/2019, 6:50:58 pm (UTC)'!
-!methodProperties: {}!
 test04ResultIncludesIfNotNilMessageSending
 
 	| source nilCheckIndex |
@@ -4442,7 +4244,6 @@ test04ResultIncludesIfNotNilMessageSending
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 27/Mar/2019, 6:51:37 pm (UTC)'!
-!methodProperties: {}!
 test05ResultIncludesIfNilIfNotNilMessageSending
 
 	| source nilCheckIndex |
@@ -4452,7 +4253,6 @@ test05ResultIncludesIfNilIfNotNilMessageSending
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 27/Mar/2019, 6:53:00 pm (UTC)'!
-!methodProperties: {}!
 test06ResultIncludesIfNotNilIfNilMessageSending
 
 	| source nilCheckIndex |
@@ -4462,7 +4262,6 @@ test06ResultIncludesIfNotNilIfNilMessageSending
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 27/Mar/2019, 6:54:10 pm (UTC)'!
-!methodProperties: {}!
 test07ResultIncludesIsNilIfTrueMessageSending
 
 	| source nilCheckIndex |
@@ -4472,7 +4271,6 @@ test07ResultIncludesIsNilIfTrueMessageSending
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 27/Mar/2019, 6:54:29 pm (UTC)'!
-!methodProperties: {}!
 test08ResultIncludesIsNilIfFalseMessageSending
 
 	| source nilCheckIndex |
@@ -4482,7 +4280,6 @@ test08ResultIncludesIsNilIfFalseMessageSending
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 27/Mar/2019, 6:54:56 pm (UTC)'!
-!methodProperties: {}!
 test09ResultIncludesIsNilIfTrueIfFalseMessageSending
 
 	| source nilCheckIndex |
@@ -4492,7 +4289,6 @@ test09ResultIncludesIsNilIfTrueIfFalseMessageSending
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 27/Mar/2019, 6:55:27 pm (UTC)'!
-!methodProperties: {}!
 test10ResultIncludesIsNilIfFalseIfTrueMessageSending
 
 	| source nilCheckIndex |
@@ -4502,7 +4298,6 @@ test10ResultIncludesIsNilIfFalseIfTrueMessageSending
 	self assertLookUpOnSource: source includesMessageAtIndex: nilCheckIndex.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 16/Apr/2019, 11:36:04 pm (UTC)'!
-!methodProperties: {}!
 test11WhenThereAreMultipleIfNilChecksInTheSameMethodTheResultIncludesAllOfThem
 
 	| contextClass anIfNilCheckStatement methodHeader source result anIfNotNilCheckStatement |
@@ -4524,7 +4319,6 @@ test11WhenThereAreMultipleIfNilChecksInTheSameMethodTheResultIncludesAllOfThem
 	self assert: #m1 equals: result first methodNode selector.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 29/Mar/2019, 8:41:15 pm (UTC)'!
-!methodProperties: {}!
 test12WhenThereAreIfNilChecksInMultipleMethodsTheResultIncludesAllOfThem
 
 	| contextClass result sourcem1 sourcem2 |
@@ -4543,7 +4337,6 @@ test12WhenThereAreIfNilChecksInMultipleMethodsTheResultIncludesAllOfThem
 	self assert: #m2 equals: result second methodNode selector.! !
 
 !IfNilChecksFinderTest methodsFor: 'testing' stamp: 'FGJ 16/Apr/2019, 11:36:52 pm (UTC)'!
-!methodProperties: {}!
 test13WhenThereAreMultipleIfNilChecksInTheSameMethodWithTheSameCodeTheResultIncludesAllOfThem
 
 	| contextClass anIfNilCheckStatement methodHeader source result firstIfNilIndex |
@@ -4566,7 +4359,6 @@ test13WhenThereAreMultipleIfNilChecksInTheSameMethodWithTheSameCodeTheResultIncl
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:42:29 pm (UTC)'!
-!methodProperties: {}!
 test01BlocksToExtractMustNotContainReferencesToSuper
 
 	| aClassToRefactor sourceWithIf ifMessageNode replacementParameters definitions methodNode |
@@ -4600,7 +4392,6 @@ test01BlocksToExtractMustNotContainReferencesToSuper
 		withMessageText: [ IntroduceNullObject messageNodesReferenceSuperErrorMessage: {ifMessageNode}].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 20/Feb/2019, 1:57:50 am (UTC)'!
-!methodProperties: {}!
 test02BlocksToExtractMustNotContainAssignmentsToVariablesThatAreNotTemporals
 
 	self
@@ -4609,7 +4400,6 @@ test02BlocksToExtractMustNotContainAssignmentsToVariablesThatAreNotTemporals
 			IntroduceNullObject blocksToExtractCannotContainAssignmentsToVariablesThatAreNotBlockTemporalsErrorMessage ].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 20/Feb/2019, 2:01:51 am (UTC)'!
-!methodProperties: {}!
 test03BlocksToExtractCanAssignToTemporalsOfNestedBlocks
 
 	self
@@ -4618,7 +4408,6 @@ test03BlocksToExtractCanAssignToTemporalsOfNestedBlocks
 		shouldntRaise: RefactoringError.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 20/Feb/2019, 2:05:01 am (UTC)'!
-!methodProperties: {}!
 test04BlocksToExtractCanAssignToTemporalsOfBlocks
 
 	self
@@ -4626,7 +4415,6 @@ test04BlocksToExtractCanAssignToTemporalsOfBlocks
 		shouldntRaise: RefactoringError.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 18/Mar/2019, 8:02:44 pm (UTC)'!
-!methodProperties: {}!
 test07BlocksToExtractMustNotContainReturnStatements
 
 	self
@@ -4636,7 +4424,6 @@ test07BlocksToExtractMustNotContainReturnStatements
 			IntroduceNullObject blocksToExtractMustNotContainReturnStatementsErrorMessage ].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 18/Mar/2019, 8:09:34 pm (UTC)'!
-!methodProperties: {}!
 test08InstanceVariableMustBelongToTheClassToRefactor
 
 	| aClassToRefactor sourceWithIf replacementParameters aClassToRefactorSuperclass |
@@ -4665,7 +4452,6 @@ test08InstanceVariableMustBelongToTheClassToRefactor
 		withMessageText: [ IntroduceNullObject instVarMustBelongToTheClassToRefactorErrorMessage ].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 18/Mar/2019, 8:15:16 pm (UTC)'!
-!methodProperties: {}!
 test09ConcreteClassMustBeDifferentToNullClass
 
 	| aClassToRefactor sourceWithIf replacementParameters concreteAndNullClass |
@@ -4693,7 +4479,6 @@ test09ConcreteClassMustBeDifferentToNullClass
 		withMessageText: [ IntroduceNullObject concreteClassMustBeDifferentFromNullClassErrorMessage ].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 9:31:08 pm (UTC)'!
-!methodProperties: {}!
 test10MethodsMustBelongToTheHierarchyToRefactor
 
 	| aClassToRefactor sourceWithIf replacementParameters aClasOutsideTheHierarchy |
@@ -4722,7 +4507,6 @@ test10MethodsMustBelongToTheHierarchyToRefactor
 		withMessageText: [ IntroduceNullObject methodsMustBelongToTheHierarchyToRefactorErrorMessage ].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 9:31:25 pm (UTC)'!
-!methodProperties: {}!
 test13MessageNodesMustNotBeDuplicated
 
 	| aClassToRefactor replacementParameters replacementParametersWithDuplicatedMessageNode sourceWithIf |
@@ -4749,7 +4533,6 @@ test13MessageNodesMustNotBeDuplicated
 			IntroduceNullObject messageNodesMustNotBeDuplicatedErrorMessage ].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 6/Sep/2020, 9:19:44 pm (UTC)'!
-!methodProperties: {}!
 test14MessageNodesReceiverMustBeTheInstVar
 
 	| aClassToRefactor replacementParameters sourceWithIf |
@@ -4773,7 +4556,6 @@ test14MessageNodesReceiverMustBeTheInstVar
 			IntroduceNullObject messageNodeReceiverMustBeTheInstVarErrorMessage].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:34:57 pm (UTC)'!
-!methodProperties: {}!
 test15ConcreteClassMustNotContainAnyPolymorphicSelector
 
 	| aClassToRefactor sourceWithIf ifMessageNode replacementParameters definitions methodNode concreteClass |
@@ -4810,7 +4592,6 @@ test15ConcreteClassMustNotContainAnyPolymorphicSelector
 			IntroduceNullObject polymorphicSelectorsMustNotBeDefinedInTheNullObjectClassesErrorMessage].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:35:00 pm (UTC)'!
-!methodProperties: {}!
 test16NullClassMustNotContainAnyPolymorphicSelector
 
 	| aClassToRefactor sourceWithIf ifMessageNode replacementParameters definitions methodNode nullClass |
@@ -4847,7 +4628,6 @@ test16NullClassMustNotContainAnyPolymorphicSelector
 			IntroduceNullObject polymorphicSelectorsMustNotBeDefinedInTheNullObjectClassesErrorMessage].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test17WhenThereAreNoVariablesToParametrizeReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode polymorphicSelector |
@@ -4863,7 +4643,6 @@ test17WhenThereAreNoVariablesToParametrizeReplacesIfNilWithPolymorphicMessageSen
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test18WhenThereAreVariablesToParametrizeReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4879,7 +4658,6 @@ test18WhenThereAreVariablesToParametrizeReplacesIfNilWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test19WhenIfNilCheckHasOneKeywordReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4895,7 +4673,6 @@ test19WhenIfNilCheckHasOneKeywordReplacesIfNilWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test20WhenIfNilCheckHasTwoKeywordsReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4911,7 +4688,6 @@ test20WhenIfNilCheckHasTwoKeywordsReplacesIfNilWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test21WhenIfNilCheckHasIsNilReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4927,7 +4703,6 @@ test21WhenIfNilCheckHasIsNilReplacesIfNilWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test22PolymorphicMessageIsAddedToTheConcreteClass
 
 	| sourceWithIf definitions |
@@ -4941,7 +4716,6 @@ test22PolymorphicMessageIsAddedToTheConcreteClass
 	self assert: (self concreteClass selectors includes: #with:).! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test23PolymorphicMessageIsAddedToTheConcreteClassWithChosenParameterNames
 
 	| sourceWithIf definitions |
@@ -4955,7 +4729,6 @@ test23PolymorphicMessageIsAddedToTheConcreteClassWithChosenParameterNames
 	self assert: 'p1' equals: (self concreteClass compiledMethodAt: #with:) methodNode arguments first name.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test24PolymorphicMessageIsAddedToTheConcreteClassReplacingParametrizedVariables
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -4971,7 +4744,6 @@ test24PolymorphicMessageIsAddedToTheConcreteClassReplacingParametrizedVariables
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test25ReplacesIfNilIfNotNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -4987,7 +4759,6 @@ test25ReplacesIfNilIfNotNilWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test26ReplacesIfNotNilIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -5003,7 +4774,6 @@ test26ReplacesIfNotNilIfNilWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test27ReplacesIfNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -5019,7 +4789,6 @@ test27ReplacesIfNilWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test28ReplacesIfNotNilWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -5035,7 +4804,6 @@ test28ReplacesIfNotNilWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test29ReplacesIsNilIfTrueWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -5051,7 +4819,6 @@ test29ReplacesIsNilIfTrueWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test30ReplacesIsNilIfFalseWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -5067,7 +4834,6 @@ test30ReplacesIsNilIfFalseWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test31ReplacesIsNilIfTrueIfFalseWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -5083,7 +4849,6 @@ test31ReplacesIsNilIfTrueIfFalseWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test32ReplacesIsNilIfFalseIfTrueWithPolymorphicMessageSend
 
 	| sourceWithIf definitions actualRefactoredSourceCode expectedRefactoredSourceCode |
@@ -5099,7 +4864,6 @@ test32ReplacesIsNilIfFalseIfTrueWithPolymorphicMessageSend
 	self assert: expectedRefactoredSourceCode equals: actualRefactoredSourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test33PolymorphicMessageIsAddedToTheNullClass
 
 	| sourceWithIf definitions |
@@ -5113,7 +4877,6 @@ test33PolymorphicMessageIsAddedToTheNullClass
 	self assert: (self nullClass selectors includes: #with:).! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test34PolymorphicMessageIsAddedToTheNullClassWithChosenParameterNames
 
 	| sourceWithIf definitions |
@@ -5127,7 +4890,6 @@ test34PolymorphicMessageIsAddedToTheNullClassWithChosenParameterNames
 	self assert: 'p1' equals: (self nullClass compiledMethodAt: #with:) methodNode arguments first name.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test35PolymorphicMessageIsAddedToTheNullClassReplacingParametrizedVariables
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -5143,7 +4905,6 @@ test35PolymorphicMessageIsAddedToTheNullClassReplacingParametrizedVariables
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test36WhenNoNullBlockIsPresentEmptyPolymorphicMessageIsAddedToTheNullClass
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -5159,7 +4920,6 @@ test36WhenNoNullBlockIsPresentEmptyPolymorphicMessageIsAddedToTheNullClass
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test37WhenNoConcreteBlockIsPresentEmptyPolymorphicMessageIsAddedToTheConcreteClass
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -5175,7 +4935,6 @@ test37WhenNoConcreteBlockIsPresentEmptyPolymorphicMessageIsAddedToTheConcreteCla
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test38WhenThereAreMultipleStatementsPolymorphicMessageIsAddedToTheNullClass
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -5191,7 +4950,6 @@ test38WhenThereAreMultipleStatementsPolymorphicMessageIsAddedToTheNullClass
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test39ReplacesNilAssignmentsWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -5209,7 +4967,6 @@ test39ReplacesNilAssignmentsWithNullObject
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test40ReplacesMultipleNilAssignmentsWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -5227,7 +4984,6 @@ test40ReplacesMultipleNilAssignmentsWithNullObject
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 17/Nov/2020, 2:33:39 pm (UTC)'!
-!methodProperties: {}!
 test41ReplacesAssignmentWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -5245,7 +5001,6 @@ test41ReplacesAssignmentWithNullObject
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 17/Nov/2020, 2:33:57 pm (UTC)'!
-!methodProperties: {}!
 test42ReplacesMultipleAssignmentsInTheSameMethodWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine firstRightSide secondRightSide |
@@ -5267,7 +5022,6 @@ test42ReplacesMultipleAssignmentsInTheSameMethodWithNullObject
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 17/Nov/2020, 2:34:15 pm (UTC)'!
-!methodProperties: {}!
 test43ReplacesMultipleAssignmentsInMultipleMethodsWithNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine firstRightSide secondRightSide aClassToRefactor refactoring replacementParameters |
@@ -5311,7 +5065,6 @@ test43ReplacesMultipleAssignmentsInMultipleMethodsWithNullObject
 		self assert: expectedSource equals: refactoredMethod sourceCode].! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test44ReplacesReturnOfIvarWithNilIfNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -5330,7 +5083,6 @@ test44ReplacesReturnOfIvarWithNilIfNullObject
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test45ReplacesIvarAsParamWithNilIfNullObject
 
 	| definitions sourceWithAssignment refactoredMethod expectedSource nextLine |
@@ -5348,7 +5100,6 @@ test45ReplacesIvarAsParamWithNilIfNullObject
 	self assert: expectedSource equals: refactoredMethod sourceCode.! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test46WhenIvarAppearsInNotNilBlockAsReceiverReplacesIvarWithSelf
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -5364,7 +5115,6 @@ test46WhenIvarAppearsInNotNilBlockAsReceiverReplacesIvarWithSelf
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test47WhenIvarAppearsInNotNilBlockAsArgumentReplacesIvarWithSelf
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -5380,7 +5130,6 @@ test47WhenIvarAppearsInNotNilBlockAsArgumentReplacesIvarWithSelf
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 test48WhenIvarAppearsInNilBlockAsArgumentReplacesIvarWithSelfNilIfNullObject
 
 	| sourceWithIf definitions expectedSourceCode |
@@ -5396,7 +5145,6 @@ test48WhenIvarAppearsInNilBlockAsArgumentReplacesIvarWithSelfNilIfNullObject
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'testing' stamp: 'FGJ 24/Oct/2020, 1:30:56 pm (UTC)'!
-!methodProperties: {}!
 test49WhenThereAreMultipleIfNilChecksInTheSameMethodsReplacesAllOfThem
 
 	| expectedSourceCode firstIfNilCheck nextLine secondIfNilCheck sourceWithIfs aClassToRefactor firstDefinition firstIfMessageNode methodNode refactoring replacementParameters secondDefinition secondIfMessageNode refactoredMethod |
@@ -5444,13 +5192,11 @@ test49WhenThereAreMultipleIfNilChecksInTheSameMethodsReplacesAllOfThem
 	! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 19/Mar/2019, 8:16:59 pm (UTC)'!
-!methodProperties: {}!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 24/Oct/2020, 12:34:08 pm (UTC)'!
-!methodProperties: {}!
 applyRefactoringOn: source withOneIfNilCheckUsing: definitions
 
 	| aClassToRefactor ifMessageNode methodNode refactoring replacementParameters |
@@ -5477,31 +5223,26 @@ applyRefactoringOn: source withOneIfNilCheckUsing: definitions
 ! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 25/Mar/2019, 4:48:58 pm (UTC)'!
-!methodProperties: {}!
 compiledMethodToRefactor
 
 	^self defaultClassToRefactor compiledMethodAt: self methodToRefactorSelector ! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 25/Mar/2019, 9:30:14 pm (UTC)'!
-!methodProperties: {}!
 concreteClass
 
 	^self findOrCreateEmptyClassNamed: #AConcreteClass! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 20/Feb/2019, 1:57:00 am (UTC)'!
-!methodProperties: {}!
 defaultInstVarName
 
 	^'anInstVar'! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 20/Feb/2019, 5:54:30 pm (UTC)'!
-!methodProperties: {}!
 defaultPolymorphicUnarySelector
 
 	^#polymorphismWins! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 25/Mar/2019, 5:26:10 pm (UTC)'!
-!methodProperties: {}!
 findOrCreateEmptyClassNamed: aName
 
 	(Smalltalk classNamed: aName)
@@ -5511,19 +5252,16 @@ findOrCreateEmptyClassNamed: aName
 				createClassNamed: aName].! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 25/Mar/2019, 4:45:30 pm (UTC)'!
-!methodProperties: {}!
 methodToRefactorSelector
 
 	^#m1! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 25/Mar/2019, 9:31:11 pm (UTC)'!
-!methodProperties: {}!
 nullClass
 
 	^self findOrCreateEmptyClassNamed: #ANullClass! !
 
 !IntroduceNullObjectTest methodsFor: 'as yet unclassified' stamp: 'FGJ 6/Sep/2020, 9:11:23 pm (UTC)'!
-!methodProperties: {}!
 replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass
 
 	| messageNode methodNode definitions |
@@ -5539,7 +5277,6 @@ replacementParametersFrom: aSourceCode usingAsClassToRefactor: aClass
 		useKeywordsDefinitions: definitions.! !
 
 !IntroduceNullObjectTest methodsFor: 'assertions' stamp: 'FGJ 6/Sep/2020, 9:10:42 pm (UTC)'!
-!methodProperties: {}!
 creationFromSourceCode: aSourceCodeBody failsWithMessageText: messageTextBlock
 
 	| aClassToRefactor ifMessageNode methodNode replacementParameters definitions |
@@ -5570,7 +5307,6 @@ creationFromSourceCode: aSourceCodeBody failsWithMessageText: messageTextBlock
 		withMessageText: messageTextBlock.! !
 
 !IntroduceNullObjectTest methodsFor: 'assertions' stamp: 'FGJ 20/Mar/2019, 2:34:54 pm (UTC)'!
-!methodProperties: {}!
 creationFromSourceCode: aSourceCodeBody shouldntRaise: anException
 
 	| aClassToRefactor ifMessageNode methodNode replacementParameters definitions |
@@ -5603,7 +5339,6 @@ creationFromSourceCode: aSourceCodeBody shouldntRaise: anException
 		raise: anException.! !
 
 !IntroduceNullObjectTest methodsFor: 'class factory' stamp: 'FGJ 20/Feb/2019, 5:33:19 pm (UTC)'!
-!methodProperties: {}!
 defaultClassToRefactor
 
 	| className |
@@ -5617,7 +5352,6 @@ defaultClassToRefactor
 				instanceVariableNames: self defaultInstVarName].! !
 
 !IntroduceNullObjectTest methodsFor: 'class factory' stamp: 'FGJ 18/Feb/2019, 9:52:13 pm (UTC)'!
-!methodProperties: {}!
 keyword: aKeyword varName: aVariableName paramName: aParameterName
 
 	^{
@@ -5627,7 +5361,6 @@ keyword: aKeyword varName: aVariableName paramName: aParameterName
 	} asDictionary! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 5:52:30 pm (UTC)'!
-!methodProperties: {}!
 test01AbstractClassClassNameMustNotBeEmpty
 
 	| emptyClassName |
@@ -5639,7 +5372,6 @@ test01AbstractClassClassNameMustNotBeEmpty
 		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage ].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 5:52:05 pm (UTC)'!
-!methodProperties: {}!
 test02AbstractClassClassNameMustBeASymbol
 
 	| stringClassName |
@@ -5651,7 +5383,6 @@ test02AbstractClassClassNameMustBeASymbol
 		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'HAW 23/Oct/2019, 12:53:55 pm (UTC)'!
-!methodProperties: {}!
 test03AbstractClassClassNameMustStartWithUppercaseLetter
 
 	| classNameNotCapitalized |
@@ -5663,7 +5394,6 @@ test03AbstractClassClassNameMustStartWithUppercaseLetter
 		failsWithMessageText: [ NewClassPrecondition newNameMustStartWithRightLetterErrorMessage ].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 5:51:33 pm (UTC)'!
-!methodProperties: {}!
 test04AbstractClassClassNameMustNotHaveSeparators
 
 	| classNameWithSeparators |
@@ -5675,7 +5405,6 @@ test04AbstractClassClassNameMustNotHaveSeparators
 		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 5:54:23 pm (UTC)'!
-!methodProperties: {}!
 test05AbstractClassClassNameMustNotExist
 
 	| existingClassName |
@@ -5687,7 +5416,6 @@ test05AbstractClassClassNameMustNotExist
 		failsWithMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: existingClassName].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 5:56:43 pm (UTC)'!
-!methodProperties: {}!
 test06NullObjectClassNameMustNotBeEmpty
 
 	| emptyClassName |
@@ -5699,7 +5427,6 @@ test06NullObjectClassNameMustNotBeEmpty
 		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotBeEmptyErrorMessage ].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 6:03:16 pm (UTC)'!
-!methodProperties: {}!
 test07NullObjectClassNameMustBeASymbol
 
 	| stringClassName |
@@ -5711,7 +5438,6 @@ test07NullObjectClassNameMustBeASymbol
 		failsWithMessageText: [ NewClassPrecondition newNameMustBeSymbolErrorMessage ].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'HAW 23/Oct/2019, 12:54:11 pm (UTC)'!
-!methodProperties: {}!
 test08NullObjectClassNameMustStartWithUppercaseLetter
 
 	| classNameNotCapitalized |
@@ -5723,7 +5449,6 @@ test08NullObjectClassNameMustStartWithUppercaseLetter
 		failsWithMessageText: [ NewClassPrecondition newNameMustStartWithRightLetterErrorMessage ].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 6:05:09 pm (UTC)'!
-!methodProperties: {}!
 test09NullObjectClassNameMustNotHaveSeparators
 
 	| classNameWithSeparators |
@@ -5735,7 +5460,6 @@ test09NullObjectClassNameMustNotHaveSeparators
 		failsWithMessageText: [ NewClassPrecondition newClassNameCanNotHaveSeparatorsErrorMessage ].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 6:05:35 pm (UTC)'!
-!methodProperties: {}!
 test10NullObjectClassNameMustNotExist
 
 	| existingClassName |
@@ -5747,7 +5471,6 @@ test10NullObjectClassNameMustNotExist
 		failsWithMessageText: [ NewClassPrecondition errorMessageForAlreadyExistClassNamed: existingClassName].! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 6:48:00 pm (UTC)'!
-!methodProperties: {}!
 test11CreatesAbstractClass
 
 	| refactor |
@@ -5764,7 +5487,6 @@ test11CreatesAbstractClass
 	self assert: (Smalltalk hasClassNamed: self abstractClassName).! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 6:49:29 pm (UTC)'!
-!methodProperties: {}!
 test12CreatesAbstractClassInChosenCategory
 
 	| refactor abstractClass |
@@ -5782,7 +5504,6 @@ test12CreatesAbstractClassInChosenCategory
 	self assert: self classCategoryOfTestData equals: abstractClass category.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 8:11:50 pm (UTC)'!
-!methodProperties: {}!
 test13CreatesAbstractClassAsSubclassOfConcreteClassPreviousSuperclass
 
 	| refactor abstractClass concreteClass concreteClassOldSuperclass |
@@ -5803,7 +5524,6 @@ test13CreatesAbstractClassAsSubclassOfConcreteClassPreviousSuperclass
 	self assert: concreteClassOldSuperclass equals: abstractClass superclass.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 7:36:39 pm (UTC)'!
-!methodProperties: {}!
 test14AbstractClassDefinesAllTheSelectorsOfConcreteClass
 
 	| refactor abstractClass concreteClass |
@@ -5824,7 +5544,6 @@ test14AbstractClassDefinesAllTheSelectorsOfConcreteClass
 	self assert: concreteClass selectors equals: abstractClass selectors.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 7:41:22 pm (UTC)'!
-!methodProperties: {}!
 test15AbstractClassMethodParametersNamesArePreservedFromConcreteClass
 
 	| refactor abstractClass concreteClass compiledMethod |
@@ -5847,7 +5566,6 @@ test15AbstractClassMethodParametersNamesArePreservedFromConcreteClass
 	self assert: 'anArg' equals: compiledMethod methodNode arguments first name.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 7:44:13 pm (UTC)'!
-!methodProperties: {}!
 test16AbstractClassMethodsDelegateResponsibility
 
 	| refactor abstractClass concreteClass compiledMethod expectedMethodSourceCode |
@@ -5875,7 +5593,6 @@ test16AbstractClassMethodsDelegateResponsibility
 	self assert: expectedMethodSourceCode equals: compiledMethod sourceCode.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 7:41:50 pm (UTC)'!
-!methodProperties: {}!
 test17CreatesNullObjectClass
 
 | refactor |
@@ -5892,7 +5609,6 @@ test17CreatesNullObjectClass
 	self assert: (Smalltalk hasClassNamed: self nullObjectClassName).! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 7:42:02 pm (UTC)'!
-!methodProperties: {}!
 test18CreatesNullObjectClassInChosenCategory
 
 	| refactor nullObjectClass |
@@ -5910,7 +5626,6 @@ test18CreatesNullObjectClassInChosenCategory
 	self assert: self classCategoryOfTestData equals: nullObjectClass category.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 7:42:13 pm (UTC)'!
-!methodProperties: {}!
 test19CreatesNullObjectClassClassAsSubclassOfAbstractClass
 
 	| refactor abstractClass concreteClass nullObjectClass |
@@ -5932,7 +5647,6 @@ test19CreatesNullObjectClassClassAsSubclassOfAbstractClass
 	self assert: abstractClass equals: nullObjectClass superclass.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 7:42:33 pm (UTC)'!
-!methodProperties: {}!
 test20NullObjectClassDefinesAllTheSelectorsOfConcreteClass
 
 	| refactor concreteClass nullObjectClass |
@@ -5954,7 +5668,6 @@ test20NullObjectClassDefinesAllTheSelectorsOfConcreteClass
 	self assert: concreteClass selectors equals: nullObjectClass selectors.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 7:43:12 pm (UTC)'!
-!methodProperties: {}!
 test21NullObjectClassMethodParametersNamesArePreservedFromConcreteClass
 
 	| refactor concreteClass compiledMethod nullObjectClass |
@@ -5977,7 +5690,6 @@ test21NullObjectClassMethodParametersNamesArePreservedFromConcreteClass
 	self assert: 'anArg' equals: compiledMethod methodNode arguments first name.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 7:44:54 pm (UTC)'!
-!methodProperties: {}!
 test22NullObjectClassMethodsAreEmpty
 
 	| refactor concreteClass compiledMethod expectedMethodSourceCode nullObjectClass |
@@ -6002,7 +5714,6 @@ test22NullObjectClassMethodsAreEmpty
 	self assert: expectedMethodSourceCode equals: compiledMethod sourceCode.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 7:46:48 pm (UTC)'!
-!methodProperties: {}!
 test23ConcreteClassSubclassesTheAbstractClass
 
 	| refactor concreteClass abstractClass |
@@ -6023,7 +5734,6 @@ test23ConcreteClassSubclassesTheAbstractClass
 	self assert: abstractClass equals: concreteClass superclass.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'tests' stamp: 'FGJ 23/Jan/2019, 8:17:38 pm (UTC)'!
-!methodProperties: {}!
 test24ConcreteClassMethodsArePreserved
 
 	| refactor concreteClass compiledMethod concreteClassName originalMethodSourceCode updatedConcreteClass |
@@ -6049,31 +5759,26 @@ test24ConcreteClassMethodsArePreserved
 	self assert: originalMethodSourceCode equals: compiledMethod sourceCode.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 23/Jan/2019, 6:10:54 pm (UTC)'!
-!methodProperties: {}!
 abstractClassName
 
 	^#AnAbstractClassName! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 19/Mar/2019, 8:18:50 pm (UTC)'!
-!methodProperties: {}!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 25/Mar/2019, 9:30:24 pm (UTC)'!
-!methodProperties: {}!
 concreteClass
 
 	^self createClassNamed: #AConcreteClass! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'factories' stamp: 'FGJ 23/Jan/2019, 6:11:08 pm (UTC)'!
-!methodProperties: {}!
 nullObjectClassName
 
 	^#ANullObjectClassName! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'assertions' stamp: 'FGJ 23/Jan/2019, 6:47:07 pm (UTC)'!
-!methodProperties: {}!
 creationWithAbstractClassName: anAbstractClassName
 failsWithMessageText: aMessageTextBlock
 
@@ -6088,7 +5793,6 @@ failsWithMessageText: aMessageTextBlock
 		withMessageText: aMessageTextBlock.! !
 
 !NullObjectHierarchyCreatorTest methodsFor: 'assertions' stamp: 'FGJ 23/Jan/2019, 6:47:24 pm (UTC)'!
-!methodProperties: {}!
 creationWithNullObjectClassName: aNullClassName
 failsWithMessageText: aMessageTextBlock
 
@@ -6103,13 +5807,11 @@ failsWithMessageText: aMessageTextBlock
 		withMessageText: aMessageTextBlock.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'accessing' stamp: 'FGJ 19/Mar/2019, 8:18:36 pm (UTC)'!
-!methodProperties: {}!
 allClassCategoriesOfTestData
 
 	^Array with: self classCategoryOfTestData ! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'assertions' stamp: 'FGJ 25/Mar/2019, 6:36:41 pm (UTC)'!
-!methodProperties: {}!
 assertMessageSendRangeForSource: aSource equals: anInterval
 
 	| aClassToRefactor messageNode methodNode parameters variablesToParametrizeKeywordsDefinitions |
@@ -6130,7 +5832,6 @@ assertMessageSendRangeForSource: aSource equals: anInterval
 	self assert: anInterval equals: parameters rangeOfMessageSend.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'assertions' stamp: 'FGJ 25/Mar/2019, 6:28:02 pm (UTC)'!
-!methodProperties: {}!
 creationFromSource: aSource failsWithMessageText: aMessageBlock
 
 	| definitions |
@@ -6141,7 +5842,6 @@ creationFromSource: aSource failsWithMessageText: aMessageBlock
 	self creationFromSource: aSource withDefinitions: definitions failsWithMessageText: aMessageBlock.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'assertions' stamp: 'FGJ 29/Mar/2019, 6:04:53 pm (UTC)'!
-!methodProperties: {}!
 creationFromSource: aSource withDefinitions: someDefinitions failsWithMessageText: aMessageBlock
 
 	| aClassToRefactor messageNode methodNode |
@@ -6162,7 +5862,6 @@ creationFromSource: aSource withDefinitions: someDefinitions failsWithMessageTex
 		withMessageText: aMessageBlock.	! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'initialization' stamp: 'FGJ 25/Mar/2019, 6:51:45 pm (UTC)'!
-!methodProperties: {}!
 parametersForSourceCode: aSource
 
 	| aClassToRefactor messageNode methodNode variablesToParametrizeKeywordsDefinitions |
@@ -6182,7 +5881,6 @@ parametersForSourceCode: aSource
 		! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:35:10 pm (UTC)'!
-!methodProperties: {}!
 test01MessageNodeMustBelongToTheMethodNode
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf |
@@ -6210,7 +5908,6 @@ test01MessageNodeMustBelongToTheMethodNode
 			ReplaceIfNilWithPolymorphismParameters methodNodeMustIncludeMessageNodeErrorMessage].! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:22:42 pm (UTC)'!
-!methodProperties: {}!
 test02MessageNodeMustRepresentASupportedMessageSent
 
 	| sourceWithIf |
@@ -6220,7 +5917,6 @@ test02MessageNodeMustRepresentASupportedMessageSent
 			ReplaceIfNilWithPolymorphismParameters messageNodeMustRepresentSupportedMessageSendingErrorMessage].! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:26:04 pm (UTC)'!
-!methodProperties: {}!
 test03AllVariablesToParametrizeHaveACorrespondingKeyword
 
 	| sourceWithIf definitions |
@@ -6232,7 +5928,6 @@ test03AllVariablesToParametrizeHaveACorrespondingKeyword
 			ReplaceIfNilWithPolymorphismParameters allVariablesToParametrizeMustHaveAKeywordErrorMessage].! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:29:26 pm (UTC)'!
-!methodProperties: {}!
 test04AllKeywordsMustHaveACorrespondingVariableToParametrize
 
 	| variablesToParametrizeKeywordsDefinitions sourceWithIf definitions |
@@ -6254,7 +5949,6 @@ test04AllKeywordsMustHaveACorrespondingVariableToParametrize
 			ReplaceIfNilWithPolymorphismParameters allKeywordsMustHaveACorrespondingVariableToParametrizeErrorMessage].! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:32:17 pm (UTC)'!
-!methodProperties: {}!
 test05CreatesReplaceIfNilWithPolymorphismParameters
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf definitions parameters |
@@ -6283,7 +5977,6 @@ test05CreatesReplaceIfNilWithPolymorphismParameters
 	self assert: messageNode equals: parameters messageNode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 20/Mar/2019, 2:32:23 pm (UTC)'!
-!methodProperties: {}!
 test06ReplaceIfNilWithPolymorphismParametersOnBlocksWithBooleanConstants
 
 	| messageNode methodNode variablesToParametrizeKeywordsDefinitions aClassToRefactor sourceWithIf definitions parameters |
@@ -6312,7 +6005,6 @@ test06ReplaceIfNilWithPolymorphismParametersOnBlocksWithBooleanConstants
 	self assert: messageNode equals: parameters messageNode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:30:37 pm (UTC)'!
-!methodProperties: {}!
 test07ParameterNamesMustNotBeEqualToABlockTemporal
 
 	| variablesToParametrizeKeywordsDefinitions sourceWithIf definitions |
@@ -6329,7 +6021,6 @@ test07ParameterNamesMustNotBeEqualToABlockTemporal
 			ReplaceIfNilWithPolymorphismParameters parameterNameMustNotBeEqualToBlockTemporaryErrorMessage].! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:31:27 pm (UTC)'!
-!methodProperties: {}!
 test08ParameterNamesMustNotBeEqualToANestedBlockTemporal
 
 	| variablesToParametrizeKeywordsDefinitions sourceWithIf definitions |
@@ -6348,7 +6039,6 @@ test08ParameterNamesMustNotBeEqualToANestedBlockTemporal
 			ReplaceIfNilWithPolymorphismParameters	parameterNameMustNotBeEqualToBlockTemporaryErrorMessage].! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:32:12 pm (UTC)'!
-!methodProperties: {}!
 test09ParameterNamesMustNotBeEqualToNestedBlocksArguments
 
 	| variablesToParametrizeKeywordsDefinitions sourceWithIf definitions |
@@ -6367,7 +6057,6 @@ test09ParameterNamesMustNotBeEqualToNestedBlocksArguments
 			ReplaceIfNilWithPolymorphismParameters	parameterNameMustNotBeEqualToBlockTemporaryErrorMessage ].! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:42:36 pm (UTC)'!
-!methodProperties: {}!
 test10RangeOfMessageSendForIfNilIfNotNil
 
 	| sourceWithIf beforeMessageSend from messageSend |
@@ -6380,7 +6069,6 @@ test10RangeOfMessageSendForIfNilIfNotNil
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:41:30 pm (UTC)'!
-!methodProperties: {}!
 test11RangeOfMessageSendForIfNotNilIfNil
 
 	| sourceWithIf beforeMessageSend from messageSend |
@@ -6393,7 +6081,6 @@ test11RangeOfMessageSendForIfNotNilIfNil
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:41:49 pm (UTC)'!
-!methodProperties: {}!
 test12RangeOfMessageSendForIfNotNil
 
 	| sourceWithIf beforeMessageSend from messageSend |
@@ -6406,7 +6093,6 @@ test12RangeOfMessageSendForIfNotNil
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:39:40 pm (UTC)'!
-!methodProperties: {}!
 test13RangeOfMessageSendForIfNil
 
 	| sourceWithIf beforeMessageSend from messageSend |
@@ -6419,7 +6105,6 @@ test13RangeOfMessageSendForIfNil
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:37:19 pm (UTC)'!
-!methodProperties: {}!
 test14RangeOfMessageSendForIsNilIfTrue
 
 	| sourceWithIf beforeMessageSend messageSend from |
@@ -6432,7 +6117,6 @@ test14RangeOfMessageSendForIsNilIfTrue
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:38:49 pm (UTC)'!
-!methodProperties: {}!
 test15RangeOfMessageSendForIsNilIfTrueIfFalse
 
 	| sourceWithIf beforeMessageSend from messageSend |
@@ -6445,7 +6129,6 @@ test15RangeOfMessageSendForIsNilIfTrueIfFalse
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:43:39 pm (UTC)'!
-!methodProperties: {}!
 test16WhenThereAreExtraSpacesRangeOfMessageSendForIfNilIfNotNil
 
 	| sourceWithIf beforeMessageSend messageSend from |
@@ -6458,7 +6141,6 @@ test16WhenThereAreExtraSpacesRangeOfMessageSendForIfNilIfNotNil
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:44:12 pm (UTC)'!
-!methodProperties: {}!
 test17WhenThereAreExtraSpacesRangeOfMessageSendForIsNilIfTrue
 
 	| sourceWithIf beforeMessageSend messageSend from |
@@ -6471,7 +6153,6 @@ test17WhenThereAreExtraSpacesRangeOfMessageSendForIsNilIfTrue
 	self assertMessageSendRangeForSource: sourceWithIf equals: (Interval from: from to: from + messageSend size - 1).! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:50:16 pm (UTC)'!
-!methodProperties: {}!
 test18ConcreteBlockSourceCodeForIfNilIfNotNil
 
 	| sourceWithIf parameters |
@@ -6482,7 +6163,6 @@ test18ConcreteBlockSourceCodeForIfNilIfNotNil
 	self assert: '2+2' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:52:40 pm (UTC)'!
-!methodProperties: {}!
 test19ConcreteBlockSourceCodeForIfNotNil
 
 	| sourceWithIf parameters |
@@ -6493,7 +6173,6 @@ test19ConcreteBlockSourceCodeForIfNotNil
 	self assert: '2+2' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:53:07 pm (UTC)'!
-!methodProperties: {}!
 test20ConcreteBlockSourceCodeForIfNotNilIfNil
 
 	| sourceWithIf parameters |
@@ -6504,7 +6183,6 @@ test20ConcreteBlockSourceCodeForIfNotNilIfNil
 	self assert: '2+2' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:53:42 pm (UTC)'!
-!methodProperties: {}!
 test21ConcreteBlockSourceCodeForIsNilIfFalse
 
 	| sourceWithIf parameters |
@@ -6515,7 +6193,6 @@ test21ConcreteBlockSourceCodeForIsNilIfFalse
 	self assert: '2+2' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:54:08 pm (UTC)'!
-!methodProperties: {}!
 test22ConcreteBlockSourceCodeForIsNilIfTrueIfFalse
 
 	| sourceWithIf parameters |
@@ -6526,7 +6203,6 @@ test22ConcreteBlockSourceCodeForIsNilIfTrueIfFalse
 	self assert: '2+2' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 6:54:48 pm (UTC)'!
-!methodProperties: {}!
 test23NullBlockSourceCodeForIfNilIfNotNil
 
 	| sourceWithIf parameters |
@@ -6537,7 +6213,6 @@ test23NullBlockSourceCodeForIfNilIfNotNil
 	self assert: '1+1' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 7:39:32 pm (UTC)'!
-!methodProperties: {}!
 test24NullBlockSourceCodeForIfNil
 
 	| sourceWithIf parameters |
@@ -6548,7 +6223,6 @@ test24NullBlockSourceCodeForIfNil
 	self assert: '1+1' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 7:40:01 pm (UTC)'!
-!methodProperties: {}!
 test25NullBlockSourceCodeForIfNotNilIfNil
 
 	| sourceWithIf parameters |
@@ -6559,7 +6233,6 @@ test25NullBlockSourceCodeForIfNotNilIfNil
 	self assert: '1+1' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 7:40:27 pm (UTC)'!
-!methodProperties: {}!
 test26NullBlockSourceCodeForIsNilIfTrue
 
 	| sourceWithIf parameters |
@@ -6570,7 +6243,6 @@ test26NullBlockSourceCodeForIsNilIfTrue
 	self assert: '1+1' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 7:40:52 pm (UTC)'!
-!methodProperties: {}!
 test27NullBlockSourceCodeForIsNilIfFalseIfTrue
 
 	| sourceWithIf parameters |
@@ -6581,7 +6253,6 @@ test27NullBlockSourceCodeForIsNilIfFalseIfTrue
 	self assert: '1+1' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 25/Mar/2019, 7:41:43 pm (UTC)'!
-!methodProperties: {}!
 test28NullBlockSourceCodeForIfNotNil
 
 	| sourceWithIf parameters |
@@ -6592,7 +6263,6 @@ test28NullBlockSourceCodeForIfNotNil
 	self assert: '' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 16/Apr/2019, 10:35:38 pm (UTC)'!
-!methodProperties: {}!
 test29WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIfNilIfNotNil
 
 	| sourceWithIf parameters |
@@ -6603,7 +6273,6 @@ test29WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIfNilIfNotNil
 	self assert: '2+2. 1+1.' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 16/Apr/2019, 10:51:55 pm (UTC)'!
-!methodProperties: {}!
 test30WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIfNotNil
 
 	| sourceWithIf parameters |
@@ -6614,7 +6283,6 @@ test30WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIfNotNil
 	self assert: '2+2. 1+1.' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 16/Apr/2019, 10:52:41 pm (UTC)'!
-!methodProperties: {}!
 test31WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIsNilIfFalse
 
 	| sourceWithIf parameters |
@@ -6625,7 +6293,6 @@ test31WhenThereAreMultipleStatementsConcreteBlockSourceCodeForIsNilIfFalse
 	self assert: '2+2. 1+1.' equals: parameters concreteBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 16/Apr/2019, 10:59:03 pm (UTC)'!
-!methodProperties: {}!
 test32WhenThereAreMultipleStatementsNullBlockSourceCodeForIfNilIfNotNil
 
 	| sourceWithIf parameters |
@@ -6636,7 +6303,6 @@ test32WhenThereAreMultipleStatementsNullBlockSourceCodeForIfNilIfNotNil
 	self assert: '1+1. 2+2.' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 16/Apr/2019, 10:59:30 pm (UTC)'!
-!methodProperties: {}!
 test33WhenThereAreMultipleStatementsNullBlockSourceCodeForIfNil
 
 	| sourceWithIf parameters |
@@ -6647,7 +6313,6 @@ test33WhenThereAreMultipleStatementsNullBlockSourceCodeForIfNil
 	self assert: '1+1. 2+2.' equals: parameters nullBlockSourceCode.! !
 
 !ReplaceIfNilWithPolymorphismParametersTest methodsFor: 'testing' stamp: 'FGJ 16/Apr/2019, 10:59:55 pm (UTC)'!
-!methodProperties: {}!
 test34WhenThereAreMultipleStatementsNullBlockSourceCodeForIsNilIfTrue
 
 	| sourceWithIf parameters |
@@ -6658,7 +6323,6 @@ test34WhenThereAreMultipleStatementsNullBlockSourceCodeForIsNilIfTrue
 	self assert: '1+1. 2+2.' equals: parameters nullBlockSourceCode.! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test36_validation_getterMessageShouldntExistsOnTarget
 
 	| sourceClass targetClass |
@@ -6678,7 +6342,6 @@ test36_validation_getterMessageShouldntExistsOnTarget
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test37_validation_getterMessageShouldntExistsOnTarget
 
 	| sourceClass targetClass |
@@ -6698,7 +6361,6 @@ test37_validation_getterMessageShouldntExistsOnTarget
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test38_validation_getterMessageShouldntExistsOnTargetSuperclass
 
 	| sourceClass targetClass targetSuperClass |
@@ -6719,7 +6381,6 @@ test38_validation_getterMessageShouldntExistsOnTargetSuperclass
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test39_validation_instanceVariableShouldntExistsOnTarget
 
 	| sourceClass targetClass |
@@ -6733,7 +6394,6 @@ test39_validation_instanceVariableShouldntExistsOnTarget
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test40_validation_instanceVariableShouldntExistsOnTargetSubclass
 
 	| sourceClass targetClass |
@@ -6750,7 +6410,6 @@ test40_validation_instanceVariableShouldntExistsOnTargetSubclass
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:29 pm (UTC)'!
-!methodProperties: {}!
 test41_validation_setterMessageShouldntExistsOnTarget
 
 	| sourceClass targetClass |
@@ -6770,7 +6429,6 @@ test41_validation_setterMessageShouldntExistsOnTarget
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test42_instanceVariableToAccessThroughShouldExistsOnSourceHierarchy
 
 	| sourceClass targetClass sourceSuperClass refactoring |
@@ -6788,7 +6446,6 @@ test42_instanceVariableToAccessThroughShouldExistsOnSourceHierarchy
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Apr/2025, 7:47:10 pm (UTC)'!
-!methodProperties: {}!
 test42_instanceVariableToAccessThroughShouldHaveOneAssigmentAtLeast
 
 	| sourceClass targetClass |
@@ -6803,7 +6460,6 @@ test42_instanceVariableToAccessThroughShouldHaveOneAssigmentAtLeast
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test42_validation_instanceVariableToMoveShouldExistsOnSource
 
 	| sourceClass targetClass |
@@ -6817,7 +6473,6 @@ test42_validation_instanceVariableToMoveShouldExistsOnSource
 		! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test43_validation_instanceVariableToAccessThroughShouldExistsOnSource
 
 	| sourceClass targetClass |
@@ -6831,7 +6486,6 @@ test43_validation_instanceVariableToAccessThroughShouldExistsOnSource
 		! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test44_validation_souceclassAndTargetClassCanNotBeTheSame
 
 	| sourceClass |
@@ -6844,7 +6498,6 @@ test44_validation_souceclassAndTargetClassCanNotBeTheSame
 		! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test45_validation_targetClassCanNotBeSuperClassOfSourceClass
 
 	| sourceClass targetClass |
@@ -6857,7 +6510,6 @@ test45_validation_targetClassCanNotBeSuperClassOfSourceClass
 		failsWith: [MoveInstanceVariable targetClassCanNotBeSuperClassOfSourceClassErrorMessage].! !
 
 !MoveInstanceVariableTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test46_validation_targetClassCanNotBeSubClassOfSourceClass
 
 	| sourceClass targetClass |
@@ -6871,7 +6523,6 @@ test46_validation_targetClassCanNotBeSubClassOfSourceClass
 		! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 codeWithBadIdentation
 
 ^ 
@@ -6882,7 +6533,6 @@ iv6
 anObject.'! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'mc 22/Apr/2024, 2:10:30 am (UTC)'!
-!methodProperties: {}!
 createAnInitializedClassNamed: aSourceClassName instanceVariableNames: instanceVariables 
 	| sourceClass |
 	sourceClass := self createClassNamed: aSourceClassName instanceVariableNames: instanceVariables.
@@ -6890,7 +6540,6 @@ createAnInitializedClassNamed: aSourceClassName instanceVariableNames: instanceV
 	^sourceClass ! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'mc 22/Apr/2024, 4:04:39 am (UTC)'!
-!methodProperties: {}!
 createAnInitializedClassNamed: aClassName subclassOf: sourceSuperClass 
 	| sourceClass |
 	sourceClass := self createClassNamed: aClassName subclassOf: sourceSuperClass.
@@ -6898,7 +6547,6 @@ createAnInitializedClassNamed: aClassName subclassOf: sourceSuperClass
 	^sourceClass ! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'mc 4/Apr/2024, 4:39:11 am (UTC)'!
-!methodProperties: {}!
 expectedCodeWitBadIdentation
 
 ^
@@ -6907,7 +6555,6 @@ anObject
 iv2 iv6: anObject.'! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Apr/2025, 7:45:52 pm (UTC)'!
-!methodProperties: {}!
 setterWithTwoAssigments
 
 ^ 
@@ -6916,7 +6563,6 @@ iv6 := anObject.
 iv6 := anObject.'! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Apr/2025, 7:46:03 pm (UTC)'!
-!methodProperties: {}!
 setterWithTwoAssigmentsAfterRefactoring
 
 ^ 
@@ -6925,7 +6571,6 @@ iv2 iv6: anObject.
 iv2 iv6: anObject.'! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test01CanMoveInstVarWhenThereIsNoReferenceToSourceIV
 
 	| refactoring sourceClass targetClass |
@@ -6941,7 +6586,6 @@ test01CanMoveInstVarWhenThereIsNoReferenceToSourceIV
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test02CanMoveInstVarWhenThereIsAReferenceToSourceIV
 
 	| refactoring sourceClass targetClass |
@@ -6962,7 +6606,6 @@ test02CanMoveInstVarWhenThereIsAReferenceToSourceIV
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test02CanMoveInstVarWhenThereIsAReferenceToSourceIVAndUseADifferentGetterAsSelector
 
 	| refactoring sourceClass targetClass |
@@ -6988,7 +6631,6 @@ test02CanMoveInstVarWhenThereIsAReferenceToSourceIVAndUseADifferentGetterAsSelec
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test03CanMoveInstVarWhenThereIsAReferenceToSourceIV
 
 	| refactoring sourceClass targetClass |
@@ -7006,7 +6648,6 @@ test03CanMoveInstVarWhenThereIsAReferenceToSourceIV
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test04MoveInstVarWithNoReferencesShouldNotCreateGetterOnTarget
 
 	| refactoring sourceClass targetClass targetMessages |
@@ -7022,7 +6663,6 @@ test04MoveInstVarWithNoReferencesShouldNotCreateGetterOnTarget
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test05CanMoveInstVarWhenThereIsAReferenceToSourceIV
 
 	| refactoring sourceClass targetClass |
@@ -7040,7 +6680,6 @@ test05CanMoveInstVarWhenThereIsAReferenceToSourceIV
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test06MoveInstVarWithNoReaderReferencesShouldNotCreateGetterOnTarget
 
 	| refactoring sourceClass targetClass targetMessages |
@@ -7057,7 +6696,6 @@ test06MoveInstVarWithNoReaderReferencesShouldNotCreateGetterOnTarget
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test07CanMoveInstVarWhenThereAreTwoReferencesToSourceIV
 
 	| refactoring sourceClass targetClass |
@@ -7076,7 +6714,6 @@ test07CanMoveInstVarWhenThereAreTwoReferencesToSourceIV
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test08CanMoveInstVarWhenThereIsAWriteReferencesToSourceIV
 
 	| refactoring sourceClass targetClass |
@@ -7099,7 +6736,6 @@ test08CanMoveInstVarWhenThereIsAWriteReferencesToSourceIV
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:29 pm (UTC)'!
-!methodProperties: {}!
 test09CanMoveInstVarWhenThereIsAWriteReferencesToSourceIV
 
 	| refactoring sourceClass targetClass |
@@ -7118,7 +6754,6 @@ test09CanMoveInstVarWhenThereIsAWriteReferencesToSourceIV
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test09CanMoveInstVarWhenThereIsAWriteReferencesToSourceIVAndUseADifferentSetterName
 
 	| refactoring sourceClass targetClass |
@@ -7144,7 +6779,6 @@ test09CanMoveInstVarWhenThereIsAWriteReferencesToSourceIVAndUseADifferentSetterN
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test10IdentationShouldNotBeAProblemToMoveInstVar
 
 	| refactoring sourceClass targetClass |
@@ -7163,7 +6797,6 @@ test10IdentationShouldNotBeAProblemToMoveInstVar
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Apr/2025, 7:46:13 pm (UTC)'!
-!methodProperties: {}!
 test11CanMoveInstVarWhenThereAreTwoAssigmentsOnSameMethod
 
 	| refactoring sourceClass targetClass |
@@ -7181,7 +6814,6 @@ test11CanMoveInstVarWhenThereAreTwoAssigmentsOnSameMethod
 	self assert: self setterWithTwoAssigmentsAfterRefactoring equals: (sourceClass compiledMethodAt: #iv6:) sourceCode.! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Apr/2025, 7:46:21 pm (UTC)'!
-!methodProperties: {}!
 test12CanMoveInstVarWhenThereAreTwoAssigmentsOnSameMethod
 
 	| refactoring sourceClass targetClass |
@@ -7210,7 +6842,6 @@ iv2 iv6: tmpvar.' equals: (sourceClass compiledMethodAt: #iv6:) sourceCode.
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test13CanMoveInstVarWhenThereAreTwoReadReferencesToSourceIV
 
 	| refactoring sourceClass targetClass |
@@ -7234,7 +6865,6 @@ iv2 iv6.
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Apr/2025, 7:46:28 pm (UTC)'!
-!methodProperties: {}!
 test14CanMoveInstVarWhenThereIsAReadReferencesInAssigments
 
 	| refactoring sourceClass targetClass |
@@ -7256,7 +6886,6 @@ tmp := iv2 iv6 byteAt: 2.
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test15CanMoveInstVarWhenThereIsAMixedReferencesToSourceIV
 
 	| refactoring sourceClass targetClass |
@@ -7280,7 +6909,6 @@ test15CanMoveInstVarWhenThereIsAMixedReferencesToSourceIV
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test16CanMoveInstVarWhenThereIsAMixedReferencesToSourceIV
 
 	| refactoring sourceClass targetClass |
@@ -7302,7 +6930,6 @@ iv3 := 1.
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test17SubClassReadMethodsShouldBeRefactored
 
 	| refactoring sourceClass targetClass sourceSuperClass |
@@ -7323,7 +6950,6 @@ test17SubClassReadMethodsShouldBeRefactored
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test18SubClassWriteMethodsShouldBeRefactored
 
 	| refactoring sourceClass targetClass sourceSuperClass |
@@ -7344,7 +6970,6 @@ test18SubClassWriteMethodsShouldBeRefactored
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test19MixedMethodsShouldBeRefactored
 
 	| refactoring sourceClass targetClass |
@@ -7366,7 +6991,6 @@ iv2 iv5: 1.
 ! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test20MixedMethodsShouldBeRefactored
 
 	| refactoring sourceClass targetClass |
@@ -7392,7 +7016,6 @@ iv2 iv5: 1.
 ! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test21MixedMethodsShouldBeRefactoredInSubclass
 
 	| refactoring sourceClass targetClass sourceSuperClass |
@@ -7418,7 +7041,6 @@ iv2 iv5: 1.
 ! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test22WriteMethodsWithSameBlockCodeShouldBeRefactored
 
 	| refactoring sourceClass targetClass |
@@ -7439,7 +7061,6 @@ iv2 iv6: anObject.' equals: (sourceClass compiledMethodAt: #iv66:) sourceCode.
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test23MoveInstVarWithNoReadReferencesOnIVShouldNotCreateGetterOnTarget
 
 	| refactoring sourceClass targetClass targetMessages |
@@ -7459,7 +7080,6 @@ iv3 := 1.
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test24CanMoveInstVarWhenThereIsAWriteReferencesAndKeywordMessage
 
 	| refactoring sourceClass targetClass |
@@ -7484,7 +7104,6 @@ test24CanMoveInstVarWhenThereIsAWriteReferencesAndKeywordMessage
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Apr/2025, 7:45:52 pm (UTC)'!
-!methodProperties: {}!
 test25ThereAreOnly2VersionsAfterRefactoringMethodWithTwoWriteReferences
 
 	| refactoring sourceClass targetClass |
@@ -7499,7 +7118,6 @@ test25ThereAreOnly2VersionsAfterRefactoringMethodWithTwoWriteReferences
 	self assert: 2 equals: (VersionsBrowser versionCountForSelector: #iv6: class: sourceClass).! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test26ThereAreOnly2VersionsAfterRefactoringMethodWithTwoReadReferences
 
 	| refactoring sourceClass targetClass |
@@ -7519,7 +7137,6 @@ iv6.
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test27ThereAreOnly2VersionsAfterRefactoringMethodWithMixedReferences
 
 	| refactoring sourceClass targetClass |
@@ -7539,7 +7156,6 @@ iv6 := 1.
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Apr/2025, 7:46:50 pm (UTC)'!
-!methodProperties: {}!
 test28ParenthesisShouldBeUsedOnDoubleAssigment
 
 	| refactoring sourceClass targetClass |
@@ -7559,7 +7175,6 @@ iv2 iv6: (tmp1 := 1).' equals: (sourceClass compiledMethodAt: #iv6) sourceCode.
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Apr/2025, 7:46:55 pm (UTC)'!
-!methodProperties: {}!
 test29ParenthesisShouldBeUsedOnDoubleAssigment
 
 	| refactoring sourceClass targetClass |
@@ -7579,7 +7194,6 @@ iv2 iv6: (iv2 iv6: 1).' equals: (sourceClass compiledMethodAt: #iv6) sourceCode.
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Apr/2025, 7:47:02 pm (UTC)'!
-!methodProperties: {}!
 test30ParenthesisShouldBeUsedOnDoubleAssigmentAndCodeRepetition
 
 	| refactoring sourceClass targetClass |
@@ -7605,7 +7219,6 @@ test30ParenthesisShouldBeUsedOnDoubleAssigmentAndCodeRepetition
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test31CodeRepeatedInClousureShouldBeRefactored_oneReadAccessVersion
 
 	| refactoring sourceClass targetClass |
@@ -7629,7 +7242,6 @@ test31CodeRepeatedInClousureShouldBeRefactored_oneReadAccessVersion
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:29 pm (UTC)'!
-!methodProperties: {}!
 test32CodeRepeatedInClousureShouldBeRefactored_twoReadAceessVersion
 
 	| refactoring sourceClass targetClass |
@@ -7653,7 +7265,6 @@ test32CodeRepeatedInClousureShouldBeRefactored_twoReadAceessVersion
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test33CodeRepeatedInClousureShouldBeRefactored_assingn
 
 	| refactoring sourceClass targetClass |
@@ -7677,7 +7288,6 @@ test33CodeRepeatedInClousureShouldBeRefactored_assingn
 	! !
 
 !MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 test34CodeWithDiferentStructureInClousureShouldBeRefactored
 
 	| refactoring sourceClass targetClass |
@@ -7701,7 +7311,6 @@ test34CodeWithDiferentStructureInClousureShouldBeRefactored
 	! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test001SelectorShouldExistsOnSourceClass
 	
 	| sourceClass targetClass |
@@ -7723,7 +7332,6 @@ test001SelectorShouldExistsOnSourceClass
 		failsWith: [MoveMethod methodShouldExistsOnSourceClassErrorMessage].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test002SelectorShouldNotExistsOnTargetClass
 	
 	| sourceClass targetClass |
@@ -7749,7 +7357,6 @@ test002SelectorShouldNotExistsOnTargetClass
 	! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test003SelectorWithNewParameterShouldNotExistsOnTargetClass
 	
 	| sourceClass targetClass |
@@ -7772,7 +7379,6 @@ test003SelectorWithNewParameterShouldNotExistsOnTargetClass
 			MoveMethod methodShouldNotExistsOnTargertClassErrorMessage].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test004SelectorWithNewParameterAndKeywordShouldNotExistsOnTargetClass
 	
 	| sourceClass targetClass |
@@ -7796,7 +7402,6 @@ test004SelectorWithNewParameterAndKeywordShouldNotExistsOnTargetClass
 			MoveMethod methodShouldNotExistsOnTargertClassErrorMessage].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test005TargetClassShouldNotBeNil
 	
 	| sourceClass targetClass |
@@ -7818,7 +7423,6 @@ test005TargetClassShouldNotBeNil
 		failsWith: [MoveMethod targetClassShouldNotBeNilErrorMessage].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test006SourceClassShouldNotBeNil
 	
 	| sourceClass targetClass |
@@ -7840,7 +7444,6 @@ test006SourceClassShouldNotBeNil
 		failsWith: [MoveMethod sourceClassShouldNotBeNilErrorMessage].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test007SelectorShouldNotBeNil
 	
 	| sourceClass targetClass |
@@ -7862,7 +7465,6 @@ test007SelectorShouldNotBeNil
 		failsWith: [MoveMethod methodShouldNotBeNilErrorMessage].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test008InstanceVariableToAccessingThroughShouldExistsInSourceClass
 	
 	| sourceClass targetClass |
@@ -7885,7 +7487,6 @@ test008InstanceVariableToAccessingThroughShouldExistsInSourceClass
 			MoveMethod instanceVariableToAccessingThroughShouldExistsInSourceClassErrorMessage].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test009NameForANewParameterShouldBeProvidedIfNeeded
 	
 	| sourceClass targetClass |
@@ -7908,7 +7509,6 @@ test009NameForANewParameterShouldBeProvidedIfNeeded
 			MoveMethod nameForNewParameterShouldBeProvidedClassErrorMessage].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test010NameForANewParameterKeywordShouldBeProvidedIfNeeded
 	
 	| sourceClass targetClass |
@@ -7931,7 +7531,6 @@ test010NameForANewParameterKeywordShouldBeProvidedIfNeeded
 			MoveMethod nameForNewParameterKeywordShouldBeProvidedClassErrorMessage].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test011NeedNameForNewParameterWhenClassVariable
 	
 	| sourceClass targetClass |
@@ -7953,7 +7552,6 @@ test011NeedNameForNewParameterWhenClassVariable
 ! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test012NeedNameForNewParameterWhenInstanceVariable
 	
 	| sourceClass targetClass |
@@ -7976,7 +7574,6 @@ test012NeedNameForNewParameterWhenInstanceVariable
 ! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test013NeedNameForNewParameterWhenSelfReference
 	
 	| sourceClass targetClass |
@@ -7999,7 +7596,6 @@ test013NeedNameForNewParameterWhenSelfReference
 ! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test014NeedNameForNewParameterWhenSuperReference
 	
 	| sourceClass targetClass |
@@ -8022,7 +7618,6 @@ test014NeedNameForNewParameterWhenSuperReference
 ! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test015ShouldNotPassNameForNewParameterWhenIsNotNeeded
 	
 	| sourceClass targetClass |
@@ -8046,7 +7641,6 @@ test015ShouldNotPassNameForNewParameterWhenIsNotNeeded
 ! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test016ShouldNotPassNameForNewParameterWhenIsNotNeeded
 	
 	| sourceClass targetClass |
@@ -8071,7 +7665,6 @@ test016ShouldNotPassNameForNewParameterWhenIsNotNeeded
 ! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Apr/2025, 7:47:15 pm (UTC)'!
-!methodProperties: {}!
 test017InstanceVariableToAccessingThroughShouldHaveAtLeastOneAssigment
 	
 	| sourceClass targetClass |
@@ -8094,7 +7687,6 @@ test017InstanceVariableToAccessingThroughShouldHaveAtLeastOneAssigment
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test018SelectorShouldNotExistsOnTargetSuperClass
 	
 	| sourceClass targetClass targetSuperClass |
@@ -8118,7 +7710,6 @@ test018SelectorShouldNotExistsOnTargetSuperClass
 		withMessageText: [MoveMethod method: #m1 IsGoingToOverrideWarningMessageOn: targetClass].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test019SelectorWithNewParameterShouldNotExistsOnTargetSuperClass
 	
 	| sourceClass targetClass targetSuperClass |
@@ -8143,7 +7734,6 @@ test019SelectorWithNewParameterShouldNotExistsOnTargetSuperClass
 		withMessageText: [MoveMethod method: #m1: IsGoingToOverrideWarningMessageOn: targetClass].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test020SelectorWithNewParameterAndKeywordShouldNotExistsOnTargetSuperClass
 	
 	| sourceClass targetClass targetSuperClass |
@@ -8167,7 +7757,6 @@ test020SelectorWithNewParameterAndKeywordShouldNotExistsOnTargetSuperClass
 		withMessageText: [MoveMethod method: #m1:originalObject: IsGoingToOverrideWarningMessageOn: targetClass].! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test021WheDestinationIsParameterShouldNotPassNameForNewParameterWhenIsNotNeeded
 	
 	| sourceClass targetClass |
@@ -8188,7 +7777,6 @@ test021WheDestinationIsParameterShouldNotPassNameForNewParameterWhenIsNotNeeded
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test022WhenDestinationIsParameterNewSelectorShouldNotExistOnTargetClass
 	
 	| sourceClass targetClass |
@@ -8213,7 +7801,6 @@ test022WhenDestinationIsParameterNewSelectorShouldNotExistOnTargetClass
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test023WhenDestinationIsParameterNewSelectorShouldNotExistOnTargetClass
 	
 	| sourceClass targetClass |
@@ -8238,7 +7825,6 @@ test023WhenDestinationIsParameterNewSelectorShouldNotExistOnTargetClass
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test024WhenDestinationIsParameterNewSelectorShouldNotExistOnTargetClass_2
 	
 	| sourceClass targetClass |
@@ -8263,7 +7849,6 @@ test024WhenDestinationIsParameterNewSelectorShouldNotExistOnTargetClass_2
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test025WhenDestinationIsParameterNewSelectorShouldNotExistOnTargetSuperClass
 	
 	| sourceClass targetClass targetSuperClass |
@@ -8290,7 +7875,6 @@ test025WhenDestinationIsParameterNewSelectorShouldNotExistOnTargetSuperClass
 	! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test026WhenDestinationIsParameterNewSelectorShouldNotExistOnTargetSuperClass_2
 	
 	| sourceClass targetClass targetSuperClass |
@@ -8317,7 +7901,6 @@ test026WhenDestinationIsParameterNewSelectorShouldNotExistOnTargetSuperClass_2
 	! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Apr/2025, 7:47:21 pm (UTC)'!
-!methodProperties: {}!
 test027ClassVariableToAccessingThroughShouldHaveAtLeastOneAssigment
 	
 	| sourceClass targetClass |
@@ -8345,7 +7928,6 @@ test027ClassVariableToAccessingThroughShouldHaveAtLeastOneAssigment
 	! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Apr/2025, 7:47:26 pm (UTC)'!
-!methodProperties: {}!
 test028ClassVariableToAccessingThroughShouldHaveAtLeastOneAssigment2
 	
 	| sourceClass targetClass |
@@ -8373,7 +7955,6 @@ test028ClassVariableToAccessingThroughShouldHaveAtLeastOneAssigment2
 	! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test029ClassMethodToMoveToClassShouldNotBeNil
 	
 	| sourceClass targetClass |
@@ -8394,7 +7975,6 @@ test029ClassMethodToMoveToClassShouldNotBeNil
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test030SourceClassShouldNotBeNil
 	
 	| sourceClass targetClass |
@@ -8415,7 +7995,6 @@ test030SourceClassShouldNotBeNil
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test031TargetClassShouldNotBeNil
 	
 	| sourceClass targetClass |
@@ -8436,7 +8015,6 @@ test031TargetClassShouldNotBeNil
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test032ClassMethodMovingToClassShouldNotExistsInTarget
 	
 	| sourceClass targetClass |
@@ -8457,7 +8035,6 @@ test032ClassMethodMovingToClassShouldNotExistsInTarget
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test033ClassMethodMovingToClassShouldExistsInSouceClass
 	
 	| sourceClass targetClass |
@@ -8478,7 +8055,6 @@ test033ClassMethodMovingToClassShouldExistsInSouceClass
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test034MethodMovingToClassWithNewParameterShouldNotExistsOnTargetClass
 	
 	| sourceClass targetClass |
@@ -8500,7 +8076,6 @@ test034MethodMovingToClassWithNewParameterShouldNotExistsOnTargetClass
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test035MethodMovingToClassWithNewParameterAndKeywordShouldNotExistsOnTargetClass
 	
 	| sourceClass targetClass |
@@ -8523,7 +8098,6 @@ test035MethodMovingToClassWithNewParameterAndKeywordShouldNotExistsOnTargetClass
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test036MethodMovingToClassWithNewParameterAndKeywordShouldNotExistsOnTargetClass
 	
 	| sourceClass targetClass |
@@ -8545,7 +8119,6 @@ test036MethodMovingToClassWithNewParameterAndKeywordShouldNotExistsOnTargetClass
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test037MethodMovingToClassShouldProvideNameForANewParameter
 	
 	| sourceClass targetClass |
@@ -8566,7 +8139,6 @@ test037MethodMovingToClassShouldProvideNameForANewParameter
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test038MethodMovingToClassShouldProvideNameForANewParameterKeyword
 	
 	| sourceClass targetClass |
@@ -8588,7 +8160,6 @@ test038MethodMovingToClassShouldProvideNameForANewParameterKeyword
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test039ShouldNotPassNameForNewParameterWhenIsNotNeeded
 	
 	| sourceClass targetClass |
@@ -8610,7 +8181,6 @@ test039ShouldNotPassNameForNewParameterWhenIsNotNeeded
 		! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test040ShouldNotPassNameForNewParameterWhenIsNotNeeded
 	
 	| sourceClass targetClass |
@@ -8633,7 +8203,6 @@ test040ShouldNotPassNameForNewParameterWhenIsNotNeeded
 		! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test100CanMoveMethodWithoutReferences
 	
 	| sourceClass targetClass refactoring |
@@ -8658,7 +8227,6 @@ test100CanMoveMethodWithoutReferences
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test101CanMoveMethodWithoutReferences
 	
 	| sourceClass targetClass refactoring |
@@ -8682,7 +8250,6 @@ test101CanMoveMethodWithoutReferences
 	self deny: (sourceClass includesSelector: #iv1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test102CanMoveMethodWhenReferencesAnInstanceVariable
 	
 	| sourceClass targetClass refactoring |
@@ -8709,7 +8276,6 @@ test102CanMoveMethodWhenReferencesAnInstanceVariable
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test103CanMoveMethodWhenReferencesAnInstanceVariableForReading
 	
 	| sourceClass targetClass refactoring |
@@ -8736,7 +8302,6 @@ test103CanMoveMethodWhenReferencesAnInstanceVariableForReading
 	self assert: 'iv3', String newLineString, String tab, '^iv3.' equals: (sourceClass sourceCodeAt: #iv3).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test104CanMoveMethodWhenReferencesTwoInstanceVariableForReading
 	
 	| sourceClass targetClass refactoring |
@@ -8764,7 +8329,6 @@ test104CanMoveMethodWhenReferencesTwoInstanceVariableForReading
 	self assert: 'iv4', String newLineString, String tab, '^iv4.' equals: (sourceClass sourceCodeAt: #iv4).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test105CanMoveMethodWhenReferencesAnInstanceVariableForWriting
 	
 	| sourceClass targetClass refactoring |
@@ -8792,7 +8356,6 @@ test105CanMoveMethodWhenReferencesAnInstanceVariableForWriting
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test106CanMoveMethodWhenReferencesTwoInstanceVariableForWriting
 	
 	| sourceClass targetClass refactoring |
@@ -8821,7 +8384,6 @@ test106CanMoveMethodWhenReferencesTwoInstanceVariableForWriting
 	self assert: 'iv4: anObject', String newLineString, String tab, '^iv4 := anObject.' equals: (sourceClass sourceCodeAt: #iv4:).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test107CanMoveMethodWhenReferencesInstanceVariableAnd2Params
 	
 	| sourceClass targetClass refactoring |
@@ -8849,7 +8411,6 @@ test107CanMoveMethodWhenReferencesInstanceVariableAnd2Params
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test107CanMoveMethodWhenReferencesTwoInstanceVariableForWritingAndOneForReading
 	
 	| sourceClass targetClass refactoring |
@@ -8877,7 +8438,6 @@ test107CanMoveMethodWhenReferencesTwoInstanceVariableForWritingAndOneForReading
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test108CanMoveMethodWhenReferencesAnInstanceVariableAndHasAParameter
 	
 	| sourceClass targetClass refactoring |
@@ -8905,7 +8465,6 @@ test108CanMoveMethodWhenReferencesAnInstanceVariableAndHasAParameter
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:39:34 pm (UTC)'!
-!methodProperties: {}!
 test109AfterMovingMethodWhichReferencesAnInstanceVariableForReadingShouldUseTheExistingGetter
 	
 	| sourceClass targetClass refactoring |
@@ -8933,7 +8492,6 @@ test109AfterMovingMethodWhichReferencesAnInstanceVariableForReadingShouldUseTheE
 	self deny: (sourceClass includesSelector: #iv1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:39:44 pm (UTC)'!
-!methodProperties: {}!
 test110AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter
 	
 	| sourceClass targetClass refactoring |
@@ -8957,7 +8515,6 @@ test110AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	self assert: 'iv3: anObject ^iv3 := anObject.' equals: (sourceClass sourceCodeAt: #iv3:)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:32:56 pm (UTC)'!
-!methodProperties: {}!
 test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter
 	
 	| sourceClass targetClass refactoring |
@@ -8984,7 +8541,6 @@ test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:39:56 pm (UTC)'!
-!methodProperties: {}!
 test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter2
 	
 	| sourceClass targetClass refactoring |
@@ -9014,7 +8570,6 @@ test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	^iv1 iv3_: anObject originalObject: self.' equals: (sourceClass sourceCodeAt: #iv3_:).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:40:03 pm (UTC)'!
-!methodProperties: {}!
 test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter3
 	
 	| sourceClass targetClass refactoring |
@@ -9044,7 +8599,6 @@ test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	^iv1 iv3_: anObject originalObject: self.' equals: (sourceClass sourceCodeAt: #iv3_:).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:40:12 pm (UTC)'!
-!methodProperties: {}!
 test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter4
 	
 	| sourceClass targetClass refactoring |
@@ -9072,7 +8626,6 @@ test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter
 	
 	| sourceClass targetClass refactoring |
@@ -9096,7 +8649,6 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	self assert: 'icv1', String newLineString, String tab, '^Icv1.' equals: (sourceClass sourceCodeAt: #icv1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter2
 	
 	| sourceClass targetClass refactoring |
@@ -9123,7 +8675,6 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	^Icv1.' equals: (sourceClass sourceCodeAt: #icv1_).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter3
 	
 	| sourceClass targetClass refactoring |
@@ -9156,7 +8707,6 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	^iv1 icv1: self.' equals: (sourceClass sourceCodeAt: #icv1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter4
 	
 	| sourceClass targetClass refactoring |
@@ -9185,7 +8735,6 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	^Icv1.' equals: (sourceClass sourceCodeAt: #icv1__).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter5
 	
 	| sourceClass targetClass refactoring |
@@ -9214,7 +8763,6 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	^Icv1.' equals: (sourceClass sourceCodeAt: #icv1__).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter6
 	
 	| sourceClass targetClass refactoring |
@@ -9243,7 +8791,6 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test113AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateSetter
 	
 	| sourceClass targetClass refactoring |
@@ -9267,7 +8814,6 @@ test113AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateSett
 	self assert: 'icv1: anObject', String newLineString, String tab, '^Icv1 := anObject.' equals: (sourceClass sourceCodeAt: #icv1:).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test113AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateSetter2
 	
 	| sourceClass targetClass refactoring |
@@ -9296,7 +8842,6 @@ test113AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateSett
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test114ParameterNameShouldBeRespected
 	
 	| sourceClass targetClass refactoring |
@@ -9325,7 +8870,6 @@ test114ParameterNameShouldBeRespected
 	self deny: (sourceClass includesSelector: #iv1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test115ParameterNameShouldBeRespected
 	
 	| sourceClass targetClass refactoring |
@@ -9353,7 +8897,6 @@ test115ParameterNameShouldBeRespected
 	self deny: (sourceClass includesSelector: #iv1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test116ParameterNameShouldBeRespectedWithSelf
 	
 	| sourceClass targetClass refactoring |
@@ -9377,7 +8920,6 @@ test116ParameterNameShouldBeRespectedWithSelf
 	self assert: 'm1: originalObject ^originalObject justOne.' equals: (targetClass sourceCodeAt: #m1:).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test199TmpVariablesShoulNotBeAffected
 	
 	| sourceClass targetClass refactoring |
@@ -9399,7 +8941,6 @@ test199TmpVariablesShoulNotBeAffected
 	self assert: 'm1 |tmp| ^tmp:=1.' equals: (targetClass sourceCodeAt: #m1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test200CanMoveMethodWhenSendsMessageToSelf
 	
 	| sourceClass targetClass refactoring |
@@ -9423,7 +8964,6 @@ test200CanMoveMethodWhenSendsMessageToSelf
 	self assert: 'm1: sourceObject ^sourceObject justOne.' equals: (targetClass sourceCodeAt: #m1:).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test200CanMoveMethodWhenSendsUnaryMessageToSuper
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9449,7 +8989,6 @@ test200CanMoveMethodWhenSendsUnaryMessageToSuper
 	self assert: 'CHANGE_ME_super_justOne', String newLineString, String tab, '^super justOne.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_justOne)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test201CanMoveMethodWhenSendsKeywordMessageToSuperWithOneColaborators
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9475,7 +9014,6 @@ test201CanMoveMethodWhenSendsKeywordMessageToSuperWithOneColaborators
 	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String tab, '^super increment: arg1.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test202CanMoveMethodWhenSendsKeywordMessageToSuperWithTwoColaborators
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9501,7 +9039,6 @@ test202CanMoveMethodWhenSendsKeywordMessageToSuperWithTwoColaborators
 	self assert: 'CHANGE_ME_super_increment: arg1 andIncrement: arg2', String newLineString, String tab, '^super increment: arg1 andIncrement: arg2.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:andIncrement:)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test203CanMoveMethodWhenSendsKeywordMessageToSuperWithOneInstVarAsColaborators
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9527,7 +9064,6 @@ test203CanMoveMethodWhenSendsKeywordMessageToSuperWithOneInstVarAsColaborators
 	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String tab, '^super increment: arg1.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test204CanMoveMethodWhenSendsKeywordMessageToSuperWithOneInstVarAsColaborators
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9554,7 +9090,6 @@ test204CanMoveMethodWhenSendsKeywordMessageToSuperWithOneInstVarAsColaborators
 	self assert: 'iv2: anObject', String newLineString, String tab, '^iv2 := anObject.' equals: (sourceClass sourceCodeAt: #iv2:)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test205CanMoveMethodWhenReferenceSuperIndirectly
 	
 	| sourceClass targetClass refactoring |
@@ -9578,7 +9113,6 @@ test205CanMoveMethodWhenReferenceSuperIndirectly
 	^super printString.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_printString)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Apr/2025, 7:47:34 pm (UTC)'!
-!methodProperties: {}!
 test205CanMoveMethodWhenReferenceSuperOnAssigmentNode
 	
 	| sourceClass targetClass refactoring |
@@ -9602,7 +9136,6 @@ test205CanMoveMethodWhenReferenceSuperOnAssigmentNode
 	^super printString.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_printString)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test205CanMoveMethodWhenSendsKeywordMessageToSuperWithOneTmpVarAsColaborators
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9628,7 +9161,6 @@ test205CanMoveMethodWhenSendsKeywordMessageToSuperWithOneTmpVarAsColaborators
 	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String tab, '^super increment: arg1.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test206CanMoveMethodWhenSendsKeywordMessageToSuperWithParenthesis
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9654,7 +9186,6 @@ test206CanMoveMethodWhenSendsKeywordMessageToSuperWithParenthesis
 	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String tab, '^super increment: arg1.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test206moveGetterShouldNotMakeDoubleRecursion
 	
 	| sourceClass targetClass refactoring |
@@ -9683,7 +9214,6 @@ test206moveGetterShouldNotMakeDoubleRecursion
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test207moveGetterShouldNotMakeDoubleRecursion
 	
 	| sourceClass targetClass refactoring |
@@ -9714,7 +9244,6 @@ test207moveGetterShouldNotMakeDoubleRecursion
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test300MovingMethodWichUsesAccesingThroughVariableShouldBeRepalcedForSelf
 	
 	| sourceClass targetClass refactoring |
@@ -9741,7 +9270,6 @@ test300MovingMethodWichUsesAccesingThroughVariableShouldBeRepalcedForSelf
 	self assert: 'iv3', String newLineString, String tab, '^iv3.' equals: (sourceClass sourceCodeAt: #iv3).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test301MovingMethodWichUsesAccesingThroughVariableShouldBeRepalcedForSelf
 	
 	| sourceClass targetClass refactoring |
@@ -9766,7 +9294,6 @@ test301MovingMethodWichUsesAccesingThroughVariableShouldBeRepalcedForSelf
 	self deny: (sourceClass includesSelector: #iv1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test302CanMoveMethodWhenVariableToAccesThroughIsInSuperClass
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9789,7 +9316,6 @@ test302CanMoveMethodWhenVariableToAccesThroughIsInSuperClass
 	^iv1 m1.' equals: (sourceClass sourceCodeAt: #m1)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test303AfterMovingMethodWhichReferencesAClassShouldKeepTheClass
 	
 	| sourceClass targetClass refactoring |
@@ -9813,7 +9339,6 @@ test303AfterMovingMethodWhichReferencesAClassShouldKeepTheClass
 	^iv1 m1.' equals: (sourceClass sourceCodeAt: #m1)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test303AfterMovingMethodWhichReferencesAClassShouldKeepTheClassAndResolveDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9841,7 +9366,6 @@ test303AfterMovingMethodWhichReferencesAClassShouldKeepTheClassAndResolveDepende
 	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test304CanMoveClassMethodWithoutDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9862,7 +9386,6 @@ test304CanMoveClassMethodWithoutDependencies
 	^TargetClass m1.' equals: (sourceClass class sourceCodeAt: #m1)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test305CanMoveClassMethodWithSelfAndClassReferenceDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9887,7 +9410,6 @@ test305CanMoveClassMethodWithSelfAndClassReferenceDependencies
 	^TargetClass m1: self.' equals: (sourceClass class sourceCodeAt: #m1)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test305CanMoveClassMethodWithSelfDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9908,7 +9430,6 @@ test305CanMoveClassMethodWithSelfDependencies
 	^TargetClass m1: self.' equals: (sourceClass class sourceCodeAt: #m1)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test306CanMoveClassMethodWithSuperUnaryDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9931,7 +9452,6 @@ test306CanMoveClassMethodWithSuperUnaryDependencies
 	^super new.' equals: (sourceClass class sourceCodeAt: #CHANGE_ME_super_new).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test307CanMoveClassMethodWithInstVarReadDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9955,7 +9475,6 @@ test307CanMoveClassMethodWithInstVarReadDependencies
 	^TargetClass m1: self.' equals: (sourceClass class sourceCodeAt: #m1)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test308CanMoveClassMethodWithInstVarWriteDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9979,7 +9498,6 @@ test308CanMoveClassMethodWithInstVarWriteDependencies
 	^TargetClass m1: self.' equals: (sourceClass class sourceCodeAt: #m1)! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test309CanMoveClassMethodWithSuperKeywordDependencies
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -10003,7 +9521,6 @@ test309CanMoveClassMethodWithSuperKeywordDependencies
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test310CanMoveClassMethodWithClassReferenceDependencies
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -10026,7 +9543,6 @@ test310CanMoveClassMethodWithClassReferenceDependencies
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test311CanMoveClassMethodWithClassVarDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -10051,7 +9567,6 @@ test311CanMoveClassMethodWithClassVarDependencies
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test401ImplicitReturnShouldBeMoved
 	
 	| sourceClass targetClass refactoring |
@@ -10075,7 +9590,6 @@ test401ImplicitReturnShouldBeMoved
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test402ImplicitReturnShouldBeMovedAndAddADotInLastWritedSentence
 	
 	| sourceClass targetClass refactoring |
@@ -10099,7 +9613,6 @@ test402ImplicitReturnShouldBeMovedAndAddADotInLastWritedSentence
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test403aNonImplicitReturnShouldBeMoved
 	
 	| sourceClass targetClass refactoring |
@@ -10122,7 +9635,6 @@ test403aNonImplicitReturnShouldBeMoved
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test500CanMoveMethodUsingParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -10147,7 +9659,6 @@ test500CanMoveMethodUsingParameterAsAccessThrougVariable
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test501CanMoveMethodUsingLastParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -10172,7 +9683,6 @@ test501CanMoveMethodUsingLastParameterAsAccessThrougVariable
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test502CanMoveMethodUsingFirstParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -10197,7 +9707,6 @@ test502CanMoveMethodUsingFirstParameterAsAccessThrougVariable
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test504CanMoveMethodUsingSecondParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -10222,7 +9731,6 @@ test504CanMoveMethodUsingSecondParameterAsAccessThrougVariable
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test505CanMoveMethodWithInstVarUsingParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -10247,7 +9755,6 @@ test505CanMoveMethodWithInstVarUsingParameterAsAccessThrougVariable
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 test506CanMoveMethodWithInstVarUsingLastParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -10272,7 +9779,6 @@ test506CanMoveMethodWithInstVarUsingLastParameterAsAccessThrougVariable
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test600CanMoveMethodUsingClassVarAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -10303,7 +9809,6 @@ test600CanMoveMethodUsingClassVarAsAccessThrougVariable
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test601CanMoveMethodWithClassVarUsingClassVarAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -10334,7 +9839,6 @@ test601CanMoveMethodWithClassVarUsingClassVarAsAccessThrougVariable
 	! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 test700CanMoveInstanceMethodToClass
 	
 	| sourceClass targetClass refactoring |
@@ -10355,3 +9859,26 @@ test700CanMoveInstanceMethodToClass
 	self assert: 'm1
 	^TargetClass m1.' equals: (sourceClass sourceCodeAt: #m1).
 	! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 9/Sep/2026, 2:15:27 pm (UTC)'!
+test701CanMoveInstanceMethodToTheClassOfWhatAGlobalHolds
+
+	| sourceClass targetClass refactoring |
+
+	sourceClass := self createClassNamed: #SourceClass instanceVariableNames: 'iv1'.
+	targetClass := self createClassNamed: #TargetClass.
+	sourceClass compile: 'm1 ^1'.
+
+	[ Smalltalk at: 'MoveMethodTestGlobal' asSymbol put: targetClass new.
+	refactoring := MoveMethod
+		methodNamed: #m1
+		from: sourceClass
+		to: targetClass
+		accessingThrough: 'MoveMethodTestGlobal'
+		parameterNeeded: NonExtraParameterNameNeeded new.
+	refactoring apply.
+
+	self assert: (targetClass sourceCodeAt: #m1) equals: 'm1 ^1'.
+	self assert: (sourceClass sourceCodeAt: #m1) equals: 'm1
+	^MoveMethodTestGlobal m1.' ]
+		ensure: [ Smalltalk removeKey: 'MoveMethodTestGlobal' asSymbol ifAbsent: [ nil ] ]! !

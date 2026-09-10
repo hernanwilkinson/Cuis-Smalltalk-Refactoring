@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8134] on 27 August 2026 at 2:05:34 pm'!
-'Description Return changed objects on the apply'!
-!provides: 'ExtraRefactorings' 1 14!
+'From Cuis7.9 [latest update: #8160] on 10 September 2026 at 2:55:23 pm'!
+'Description Let a method be moved to the class of what a global holds'!
+!provides: 'ExtraRefactorings' 1 15!
 SystemOrganization addCategory: #ExtraRefactorings!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-UI'!
@@ -624,14 +624,12 @@ this class returns the code that belongs to "node" with "instanceVariableName" m
 selectorKeywordToVariableName -> OrderedCollection of Associations (keyword -> variableName)!
 
 !EntranceExitBlockEnumerator methodsFor: 'as yet unclassified' stamp: 'FGJ 19/Feb/2019, 9:04:25 pm (UTC)'!
-!methodProperties: {}!
 atEntranceBlock: aBlock atExitBlock: anotherBlock
 
 	theBlock := aBlock.
 	exitBlock := anotherBlock.! !
 
 !EntranceExitBlockEnumerator methodsFor: 'as yet unclassified' stamp: 'FGJ 19/Feb/2019, 9:02:05 pm (UTC)'!
-!methodProperties: {}!
 visitBlockNode: aBlockNode
 
 	(theSelectBlock isNil or: [theSelectBlock value: aBlockNode]) ifFalse:
@@ -641,13 +639,11 @@ visitBlockNode: aBlockNode
 	exitBlock value: aBlockNode.! !
 
 !EntranceExitBlockEnumerator class methodsFor: 'as yet unclassified' stamp: 'FGJ 19/Feb/2019, 9:03:58 pm (UTC)'!
-!methodProperties: {}!
 atEntranceBlock: aBlock atExitBlock: anotherBlock
 
 	^self new atEntranceBlock: aBlock atExitBlock: anotherBlock! !
 
 !MessageSendingBlocksVariablesToExtractFinder methodsFor: 'initialization' stamp: 'FGJ 28/Mar/2019, 8:38:52 pm (UTC)'!
-!methodProperties: {}!
 initializeToFindIn: aMessageNode
 
 	messageNode := aMessageNode.
@@ -656,7 +652,6 @@ initializeToFindIn: aMessageNode
 	! !
 
 !MessageSendingBlocksVariablesToExtractFinder methodsFor: 'initialization' stamp: 'FGJ 6/Sep/2020, 8:31:01 pm (UTC)'!
-!methodProperties: {}!
 initializeToFindIn: aMessageNode excluding: aVariableToExclude
 
 	messageNode := aMessageNode.
@@ -666,7 +661,6 @@ initializeToFindIn: aMessageNode excluding: aVariableToExclude
 	! !
 
 !MessageSendingBlocksVariablesToExtractFinder methodsFor: 'evaluating' stamp: 'FGJ 6/Sep/2020, 8:33:36 pm (UTC)'!
-!methodProperties: {}!
 value
 
 	messageNode arguments do: [:argument |
@@ -681,7 +675,6 @@ value
 	^OrderedCollection newFrom: variablesToExtract! !
 
 !MessageSendingBlocksVariablesToExtractFinder methodsFor: 'visiting' stamp: 'FGJ 28/Mar/2019, 8:54:25 pm (UTC)'!
-!methodProperties: {}!
 visitBlockNode: aBlockNode
 
 	 | temporariesNames argumentsNames |
@@ -697,13 +690,11 @@ visitBlockNode: aBlockNode
 	currentScopeTemporaries removeAll: temporariesNames.! !
 
 !MessageSendingBlocksVariablesToExtractFinder methodsFor: 'visiting' stamp: 'FGJ 28/Mar/2019, 10:10:32 pm (UTC)'!
-!methodProperties: {}!
 visitInstanceVariableNode: anInstanceVariableNode
 
 	variablesToExtract add: anInstanceVariableNode name.! !
 
 !MessageSendingBlocksVariablesToExtractFinder methodsFor: 'visiting' stamp: 'FGJ 4/Sep/2020, 1:53:33 pm (UTC)'!
-!methodProperties: {}!
 visitTempVariableNode: aTempVariableNode
 
 	| name |
@@ -713,7 +704,6 @@ visitTempVariableNode: aTempVariableNode
 	(currentScopeTemporaries includes: name) ifFalse: [variablesToExtract add: name].! !
 
 !MessageSendingBlocksVariablesToExtractFinder methodsFor: 'visiting' stamp: 'FGJ 4/Sep/2020, 1:48:37 pm (UTC)'!
-!methodProperties: {}!
 visitVariableNode: aVariableNode
 
 	| name |
@@ -723,19 +713,16 @@ visitVariableNode: aVariableNode
 	(currentScopeTemporaries includes: name) ifFalse: [variablesToExtract add: name].! !
 
 !MessageSendingBlocksVariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'FGJ 28/Mar/2019, 8:31:08 pm (UTC)'!
-!methodProperties: {}!
 valueIn: aMessageNode
 
 	^(self new initializeToFindIn: aMessageNode) value! !
 
 !MessageSendingBlocksVariablesToExtractFinder class methodsFor: 'instance creation' stamp: 'FGJ 6/Sep/2020, 8:30:15 pm (UTC)'!
-!methodProperties: {}!
 valueIn: aMessageNode excluding: aVariableName 
 	
 	^(self new initializeToFindIn: aMessageNode excluding: aVariableName) value! !
 
 !VariablesToExtractFinder methodsFor: 'initialization' stamp: 'HAW 4/Mar/2019, 4:35:48 pm (UTC)'!
-!methodProperties: {}!
 initializeIn: aMethodNode
 
 	methodNode := aMethodNode.
@@ -743,7 +730,6 @@ initializeIn: aMethodNode
 	! !
 
 !VariablesToExtractFinder methodsFor: 'evaluating' stamp: 'HAW 4/Mar/2019, 5:34:24 pm (UTC)'!
-!methodProperties: {}!
 value
 
 	variablesToExtract addAll: methodNode argumentNames.
@@ -752,13 +738,11 @@ value
 	^variablesToExtract! !
 
 !VariablesToExtractFinder methodsFor: 'visiting' stamp: 'HAW 4/Mar/2019, 4:46:05 pm (UTC)'!
-!methodProperties: {}!
 visitInstanceVariableNode: anInstanceVariableNode
 
 	variablesToExtract add: anInstanceVariableNode name! !
 
 !VariablesToExtractFinder methodsFor: 'visiting' stamp: 'HAW 4/Mar/2019, 5:18:16 pm (UTC)'!
-!methodProperties: {}!
 visitLiteralVariableNode: aLiteralVariableNode
 
 	Smalltalk at: aLiteralVariableNode name asSymbol ifAbsent: [ variablesToExtract add: aLiteralVariableNode name ]
@@ -766,13 +750,11 @@ visitLiteralVariableNode: aLiteralVariableNode
 ! !
 
 !VariablesToExtractFinder methodsFor: 'visiting' stamp: 'HAW 4/Mar/2019, 5:23:56 pm (UTC)'!
-!methodProperties: {}!
 visitReturnNode: aReturnNode
 
 	(aReturnNode isImplicitSelfReturnIn: methodNode) ifFalse: [ super visitReturnNode: aReturnNode ]! !
 
 !VariablesToExtractFinder methodsFor: 'visiting' stamp: 'HAW 4/Mar/2019, 5:19:27 pm (UTC)'!
-!methodProperties: {}!
 visitVariableNode: aVariableNode
 
 	aVariableNode isSelfPseudoVariable ifTrue: [ variablesToExtract add: aVariableNode name ].
@@ -780,13 +762,11 @@ visitVariableNode: aVariableNode
 	! !
 
 !VariablesToExtractFinder class methodsFor: 'evaluating' stamp: 'HAW 27/Jul/2023, 9:54:46 pm (UTC)'!
-!methodProperties: {}!
 valueIn: aMethodNode
 
 	^(self in: aMethodNode) value! !
 
 !VariablesToExtractFinder class methodsFor: 'instance creation' stamp: 'HAW 27/Jul/2023, 9:54:59 pm (UTC)'!
-!methodProperties: {}!
 in: aMethodNode
 
 	^self new initializeIn: aMethodNode.
@@ -794,7 +774,6 @@ in: aMethodNode
 	! !
 
 !CodeForNodeOnMethod methodsFor: 'initialization' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 initializeFor: aNode replace: instVarNameToReplace onMethod: aCompiledMethod accessingThrough: instVarNameToUseAsReceiver usingGetter: aGetterToUse usingSetter: aSetterToUse rejectingIntervals: intervals 
 	node := aNode.
 	instanceVariableName := instVarNameToReplace.
@@ -809,7 +788,6 @@ initializeFor: aNode replace: instVarNameToReplace onMethod: aCompiledMethod acc
 	setterToUse := aSetterToUse ! !
 
 !CodeForNodeOnMethod methodsFor: 'visiting' stamp: 'mc 28/Apr/2024, 10:17:15 pm (UTC)'!
-!methodProperties: {}!
 visitAssignmentNode: anAssignmentNode 
 	| rangesOfassigmentNode assigmentValue newAssignmentCode newCodeForValue nodeReplacer resultForValue |
 
@@ -835,7 +813,6 @@ visitAssignmentNode: anAssignmentNode
 	modifiedReads := modifiedReads + resultForValue modifiedReads.! !
 
 !CodeForNodeOnMethod methodsFor: 'visiting' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 visitInstanceVariableNode: anInstanceVariableNode 
 	| newReadWithGetterCode intervalForInstanceVariableNode |
 	
@@ -846,18 +823,15 @@ visitInstanceVariableNode: anInstanceVariableNode
 	modifiedReads := modifiedReads + 1. ! !
 
 !CodeForNodeOnMethod methodsFor: 'accessing' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 modifiedReads
 	^modifiedReads 
 ! !
 
 !CodeForNodeOnMethod methodsFor: 'accessing' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 modifiedWrites
 	^modifiedWrites ! !
 
 !CodeForNodeOnMethod methodsFor: 'accessing' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 value
 	
 	self initializeNodeInterval.
@@ -868,18 +842,15 @@ value
 ! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 filterRangesThatDoNotBelongToTheCurrentNodeIn: aCollectionOfRanges
 
 	^ self firstIntervalOn: (aCollectionOfRanges select: [ :anInterval | nodeInterval includesAllOf: anInterval ])! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 firstIntervalOn: aCollectionOfIntervals
 	^aCollectionOfIntervals detectMin: [ :anInterval | anInterval first]! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 firstUnseenIntervalFor: aNode
 
 	| completeRangesOfassigmentNode |
@@ -889,7 +860,6 @@ firstUnseenIntervalFor: aNode
 	^self filterRangesThatDoNotBelongToTheCurrentNodeIn: completeRangesOfassigmentNode.! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 initializeNodeInterval
 
 	| posibleRangesForNode |
@@ -902,20 +872,17 @@ initializeNodeInterval
 			]! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 initializeOffset
 
 	^ nodeOffsetInSourceCode := nodeInterval first -1! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 intervalsToModify
 
 	node accept: self.
 	intervalsToModify := intervalsToModify collect: [ :anAssociation | (anAssociation key - nodeOffsetInSourceCode) -> anAssociation value ]! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 newModifiedCode
 
 	| newCode |
@@ -924,32 +891,27 @@ newModifiedCode
 	^CodeForNodeResult newWith: newCode modifiedReads: modifiedReads modifiedWrites: modifiedWrites.! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 registerInterval: anIntervalToModify withModification: sourceCodeForInterval
 
 	intervalsToReject add: anIntervalToModify.
 	intervalsToModify add: anIntervalToModify -> sourceCodeForInterval! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 removeSeenRanges: rangesOfNode
 
 	^ rangesOfNode removeAllSuchThat: [ :aSourceInterval | intervalsToReject anySatisfy: [ :aSourceIntervalToModify | aSourceIntervalToModify includesAllOf: aSourceInterval ] ]! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 28/Apr/2024, 10:17:15 pm (UTC)'!
-!methodProperties: {}!
 shouldAddParenthesisOnValueOf: anAssignmentNode
 
 	^ ((anAssignmentNode value isMessageNode and: [anAssignmentNode value isKeywordMessageSend])) or: [anAssignmentNode value isAssignmentNode ]! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
-!methodProperties: {}!
 sourceRangesOf: aNode
 	
 	^methodNode completeSourceRangesOf: aNode ifAbsent: []! !
 
 !CodeForNodeOnMethod class methodsFor: 'instance creation' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 replace: instVarNameToReplace onMethod: aCompiledMethod accessingThrough: instVarNameToUseAsReceiver 
 	^self 
 		replace: instVarNameToReplace 
@@ -960,7 +922,6 @@ replace: instVarNameToReplace onMethod: aCompiledMethod accessingThrough: instVa
 		for: aCompiledMethod notOptimizedMethodNode! !
 
 !CodeForNodeOnMethod class methodsFor: 'instance creation' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 replace: anInstVarNameSourceClass onMethod: aMethod accessingThrough: anInstVarNameTargetClass usingGetter: aGetterToUse 
 	^self 
 		replace: anInstVarNameSourceClass
@@ -971,7 +932,6 @@ replace: anInstVarNameSourceClass onMethod: aMethod accessingThrough: anInstVarN
 		for: aMethod notOptimizedMethodNode! !
 
 !CodeForNodeOnMethod class methodsFor: 'instance creation' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 replace: anInstVarNameSourceClass onMethod: aMethod accessingThrough: anInstVarNameTargetClass usingGetter: aGetterToUse usingSetter: aSetterToUse 
 
 	^self 
@@ -983,7 +943,6 @@ replace: anInstVarNameSourceClass onMethod: aMethod accessingThrough: anInstVarN
 		for: aMethod notOptimizedMethodNode! !
 
 !CodeForNodeOnMethod class methodsFor: 'instance creation' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 replace: instVarNameToReplace onMethod: aCompiledMethod accessingThrough: instVarNameToUseAsReceiver usingGetter: aGetterToUse usingSetter: aSetterToUse  for: aNode
 	^self 
 		replace: instVarNameToReplace 
@@ -995,7 +954,6 @@ replace: instVarNameToReplace onMethod: aCompiledMethod accessingThrough: instVa
 		rejectingIntervals: OrderedCollection new! !
 
 !CodeForNodeOnMethod class methodsFor: 'instance creation' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 replace: instVarNameToReplace onMethod: aCompiledMethod accessingThrough: instVarNameToUseAsReceiver usingGetter: aGetterToUse usingSetter: aSetterToUse  for: aNode rejectingIntervals: intervals
 	^self new 
 		initializeFor: aNode 
@@ -1007,30 +965,25 @@ replace: instVarNameToReplace onMethod: aCompiledMethod accessingThrough: instVa
 		rejectingIntervals: intervals! !
 
 !ClassVarAssignationChecker methodsFor: 'initialization' stamp: 'mc 19/Feb/2025, 4:59:25 am (UTC)'!
-!methodProperties: {}!
 initializeFor: aCompiledMethod onClassVar: aClassVarNamed 
 	compiledMethod := aCompiledMethod.
 	classVarNamed := aClassVarNamed! !
 
 !ClassVarAssignationChecker methodsFor: 'evaluating' stamp: 'mc 19/Feb/2025, 4:53:55 am (UTC)'!
-!methodProperties: {}!
 value
 	returnBlockTrue := [^true].
 	compiledMethod methodNode accept: self.
 	^false! !
 
 !ClassVarAssignationChecker methodsFor: 'visiting' stamp: 'mc 19/Feb/2025, 5:01:09 am (UTC)'!
-!methodProperties: {}!
 visitAssignmentNode: anAssignmentNode 
 	anAssignmentNode variable name = classVarNamed ifTrue: [returnBlockTrue value]! !
 
 !ClassVarAssignationChecker class methodsFor: 'instance creation' stamp: 'mc 19/Feb/2025, 4:58:31 am (UTC)'!
-!methodProperties: {}!
 for: aCompiledMethod onClassVar: aClassVarName 
 	^self new initializeFor: aCompiledMethod onClassVar: aClassVarName ! !
 
 !CodeForNodeToMove methodsFor: 'initialization' stamp: 'mc 21/Jan/2025, 5:31:06 am (UTC)'!
-!methodProperties: {}!
 initializeFor: aMethodNode variableToAcessThrough: aVariableToAccesoThroughName onNode: aNodeToGetCode parameterNeeded: aParameterNeeded targetClass: aTargetClass
 	methodNode := aMethodNode.
 	node := aNodeToGetCode.
@@ -1042,7 +995,6 @@ initializeFor: aMethodNode variableToAcessThrough: aVariableToAccesoThroughName 
 	methodToCompileOnSourceClass := Set new.! !
 
 !CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 21/Jan/2025, 5:32:45 am (UTC)'!
-!methodProperties: {}!
 visitAssignmentNode: anAssignmentNode 
 	| assigmentValue completeRangesOfassigmentNode resultForValue setterSelectorAsString |
 	"self halt."
@@ -1075,7 +1027,6 @@ visitAssignmentNode: anAssignmentNode
 	! !
 
 !CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 30/Dec/2024, 6:39:02 am (UTC)'!
-!methodProperties: {}!
 visitInstanceVariableNode: anInstanceVariableNode 
 	| sourceCodeForInterval anInterval getterToUse |
 	"self halt."
@@ -1094,7 +1045,6 @@ visitInstanceVariableNode: anInstanceVariableNode
 	! !
 
 !CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 25/Jan/2025, 5:57:49 am (UTC)'!
-!methodProperties: {}!
 visitLiteralVariableNode: aLiteralVariableNode 
 	| sourceCodeForInterval anInterval getterToUse |
 	"self halt."
@@ -1118,7 +1068,6 @@ visitLiteralVariableNode: aLiteralVariableNode
 ! !
 
 !CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 31/Dec/2024, 6:32:44 am (UTC)'!
-!methodProperties: {}!
 visitMessageNode: aMessageNode 
 	| rangeMessageNode newSend |
 	"self halt."
@@ -1143,7 +1092,6 @@ visitMessageNode: aMessageNode
 	! !
 
 !CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 3/Mar/2025, 8:41:41 pm (UTC)'!
-!methodProperties: {}!
 visitMethodNode: aMethodNode 
 	| assoc |
 	"moving to a parameter should change selector"
@@ -1161,7 +1109,6 @@ visitMethodNode: aMethodNode
 ! !
 
 !CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 30/Dec/2024, 6:41:06 am (UTC)'!
-!methodProperties: {}!
 visitReturnNode: aReturnNode 
 	
 	(aReturnNode isImplicitSelfReturnIn: methodNode)
@@ -1169,7 +1116,6 @@ visitReturnNode: aReturnNode
 		ifFalse: [super visitReturnNode: aReturnNode]! !
 
 !CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 8/Nov/2024, 3:49:42 am (UTC)'!
-!methodProperties: {}!
 visitTempVariableNode: aTempVariableNode 
 	| anInterval sourceCodeForInterval |
 	aTempVariableNode name = variableToAccesThrough ifTrue: [
@@ -1179,7 +1125,6 @@ visitTempVariableNode: aTempVariableNode
 		]! !
 
 !CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 visitVariableNode: aVariableNode 
 	| anInterval sourceCodeForInterval |
 	"self halt."
@@ -1188,13 +1133,11 @@ visitVariableNode: aVariableNode
 	self registerInterval: anInterval withModification: sourceCodeForInterval.! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 29/Dec/2024, 7:51:11 pm (UTC)'!
-!methodProperties: {}!
 compiledMethodAt: aSelector
 
 	^ methodNode methodClass compiledMethodAt: aSelector! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 31/Dec/2024, 6:39:35 am (UTC)'!
-!methodProperties: {}!
 encapsulateSuperColaboration: aMessageNode
 	
 	| colaborationEncapsulated indexSourceCode newSelector newSourceCode |
@@ -1210,23 +1153,19 @@ encapsulateSuperColaboration: aMessageNode
 	methodToCompileOnSourceClass add: colaborationEncapsulated.! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 filterRangesThatDoNotBelongToTheCurrentNodeIn: aCollectionOfRanges
 
 	^ self firstIntervalOn: (aCollectionOfRanges select: [ :anInterval | nodeInterval includesAllOf: anInterval ])! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 firstIntervalOn: aCollectionOfIntervals
 	^aCollectionOfIntervals detectMin: [ :anInterval | anInterval first]! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 firstUnseenIntervalFor: aNode 
 	^self firstUnseenIntervalFor: aNode ifAbsent: [] ! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 firstUnseenIntervalFor: aNode ifAbsent: anAbsentBlock 
 	
 	| completeRangesOfassigmentNode |
@@ -1236,7 +1175,6 @@ firstUnseenIntervalFor: aNode ifAbsent: anAbsentBlock
 	^self filterRangesThatDoNotBelongToTheCurrentNodeIn: completeRangesOfassigmentNode.! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 29/Dec/2024, 7:53:12 pm (UTC)'!
-!methodProperties: {}!
 generateNewGetterForVariable: aVariableName withSelector: aSelectorForGetter
 	| getterCandidate |
 	
@@ -1246,7 +1184,6 @@ generateNewGetterForVariable: aVariableName withSelector: aSelectorForGetter
 	^getterCandidate.! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 29/Dec/2024, 7:53:16 pm (UTC)'!
-!methodProperties: {}!
 generateNewSetterForVariable: aVariableName withSelector: aSelectorForSetter
 	| setterCandidate |
 	
@@ -1256,7 +1193,6 @@ generateNewSetterForVariable: aVariableName withSelector: aSelectorForSetter
 	^setterCandidate.! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 29/Dec/2024, 7:53:39 pm (UTC)'!
-!methodProperties: {}!
 getterForClassVariable: aClassVariableName 
 	| gettersCandidates |
 	gettersCandidates := self selectorsWhichSatisfy: [ :aSelector | 
@@ -1267,7 +1203,6 @@ getterForClassVariable: aClassVariableName
 		ifNotEmpty: [^gettersCandidates first] .! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 29/Dec/2024, 7:55:21 pm (UTC)'!
-!methodProperties: {}!
 getterForInstanceVariable: anInstanceVariableName 
 	| gettersCandidates |
 	gettersCandidates := self selectorsWhichSatisfy: [ :aSelector | 
@@ -1279,7 +1214,6 @@ getterForInstanceVariable: anInstanceVariableName
 		! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 29/Dec/2024, 7:55:52 pm (UTC)'!
-!methodProperties: {}!
 initializeNodeInterval
 
 	| posibleRangesForNode |
@@ -1295,13 +1229,11 @@ initializeNodeInterval
 			]! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 initializeOffset
 
 	^ nodeOffsetInSourceCode := nodeInterval first -1! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 29/Dec/2024, 7:59:57 pm (UTC)'!
-!methodProperties: {}!
 method: getterCandidate isGetterOf: anInstanceVariableName 
 	| anInstVarIndex |
 	
@@ -1309,12 +1241,10 @@ method: getterCandidate isGetterOf: anInstanceVariableName
 	^getterCandidate isReturnField and: [ getterCandidate returnField + 1 = anInstVarIndex ]! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 31/Dec/2024, 6:39:57 am (UTC)'!
-!methodProperties: {}!
 method: getterCandidate isGetterOfClassVariable: aClassVariableName 
 	^(MethodWorksAsGetterVisitor method: getterCandidate forClassVariable: aClassVariableName) value! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'HAW 3/Dec/2025, 6:42:55 pm (UTC)'!
-!methodProperties: {}!
 method: setterCandidate isSetterOf: anInstVarName 
 
 	^setterCandidate 
@@ -1323,7 +1253,6 @@ method: setterCandidate isSetterOf: anInstVarName
 		allowsReturnReceiver: false! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 newKeywordSelector: aMessageNode
 	
 	| indexNewSelector newSelector |
@@ -1337,13 +1266,11 @@ newKeywordSelector: aMessageNode
 	^newSelector! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 newSelectorForSuperColaboration: aMessageNode
 
 	^ 'CHANGE_ME_super_', aMessageNode selector key asString! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 21/Jan/2025, 5:32:30 am (UTC)'!
-!methodProperties: {}!
 newSenderFor: aMessageNode
 	|  newSend argumentsCode argumentIndex replacer replacerResult argumentNode |
 	argumentsCode := OrderedCollection new.
@@ -1370,12 +1297,10 @@ newSenderFor: aMessageNode
 ! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 31/Dec/2024, 6:49:19 am (UTC)'!
-!methodProperties: {}!
 registerInterval: anInterval withModification: sourceCodeForInterval 
 	intervalsToModify add: anInterval -> sourceCodeForInterval! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 31/Dec/2024, 6:22:01 am (UTC)'!
-!methodProperties: {}!
 removeSeenRanges: rangesOfNode 
 	| someIntervalsToExclude |
 	someIntervalsToExclude := intervalsToModify collect: [ :anAssociation | anAssociation key].
@@ -1383,13 +1308,11 @@ removeSeenRanges: rangesOfNode
 	someIntervalsToExclude anySatisfy: [ :aSourceIntervalToModify | aSourceIntervalToModify includesAllOf: aSourceInterval ] ]! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 29/Dec/2024, 8:00:13 pm (UTC)'!
-!methodProperties: {}!
 selectorsWhichSatisfy: aBlock
 
 	^ methodNode methodClass selectors select: aBlock! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 31/Dec/2024, 6:45:35 am (UTC)'!
-!methodProperties: {}!
 setterForClassVariable: aClassVariableName 
 	| settersCandidates |
 	settersCandidates := self selectorsWhichSatisfy: [ :aSelector | 
@@ -1401,7 +1324,6 @@ setterForClassVariable: aClassVariableName
 ! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 31/Dec/2024, 6:48:21 am (UTC)'!
-!methodProperties: {}!
 setterForInstanceVariable: anInstanceVariableName 
 	| settersCandidates |
 	settersCandidates := self selectorsWhichSatisfy: [ :aSelector | 
@@ -1413,18 +1335,15 @@ setterForInstanceVariable: anInstanceVariableName
 		! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 shouldAddParenthesis: argumentNode 
 	^argumentNode isAssignmentNode! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 shouldAddParenthesisOnValueOf: anAssignmentNode
 
 	^ ((anAssignmentNode value isMessageNode and: [anAssignmentNode value isKeywordMessageSend])) or: [anAssignmentNode value isAssignmentNode ]! !
 
 !CodeForNodeToMove methodsFor: 'accessing' stamp: 'mc 31/Dec/2024, 6:40:27 am (UTC)'!
-!methodProperties: {}!
 value
 	| newCode newCodeForNode |
 	self initializeNodeInterval.
@@ -1447,7 +1366,6 @@ value
 				methodsToCompileOnSourceClass: methodToCompileOnSourceClass! !
 
 !CodeForNodeToMove class methodsFor: 'instance creation' stamp: 'mc 21/Jan/2025, 5:33:19 am (UTC)'!
-!methodProperties: {}!
 methodNode: aMethodNode variableToAcessThrough: aVariableToAccesoThroughName onNode: aNodeToGetCode parameterNeeded: parameterNeeded targetClass: aTargetClass
 	^self new 
 		initializeFor: aMethodNode
@@ -1457,14 +1375,12 @@ methodNode: aMethodNode variableToAcessThrough: aVariableToAccesoThroughName onN
 		targetClass: aTargetClass.! !
 
 !MethodWorksAsGetterVisitor methodsFor: 'initialization' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 initializeMethod: aGetterCandidate forClassVariable: aClassVariableName 
 	
 	getterCandidate := aGetterCandidate.
 	classVariableName := aClassVariableName.! !
 
 !MethodWorksAsGetterVisitor methodsFor: 'as yet unclassified' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 value
 	returnMethodIsNotGetterClousure := [^false].
 	returnMethodIsGetterClousure := [^true].
@@ -1472,7 +1388,6 @@ value
 	^false! !
 
 !MethodWorksAsGetterVisitor methodsFor: 'visiting' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 visitBlockNode: aBlockNode 
 	(aBlockNode statements size = 1) ifFalse: [returnMethodIsNotGetterClousure value].
 	(aBlockNode statements first expr name = classVariableName) 
@@ -1480,13 +1395,11 @@ visitBlockNode: aBlockNode
 		ifTrue: [returnMethodIsGetterClousure value].! !
 
 !MethodWorksAsGetterVisitor class methodsFor: 'instance creation' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 method: getterCandidate forClassVariable: aClassVariableName 
 	
 	^self new initializeMethod: getterCandidate forClassVariable: aClassVariableName ! !
 
 !NeedParameterName methodsFor: 'public' stamp: 'mc 14/Jul/2024, 5:17:03 am (UTC)'!
-!methodProperties: {}!
 value
 	  
 	methodNode := compiledMethod methodNode.
@@ -1494,69 +1407,57 @@ value
 	^self needParameterName ! !
 
 !NeedParameterName methodsFor: 'visiting' stamp: 'mc 3/Mar/2025, 8:00:59 pm (UTC)'!
-!methodProperties: {}!
 isClassVarDifferentFromAccessThroughVariable: aLiteralVariableNode
 
 	^ (aLiteralVariableNode isReferencingClassVariable and:[ aLiteralVariableNode name = instanceVariableNameToAccessThrough ]) not! !
 
 !NeedParameterName methodsFor: 'visiting' stamp: 'mc 3/Mar/2025, 8:00:26 pm (UTC)'!
-!methodProperties: {}!
 visitInstanceVariableNode: anInstanceVariableNode 
 	
 	needParameterName := needParameterName or: [instanceVariableNameToAccessThrough ~= anInstanceVariableNode name].! !
 
 !NeedParameterName methodsFor: 'visiting' stamp: 'mc 3/Mar/2025, 8:00:17 pm (UTC)'!
-!methodProperties: {}!
 visitLiteralVariableNode: aLiteralVariableNode 
 
 	needParameterName := needParameterName or: [aLiteralVariableNode  isReferencingGlobal not and: [ self isClassVarDifferentFromAccessThroughVariable: aLiteralVariableNode]].! !
 
 !NeedParameterName methodsFor: 'visiting' stamp: 'mc 14/Jul/2024, 5:17:03 am (UTC)'!
-!methodProperties: {}!
 visitVariableNode: aVariableNode 
 	needParameterName := true.! !
 
 !NeedParameterName methodsFor: 'initialization' stamp: 'mc 3/Mar/2025, 8:07:45 pm (UTC)'!
-!methodProperties: {}!
 initializeWith: aCompiledMethod newAccessingThrough: instanceVariable 
 	needParameterName := false.
 	compiledMethod := aCompiledMethod.
 	instanceVariableNameToAccessThrough := instanceVariable.! !
 
 !NeedParameterName methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:03 am (UTC)'!
-!methodProperties: {}!
 needParameterName
 	^needParameterName! !
 
 !NeedParameterName class methodsFor: 'instance creation' stamp: 'mc 3/Mar/2025, 8:01:44 pm (UTC)'!
-!methodProperties: {}!
 for: compiledMethod newAccessingThrough: instanceVariable 
 	
 	^self new initializeWith: compiledMethod newAccessingThrough: instanceVariable ! !
 
 !ExtractClassConfiguration methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 instanceVariablesToExtract
 
 	^instanceVariableListModel instanceVariablesToExtract! !
 
 !ExtractClassConfiguration methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 methodsToExtract
 	^messageListModel methodsToExtract! !
 
 !ExtractClassConfiguration methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 newClassName
 	^newClassNameModel actualContents asString asSymbol ! !
 
 !ExtractClassConfiguration methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 variableNameToAccessNewClass
 	^variableNameToAccessNewClassModel actualContents string ! !
 
 !ExtractClassConfiguration methodsFor: 'initialization' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 initializeNewWithNameModel: aNewClassNameModel methodsToMoveModel: aMessageListModel instanceVariableListModel: anInstanceVariableListModel variableNameToAccessThroughModel: aVariableNameToAccessNewClassModel 
 	newClassNameModel := aNewClassNameModel.
 	messageListModel := aMessageListModel.
@@ -1564,7 +1465,6 @@ initializeNewWithNameModel: aNewClassNameModel methodsToMoveModel: aMessageListM
 	variableNameToAccessNewClassModel := aVariableNameToAccessNewClassModel.! !
 
 !ExtractClassConfiguration class methodsFor: 'instance creation' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 newWithNameModel: aNewClassNameModel methodsToMoveModel: aMessageListModel instanceVariableListModel: anInstanceVariableListModel variableNameToAccessThroughModel: aVariableNameToAccessNewClassModel 
 	^self new 
 		initializeNewWithNameModel: aNewClassNameModel 
@@ -1573,43 +1473,36 @@ newWithNameModel: aNewClassNameModel methodsToMoveModel: aMessageListModel insta
 		variableNameToAccessThroughModel: aVariableNameToAccessNewClassModel ! !
 
 !ExtractParameterObjectConfiguration methodsFor: 'accessing' stamp: 'MEGL 11/Jan/2024, 2:40:35 am (UTC)'!
-!methodProperties: {}!
 category
 
 	^categoryModel actualContents string! !
 
 !ExtractParameterObjectConfiguration methodsFor: 'accessing' stamp: 'MEGL 2/Jan/2024, 2:10:27 am (UTC)'!
-!methodProperties: {}!
 categoryModel
 
 	^categoryModel ! !
 
 !ExtractParameterObjectConfiguration methodsFor: 'accessing' stamp: 'MEGL 11/Jan/2024, 2:41:02 am (UTC)'!
-!methodProperties: {}!
 className
 
 	^classNameModel actualContents string asSymbol! !
 
 !ExtractParameterObjectConfiguration methodsFor: 'accessing' stamp: 'MEGL 2/Jan/2024, 2:08:38 am (UTC)'!
-!methodProperties: {}!
 classNameModel
 
 	^classNameModel ! !
 
 !ExtractParameterObjectConfiguration methodsFor: 'accessing' stamp: 'MEGL 11/Jan/2024, 2:42:10 am (UTC)'!
-!methodProperties: {}!
 superclassName
 
 	^superclassNameModel actualContents string asSymbol! !
 
 !ExtractParameterObjectConfiguration methodsFor: 'accessing' stamp: 'MEGL 2/Jan/2024, 2:09:36 am (UTC)'!
-!methodProperties: {}!
 superclassNameModel
 
 	^superclassNameModel! !
 
 !ExtractParameterObjectConfiguration methodsFor: 'initialization' stamp: 'HAW 28/Mar/2025, 1:59:34 pm (UTC)'!
-!methodProperties: {}!
 initializeFor: aCompiledMethod
  
 	classNameModel := PluggableTextModel on: self.
@@ -1619,13 +1512,11 @@ initializeFor: aCompiledMethod
 	superclassNameModel actualContents: Object name asString! !
 
 !ExtractParameterObjectConfiguration class methodsFor: 'instance creation' stamp: 'MEGL 29/Dec/2023, 2:04:59 am (UTC)'!
-!methodProperties: {}!
 for: aCompiledMethod
 
 	^self new initializeFor: aCompiledMethod.! !
 
 !ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 2:40:41 pm (UTC)'!
-!methodProperties: {}!
 addParametersRangesFrom: node
 
 	| messageNodeRange argIvarRanges ivarNode |
@@ -1638,7 +1529,6 @@ addParametersRangesFrom: node
 	ranges add: (argIvarRanges detect: [:r | messageNodeRange includes: r first])! !
 
 !ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 2:26:41 pm (UTC)'!
-!methodProperties: {}!
 addReturnRangesFrom: node
 
 	| returnNodeRange ivarRanges|
@@ -1650,39 +1540,33 @@ addReturnRangesFrom: node
 	ranges add: (ivarRanges detect: [:r | returnNodeRange includes: r first])! !
 
 !ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 2:43:01 pm (UTC)'!
-!methodProperties: {}!
 in: aMethodNode for: anInstVar
 
 	methodNode := aMethodNode.
 	instVar := anInstVar.! !
 
 !ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 2:56:01 pm (UTC)'!
-!methodProperties: {}!
 isMessageWithIvarAsArg: node
 
 	^node isMessageNode and: [ node arguments anySatisfy: [:a | self nodeIsIvar: a]].
 ! !
 
 !ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 2:20:41 pm (UTC)'!
-!methodProperties: {}!
 isReturnIvar: node
 
 	^ node isReturn and: [self nodeIsIvar: node expr]! !
 
 !ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 2:22:19 pm (UTC)'!
-!methodProperties: {}!
 nodeIsIvar: node
 	
 	^node isInstanceVariableNode and: [node name = instVar]! !
 
 !ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 2:20:01 pm (UTC)'!
-!methodProperties: {}!
 ranges
 
 	^ranges! !
 
 !ArgumentsAndReturnsFinder methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 2:41:45 pm (UTC)'!
-!methodProperties: {}!
 value
 
 	| paramsAndReturnsFinder |
@@ -1697,50 +1581,42 @@ value
 ! !
 
 !ArgumentsAndReturnsFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 2:54:04 pm (UTC)'!
-!methodProperties: {}!
 in: methodNode for: instVar
 
 	^self new in: methodNode for: instVar.! !
 
 !ChangeRowOrderButtonModel methodsFor: 'initialization' stamp: 'FGJ 9/Feb/2019, 7:33:36 pm (UTC)'!
-!methodProperties: {}!
 for: aRowIndex notifying: aTableModel
 
 	rowPosition := aRowIndex.
 	tableModel := aTableModel.! !
 
 !ChangeRowOrderButtonModel methodsFor: 'as yet unclassified' stamp: 'FGJ 9/Feb/2019, 9:13:42 pm (UTC)'!
-!methodProperties: {}!
 moveDown
 
 	tableModel moveDownRow: rowPosition.! !
 
 !ChangeRowOrderButtonModel methodsFor: 'as yet unclassified' stamp: 'FGJ 9/Feb/2019, 8:21:03 pm (UTC)'!
-!methodProperties: {}!
 moveUp
 
 	tableModel moveUpRow: rowPosition.! !
 
 !ChangeRowOrderButtonModel methodsFor: 'as yet unclassified' stamp: 'FGJ 9/Feb/2019, 9:13:06 pm (UTC)'!
-!methodProperties: {}!
 wasMovedDown
 
 	rowPosition := rowPosition - 1.! !
 
 !ChangeRowOrderButtonModel methodsFor: 'as yet unclassified' stamp: 'FGJ 9/Feb/2019, 9:13:18 pm (UTC)'!
-!methodProperties: {}!
 wasMovedUp
 
 	rowPosition := rowPosition + 1.! !
 
 !ChangeRowOrderButtonModel class methodsFor: 'as yet unclassified' stamp: 'FGJ 8/Feb/2019, 7:27:13 pm (UTC)'!
-!methodProperties: {}!
 for: aRowIndex notifying: aTableModel
 
 	^self new for: aRowIndex notifying: aTableModel! !
 
 !MessageKeywordsAndParametersModel methodsFor: 'as yet unclassified' stamp: 'FGJ 8/Apr/2019, 5:21:45 pm (UTC)'!
-!methodProperties: {}!
 definitions
 
 	^selectorModel
@@ -1752,7 +1628,6 @@ definitions
 				withParameterName: (model at: #parameterName) actualContents string])]! !
 
 !MessageKeywordsAndParametersModel methodsFor: 'initialization' stamp: 'FGJ 11/Apr/2019, 8:08:32 pm (UTC)'!
-!methodProperties: {}!
 initializeFor: someVariablesToExtract
 
 	models := OrderedCollection new.
@@ -1768,56 +1643,47 @@ initializeFor: someVariablesToExtract
 		models add: keywordParameterModel].! !
 
 !MessageKeywordsAndParametersModel methodsFor: 'initialization' stamp: 'FGJ 8/Apr/2019, 5:26:15 pm (UTC)'!
-!methodProperties: {}!
 initializeForSelector
 
 	selectorModel := PluggableTextModel on: self.! !
 
 !MessageKeywordsAndParametersModel methodsFor: 'accessing' stamp: 'FGJ 5/Apr/2019, 8:20:56 pm (UTC)'!
-!methodProperties: {}!
 keywordModelOf: aVariableName
 
 	^(models detect: [:model | (model at: #variableName) = aVariableName]) at: #keyword! !
 
 !MessageKeywordsAndParametersModel methodsFor: 'accessing' stamp: 'FGJ 5/Apr/2019, 8:21:09 pm (UTC)'!
-!methodProperties: {}!
 parameterModelOf: aVariableName
 
 	^(models detect: [:model | (model at: #variableName) = aVariableName]) at: #parameterName! !
 
 !MessageKeywordsAndParametersModel methodsFor: 'accessing' stamp: 'FGJ 5/Apr/2019, 7:29:31 pm (UTC)'!
-!methodProperties: {}!
 selectorModel
 
 	^selectorModel! !
 
 !MessageKeywordsAndParametersModel methodsFor: 'events handling' stamp: 'FGJ 28/Mar/2019, 9:40:59 pm (UTC)'!
-!methodProperties: {}!
 keywordOfIndex: aKeywordIndex wasSwappedWithKeywordOfIndex: anotherKeywordIndex
 
 	models swap: aKeywordIndex with: anotherKeywordIndex.! !
 
 !MessageKeywordsAndParametersModel class methodsFor: 'instance creation' stamp: 'FGJ 5/Apr/2019, 8:54:59 pm (UTC)'!
-!methodProperties: {}!
 for: someVariablesToExtract
 
 	^self new initializeFor: someVariablesToExtract! !
 
 !MessageKeywordsAndParametersModel class methodsFor: 'instance creation' stamp: 'FGJ 8/Apr/2019, 5:26:42 pm (UTC)'!
-!methodProperties: {}!
 initializedForSelector
 
 	^self new initializeForSelector! !
 
 !ReturnStatementAdder methodsFor: 'initialization' stamp: 'HAW 27/Jul/2023, 10:07:17 pm (UTC)'!
-!methodProperties: {}!
 to: aCompiledMethod
 
 	compiledMethod := aCompiledMethod.
 	methodNode := compiledMethod notOptimizedMethodNode.! !
 
 !ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 3/Oct/2020, 11:17:51 pm (UTC)'!
-!methodProperties: {}!
 compileInsertingReturnAt: anIndex
 
 	| afterReturn beforeReturn source sourceWithReturn |
@@ -1834,7 +1700,6 @@ compileInsertingReturnAt: anIndex
 	! !
 
 !ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 3/Oct/2020, 11:15:56 pm (UTC)'!
-!methodProperties: {}!
 indexOfFirstNonSeparatorAfter: anIndex
 
 	| result |
@@ -1845,13 +1710,11 @@ indexOfFirstNonSeparatorAfter: anIndex
 	^result! !
 
 !ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 3/Oct/2020, 10:55:47 pm (UTC)'!
-!methodProperties: {}!
 methodHasImplicitReturn
 
 	^methodNode block statements last isImplicitSelfReturnIn: methodNode.! !
 
 !ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 3/Oct/2020, 11:11:59 pm (UTC)'!
-!methodProperties: {}!
 nextToLastStatement
 
 	| indexOfNextToLastStatement numberOfStatements |
@@ -1864,7 +1727,6 @@ nextToLastStatement
 	! !
 
 !ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 3/Oct/2020, 10:55:24 pm (UTC)'!
-!methodProperties: {}!
 nonImplicitNumberOfStatements
 
 	| totalStatements |
@@ -1876,13 +1738,11 @@ nonImplicitNumberOfStatements
 	^totalStatements! !
 
 !ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 3/Oct/2020, 8:09:40 pm (UTC)'!
-!methodProperties: {}!
 value
 	self nonImplicitNumberOfStatements = 1 ifTrue: [ self valueOneStatement ].
 	self nonImplicitNumberOfStatements > 1 ifTrue: [ self valueMultipleStatements ].	! !
 
 !ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 3/Oct/2020, 11:16:48 pm (UTC)'!
-!methodProperties: {}!
 valueMultipleStatements
 
 	| nextToLastStatement range rightmostPosition positionToInsertReturn source |
@@ -1899,7 +1759,6 @@ valueMultipleStatements
 	self compileInsertingReturnAt: positionToInsertReturn.! !
 
 !ReturnStatementAdder methodsFor: 'evaluating' stamp: 'FGJ 3/Oct/2020, 11:18:11 pm (UTC)'!
-!methodProperties: {}!
 valueOneStatement
 
 	| endOfHeader positionToInsertReturn source |
@@ -1912,13 +1771,11 @@ valueOneStatement
 	self compileInsertingReturnAt: positionToInsertReturn.! !
 
 !ReturnStatementAdder class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Oct/2020, 7:20:52 pm (UTC)'!
-!methodProperties: {}!
 valueTo: aCompiledMethod
 	
 	(self new to: aCompiledMethod) value.! !
 
 !VariableToParametrizeKeywordDefinition methodsFor: 'initialization' stamp: 'FGJ 18/Mar/2019, 3:47:50 pm (UTC)'!
-!methodProperties: {}!
 initializeForVariable: aVariableName useKeyword: aKeyword withParameterName: aParameterName
 
 	variableName := aVariableName.
@@ -1928,38 +1785,32 @@ initializeForVariable: aVariableName useKeyword: aKeyword withParameterName: aPa
 	! !
 
 !VariableToParametrizeKeywordDefinition methodsFor: 'accessing' stamp: 'FGJ 18/Mar/2019, 3:48:07 pm (UTC)'!
-!methodProperties: {}!
 keyword
 
 	^keyword! !
 
 !VariableToParametrizeKeywordDefinition methodsFor: 'accessing' stamp: 'FGJ 18/Mar/2019, 3:48:43 pm (UTC)'!
-!methodProperties: {}!
 parameterName
 
 	^parameterName! !
 
 !VariableToParametrizeKeywordDefinition methodsFor: 'accessing' stamp: 'FGJ 18/Mar/2019, 3:48:20 pm (UTC)'!
-!methodProperties: {}!
 variableName
 
 	^variableName! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 3:38:26 pm (UTC)'!
-!methodProperties: {}!
 assertKeywordDoesNotContainInvalidCharacters: aKeyword
 
 	(aKeyword anySatisfy: [:c | c isValidInIdentifiers not])
 		ifTrue: [self signalKeywordMustNotContainInvalidCharacters]. ! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 3:33:55 pm (UTC)'!
-!methodProperties: {}!
 assertKeywordIsNotEmpty: aKeyword
 
 	aKeyword withBlanksTrimmed isEmpty ifTrue: [self signalKeywordMustNotBeEmpty].! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 3:09:15 pm (UTC)'!
-!methodProperties: {}!
 assertParameterNameIsValid: aParameterName
 
 	| scannedNames isValidParameterName |
@@ -1969,43 +1820,36 @@ assertParameterNameIsValid: aParameterName
 	isValidParameterName ifFalse: [self signalInvalidParameterName].! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'as yet unclassified' stamp: 'FGJ 13/Mar/2019, 6:18:53 pm (UTC)'!
-!methodProperties: {}!
 refactoringError: anErrorMessage
 
 	self refactoringErrorClass signal: anErrorMessage.! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'as yet unclassified' stamp: 'FGJ 13/Mar/2019, 6:19:03 pm (UTC)'!
-!methodProperties: {}!
 refactoringErrorClass
 
 	^RefactoringError ! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'error messages' stamp: 'FGJ 18/Mar/2019, 3:00:17 pm (UTC)'!
-!methodProperties: {}!
 invalidParameterNameErrorMessage
 
 	^'Invalid parameter name'! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'error messages' stamp: 'FGJ 18/Mar/2019, 3:34:35 pm (UTC)'!
-!methodProperties: {}!
 keywordMustNotBeEmptyErrorMessage
 
 	^'Keyword must not be empty'! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'error messages' stamp: 'FGJ 18/Mar/2019, 3:39:09 pm (UTC)'!
-!methodProperties: {}!
 keywordMustNotContainInvalidCharactersErrorMessage
 
 	^'Keyword must not contain invalid characters'! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'error messages' stamp: 'FGJ 13/Mar/2019, 6:16:09 pm (UTC)'!
-!methodProperties: {}!
 parameterNameMustNotBeEmptyErrorMessage
 
 	^'Parameter name must not be empty'! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'instance creation' stamp: 'FGJ 18/Mar/2019, 3:46:51 pm (UTC)'!
-!methodProperties: {}!
 forVariable: aVariableName useKeyword: aKeyword withParameterName: aParameterName
 
 	self assertParameterNameIsValid: aParameterName.
@@ -2016,37 +1860,31 @@ forVariable: aVariableName useKeyword: aKeyword withParameterName: aParameterNam
 	^self new initializeForVariable: aVariableName useKeyword: aKeyword withParameterName: aParameterName! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'exceptions' stamp: 'FGJ 18/Mar/2019, 3:05:19 pm (UTC)'!
-!methodProperties: {}!
 signalInvalidParameterName
 
 	self refactoringError: self invalidParameterNameErrorMessage.! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'exceptions' stamp: 'FGJ 18/Mar/2019, 3:34:18 pm (UTC)'!
-!methodProperties: {}!
 signalKeywordMustNotBeEmpty
 
 	self refactoringError: self keywordMustNotBeEmptyErrorMessage.! !
 
 !VariableToParametrizeKeywordDefinition class methodsFor: 'exceptions' stamp: 'FGJ 18/Mar/2019, 3:38:51 pm (UTC)'!
-!methodProperties: {}!
 signalKeywordMustNotContainInvalidCharacters
 
 	self refactoringError: self keywordMustNotContainInvalidCharactersErrorMessage.! !
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'initialization' stamp: 'FGJ 19/Mar/2019, 8:12:25 pm (UTC)'!
-!methodProperties: {}!
 initializeWith: someDefinitions
 
 	definitions := someDefinitions.! !
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'initialization' stamp: 'FGJ 19/Mar/2019, 8:12:49 pm (UTC)'!
-!methodProperties: {}!
 initializeWithSelector: aSelector
 
 	selector := aSelector.! !
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 20/Mar/2019, 6:55:42 pm (UTC)'!
-!methodProperties: {}!
 messageHeader
 
 	definitions
@@ -2054,7 +1892,6 @@ messageHeader
 		ifNotNil: [^' ' join: (definitions collect: [:definition | definition keyword, ': ', definition parameterName])].	! !
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 20/Mar/2019, 2:41:36 pm (UTC)'!
-!methodProperties: {}!
 messageSending
 
 	definitions
@@ -2062,13 +1899,11 @@ messageSending
 		ifNotNil: [^' ' join: (definitions collect: [:definition | definition keyword, ': ', definition variableName])].! !
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 21/Mar/2019, 3:45:27 pm (UTC)'!
-!methodProperties: {}!
 parameterNameFor: aVariableName
 
 	definitions do: [:definition | definition variableName = aVariableName ifTrue: [^definition parameterName]].! !
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 19/Mar/2019, 6:54:08 pm (UTC)'!
-!methodProperties: {}!
 parameterNames
 
 	definitions
@@ -2077,7 +1912,6 @@ parameterNames
 		! !
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 19/Mar/2019, 8:15:22 pm (UTC)'!
-!methodProperties: {}!
 selector
 
 	definitions
@@ -2086,7 +1920,6 @@ selector
 			^((':' join: (definitions collect: [:definition | definition keyword])), ':') asSymbol].! !
 
 !VariablesToParametrizeKeywordsDefinitions methodsFor: 'accessing' stamp: 'FGJ 18/Mar/2019, 6:21:07 pm (UTC)'!
-!methodProperties: {}!
 variablesToParametrize
 
 	definitions
@@ -2095,69 +1928,58 @@ variablesToParametrize
 		! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 18/Mar/2019, 3:52:24 pm (UTC)'!
-!methodProperties: {}!
 firstKeywordMustNoStartWithInvalidStartOfSelectorErrorMessage
 
 	^'First keyword must start with a valid start of selector.'! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 18/Mar/2019, 5:26:54 pm (UTC)'!
-!methodProperties: {}!
 parameterNamesMustNotBeRepeatedErrorMessage
 
 	^'Parameter names must not be repeated.'! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 13/Mar/2019, 5:03:36 pm (UTC)'!
-!methodProperties: {}!
 selectorMustNotBeEmptyErrorMessage
 
 	^'The selector must not be empty'! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 13/Mar/2019, 5:12:23 pm (UTC)'!
-!methodProperties: {}!
 selectorMustNotContainInvalidCharactersErrorMessage
 
 	^'Selector must not contain invalid characters'! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 13/Mar/2019, 5:22:09 pm (UTC)'!
-!methodProperties: {}!
 selectorMustNotStartWithInvalidStartOfSelectorErrorMessage
 
 	^'Selector must not start with invalid start of selector.'! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'error messages' stamp: 'FGJ 18/Mar/2019, 5:32:00 pm (UTC)'!
-!methodProperties: {}!
 variableNamesMustNotBeRepeatedErrorMessage
 
 	^'Variable names must not be repeated.'! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 13/Mar/2019, 5:11:02 pm (UTC)'!
-!methodProperties: {}!
 assertDoesNotContainInvalidCharacters: aSelector
 
 	aSelector do: [:c | (c isValidInIdentifiers not) ifTrue: [
 		self signalSelectorMustNotContainInvalidCharacters ]].! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 13/Mar/2019, 5:25:17 pm (UTC)'!
-!methodProperties: {}!
 assertDoesNotStartWithInvalidStartOfSelector: aSelector
 
 	aSelector first isValidStartOfIdentifiers ifFalse: [
 		self signalSelectorMustNotStartWithInvalidStartOfSelector ].! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 8/Apr/2019, 5:33:01 pm (UTC)'!
-!methodProperties: {}!
 assertIsNotEmpty: aSymbol
 
 	aSymbol withBlanksTrimmed isEmpty ifTrue: [ self signalSelectorMustNotBeEmpty ].! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 3:51:12 pm (UTC)'!
-!methodProperties: {}!
 assertKeywordMustStartWithValidStartOfSelector: aKeyword
 
 	aKeyword first isValidStartOfIdentifiers not ifTrue: [self signalFirstKeywordMustStartWithValidStartOfSelector].! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 5:29:48 pm (UTC)'!
-!methodProperties: {}!
 assertParameterNamesAreNotRepeated: someDefinitions
 
 	| allParameterNames uniqueParameterNames |
@@ -2170,7 +1992,6 @@ assertParameterNamesAreNotRepeated: someDefinitions
 	! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 5:31:13 pm (UTC)'!
-!methodProperties: {}!
 assertVariableNamesAreNotRepeated: someDefinitions
 
 	| allVariableNames uniqueVariableNames |
@@ -2181,19 +2002,16 @@ assertVariableNamesAreNotRepeated: someDefinitions
 	allVariableNames size = uniqueVariableNames size ifFalse: [self signalVariableNamesMustNotBeRepeated].! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'as yet unclassified' stamp: 'FGJ 13/Mar/2019, 5:04:45 pm (UTC)'!
-!methodProperties: {}!
 refactoringError: aMessage
 
 	self refactoringErrorClass signal: aMessage.! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'as yet unclassified' stamp: 'FGJ 13/Mar/2019, 5:05:17 pm (UTC)'!
-!methodProperties: {}!
 refactoringErrorClass
 
 	^RefactoringError! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'instance creation' stamp: 'FGJ 20/Mar/2019, 2:31:37 pm (UTC)'!
-!methodProperties: {}!
 with: someDefinitions
 
 	self assertKeywordMustStartWithValidStartOfSelector: someDefinitions first keyword.
@@ -2203,7 +2021,6 @@ with: someDefinitions
 	^self new initializeWith: someDefinitions ! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'instance creation' stamp: 'FGJ 20/Mar/2019, 2:31:43 pm (UTC)'!
-!methodProperties: {}!
 withSelector: aSelector
 
 	self assertIsNotEmpty: aSelector.
@@ -2213,49 +2030,41 @@ withSelector: aSelector
 	^self new initializeWithSelector: aSelector.! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'exceptions' stamp: 'FGJ 18/Mar/2019, 3:52:02 pm (UTC)'!
-!methodProperties: {}!
 signalFirstKeywordMustStartWithValidStartOfSelector
 
 	self refactoringError: self firstKeywordMustNoStartWithInvalidStartOfSelectorErrorMessage.! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'exceptions' stamp: 'FGJ 18/Mar/2019, 5:26:37 pm (UTC)'!
-!methodProperties: {}!
 signalParameterNamesMustNotBeRepeated
 
 	self refactoringError: self parameterNamesMustNotBeRepeatedErrorMessage.! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'exceptions' stamp: 'FGJ 13/Mar/2019, 5:03:04 pm (UTC)'!
-!methodProperties: {}!
 signalSelectorMustNotBeEmpty
 
 	self refactoringError: self selectorMustNotBeEmptyErrorMessage.! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'exceptions' stamp: 'FGJ 13/Mar/2019, 5:11:33 pm (UTC)'!
-!methodProperties: {}!
 signalSelectorMustNotContainInvalidCharacters
 
 	self refactoringError: self selectorMustNotContainInvalidCharactersErrorMessage.! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'exceptions' stamp: 'FGJ 13/Mar/2019, 5:25:28 pm (UTC)'!
-!methodProperties: {}!
 signalSelectorMustNotStartWithInvalidStartOfSelector
 
 	self refactoringError: self selectorMustNotStartWithInvalidStartOfSelectorErrorMessage.! !
 
 !VariablesToParametrizeKeywordsDefinitions class methodsFor: 'exceptions' stamp: 'FGJ 18/Mar/2019, 5:31:35 pm (UTC)'!
-!methodProperties: {}!
 signalVariableNamesMustNotBeRepeated
 
 	self refactoringError: self variableNamesMustNotBeRepeatedErrorMessage.! !
 
 !AutocompletedTextProvider methodsFor: 'user interface support' stamp: 'FGJ 6/Sep/2020, 7:33:21 pm (UTC)'!
-!methodProperties: {}!
 autoCompleterClassFor: aTextGetter
 
 	^FormsClassNameCompleter! !
 
 !ExtraRefactoringMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 28/Mar/2025, 5:43:38 pm (UTC)'!
-!methodProperties: {}!
 classListMenuSpec
 	
 	^#(
@@ -2266,7 +2075,6 @@ classListMenuSpec
 	)! !
 
 !ExtraRefactoringMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 28/Mar/2025, 5:54:33 pm (UTC)'!
-!methodProperties: {}!
 messageListMenuSpec
 
 	^#(
@@ -2276,7 +2084,6 @@ messageListMenuSpec
 	)! !
 
 !ExtraRefactoringMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 28/Mar/2025, 5:55:14 pm (UTC)'!
-!methodProperties: {}!
 smalltalkEditorMenuSpec
 	
 	^#(
@@ -2285,25 +2092,21 @@ smalltalkEditorMenuSpec
 	)! !
 
 !ExtraRefactoringMenues class methodsFor: 'initialization' stamp: 'HAW 29/Apr/2025, 12:11:49 am (UTC)'!
-!methodProperties: {}!
 initialize
 
 	 BrowserWindow registerAll: self menuAndShortcutsSpecs! !
 
 !ExtraRefactoringMenues class methodsFor: 'initialization' stamp: 'HAW 29/Apr/2025, 12:12:01 am (UTC)'!
-!methodProperties: {}!
 unload 
 
 	 BrowserWindow unregisterAll: self menuAndShortcutsSpecs! !
 
 !ExtraRefactoringMenues class methodsFor: 'menues' stamp: 'HAW 29/Apr/2025, 12:04:19 am (UTC)'!
-!methodProperties: {}!
 classListMenuSpecSend
 
 	^ MessageSend receiver: self selector: #classListMenuSpec! !
 
 !ExtraRefactoringMenues class methodsFor: 'menues' stamp: 'HAW 29/Apr/2025, 12:08:42 am (UTC)'!
-!methodProperties: {}!
 menuAndShortcutsSpecs
 
 	^{ 	{ #classListMenuSpec. self classListMenuSpecSend }.
@@ -2311,19 +2114,16 @@ menuAndShortcutsSpecs
 		{ #SmalltalkEditor. self smalltalkEditorMenuSpecSend }}! !
 
 !ExtraRefactoringMenues class methodsFor: 'menues' stamp: 'HAW 29/Apr/2025, 12:04:30 am (UTC)'!
-!methodProperties: {}!
 messageListMenuSpecSend
 
 	^ MessageSend receiver: self selector: #messageListMenuSpec! !
 
 !ExtraRefactoringMenues class methodsFor: 'menues' stamp: 'HAW 29/Apr/2025, 12:04:43 am (UTC)'!
-!methodProperties: {}!
 smalltalkEditorMenuSpecSend
 
 	^ MessageSend receiver: self selector: #smalltalkEditorMenuSpec! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 17/Feb/2019, 7:22:39 pm (UTC)'!
-!methodProperties: {}!
 keywordsDefinitions
 
 	^instanceCreationMessageModels collect: [:aModel |
@@ -2334,43 +2134,36 @@ keywordsDefinitions
 		} asDictionary ]! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 14/Feb/2019, 8:49:00 pm (UTC)'!
-!methodProperties: {}!
 methodObjectCategory
 
 	^methodObjectCategoryModel actualContents string! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 8/Apr/2019, 6:55:08 pm (UTC)'!
-!methodProperties: {}!
 methodObjectCategoryModel
 
 	^methodObjectCategoryModel! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 14/Feb/2019, 8:55:15 pm (UTC)'!
-!methodProperties: {}!
 methodObjectClassName
 
 	^methodObjectClassNameModel actualContents string asSymbol ! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 8/Apr/2019, 6:54:45 pm (UTC)'!
-!methodProperties: {}!
 methodObjectClassNameModel
 
 	^methodObjectClassNameModel! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 14/Feb/2019, 8:49:10 pm (UTC)'!
-!methodProperties: {}!
 methodObjectEvaluationMessageSelector
 
 	^methodObjectEvaluationMessageSelectorModel actualContents string! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 8/Apr/2019, 6:55:17 pm (UTC)'!
-!methodProperties: {}!
 methodObjectEvaluationMessageSelectorModel
 
 	^methodObjectEvaluationMessageSelectorModel! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 8/Apr/2019, 8:58:10 pm (UTC)'!
-!methodProperties: {}!
 methodObjectSuperclass
 
 	| methodObjectSuperclass |
@@ -2379,31 +2172,26 @@ methodObjectSuperclass
 	methodObjectSuperclass ifNil: [self signalMethodObjectSuperclassNameDoesNotExist] ifNotNil: [^methodObjectSuperclass].! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 8/Apr/2019, 6:54:58 pm (UTC)'!
-!methodProperties: {}!
 methodObjectSuperclassNameModel
 
 	^methodObjectSuperclassNameModel! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 14/Feb/2019, 8:49:23 pm (UTC)'!
-!methodProperties: {}!
 variablesToParametrizeToInstanceVariables
 
 	^variableToParametrizeToInstVarNameModel collect: [:aInstVarNameModel | aInstVarNameModel actualContents string]! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'as yet unclassified' stamp: 'FGJ 14/Feb/2019, 8:04:31 pm (UTC)'!
-!methodProperties: {}!
 keywordOfIndex: aKeywordIndex wasSwappedWithKeywordOfIndex: anotherKeywordIndex
 
 	instanceCreationMessageModels swap: aKeywordIndex with: anotherKeywordIndex.! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'as yet unclassified' stamp: 'FGJ 8/Apr/2019, 7:03:28 pm (UTC)'!
-!methodProperties: {}!
 nameModelForVariableToParametrize: aVariable
 
 	^variableToParametrizeToInstVarNameModel at: aVariable ifAbsentPut: [PluggableTextModel on: self].! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'initialization' stamp: 'FGJ 11/Apr/2019, 7:54:36 pm (UTC)'!
-!methodProperties: {}!
 initializeFor: aCompiledMethod
 
 	variableToParametrizeToInstVarNameModel := Dictionary new.
@@ -2417,7 +2205,6 @@ initializeFor: aCompiledMethod
 	methodObjectEvaluationMessageSelectorModel := PluggableTextModel on: self.! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'initialization' stamp: 'FGJ 11/Apr/2019, 8:01:31 pm (UTC)'!
-!methodProperties: {}!
 keywordModelOf: aVariableName
 
 	| variableModel |
@@ -2438,43 +2225,36 @@ keywordModelOf: aVariableName
 	^variableModel at: #keyword.! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'initialization' stamp: 'FGJ 8/Apr/2019, 7:24:25 pm (UTC)'!
-!methodProperties: {}!
 parameterModelOf: aVariableName
 
 	^(instanceCreationMessageModels detect: [:model | (model at: #variableName) = aVariableName]) at: #parameterName! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'exceptions' stamp: 'FGJ 8/Apr/2019, 8:59:08 pm (UTC)'!
-!methodProperties: {}!
 methodObjectSuperclassNameDoesNotExistErrorMessage
 
 	^'Method object superclass name does not belong to a class in the system.'! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'exceptions' stamp: 'FGJ 8/Apr/2019, 8:59:31 pm (UTC)'!
-!methodProperties: {}!
 refactoringError: anErrorMessage
 
 	self refactoringErrorClass signal: anErrorMessage.! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'exceptions' stamp: 'FGJ 8/Apr/2019, 8:59:21 pm (UTC)'!
-!methodProperties: {}!
 refactoringErrorClass
 
 	^RefactoringError! !
 
 !ExtractToMethodObjectConfiguration methodsFor: 'exceptions' stamp: 'FGJ 8/Apr/2019, 8:58:44 pm (UTC)'!
-!methodProperties: {}!
 signalMethodObjectSuperclassNameDoesNotExist
 
 	self refactoringError: self methodObjectSuperclassNameDoesNotExistErrorMessage.! !
 
 !ExtractToMethodObjectConfiguration class methodsFor: 'as yet unclassified' stamp: 'FGJ 11/Apr/2019, 7:53:31 pm (UTC)'!
-!methodProperties: {}!
 for: aCompiledMethod
 
 	^self new initializeFor: aCompiledMethod.! !
 
 !IfNilCheck methodsFor: 'initialization' stamp: 'FGJ 6/Sep/2020, 9:27:53 pm (UTC)'!
-!methodProperties: {}!
 checkReceiver
 
 	| receiver |
@@ -2485,7 +2265,6 @@ checkReceiver
 	^receiver name.! !
 
 !IfNilCheck methodsFor: 'initialization' stamp: 'FGJ 29/Mar/2019, 6:28:42 pm (UTC)'!
-!methodProperties: {}!
 initializeIn: aMethodNode representedBy: aMessageNode atIndex: anIndex
 
 	methodNode := aMethodNode.
@@ -2493,31 +2272,26 @@ initializeIn: aMethodNode representedBy: aMessageNode atIndex: anIndex
 	index := anIndex.! !
 
 !IfNilCheck methodsFor: 'initialization' stamp: 'FGJ 26/Mar/2019, 8:15:54 pm (UTC)'!
-!methodProperties: {}!
 messageNode
 
 	^messageNode! !
 
 !IfNilCheck methodsFor: 'initialization' stamp: 'FGJ 29/Mar/2019, 6:34:00 pm (UTC)'!
-!methodProperties: {}!
 methodNode
 
 	^methodNode! !
 
 !IfNilCheck methodsFor: 'accessing' stamp: 'FGJ 27/Mar/2019, 6:48:45 pm (UTC)'!
-!methodProperties: {}!
 messageNodeIndex
 
 	^index! !
 
 !IfNilCheck class methodsFor: 'instance creation' stamp: 'FGJ 29/Mar/2019, 6:28:30 pm (UTC)'!
-!methodProperties: {}!
 in: aMethodNode representedBy: aMessageNode atIndex: anIndex
 
 	^self new initializeIn: aMethodNode representedBy: aMessageNode atIndex: anIndex.! !
 
 !IfNilChecksFinder methodsFor: 'initialization' stamp: 'HAW 28/Jul/2023, 1:41:15 pm (UTC)'!
-!methodProperties: {}!
 ifNilChecksIn: aSelector
 
 	| methodNode ifNilChecks |
@@ -2536,14 +2310,12 @@ ifNilChecksIn: aSelector
 	^ifNilChecks reverse! !
 
 !IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 26/Mar/2019, 6:35:31 pm (UTC)'!
-!methodProperties: {}!
 initializeOn: aContextClass for: anInstanceVariable
 
 	contextClass := aContextClass.
 	instanceVariable := anInstanceVariable.! !
 
 !IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 26/Mar/2019, 8:37:05 pm (UTC)'!
-!methodProperties: {}!
 isIfNilCheck: aMessageNode
 
 	| checkReceiverIsInstanceVariableBlock |
@@ -2558,13 +2330,11 @@ isIfNilCheck: aMessageNode
 		self class isIsNilWithBooleanCheck: aMessageNode  withReceiver: checkReceiverIsInstanceVariableBlock} reduce: [:a :b | a or: [b]]! !
 
 !IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 27/Mar/2019, 6:32:13 pm (UTC)'!
-!methodProperties: {}!
 isIfNilCheckNode: aNode
 
 	^aNode isMessageNode and: [self isIfNilCheck: aNode]! !
 
 !IfNilChecksFinder methodsFor: 'initialization' stamp: 'FGJ 27/Mar/2019, 7:27:38 pm (UTC)'!
-!methodProperties: {}!
 value
 
 	| selectors |
@@ -2575,7 +2345,6 @@ value
 		ifNilChecks addAll: (self ifNilChecksIn: selector). ifNilChecks.].! !
 
 !IfNilChecksFinder class methodsFor: 'instance creation' stamp: 'FGJ 26/Mar/2019, 6:35:04 pm (UTC)'!
-!methodProperties: {}!
 on: aContextClass for: anInstanceVariable
 
 	self assertInstanceVariable: anInstanceVariable belongsTo: aContextClass.
@@ -2583,55 +2352,46 @@ on: aContextClass for: anInstanceVariable
 	^self new initializeOn: aContextClass for: anInstanceVariable.! !
 
 !IfNilChecksFinder class methodsFor: 'error handling' stamp: 'FGJ 26/Mar/2019, 6:21:40 pm (UTC)'!
-!methodProperties: {}!
 refactoringError: anErrorMessage
 
 	self refactoringErrorClass signal: anErrorMessage.! !
 
 !IfNilChecksFinder class methodsFor: 'accessing' stamp: 'FGJ 26/Mar/2019, 6:22:00 pm (UTC)'!
-!methodProperties: {}!
 refactoringErrorClass
 
 	^RefactoringError! !
 
 !IfNilChecksFinder class methodsFor: 'error messages' stamp: 'FGJ 26/Mar/2019, 6:22:35 pm (UTC)'!
-!methodProperties: {}!
 instVarMustBelongToClassErrorMessage
 
 	^'The instance variable must belong to the context class.'! !
 
 !IfNilChecksFinder class methodsFor: 'exceptions' stamp: 'FGJ 26/Mar/2019, 6:33:56 pm (UTC)'!
-!methodProperties: {}!
 signalInstVarMustBelongToClass
 
 	 self refactoringError: self instVarMustBelongToClassErrorMessage.! !
 
 !IfNilChecksFinder class methodsFor: 'assertions' stamp: 'FGJ 26/Mar/2019, 6:33:40 pm (UTC)'!
-!methodProperties: {}!
 assertInstanceVariable: anInstanceVariable belongsTo: aContextClass
 
 	(aContextClass instVarNames includes: anInstanceVariable) ifFalse: [self signalInstVarMustBelongToClass].! !
 
 !IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 26/Mar/2019, 8:31:29 pm (UTC)'!
-!methodProperties: {}!
 isIfNil: aMessageNode
 
 	^self isIfNil: aMessageNode withReceiver: [:r | true].! !
 
 !IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 26/Mar/2019, 8:31:41 pm (UTC)'!
-!methodProperties: {}!
 isIfNil: aMessageNode withReceiver: aBlockToValidateReceiver
 
 	^aMessageNode isMessage: #ifNil: receiver: [:receiver | receiver isVariableNode and: [aBlockToValidateReceiver value: receiver]] arguments: nil! !
 
 !IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 26/Mar/2019, 8:31:51 pm (UTC)'!
-!methodProperties: {}!
 isIfNilWithModifications: aMessageNode
 
 	^self isIfNilWithModifications: aMessageNode withReceiver: [:r | true].! !
 
 !IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 26/Mar/2019, 8:32:01 pm (UTC)'!
-!methodProperties: {}!
 isIfNilWithModifications: aMessageNode withReceiver: aBlockToValidateReceiver
 
 	^(aMessageNode selector key = #ifTrue:ifFalse:) and: [
@@ -2641,13 +2401,11 @@ isIfNilWithModifications: aMessageNode withReceiver: aBlockToValidateReceiver
 			arguments: [:arg | arg isVariableNode and: [arg name = 'nil']]].! !
 
 !IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 26/Mar/2019, 8:32:11 pm (UTC)'!
-!methodProperties: {}!
 isIsNilWithBooleanCheck: aMessageNode
 
 	^self isIsNilWithBooleanCheck: aMessageNode withReceiver: [:r | true].! !
 
 !IfNilChecksFinder class methodsFor: 'as yet unclassified' stamp: 'FGJ 26/Mar/2019, 8:32:22 pm (UTC)'!
-!methodProperties: {}!
 isIsNilWithBooleanCheck: aMessageNode withReceiver: aBlockToValidateReceiver
 
 	| booleanSupportedMessages |
@@ -2658,20 +2416,17 @@ isIsNilWithBooleanCheck: aMessageNode withReceiver: aBlockToValidateReceiver
 		aMessageNode receiver isMessage: #isNil receiver: [:r | r isVariableNode and: [aBlockToValidateReceiver value: r]] arguments: nil]! !
 
 !IfNilMessageListModel methodsFor: 'accessing' stamp: 'FGJ 29/Mar/2019, 6:30:50 pm (UTC)'!
-!methodProperties: {}!
 messageList
 
 	^ifNilChecks collect: [:ifNilCheck | ifNilCheck methodNode selector, ' at position ', ifNilCheck messageNodeIndex asString]! !
 
 !IfNilMessageListModel methodsFor: 'accessing' stamp: 'FGJ 28/Mar/2019, 7:28:53 pm (UTC)'!
-!methodProperties: {}!
 messageListIndex
 
 	^listIndex
 	! !
 
 !IfNilMessageListModel methodsFor: 'accessing' stamp: 'FGJ 5/Apr/2019, 6:07:00 pm (UTC)'!
-!methodProperties: {}!
 messageListIndex: anIndex
 
 	| doNothing |
@@ -2686,7 +2441,6 @@ messageListIndex: anIndex
 ! !
 
 !IfNilMessageListModel methodsFor: 'initialization' stamp: 'FGJ 28/Mar/2019, 7:28:36 pm (UTC)'!
-!methodProperties: {}!
 initializeWith: someIfNilChecks withForm: anIntroduceNullObjectForm
 
 	ifNilChecks := someIfNilChecks.
@@ -2694,13 +2448,11 @@ initializeWith: someIfNilChecks withForm: anIntroduceNullObjectForm
 	listIndex := 1.! !
 
 !IfNilMessageListModel class methodsFor: 'instance creation' stamp: 'FGJ 28/Mar/2019, 3:45:51 pm (UTC)'!
-!methodProperties: {}!
 with: someIfNilChecks withForm: anIntroduceNullObjectForm
 
 	^self new initializeWith: someIfNilChecks withForm: anIntroduceNullObjectForm! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'initialization' stamp: 'FGJ 14/Sep/2020, 1:49:03 pm (UTC)'!
-!methodProperties: {}!
 initializeFor: someIfNilChecks
 
 	| instVar |
@@ -2718,13 +2470,11 @@ initializeFor: someIfNilChecks
 	concreteClassNameModel := PluggableTextModel on: AutocompletedTextProvider new.! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 6/Sep/2020, 7:40:22 pm (UTC)'!
-!methodProperties: {}!
 classFrom: textModel
 
 	^Smalltalk classNamed: textModel actualContents string withBlanksTrimmed asSymbol.! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 6/Sep/2020, 7:40:09 pm (UTC)'!
-!methodProperties: {}!
 concreteClass
 
 	| concreteClass |
@@ -2733,19 +2483,16 @@ concreteClass
 	concreteClass ifNil: [self signalConcreteClassNameDoesNotExist] ifNotNil: [^concreteClass].! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 5/Apr/2019, 6:44:23 pm (UTC)'!
-!methodProperties: {}!
 concreteClassNameModel
 
 	^concreteClassNameModel! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 5/Apr/2019, 7:56:22 pm (UTC)'!
-!methodProperties: {}!
 messgeKeywordsAndParametersModelFor: anIfNilCheck
 
 	^messageKeywordsAndParametersModels at: anIfNilCheck! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 6/Sep/2020, 7:39:24 pm (UTC)'!
-!methodProperties: {}!
 nullClass
 
 	| nullClass |
@@ -2754,13 +2501,11 @@ nullClass
 	nullClass ifNil: [self signalNullClassNameDoesNotExist] ifNotNil: [^nullClass].! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 5/Apr/2019, 6:56:36 pm (UTC)'!
-!methodProperties: {}!
 nullClassNameModel
 
 	^nullClassNameModel! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'accessing' stamp: 'FGJ 14/Sep/2020, 1:38:57 pm (UTC)'!
-!methodProperties: {}!
 replacementParameters
 
 	| parameters |
@@ -2775,55 +2520,46 @@ replacementParameters
 	^parameters! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'user interface support' stamp: 'FGJ 6/Sep/2020, 7:25:35 pm (UTC)'!
-!methodProperties: {}!
 autoCompleterClassFor: textGetter
 	
 	^SmalltalkCompleter! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'exceptions' stamp: 'FGJ 8/Apr/2019, 8:51:22 pm (UTC)'!
-!methodProperties: {}!
 concreteClassNameDoesNotExistErrorMessage
 
 	^'The concrete class name does not belong to any class in the system.'! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'exceptions' stamp: 'FGJ 9/Apr/2019, 2:39:15 pm (UTC)'!
-!methodProperties: {}!
 nullClassNameDoesNotExistErrorMessage
 
 	^'The null class name does not belong to any class in the system.'! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'exceptions' stamp: 'FGJ 8/Apr/2019, 8:52:28 pm (UTC)'!
-!methodProperties: {}!
 refactoringError: anErrorMessage
 
 	self refactoringErrorClass signal: anErrorMessage.! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'exceptions' stamp: 'FGJ 8/Apr/2019, 8:52:47 pm (UTC)'!
-!methodProperties: {}!
 refactoringErrorClass
 
 	^RefactoringError! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'exceptions' stamp: 'FGJ 8/Apr/2019, 8:51:46 pm (UTC)'!
-!methodProperties: {}!
 signalConcreteClassNameDoesNotExist
 
 	self refactoringError: self concreteClassNameDoesNotExistErrorMessage.! !
 
 !IntroduceNullObjectConfiguration methodsFor: 'exceptions' stamp: 'FGJ 9/Apr/2019, 2:38:55 pm (UTC)'!
-!methodProperties: {}!
 signalNullClassNameDoesNotExist
 
 	self refactoringError: self nullClassNameDoesNotExistErrorMessage.! !
 
 !IntroduceNullObjectConfiguration class methodsFor: 'instance creation' stamp: 'FGJ 5/Apr/2019, 7:53:19 pm (UTC)'!
-!methodProperties: {}!
 for: someIfNilChecks
 
 	^self new initializeFor: someIfNilChecks! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'initialization' stamp: 'FGJ 18/Mar/2019, 7:28:14 pm (UTC)'!
-!methodProperties: {}!
 initializeForIfNilMessageSending: aMessageNode
 onMethod: aMethodNode
 useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
@@ -2833,7 +2569,6 @@ useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 	definitions := variablesToParametrizeKeywordsDefinitions.! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 20/Sep/2025, 9:06:45 pm (UTC)'!
-!methodProperties: {}!
 addAllRangesOf: aVariableName to: rangeToReplacementParameter usingAsReplacement: aNewName
 
 	| disregardType rangesOfVariable |
@@ -2853,7 +2588,6 @@ addAllRangesOf: aVariableName to: rangeToReplacementParameter usingAsReplacement
 		rangeToReplacementParameter add: rangeToNewString].! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 25/Sep/2020, 12:54:52 am (UTC)'!
-!methodProperties: {}!
 concreteBlockRange
 	
 	self isConcreteBlockFirstBlock ifTrue: [^self sourceRangeFor: messageNode arguments first in: methodNode].
@@ -2862,7 +2596,6 @@ concreteBlockRange
 	^Interval from: 0 to: 0 count: 0! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 25/Mar/2019, 5:52:32 pm (UTC)'!
-!methodProperties: {}!
 concreteBlockSourceCode
 
 	self isConcreteBlockFirstBlock ifTrue: [^self extractSourceCodeOfBlock: messageNode arguments first fromMethod: methodNode].
@@ -2871,7 +2604,6 @@ concreteBlockSourceCode
 	^''! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 16/Apr/2019, 10:43:45 pm (UTC)'!
-!methodProperties: {}!
 extractSourceCodeOfBlock: aBlockNode fromMethod: aMethodNode
 
 	| blockRange methodSourceCode |
@@ -2884,7 +2616,6 @@ extractSourceCodeOfBlock: aBlockNode fromMethod: aMethodNode
 	! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 25/Sep/2020, 12:42:00 am (UTC)'!
-!methodProperties: {}!
 indexOfFirstNonSeparatorStartingAt: index
 
 	| result |
@@ -2895,13 +2626,11 @@ indexOfFirstNonSeparatorStartingAt: index
 	^result! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 26/Mar/2019, 8:34:29 pm (UTC)'!
-!methodProperties: {}!
 isConcreteBlockFirstBlock
 
 	^(IfNilChecksFinder isIsNilWithBooleanCheck: messageNode) and: [#ifFalse:ifTrue: = messageNode selector key]! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 26/Mar/2019, 8:34:06 pm (UTC)'!
-!methodProperties: {}!
 isConcreteBlockSecondBlock
 
 	^{
@@ -2912,7 +2641,6 @@ isConcreteBlockSecondBlock
 			and: [#(ifTrue:ifFalse: ifFalse:) includes: messageNode selector key ]} reduce: [:a1 :a2 | a1 or: [a2]]! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 26/Mar/2019, 8:33:17 pm (UTC)'!
-!methodProperties: {}!
 isNullBlockFirstBlock
 
 	^{
@@ -2921,20 +2649,17 @@ isNullBlockFirstBlock
 		(IfNilChecksFinder isIsNilWithBooleanCheck: messageNode) and: [#(ifTrue: ifTrue:ifFalse:) includes: messageNode selector key]} reduce: [:a1 :a2 | a1 or: [a2]]! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 26/Mar/2019, 8:34:37 pm (UTC)'!
-!methodProperties: {}!
 isNullBlockSecondBlock
 
 	^(IfNilChecksFinder isIsNilWithBooleanCheck: messageNode)
 		and: [messageNode selector key = #ifFalse:ifTrue:]! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 18/Mar/2019, 7:29:29 pm (UTC)'!
-!methodProperties: {}!
 messageNode
 
 	^messageNode! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 25/Mar/2019, 7:36:38 pm (UTC)'!
-!methodProperties: {}!
 messageNodeFirstArgumentIsEmptyBlock
 
 	| statement |
@@ -2944,19 +2669,16 @@ messageNodeFirstArgumentIsEmptyBlock
 	^statement isVariableNode and: [statement name = 'nil']! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 27/Jul/2023, 10:07:01 pm (UTC)'!
-!methodProperties: {}!
 methodNode
 
 	^(methodNode methodClass compiledMethodAt: methodNode selector) notOptimizedMethodNode ! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 20/Mar/2019, 1:47:30 pm (UTC)'!
-!methodProperties: {}!
 methodSourceCode
 
 	^(methodNode methodClass compiledMethodAt: methodNode selector) sourceCode! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 16/Apr/2019, 11:06:13 pm (UTC)'!
-!methodProperties: {}!
 nullBlockRange
 
 	self isNullBlockFirstBlock ifTrue: [^self sourceRangeFor: messageNode arguments first in: methodNode].
@@ -2965,7 +2687,6 @@ nullBlockRange
 	^Interval newFrom: #()! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 25/Mar/2019, 5:54:24 pm (UTC)'!
-!methodProperties: {}!
 nullBlockSourceCode
 
 	self isNullBlockFirstBlock ifTrue: [^self extractSourceCodeOfBlock: messageNode arguments first fromMethod: methodNode].
@@ -2974,31 +2695,26 @@ nullBlockSourceCode
 	^''! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 21/Mar/2019, 3:44:07 pm (UTC)'!
-!methodProperties: {}!
 parameterNameFor: aVariableName
 
 	^definitions parameterNameFor: aVariableName.! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 20/Mar/2019, 6:57:39 pm (UTC)'!
-!methodProperties: {}!
 polymorphicMessageHeader
 
 	^definitions messageHeader! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 20/Mar/2019, 1:48:45 pm (UTC)'!
-!methodProperties: {}!
 polymorphicMessageSend
 
 	^definitions messageSending! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 19/Mar/2019, 8:08:22 pm (UTC)'!
-!methodProperties: {}!
 polymorphicSelector
 
 	^definitions selector! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 23/Oct/2019, 12:53:01 pm (UTC)'!
-!methodProperties: {}!
 rangeOfMessageSend
 
 	| encoder keywordsRange variableNode variableNodeRange |
@@ -3015,7 +2731,6 @@ rangeOfMessageSend
 	^Interval from: variableNodeRange first to: keywordsRange last! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 25/Sep/2020, 1:25:29 am (UTC)'!
-!methodProperties: {}!
 rangesOfVariablesToParametrizeToReplacingParameterWith: aMapping
 
 	| rangeToReplacementParameter |
@@ -3030,7 +2745,6 @@ rangesOfVariablesToParametrizeToReplacingParameterWith: aMapping
 ! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'HAW 23/Oct/2019, 12:53:14 pm (UTC)'!
-!methodProperties: {}!
 sourceRangeFor: aBlockNode in: aMethodNode
 
 	| blockRange encoder |
@@ -3043,13 +2757,11 @@ sourceRangeFor: aBlockNode in: aMethodNode
 	! !
 
 !ReplaceIfNilWithPolymorphismParameters methodsFor: 'accessing' stamp: 'FGJ 21/Mar/2019, 3:46:30 pm (UTC)'!
-!methodProperties: {}!
 variablesToParametrize
 
 	^definitions variablesToParametrize! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'instance creation' stamp: 'FGJ 6/Sep/2020, 8:44:02 pm (UTC)'!
-!methodProperties: {}!
 forIfNilMessageSending: aMessageNode
 onMethod: aMethodNode
 useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
@@ -3080,7 +2792,6 @@ useKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 ! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 19/Mar/2019, 7:30:07 pm (UTC)'!
-!methodProperties: {}!
 allTemporariesNamesAndArgumentsFrom: aBlockNode
 
 	| blocksTemporaries |
@@ -3095,25 +2806,21 @@ allTemporariesNamesAndArgumentsFrom: aBlockNode
 	^blocksTemporaries! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 19/Mar/2019, 7:30:29 pm (UTC)'!
-!methodProperties: {}!
 argumentsNamesFrom: aNode
 
 	^aNode arguments collect: [:arg | arg name]! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 13/Mar/2019, 7:13:32 pm (UTC)'!
-!methodProperties: {}!
 refactoringError: aMessage
 
 	self refactoringErrorClass signal: aMessage! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 13/Mar/2019, 7:13:44 pm (UTC)'!
-!methodProperties: {}!
 refactoringErrorClass
 
 	^RefactoringError! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'HAW 30/Jan/2024, 4:26:36 pm (UTC)'!
-!methodProperties: {}!
 sourceOfMessageNode: aMessageNode
 
 	| stream |
@@ -3124,13 +2831,11 @@ sourceOfMessageNode: aMessageNode
 	^stream contents asString.! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'as yet unclassified' stamp: 'FGJ 19/Mar/2019, 6:51:50 pm (UTC)'!
-!methodProperties: {}!
 temporariesNamesFrom: aNode
 
 	^aNode temporaries collect: [:temporary | temporary name]! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 6:46:52 pm (UTC)'!
-!methodProperties: {}!
 assertKeywordsDefinitions: variablesToParametrizeKeywordsDefinitions
 haveACorrespondingVariableToParametrizeFrom: variablesToParametrize
 
@@ -3141,7 +2846,6 @@ haveACorrespondingVariableToParametrizeFrom: variablesToParametrize
 	(variablesToParametrize includesAllOf: variablesWithKeywords) ifFalse: [self signalKeywordsMustHaveAVariableToParametrize].	! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 26/Mar/2019, 8:30:03 pm (UTC)'!
-!methodProperties: {}!
 assertMessageNodeRepresentsSupportedMessageSending: aMessageNode
 
 	| isSupportedMessageSending |
@@ -3157,7 +2861,6 @@ assertMessageNodeRepresentsSupportedMessageSending: aMessageNode
 	isSupportedMessageSending ifFalse: [self signalMessageNodeMustRepresentSupportedMessageSending].! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 29/Mar/2019, 6:17:02 pm (UTC)'!
-!methodProperties: {}!
 assertMethodNode: methodNode includesMessageNode: messageNode
 
 	| messageNodeSource |
@@ -3171,7 +2874,6 @@ assertMethodNode: methodNode includesMessageNode: messageNode
 	! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 19/Mar/2019, 7:29:34 pm (UTC)'!
-!methodProperties: {}!
 assertParameterNamesOf: variablesToParametrizeKeywordsDefinitions
 areNotEqualToBlockTemporariesOrArgumentsOn: aMessageNode
 
@@ -3188,7 +2890,6 @@ areNotEqualToBlockTemporariesOrArgumentsOn: aMessageNode
 		self signalParameterNamesMustNotBeEqualToBlocksTemporals].! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 6:44:43 pm (UTC)'!
-!methodProperties: {}!
 assertVariablesToParametrizeFrom: someVariablesToParametrize haveACorrespondingKeywordOn: someVariablesToParametrizeKeywordsDefinitions
 
 	| variablesWithKeywords |
@@ -3198,117 +2899,97 @@ assertVariablesToParametrizeFrom: someVariablesToParametrize haveACorrespondingK
 	(variablesWithKeywords includesAllOf: someVariablesToParametrize) ifFalse: [self signalAllVariablesToParametrizeMustHaveAKeyword].! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'error messages' stamp: 'FGJ 18/Mar/2019, 6:48:04 pm (UTC)'!
-!methodProperties: {}!
 allKeywordsMustHaveACorrespondingVariableToParametrizeErrorMessage
 
 	^'All keywords must have a corresponding variable to parametrize'! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'error messages' stamp: 'FGJ 18/Mar/2019, 6:17:07 pm (UTC)'!
-!methodProperties: {}!
 allVariablesToParametrizeMustHaveAKeywordErrorMessage
 
 	^'All variables to parametrize must have a corresponding keyword.'! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'error messages' stamp: 'FGJ 13/Mar/2019, 7:37:10 pm (UTC)'!
-!methodProperties: {}!
 messageNodeMustRepresentSupportedMessageSendingErrorMessage
 
 	^'Message node must represent supported message sending'! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'error messages' stamp: 'FGJ 13/Mar/2019, 7:13:08 pm (UTC)'!
-!methodProperties: {}!
 methodNodeMustIncludeMessageNodeErrorMessage
 
 	^'Method node must include message node'! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'error messages' stamp: 'FGJ 19/Mar/2019, 7:31:46 pm (UTC)'!
-!methodProperties: {}!
 parameterNameMustNotBeEqualToBlockTemporaryErrorMessage
 
 	^'Parameter names must not be equal to block temporals'! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'exceptions' stamp: 'FGJ 18/Mar/2019, 6:16:37 pm (UTC)'!
-!methodProperties: {}!
 signalAllVariablesToParametrizeMustHaveAKeyword
 
 	self refactoringError: self allVariablesToParametrizeMustHaveAKeywordErrorMessage.! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'exceptions' stamp: 'FGJ 18/Mar/2019, 6:47:38 pm (UTC)'!
-!methodProperties: {}!
 signalKeywordsMustHaveAVariableToParametrize
 
 	self refactoringError: self allKeywordsMustHaveACorrespondingVariableToParametrizeErrorMessage. ! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'exceptions' stamp: 'FGJ 13/Mar/2019, 7:36:26 pm (UTC)'!
-!methodProperties: {}!
 signalMessageNodeMustRepresentSupportedMessageSending
 
 	self refactoringError: self messageNodeMustRepresentSupportedMessageSendingErrorMessage.! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'exceptions' stamp: 'FGJ 13/Mar/2019, 7:12:51 pm (UTC)'!
-!methodProperties: {}!
 signalMethodNodeMustIncludeMessageNode
 
 	self refactoringError: self methodNodeMustIncludeMessageNodeErrorMessage.! !
 
 !ReplaceIfNilWithPolymorphismParameters class methodsFor: 'exceptions' stamp: 'FGJ 19/Mar/2019, 7:31:47 pm (UTC)'!
-!methodProperties: {}!
 signalParameterNamesMustNotBeEqualToBlocksTemporals
 
 	self refactoringError: self parameterNameMustNotBeEqualToBlockTemporaryErrorMessage.! !
 
 !CodeForNodeResult methodsFor: 'as yet unclassified' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 initielizeWith: newCode modifiedReads: anAmountOfModifiedReads modifiedWrites: anAmountOfModifiedWrites
 	modifiedReads := anAmountOfModifiedReads .
 	modifiedWrites  := anAmountOfModifiedWrites .
 	resultCode := newCode .! !
 
 !CodeForNodeResult methodsFor: 'as yet unclassified' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 modifiedReads
 	^modifiedReads ! !
 
 !CodeForNodeResult methodsFor: 'as yet unclassified' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 modifiedWrites
 	^modifiedWrites ! !
 
 !CodeForNodeResult methodsFor: 'as yet unclassified' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 resultCode
 	^resultCode ! !
 
 !CodeForNodeResult class methodsFor: 'instance creation' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 newWith: newCode modifiedReads: modifiedReads modifiedWrites: modifiedWrites
 	^self new initielizeWith: newCode modifiedReads: modifiedReads modifiedWrites: modifiedWrites! !
 
 !CodeForNodeToMoveResult methodsFor: 'public' stamp: 'mc 25/Dec/2024, 3:51:52 pm (UTC)'!
-!methodProperties: {}!
 compileInTargetClass
 	^targetClass compile: self sourceCode! !
 
 !CodeForNodeToMoveResult methodsFor: 'public' stamp: 'HAW 26/Aug/2026, 4:47:24 pm (UTC)'!
-!methodProperties: {}!
 compileOnSourceClass
 
 	^methodsToCompileOnSourceClass collect: [ :aMethodToCompile | sourceClass compile: aMethodToCompile ]
 ! !
 
 !CodeForNodeToMoveResult methodsFor: 'public' stamp: 'mc 27/Dec/2024, 3:33:00 am (UTC)'!
-!methodProperties: {}!
 methodToCompileOnSourceClass
 	^methodsToCompileOnSourceClass ! !
 
 !CodeForNodeToMoveResult methodsFor: 'public' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 sourceCode
 	^sourceCode
 	! !
 
 !CodeForNodeToMoveResult methodsFor: 'initialization' stamp: 'mc 28/Dec/2024, 7:14:06 am (UTC)'!
-!methodProperties: {}!
 initializeNewWith: newCode sourceClass: aSourceClass targetClass: aTargetClass methodsToCompileOnSourceClass: allMethodsToCompileOnSourceClass
 	sourceCode := newCode.
 	sourceClass := aSourceClass.
@@ -3317,7 +2998,6 @@ initializeNewWith: newCode sourceClass: aSourceClass targetClass: aTargetClass m
 	! !
 
 !CodeForNodeToMoveResult class methodsFor: 'instance creation' stamp: 'mc 28/Dec/2024, 7:14:40 am (UTC)'!
-!methodProperties: {}!
 newWith: newCode sourceClass: aSourceClass targetClass: aTargetClass methodsToCompileOnSourceClass: allMethodsToCompileOnSourceClass
 	^self new 
 		initializeNewWith: newCode
@@ -3327,25 +3007,21 @@ newWith: newCode sourceClass: aSourceClass targetClass: aTargetClass methodsToCo
 ! !
 
 !MoveMethodExtraParameterName methodsFor: 'accessing' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 assertIfCanMove: methodName from: sourceClass to: targetClass accessingThrough: instanceVariable 
 
 	self subclassResponsibility! !
 
 !MoveMethodExtraParameterName methodsFor: 'accessing' stamp: 'mc 3/Mar/2025, 8:41:41 pm (UTC)'!
-!methodProperties: {}!
 associationToModifySelectorAndArgumentsOn: aCompiledMethod 
 
 	self subclassResponsibility! !
 
 !MoveMethodExtraParameterName methodsFor: 'accessing' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 newSenderFor: compiledMethodToMove
 
 	self subclassResponsibility! !
 
 !MoveMethodExtraParameterName methodsFor: 'accessing' stamp: 'mc 29/Dec/2024, 8:09:24 pm (UTC)'!
-!methodProperties: {}!
 selectorAndArgumentsOf: aMethodNode withoutParameter: parameterInCompiledMethod  
 	| keywords parameterIndex parameters |
 	parameters := aMethodNode argumentNames.
@@ -3366,12 +3042,10 @@ selectorAndArgumentsOf: aMethodNode withoutParameter: parameterInCompiledMethod
 	! !
 
 !ExtraParameterNameNeeded methodsFor: 'initialization' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 initializeParameterName: aParameterName 
 	parameterName := aParameterName.! !
 
 !ExtraParameterNameNeeded methodsFor: 'accessing' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 assertIfCanMove: methodName from: sourceClass to: targetClass accessingThrough: instanceVariable 
 	| needParameter newSelector methodArgumentNames |
 	
@@ -3389,13 +3063,11 @@ assertIfCanMove: methodName from: sourceClass to: targetClass accessingThrough: 
 	(targetClass allSelectors includes: newSelector) ifTrue: [Refactoring refactoringWarning: (MoveMethod method: newSelector IsGoingToOverrideWarningMessageOn: targetClass )].! !
 
 !ExtraParameterNameNeeded methodsFor: 'accessing' stamp: 'mc 3/Mar/2025, 8:45:43 pm (UTC)'!
-!methodProperties: {}!
 associationToModifySelectorAndArgumentsOn: aMethodNode   
 	
 	^(1 to: aMethodNode selectorLastPosition ) -> (aMethodNode selectorAndArgumentsAsString, ': ', parameterName).! !
 
 !ExtraParameterNameNeeded methodsFor: 'accessing' stamp: 'mc 31/Dec/2024, 9:41:58 pm (UTC)'!
-!methodProperties: {}!
 associationToModifySelectorAndArgumentsOn: aMethodNode withParameter: parameterInMethod 
 	| newSelectorAndArguments |
 
@@ -3404,35 +3076,29 @@ associationToModifySelectorAndArgumentsOn: aMethodNode withParameter: parameterI
 	^(1 to: aMethodNode selectorLastPosition ) -> newSelectorAndArguments.! !
 
 !ExtraParameterNameNeeded methodsFor: 'accessing' stamp: 'mc 30/Dec/2024, 5:36:13 am (UTC)'!
-!methodProperties: {}!
 newSenderFor: aMethodNode 
 	^aMethodNode selectorAndArgumentsAsString, ': self'! !
 
 !ExtraParameterNameNeeded methodsFor: 'accessing' stamp: 'mc 30/Dec/2024, 5:36:04 am (UTC)'!
-!methodProperties: {}!
 newSenderFor: aMethodNode usingParameter: parameterName2 
 	
 	^aMethodNode selector, ' self'
 	! !
 
 !ExtraParameterNameNeeded methodsFor: 'accessing' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 parameterName
 	^parameterName! !
 
 !ExtraParameterNameNeeded class methodsFor: 'instance creation' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 parameterName: aParameterName 
 	^self new initializeParameterName: aParameterName ! !
 
 !ExtraParameterNameNeededAndExtraKeyword methodsFor: 'initialization' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 initializeParameterName: aParameterName extraKeyword: anExtraKeyword 
 	parameterName := aParameterName.
 	extraKeyword := anExtraKeyword.! !
 
 !ExtraParameterNameNeededAndExtraKeyword methodsFor: 'accessing' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 assertIfCanMove: methodName from: sourceClass to: targetClass accessingThrough: instanceVariable 
 	| needParameter newSelector methodArgumentNames keywords parameterIndex parameters |
 	needParameter := MoveMethod needParameterNameToMove: methodName from: sourceClass accessingThrough: instanceVariable..
@@ -3465,13 +3131,11 @@ assertIfCanMove: methodName from: sourceClass to: targetClass accessingThrough: 
 	! !
 
 !ExtraParameterNameNeededAndExtraKeyword methodsFor: 'accessing' stamp: 'mc 3/Mar/2025, 8:46:03 pm (UTC)'!
-!methodProperties: {}!
 associationToModifySelectorAndArgumentsOn: aMethodNode   
 	
 	^(1 to: aMethodNode selectorLastPosition ) -> (aMethodNode selectorAndArgumentsAsString, ' ', extraKeyword , ': ',  parameterName).! !
 
 !ExtraParameterNameNeededAndExtraKeyword methodsFor: 'accessing' stamp: 'mc 29/Dec/2024, 8:09:02 pm (UTC)'!
-!methodProperties: {}!
 associationToModifySelectorAndArgumentsOn: aMethodNode withParameter: parameterInCompiledMethod  
 	| newSelectorAndArguments |
 	
@@ -3482,12 +3146,10 @@ associationToModifySelectorAndArgumentsOn: aMethodNode withParameter: parameterI
 	^(1 to: aMethodNode selectorLastPosition ) -> newSelectorAndArguments.! !
 
 !ExtraParameterNameNeededAndExtraKeyword methodsFor: 'accessing' stamp: 'mc 30/Dec/2024, 5:35:26 am (UTC)'!
-!methodProperties: {}!
 newSenderFor: aMethodNode 
 	^aMethodNode selectorAndArgumentsAsString, ' ', extraKeyword, ': self'! !
 
 !ExtraParameterNameNeededAndExtraKeyword methodsFor: 'accessing' stamp: 'mc 30/Dec/2024, 5:35:42 am (UTC)'!
-!methodProperties: {}!
 newSenderFor: aMethodNode usingParameter: parameterName2 
 
 	| newSelectorAndArguments |
@@ -3497,18 +3159,15 @@ newSenderFor: aMethodNode usingParameter: parameterName2
 	^newSelectorAndArguments, ' ', extraKeyword, ': self'.! !
 
 !ExtraParameterNameNeededAndExtraKeyword methodsFor: 'accessing' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-!methodProperties: {}!
 parameterName
 	^parameterName! !
 
 !ExtraParameterNameNeededAndExtraKeyword class methodsFor: 'instance creation' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 parameterName: aParameterName extraKeyword: anExtraKeyword 
 	
 	^self new initializeParameterName: aParameterName extraKeyword: anExtraKeyword! !
 
 !NonExtraParameterNameNeeded methodsFor: 'accessing' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 assertIfCanMove: methodName from: sourceClass to: targetClass accessingThrough: instanceVariable 
 	| needParameter methodArgumentNames newSelector |
 	
@@ -3542,13 +3201,11 @@ assertIfCanMove: methodName from: sourceClass to: targetClass accessingThrough: 
 ! !
 
 !NonExtraParameterNameNeeded methodsFor: 'accessing' stamp: 'mc 3/Mar/2025, 8:47:13 pm (UTC)'!
-!methodProperties: {}!
 associationToModifySelectorAndArgumentsOn: aMethodNode
 	
 	^(1 to: aMethodNode selectorLastPosition ) -> aMethodNode selectorAndArgumentsAsString.! !
 
 !NonExtraParameterNameNeeded methodsFor: 'accessing' stamp: 'mc 31/Dec/2024, 10:04:28 pm (UTC)'!
-!methodProperties: {}!
 associationToModifySelectorAndArgumentsOn: aMethodNode withParameter: parameterInCompiledMethod  
 	(aMethodNode arguments size = 1)
 		ifTrue: [^(1 to: aMethodNode selectorLastPosition ) -> (aMethodNode selector copyUpTo: $:)]
@@ -3558,12 +3215,10 @@ associationToModifySelectorAndArgumentsOn: aMethodNode withParameter: parameterI
 	! !
 
 !NonExtraParameterNameNeeded methodsFor: 'accessing' stamp: 'mc 30/Dec/2024, 5:35:10 am (UTC)'!
-!methodProperties: {}!
 newSenderFor: aMethodNode 
 	^aMethodNode selectorAndArgumentsAsString.! !
 
 !NonExtraParameterNameNeeded methodsFor: 'accessing' stamp: 'mc 30/Dec/2024, 5:34:53 am (UTC)'!
-!methodProperties: {}!
 newSenderFor: aMethodNode usingParameter: parameterName 
 
 	| originalSelector |
@@ -3578,7 +3233,6 @@ newSenderFor: aMethodNode usingParameter: parameterName
 		]! !
 
 !FormSection methodsFor: 'initialization' stamp: 'HAW 11/Jul/2022, 11:17:56 pm (UTC)'!
-!methodProperties: {}!
 initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
 
 	| titleLayoutSpec |
@@ -3609,7 +3263,6 @@ initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor
 	].! !
 
 !FormSection methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 1:55:58 pm (UTC)'!
-!methodProperties: {}!
 drawOn: aCanvas
 	aCanvas
 		fillRectangle: self localBounds 
@@ -3619,61 +3272,51 @@ drawOn: aCanvas
 		baseColorForBorder: Color darkGray ! !
 
 !FormSection methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 fixedWidthForTexts
 
 	^ExtractToMethodObjectWindow recommendedWidth * 0.7! !
 
 !FormSection methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 1:51:04 pm (UTC)'!
-!methodProperties: {}!
 recommendedHeight
 
 	^((self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutHeight]) sum) + ( (self submorphs size + 1) * self padding y) + self verticalMargins! !
 
 !FormSection methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 1:54:08 pm (UTC)'!
-!methodProperties: {}!
 recommendedWidth
 
 	^(self submorphs collect: [:aMorph | aMorph layoutSpec fixedOrMinimumLayoutWidth]) max + (self padding x * 2) max: self fixedWidthForTexts + 65! !
 
 !FormSection methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 textHeight
 
 	^ExtractToMethodObjectWindow fontProportionalUnitOfReferenceForHeight! !
 
 !FormSection methodsFor: 'as yet unclassified' stamp: 'FGJ 15/Nov/2020, 1:50:11 am (UTC)'!
-!methodProperties: {}!
 verticalMargins
 
 	^20! !
 
 !FormSection class methodsFor: 'as yet unclassified' stamp: 'FGJ 5/Feb/2019, 8:01:17 pm (UTC)'!
-!methodProperties: {}!
 withTitle: aTitle withColor: aColor
 
 	^self withTitle: aTitle withExplanation: '' withColor: aColor.! !
 
 !FormSection class methodsFor: 'as yet unclassified' stamp: 'FGJ 16/Feb/2019, 2:36:16 pm (UTC)'!
-!methodProperties: {}!
 withTitle: aTitle withExplanation: anExplanation withColor: aColor
 
 	^FormSection newColumn initializeWithTitle: aTitle withExplanation: anExplanation withColor: aColor.! !
 
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'mc 17/Jan/2024, 10:25:32 pm (UTC)'!
-!methodProperties: {}!
 emptyTextDisplayMessage: aString
 
 	inputMorph emptyTextDisplayMessage: aString! !
 
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'FGJ 5/Apr/2019, 6:43:39 pm (UTC)'!
-!methodProperties: {}!
 textModel: aTextModel
 
 	inputMorph model: aTextModel.! !
 
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'mc 28/Dec/2023, 3:16:43 pm (UTC)'!
-!methodProperties: {}!
 withLabel: aLabel withLabelFixedWidth: aWidth withModel: aTextModel usingAs: focusMover
 
 	| labelLayoutSpec inputMorphLayoutSpec |
@@ -3703,7 +3346,6 @@ withLabel: aLabel withLabelFixedWidth: aWidth withModel: aTextModel usingAs: foc
 	! !
 
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'HAW 10/May/2021, 8:44:44 pm (UTC)'!
-!methodProperties: {}!
 withLabel: aLabel withWidth: aWidth withModel: aTextModel
 
 	| labelLayoutSpec inputMorphLayoutSpec |
@@ -3731,7 +3373,6 @@ withLabel: aLabel withWidth: aWidth withModel: aTextModel
 	! !
 
 !LabeledInput methodsFor: 'as yet unclassified' stamp: 'HAW 4/Nov/2021, 12:26:57 am (UTC)'!
-!methodProperties: {}!
 withLabel: aLabel withWidth: aWidth withModel: aTextModel usingAs: focusMover
 
 	| labelLayoutSpec inputMorphLayoutSpec |
@@ -3761,51 +3402,43 @@ withLabel: aLabel withWidth: aWidth withModel: aTextModel usingAs: focusMover
 	! !
 
 !LabeledInput methodsFor: 'drawing' stamp: 'HAW 23/Mar/2025, 4:21:22 pm (UTC)'!
-!methodProperties: {}!
 drawOn: aCanvas
 	aCanvas
 		fillRectangle: self localBounds 
 		color: Color lightGray.! !
 
 !LabeledInput class methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 inputWidth
 
 	^ExtractToMethodObjectWindow fontProportionalUnitOfReferenceForWidth * 30! !
 
 !LabeledInput class methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 recommendedHeight
 
 	^ExtractToMethodObjectWindow fontProportionalUnitOfReferenceForHeight * 1.8 
 ! !
 
 !LabeledInput class methodsFor: 'instance creation' stamp: 'mc 28/Dec/2023, 3:13:39 pm (UTC)'!
-!methodProperties: {}!
 withLabel: aLabel withLabelFixedWidth: aWidth withModel: aPreviewModel usingAs: aFocusMover
 
 	^self newRow withLabel: aLabel withLabelFixedWidth: aWidth withModel: aPreviewModel usingAs: aFocusMover! !
 
 !LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 5/Apr/2019, 7:32:52 pm (UTC)'!
-!methodProperties: {}!
 withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel
 
 	^self newRow withLabel: aLabel withWidth: aWidth withModel: aPluggableTextModel! !
 
 !LabeledInput class methodsFor: 'instance creation' stamp: 'FGJ 11/Apr/2019, 3:47:10 pm (UTC)'!
-!methodProperties: {}!
 withLabel: aLabel withWidth: aWidth withModel: aPreviewModel usingAs: aFocusMover
 
 	^self newRow withLabel: aLabel withWidth: aWidth withModel: aPreviewModel usingAs: aFocusMover! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 13/Feb/2019, 5:16:02 pm (UTC)'!
-!methodProperties: {}!
 backgroundColor
 
 	^backgroundColor ! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: numberOfInputColumns
 
 	| widths maxRowTitleWidth widthForInputs |
@@ -3825,7 +3458,6 @@ columnWidthsRequiredForRowTitles: rowsTitles forInputColumns: numberOfInputColum
 	! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 1:56:23 pm (UTC)'!
-!methodProperties: {}!
 drawOn: aCanvas
 
 	aCanvas
@@ -3833,13 +3465,11 @@ drawOn: aCanvas
 		color: Color lightGray.! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 9/Feb/2019, 8:15:41 pm (UTC)'!
-!methodProperties: {}!
 isBottomRow: aRowIndex
 
 	^aRowIndex == 1! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 10/Apr/2019, 9:36:30 pm (UTC)'!
-!methodProperties: {}!
 keywordsAndParametersDo: aBlock
 
 	| hasChangeOrderColumn |
@@ -3854,7 +3484,6 @@ keywordsAndParametersDo: aBlock
 		aBlock value: keyword value: parameterName].! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 14/Feb/2019, 8:01:04 pm (UTC)'!
-!methodProperties: {}!
 moveDownRow: aRowIndex
 
 	(self isBottomRow: aRowIndex) ifFalse: [
@@ -3863,7 +3492,6 @@ moveDownRow: aRowIndex
 		self rowWasMovedUp: aRowIndex.].! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 14/Feb/2019, 8:01:10 pm (UTC)'!
-!methodProperties: {}!
 moveUpRow: aRowIndex
 
 	aRowIndex <  self numberOfRowsWithoutHeaders ifTrue: [
@@ -3872,37 +3500,31 @@ moveUpRow: aRowIndex
 		self rowWasMovedDown: aRowIndex.].! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 10/Apr/2019, 9:17:14 pm (UTC)'!
-!methodProperties: {}!
 needsToReorderRows
 
 	^variablesToParametrize size > 1! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 10/Feb/2019, 9:49:07 pm (UTC)'!
-!methodProperties: {}!
 notifyPreviewModelThat: aRowIndex wasSwappedWith: anotherRowIndex
 
 	previewModel row: aRowIndex wasSwappedWith: anotherRowIndex.! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 14/Feb/2019, 8:03:43 pm (UTC)'!
-!methodProperties: {}!
 notifyRefactoringModelThat: aRowIndex wasSwappedWith: anotherRowIndex
 
 	refactoringModel keywordOfIndex: aRowIndex wasSwappedWithKeywordOfIndex: anotherRowIndex.! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 9/Feb/2019, 7:59:36 pm (UTC)'!
-!methodProperties: {}!
 numberOfRowsWithoutHeaders
 
 	^self submorphs size - 1! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 14/Feb/2019, 3:11:01 pm (UTC)'!
-!methodProperties: {}!
 rowsLayoutSpec
 
 	^LayoutSpec fixedHeight: self rowHeight! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 14/Feb/2019, 8:01:38 pm (UTC)'!
-!methodProperties: {}!
 swapRow: aRowIndex with: anotherRowIndex
 
 	self swapRowSubmorph: aRowIndex with: anotherRowIndex.
@@ -3911,13 +3533,11 @@ swapRow: aRowIndex with: anotherRowIndex
 	self notifyRefactoringModelThat: aRowIndex wasSwappedWith: anotherRowIndex.! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 9/Feb/2019, 8:16:44 pm (UTC)'!
-!methodProperties: {}!
 swapRowModel: aRowIndex with: anotherRowIndex
 
 	rowModels swap: aRowIndex with: anotherRowIndex.! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'as yet unclassified' stamp: 'FGJ 9/Feb/2019, 8:48:55 pm (UTC)'!
-!methodProperties: {}!
 swapRowSubmorph: aRowIndex with: anotherRowIndex
 
 	self privateSubmorphs swap: aRowIndex with: anotherRowIndex.
@@ -3928,7 +3548,6 @@ swapRowSubmorph: aRowIndex with: anotherRowIndex
 	self layoutSubmorphs.! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'initialization' stamp: 'HAW 10/May/2021, 8:44:12 pm (UTC)'!
-!methodProperties: {}!
 withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
 
 	| rowsSeparation recommendedHeight numberOfRows columnsTitlesRow changeOrderButtons tableWidth inputColumnsTitles |
@@ -3986,19 +3605,16 @@ withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefac
 	].! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'events' stamp: 'FGJ 9/Feb/2019, 8:20:09 pm (UTC)'!
-!methodProperties: {}!
 rowWasMovedDown: aRowIndex
 
 	(rowModels at: aRowIndex) wasMovedDown.! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'events' stamp: 'FGJ 9/Feb/2019, 8:20:24 pm (UTC)'!
-!methodProperties: {}!
 rowWasMovedUp: aRowIndex
 
 	(rowModels at: aRowIndex) wasMovedUp.! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'FGJ 4/Sep/2020, 1:56:45 pm (UTC)'!
-!methodProperties: {}!
 buildChangeOrderButtonsWith: aModel
 
 	| downButton layoutButtons upButton |
@@ -4020,7 +3636,6 @@ buildChangeOrderButtonsWith: aModel
 	^layoutButtons! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'HAW 10/May/2021, 8:44:02 pm (UTC)'!
-!methodProperties: {}!
 buildColumnTitlesRowFor: inputColumnsTitles
 
 	| columnsTitles row |
@@ -4047,7 +3662,6 @@ buildColumnTitlesRowFor: inputColumnsTitles
 	! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'GUI building' stamp: 'HAW 4/Nov/2021, 12:27:12 am (UTC)'!
-!methodProperties: {}!
 buildInputMorphWith: aModel
 
 	| inputMorph |
@@ -4062,19 +3676,16 @@ buildInputMorphWith: aModel
 	^inputMorph! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'accessing' stamp: 'FGJ 14/Feb/2019, 3:14:23 pm (UTC)'!
-!methodProperties: {}!
 columnSeparation
 
 	^4! !
 
 !MessageKeywordsAndParametersTable methodsFor: 'accessing' stamp: 'FGJ 3/Sep/2020, 5:33:48 pm (UTC)'!
-!methodProperties: {}!
 rowHeight
 
 	^FontFamily defaultPointSize * 1.6! !
 
 !MessageKeywordsAndParametersTable class methodsFor: 'instance creation' stamp: 'FGJ 10/Apr/2019, 9:05:01 pm (UTC)'!
-!methodProperties: {}!
 withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel
 
 	^self newColumn withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefactoringModel: aRefactoringModel.
@@ -4082,7 +3693,6 @@ withRows: rowsTitles withColor: aColor withPreviewModel: aPreviewModel withRefac
 	! !
 
 !MVCMenuMorphWithSubtitles class methodsFor: 'instance creation' stamp: 'mc 4/Apr/2025, 2:50:04 am (UTC)'!
-!methodProperties: {}!
 from: aPopupMenu title: titleStringOrNil
 	"Answer a MenuMorph constructed from the given PopUpMenu. Used to simulate MVC-style menus in a Morphic-only world."
 
@@ -4116,17 +3726,14 @@ from: aPopupMenu title: titleStringOrNil
 ! !
 
 !IndependentlyColoredButton methodsFor: 'as yet unclassified' stamp: 'FGJ 13/Feb/2019, 3:38:30 pm (UTC)'!
-!methodProperties: {}!
 adoptWidgetsColor: paneColor! !
 
 !ColoredScrollPane methodsFor: 'as yet unclassified' stamp: 'FGJ 5/Apr/2019, 3:49:00 pm (UTC)'!
-!methodProperties: {}!
 bordersExtent
 
 	^extent - self viewableExtent! !
 
 !ColoredScrollPane methodsFor: 'as yet unclassified' stamp: 'FGJ 5/Feb/2019, 7:22:45 pm (UTC)'!
-!methodProperties: {}!
 drawOn: aCanvas
 
 	color := Color lightGray.
@@ -4134,12 +3741,10 @@ drawOn: aCanvas
 	super drawOn: aCanvas.! !
 
 !ColoredScrollPane methodsFor: 'as yet unclassified' stamp: 'HAW 21/May/2022, 11:07:56 pm (UTC)'!
-!methodProperties: {}!
 innerMorphClass
 	^InnerPluggableMorph! !
 
 !ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 9/Feb/2019, 10:42:39 pm (UTC)'!
-!methodProperties: {}!
 minimumHeightToDisplay: aString on: aWidth
 
 	| aComposer composition lines aText disregardHeight |
@@ -4153,13 +3758,11 @@ minimumHeightToDisplay: aString on: aWidth
 	^lines * self textHeight! !
 
 !ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 textHeight
 
 	^ExtractToMethodObjectWindow fontProportionalUnitOfReferenceForHeight ! !
 
 !ImmutableTextModelMorph class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 5:25:08 pm (UTC)'!
-!methodProperties: {}!
 withText: aText withColor: aColor withWidth: aWidth
 
 	| anInstance anInstanceLayoutSpec bottomSpaceToAccountForLettersBelowBaseLineLikep |
@@ -4181,19 +3784,16 @@ withText: aText withColor: aColor withWidth: aWidth
 	^anInstance! !
 
 !PreviewTextModelMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 11/Feb/2019, 1:40:38 pm (UTC)'!
-!methodProperties: {}!
 innerMorphClass
 
 	^PreviewInnerTextMorph ! !
 
 !TabPassingTextModelMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 11/Apr/2019, 3:25:33 pm (UTC)'!
-!methodProperties: {}!
 innerMorphClass
 
 	^TabPassingInnerTextMorph ! !
 
 !ExtractClassWindow methodsFor: 'initialization' stamp: 'mc 17/Jan/2024, 2:13:47 am (UTC)'!
-!methodProperties: {}!
 initializeWithModel: aModel 
 
 	super model: aModel.
@@ -4204,12 +3804,10 @@ initializeWithModel: aModel
 	! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 canDiscardEdits
 	^true! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 5:01:05 am (UTC)'!
-!methodProperties: {}!
 hasVariablesSelected: aMessage
 	"self halt."
 	^self instanceVariablesToExtract anySatisfy: [ :anInstanceVariable | 
@@ -4217,33 +3815,27 @@ hasVariablesSelected: aMessage
 	! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 indexVariableList
 	^indexVariableList! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 indexVariableList: anIndex
 	indexVariableList := anIndex! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 8/Jan/2024, 2:55:41 am (UTC)'!
-!methodProperties: {}!
 instanceVariableList
 	^self variableListAsString collect: [ :aVariable | 
 		(Text fromString: aVariable) color: self colorForInstVar ]! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 instanceVariableListIndex
 	^indexVariableList ! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 instanceVariableListIndex: anIndex 
 	indexVariableList := anIndex ! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 8/Jan/2024, 2:55:41 am (UTC)'!
-!methodProperties: {}!
 instanceVariablesToExtract
 	| retval |
 	"self halt."
@@ -4252,7 +3844,6 @@ instanceVariablesToExtract
 	^retval! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 7/Jan/2024, 4:12:55 am (UTC)'!
-!methodProperties: {}!
 messageList
 	"self halt."
 	labelHasReferencesToVariables ifNotNil: [labelHasReferencesToVariables visible: (self selectorList anySatisfy: [ :aMessage | self hasVariablesSelected: aMessage])].
@@ -4264,17 +3855,14 @@ messageList
 	]! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 messagelistSelectionAt: anIndex
 	^messageList at: anIndex ! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 messagelistSelectionAt: anIndex put: aBoolean 
 	messageList at: anIndex put: aBoolean ! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 5:28:51 am (UTC)'!
-!methodProperties: {}!
 methodsToExtract
 	| retval |
 	retval := OrderedCollection new.
@@ -4282,40 +3870,33 @@ methodsToExtract
 	^retval! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 selectedSuite
 	^indexMessageList! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 selectedSuite: anInteger
 	indexMessageList := anInteger ! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 selectorList
 	^model selectorList! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 18/Jan/2024, 5:15:36 am (UTC)'!
-!methodProperties: {}!
 variableListAsString
 
 	^ model instanceVariableList! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 variablelistSelectionAt: anIndex
 	^variableList at: anIndex ! !
 
 !ExtractClassWindow methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 variablelistSelectionAt: anIndex put: aBoolean 
 	variableList at: anIndex put: aBoolean.
 	messageSendingListSection updateList; redrawNeeded
 	! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 1:54:29 pm (UTC)'!
-!methodProperties: {}!
 buildActionButtonsSection
 
 	|  sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
@@ -4339,7 +3920,6 @@ buildActionButtonsSection
 	! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 18/Jan/2024, 2:06:37 am (UTC)'!
-!methodProperties: {}!
 buildCancelButton
 
 	| button |
@@ -4352,7 +3932,6 @@ buildCancelButton
 	^button! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'jmv 4/Jun/2024, 6:40:27 pm (UTC)'!
-!methodProperties: {}!
 buildMethodsToMoveListSection
 	| list |
 	"self halt."
@@ -4372,7 +3951,6 @@ buildMethodsToMoveListSection
 	! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'HAW 4/Sep/2025, 7:26:16 pm (UTC)'!
-!methodProperties: {}!
 buildMethodsToMoveListTitle
 	 
 	methodsToMoveTitle := LabelMorph contents: self labelSelectMethodsToMove.
@@ -4381,7 +3959,6 @@ buildMethodsToMoveListTitle
 	! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'HAW 28/Mar/2025, 4:45:31 pm (UTC)'!
-!methodProperties: {}!
 buildMorphicWindow
 	
 	self 
@@ -4399,7 +3976,6 @@ buildMorphicWindow
 	! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 8/Feb/2024, 4:02:09 am (UTC)'!
-!methodProperties: {}!
 buildNewClassNameSection
 
 	| maxLabelWidth  nameForNewClassLabel |
@@ -4418,7 +3994,6 @@ buildNewClassNameSection
 	! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'HAW 4/Sep/2025, 7:26:36 pm (UTC)'!
-!methodProperties: {}!
 buildReferencesToVariablesLabel
 
 	labelHasReferencesToVariables := LabelMorph new.
@@ -4430,7 +4005,6 @@ buildReferencesToVariablesLabel
 ! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 18/Jan/2024, 2:07:22 am (UTC)'!
-!methodProperties: {}!
 buildSubmitButton
 
 	| submitButton |
@@ -4443,7 +4017,6 @@ buildSubmitButton
 	^submitButton! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 8/Feb/2024, 4:04:12 am (UTC)'!
-!methodProperties: {}!
 buildVariableToAccessNewClassSection
 
 	| maxLabelWidth  variableToAccessNewClassLabel |
@@ -4464,7 +4037,6 @@ buildVariableToAccessNewClassSection
 ! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'HAW 28/Mar/2025, 5:39:42 pm (UTC)'!
-!methodProperties: {}!
 buildinstanceVariableListSection
 	
 	instanceVariableListSection := PluggableListMorphOfMany
@@ -4481,7 +4053,6 @@ buildinstanceVariableListSection
 ! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'HAW 4/Sep/2025, 7:26:02 pm (UTC)'!
-!methodProperties: {}!
 buildinstanceVariableListTitle
 	
 	instanceVariablesToMoveTitle := LabelMorph contents: self labelSelectInstVarToMove.
@@ -4490,7 +4061,6 @@ buildinstanceVariableListTitle
 	! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 10/Feb/2024, 11:55:18 pm (UTC)'!
-!methodProperties: {}!
 initialHeight
 
 	^ newClassNameLabeledInput layoutSpec fixedOrMinimumLayoutHeight
@@ -4503,7 +4073,6 @@ initialHeight
 	+ buttonsSection layoutSpec fixedOrMinimumLayoutHeight! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 10/Feb/2024, 11:54:50 pm (UTC)'!
-!methodProperties: {}!
 initialWidth
 
 	^ {
@@ -4518,7 +4087,6 @@ initialWidth
 	} max! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 recommendedWidthForLabels: labels
 
 	| rightMargin |
@@ -4527,7 +4095,6 @@ recommendedWidthForLabels: labels
 	^(labels collect: [:aLabel | FontFamily defaultFamilyAndPointSize widthOfString: aLabel]) max + rightMargin! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 16/Jan/2024, 3:28:37 am (UTC)'!
-!methodProperties: {}!
 setConfigurationOnLayoutMorph
 
 	self layoutMorph separation: 5; color: self backgroundColor.
@@ -4536,7 +4103,6 @@ setConfigurationOnLayoutMorph
 	self layoutMorph axisEdgeWeight: #columnTop! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 10/Feb/2024, 11:55:37 pm (UTC)'!
-!methodProperties: {}!
 setExtents
 	| requiredExtent intialHeight intialWidth |
 	 
@@ -4550,71 +4116,59 @@ setExtents
 	! !
 
 !ExtractClassWindow methodsFor: 'GUI building' stamp: 'mc 17/Jan/2024, 11:38:09 pm (UTC)'!
-!methodProperties: {}!
 setWindowTitle
 
 	^ self setLabel: self labelExtractClassTitle! !
 
 !ExtractClassWindow methodsFor: 'as yet unclassified' stamp: 'mc 18/Jan/2024, 2:11:45 am (UTC)'!
-!methodProperties: {}!
 addFocusReceiver: anInnerTextMorph
 	"this method is requeried by LabeledInput"
 
 	! !
 
 !ExtractClassWindow methodsFor: 'as yet unclassified' stamp: 'mc 5/Jan/2024, 5:37:43 am (UTC)'!
-!methodProperties: {}!
 moveFrom: aTabPassingInnerTextMorph 
 	"this method is to disable tab key"! !
 
 !ExtractClassWindow methodsFor: 'as yet unclassified' stamp: 'mc 18/Jan/2024, 2:09:01 am (UTC)'!
-!methodProperties: {}!
 widgetsColor: aColor
 	"this method is to not make a transparent background"! !
 
 !ExtractClassWindow methodsFor: 'colors' stamp: 'mc 17/Jan/2024, 4:18:25 am (UTC)'!
-!methodProperties: {}!
 acceptButtonColor
 
 	^ Theme current acceptButton! !
 
 !ExtractClassWindow methodsFor: 'colors' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 backgroundColor
 
 	^Color lightGray! !
 
 !ExtractClassWindow methodsFor: 'colors' stamp: 'mc 17/Jan/2024, 2:06:02 am (UTC)'!
-!methodProperties: {}!
 cancelButtonColor
 
 	^ Theme current cancelButton! !
 
 !ExtractClassWindow methodsFor: 'colors' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 colorForClassName
 
 	^ Color blue! !
 
 !ExtractClassWindow methodsFor: 'colors' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 colorForInstVar
 
 	^ Color magenta muchDarker! !
 
 !ExtractClassWindow methodsFor: 'colors' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 windowColor
 	^Color lightGray! !
 
 !ExtractClassWindow methodsFor: 'actions' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 cancelButtonClicked
 	
 	model cancel.! !
 
 !ExtractClassWindow methodsFor: 'actions' stamp: 'HAW 28/Mar/2025, 5:49:40 pm (UTC)'!
-!methodProperties: {}!
 submitButtonClicked
 	
 	| request |
@@ -4628,73 +4182,61 @@ submitButtonClicked
 	self delete! !
 
 !ExtractClassWindow methodsFor: 'label' stamp: 'mc 18/Jan/2024, 2:05:44 am (UTC)'!
-!methodProperties: {}!
 labelButtonCancel
 
 	^ 'Cancel'! !
 
 !ExtractClassWindow methodsFor: 'label' stamp: 'mc 18/Jan/2024, 2:04:47 am (UTC)'!
-!methodProperties: {}!
 labelButtonRefactor
 
 	^ 'Refactor'! !
 
 !ExtractClassWindow methodsFor: 'label' stamp: 'mc 17/Jan/2024, 11:38:09 pm (UTC)'!
-!methodProperties: {}!
 labelExtractClassTitle
 
 	^ 'Extract class from ', model classToRefactorName! !
 
 !ExtractClassWindow methodsFor: 'label' stamp: 'mc 17/Jan/2024, 11:37:41 pm (UTC)'!
-!methodProperties: {}!
 labelNameForNewClass
 
 	^ 'Name for new class'! !
 
 !ExtractClassWindow methodsFor: 'label' stamp: 'mc 17/Jan/2024, 11:37:06 pm (UTC)'!
-!methodProperties: {}!
 labelPleaseProvideNewClassName
 
 	^ 'Please provide a new class name'! !
 
 !ExtractClassWindow methodsFor: 'label' stamp: 'mc 18/Jan/2024, 2:01:56 am (UTC)'!
-!methodProperties: {}!
 labelPleaseProvideNewInstVarName
 
 	^ 'Please provide a new instance variable name'! !
 
 !ExtractClassWindow methodsFor: 'label' stamp: 'mc 17/Jan/2024, 11:40:42 pm (UTC)'!
-!methodProperties: {}!
 labelReferenceToSelectedInstanceVariable
 
 	^ '*Reference to selected instance variables'! !
 
 !ExtractClassWindow methodsFor: 'label' stamp: 'mc 18/Jan/2024, 2:03:36 am (UTC)'!
-!methodProperties: {}!
 labelSelectInstVarToMove
 
 	^ 'Select instance variables to move:'! !
 
 !ExtractClassWindow methodsFor: 'label' stamp: 'mc 17/Jan/2024, 11:38:45 pm (UTC)'!
-!methodProperties: {}!
 labelSelectMethodsToMove
 
 	^ 'Select methods to move:'! !
 
 !ExtractClassWindow methodsFor: 'label' stamp: 'mc 17/Jan/2024, 11:39:02 pm (UTC)'!
-!methodProperties: {}!
 labelVariableToAccessNewClass
 
 	^ 'Variable name to access new class'! !
 
 !ExtractClassWindow class methodsFor: 'instance creation' stamp: 'mc 17/Jan/2024, 2:08:41 am (UTC)'!
-!methodProperties: {}!
 fontProportionalUnitOfReferenceForHeight
 
 	^(Preferences at: #windowTitleFont) lineSpacing+1 ! !
 
 !ExtractClassWindow class methodsFor: 'instance creation' stamp: 'mc 17/Jan/2024, 2:18:34 am (UTC)'!
-!methodProperties: {}!
 open: aModel label: aString
 
 	|  window |
@@ -4706,25 +4248,21 @@ open: aModel label: aString
 	^window! !
 
 !ExtractClassWindow class methodsFor: 'instance creation' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 withModel: aModel
 
 	^self new initializeWithModel: aModel! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 15/May/2024, 3:05:44 am (UTC)'!
-!methodProperties: {}!
 acceptButtonColor
 
 	^ Theme current acceptButton! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 3/Dec/2025, 6:58:56 pm (UTC)'!
-!methodProperties: {}!
 backgroundColor
 
 	^Color lightGray! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 3/Dec/2025, 6:57:48 pm (UTC)'!
-!methodProperties: {}!
 buildActionButtonsSection
 
 	| sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
@@ -4748,7 +4286,6 @@ buildActionButtonsSection
 	! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 28/Mar/2025, 4:43:02 pm (UTC)'!
-!methodProperties: {}!
 buildCancelButton
 
 	| button |
@@ -4762,7 +4299,6 @@ buildCancelButton
 	^button! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 28/Mar/2025, 4:48:07 pm (UTC)'!
-!methodProperties: {}!
 buildMorphicWindow
 	
 	self
@@ -4776,7 +4312,6 @@ buildMorphicWindow
 		setExtents.! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 27/Mar/2025, 2:57:33 pm (UTC)'!
-!methodProperties: {}!
 buildParameterObjectClassSection
 	
 	parameterObjectClassNameInput := LabeledInput
@@ -4802,7 +4337,6 @@ buildParameterObjectClassSection
 ! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 5/Sep/2025, 7:20:53 pm (UTC)'!
-!methodProperties: {}!
 buildParameterObjectClassTitle
 	
 	parameterObjectClassTitle := LabelMorph contents: self labelParameterObjectClassTitle.
@@ -4811,7 +4345,6 @@ buildParameterObjectClassTitle
 ! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 27/Mar/2025, 2:56:33 pm (UTC)'!
-!methodProperties: {}!
 buildParametersSelectionSection
 	
 	parametersSelectionList := PluggableListMorphOfMany
@@ -4828,7 +4361,6 @@ buildParametersSelectionSection
 	self layoutMorph addMorph: parametersSelectionList.! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 5/Sep/2025, 7:20:42 pm (UTC)'!
-!methodProperties: {}!
 buildParametersSelectionTitle
 
 	parametersSelectionTitle := LabelMorph contents: self labelParametersSectionTitle.
@@ -4837,7 +4369,6 @@ buildParametersSelectionTitle
 ! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 28/Mar/2025, 4:43:21 pm (UTC)'!
-!methodProperties: {}!
 buildSubmitButton
 
 	| submitButton |
@@ -4851,20 +4382,17 @@ buildSubmitButton
 	^submitButton! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 15/May/2024, 3:04:21 am (UTC)'!
-!methodProperties: {}!
 cancelButtonColor
 
 	^ Theme current cancelButton! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 15/May/2024, 8:21:25 pm (UTC)'!
-!methodProperties: {}!
 initialExtent
 
 	^ initialExtent
 ! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 15/Jul/2024, 4:07:35 am (UTC)'!
-!methodProperties: {}!
 initialHeight
 
 	^ parametersSelectionTitle layoutSpec fixedOrMinimumLayoutHeight
@@ -4876,7 +4404,6 @@ initialHeight
 	+ buttonsSection layoutSpec fixedOrMinimumLayoutHeight! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 15/Jul/2024, 4:07:42 am (UTC)'!
-!methodProperties: {}!
 initialWidth
 
 	^ {
@@ -4890,7 +4417,6 @@ initialWidth
 	} max! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 15/May/2024, 4:28:56 am (UTC)'!
-!methodProperties: {}!
 maxLabelWidthForParameterObjectClassSection
 
 	^self recommendedWidthForLabels: (Array
@@ -4900,7 +4426,6 @@ maxLabelWidthForParameterObjectClassSection
 ! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 15/May/2024, 8:36:54 pm (UTC)'!
-!methodProperties: {}!
 recommendedWidthForLabels: labels
 
 	| rightMargin |
@@ -4909,7 +4434,6 @@ recommendedWidthForLabels: labels
 	^(labels collect: [:aLabel | FontFamily defaultFamilyAndPointSize widthOfString: aLabel]) max + rightMargin! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'HAW 3/Dec/2025, 6:58:20 pm (UTC)'!
-!methodProperties: {}!
 setConfigurationOnLayoutMorph
 
 	self layoutMorph separation: 5.
@@ -4918,24 +4442,20 @@ setConfigurationOnLayoutMorph
 	self layoutMorph axisEdgeWeight: #columnTop! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 15/May/2024, 8:37:11 pm (UTC)'!
-!methodProperties: {}!
 setExtents
 	
 	initialExtent := self initialHeight @ self initialWidth.! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'GUI building' stamp: 'MEGL 15/May/2024, 7:44:24 pm (UTC)'!
-!methodProperties: {}!
 widgetsColor: aColor
 	"this method is to not make a transparent background"! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'accessing' stamp: 'HAW 27/Mar/2025, 2:56:33 pm (UTC)'!
-!methodProperties: {}!
 parameterNames
 
 	^model parameterNames ! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'accessing' stamp: 'HAW 27/Mar/2025, 2:56:53 pm (UTC)'!
-!methodProperties: {}!
 parametersToExtract
 
 	| parameters |
@@ -4946,31 +4466,26 @@ parametersToExtract
 	^parameters! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'accessing' stamp: 'HAW 27/Mar/2025, 2:56:53 pm (UTC)'!
-!methodProperties: {}!
 parametersToExtractAt: anIndex
 
 	^parametersToExtract at: anIndex ! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'accessing' stamp: 'HAW 27/Mar/2025, 2:56:53 pm (UTC)'!
-!methodProperties: {}!
 parametersToExtractAt: anIndex put: aBoolean
 
 	parametersToExtract at: anIndex put: aBoolean ! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'accessing' stamp: 'HAW 27/Mar/2025, 2:57:09 pm (UTC)'!
-!methodProperties: {}!
 parametersToExtractIndex
 
 	^parametersToExtractIndex! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'accessing' stamp: 'HAW 27/Mar/2025, 2:57:09 pm (UTC)'!
-!methodProperties: {}!
 parametersToExtractIndex: anIndex
 
 	parametersToExtractIndex := anIndex! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'accessing' stamp: 'HAW 27/Mar/2025, 2:56:53 pm (UTC)'!
-!methodProperties: {}!
 parametersToExtractPositions
 
 	| positions |
@@ -4981,7 +4496,6 @@ parametersToExtractPositions
 	^positions! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'initialization' stamp: 'HAW 28/Mar/2025, 4:44:46 pm (UTC)'!
-!methodProperties: {}!
 initializeWithModel: aModel
 
 	super model: aModel.
@@ -4992,85 +4506,71 @@ initializeWithModel: aModel
 	parametersToExtract := self parameterNames collect: [:aParameter | false ].! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'label' stamp: 'MEGL 15/May/2024, 3:04:09 am (UTC)'!
-!methodProperties: {}!
 labelButtonCancel
 
 	^ 'Cancel'! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'label' stamp: 'MEGL 15/May/2024, 3:06:03 am (UTC)'!
-!methodProperties: {}!
 labelButtonRefactor
 
 	^ 'Refactor'! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'label' stamp: 'MEGL 15/May/2024, 4:21:41 am (UTC)'!
-!methodProperties: {}!
 labelParameterObjectCategoryName
 
 	^ 'Category name'! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'label' stamp: 'MEGL 15/May/2024, 4:21:50 am (UTC)'!
-!methodProperties: {}!
 labelParameterObjectClassName
 
 	^ 'Class name'! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'label' stamp: 'HAW 27/Mar/2025, 2:58:04 pm (UTC)'!
-!methodProperties: {}!
 labelParameterObjectClassTitle
 
 	^ 'Parameter Object class:'! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'label' stamp: 'MEGL 15/May/2024, 4:21:58 am (UTC)'!
-!methodProperties: {}!
 labelParameterObjectSuperclassName
 
 	^ 'Superclass name'! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'label' stamp: 'MEGL 15/May/2024, 8:36:21 pm (UTC)'!
-!methodProperties: {}!
 labelParametersSectionTitle
 
 	^ 'Select parameters to extract:'! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'label' stamp: 'MEGL 15/May/2024, 6:35:08 pm (UTC)'!
-!methodProperties: {}!
 labelTitle
 
 	^ 'Extract Parameter Object'! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'event handling' stamp: 'HAW 28/Mar/2025, 4:34:49 pm (UTC)'!
-!methodProperties: {}!
 cancelButtonClicked
 	
 	model cancel.! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'event handling' stamp: 'HAW 27/Mar/2025, 2:57:33 pm (UTC)'!
-!methodProperties: {}!
 submitButtonClicked
 
 	model userSubmitted: configuration.! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'focus handling' stamp: 'MEGL 11/Jan/2024, 12:45:12 am (UTC)'!
-!methodProperties: {}!
 addFocusReceiver: anInnerTextMorph
 
 	focusMorphs add: anInnerTextMorph.! !
 
 !ExtractParameterObjectConfigurationWindow methodsFor: 'user interface' stamp: 'HAW 28/Mar/2025, 4:34:29 pm (UTC)'!
-!methodProperties: {}!
 canDiscardEditsOf: anExtractParameterObjectConfigurationWindow 
 	
 	^true! !
 
 !ExtractParameterObjectConfigurationWindow class methodsFor: 'font' stamp: 'MEGL 2/Jan/2024, 2:13:22 am (UTC)'!
-!methodProperties: {}!
 fontProportionalUnitOfReferenceForHeight
 
 	^(Preferences at: #windowTitleFont) lineSpacing+1 ! !
 
 !ExtractParameterObjectConfigurationWindow class methodsFor: 'instance creation' stamp: 'HAW 27/Mar/2025, 2:45:37 pm (UTC)'!
-!methodProperties: {}!
 open: aModel label: aString
 
 	|  window |
@@ -5083,31 +4583,26 @@ open: aModel label: aString
 	^window! !
 
 !ExtractParameterObjectConfigurationWindow class methodsFor: 'instance creation' stamp: 'MEGL 29/Dec/2023, 12:16:38 am (UTC)'!
-!methodProperties: {}!
 withModel: aModel
 
 	^self new initializeWithModel: aModel! !
 
 !ExtractToMethodObjectWindow methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 1:53:24 pm (UTC)'!
-!methodProperties: {}!
 aboutToStyleWith: anSHTextStyler 
 	
 	! !
 
 !ExtractToMethodObjectWindow methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 1:57:29 pm (UTC)'!
-!methodProperties: {}!
 allowsStylingFor: aTextGetter isTextDirty: isDirty 
 	
 	^false! !
 
 !ExtractToMethodObjectWindow methodsFor: 'as yet unclassified' stamp: 'FGJ 5/Feb/2019, 7:25:41 pm (UTC)'!
-!methodProperties: {}!
 backgroundColor
 
 	^Color lightGray! !
 
 !ExtractToMethodObjectWindow methodsFor: 'as yet unclassified' stamp: 'HAW 21/May/2022, 9:49:55 pm (UTC)'!
-!methodProperties: {}!
 layoutSpecForSection: aSection
 
 	| bottomMargin |
@@ -5116,7 +4611,6 @@ layoutSpecForSection: aSection
 	^LayoutSpec proportionalWidth: 1.0 fixedHeight: aSection recommendedHeight + bottomMargin.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'as yet unclassified' stamp: 'FGJ 5/Sep/2020, 6:43:44 pm (UTC)'!
-!methodProperties: {}!
 recommendedWidthForLabels: labels
 
 	| rightMargin |
@@ -5125,7 +4619,6 @@ recommendedWidthForLabels: labels
 	^(labels collect: [:aLabel | FontFamily defaultFamilyAndPointSize widthOfString: aLabel]) max + rightMargin! !
 
 !ExtractToMethodObjectWindow methodsFor: 'as yet unclassified' stamp: 'FGJ 11/Feb/2019, 7:50:26 pm (UTC)'!
-!methodProperties: {}!
 shouldStyle: text with: anSHTextStyler
 
 	text = self previewUnavailableMessage ifFalse: [
@@ -5135,32 +4628,27 @@ shouldStyle: text with: anSHTextStyler
 	^false.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'as yet unclassified' stamp: 'HAW 26/Jul/2023, 8:30:50 pm (UTC)'!
-!methodProperties: {}!
 styleByParagraphs
 
 	^false! !
 
 !ExtractToMethodObjectWindow methodsFor: 'open/close' stamp: 'FGJ 13/Feb/2019, 7:00:39 pm (UTC)'!
-!methodProperties: {}!
 closeBoxHit
 
 	model panelWasClosed.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'open/close' stamp: 'FGJ 14/Feb/2019, 10:58:44 pm (UTC)'!
-!methodProperties: {}!
 deleteDiscardingEdits
 
 	discardEdits := true.
 	super delete.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'open/close' stamp: 'FGJ 8/Apr/2019, 8:16:23 pm (UTC)'!
-!methodProperties: {}!
 initialExtent
 
 	^initialExtent! !
 
 !ExtractToMethodObjectWindow methodsFor: 'open/close' stamp: 'FGJ 15/Feb/2019, 1:20:40 pm (UTC)'!
-!methodProperties: {}!
 okToChange
 
 	discardEdits
@@ -5168,7 +4656,6 @@ okToChange
 		ifFalse: [^super okToChange].! !
 
 !ExtractToMethodObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 1:53:44 pm (UTC)'!
-!methodProperties: {}!
 buildActionButtonsSection
 
 	| section sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
@@ -5192,7 +4679,6 @@ buildActionButtonsSection
 	! !
 
 !ExtractToMethodObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 buildCancelButton
 
 	| button buttonLayoutSpec |
@@ -5209,7 +4695,6 @@ buildCancelButton
 	^button! !
 
 !ExtractToMethodObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 8:03:59 pm (UTC)'!
-!methodProperties: {}!
 buildInstanceCreationMessageSection
 
 	| section previewExplanation previewLayoutSpec |
@@ -5253,7 +4738,6 @@ buildInstanceCreationMessageSection
 	^section! !
 
 !ExtractToMethodObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 8:03:59 pm (UTC)'!
-!methodProperties: {}!
 buildInstanceVariablesSection
 
 	| maxLabelWidth section |
@@ -5275,7 +4759,6 @@ buildInstanceVariablesSection
 ! !
 
 !ExtractToMethodObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 8:03:59 pm (UTC)'!
-!methodProperties: {}!
 buildMethodObjectClassSection
 
 	| section maxLabelWidth nameInput superclassNameInput categoryInput evaluationMessageSelectorInput |
@@ -5302,7 +4785,6 @@ buildMethodObjectClassSection
 ! !
 
 !ExtractToMethodObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 1:54:37 pm (UTC)'!
-!methodProperties: {}!
 buildMorphicWindow
 
 	| requiredExtent instanceCreationMessageSection requiredHeight methodObjectClassSection instanceVariablesSection actionButtonsSection requiredWidth sections windowElementsExtent xtraBorderToAvoidScrollbars |
@@ -5351,7 +4833,6 @@ buildMorphicWindow
 	firstTimeBuild ifTrue: [initialExtent := requiredExtent + windowElementsExtent. firstTimeBuild := false].! !
 
 !ExtractToMethodObjectWindow methodsFor: 'GUI building' stamp: 'FGJ 10/Apr/2019, 9:37:23 pm (UTC)'!
-!methodProperties: {}!
 buildPreview
 
 	| keywordParamStrings previewContent |
@@ -5369,7 +4850,6 @@ buildPreview
 	preview model actualContents: previewContent.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 buildSubmitButton
 
 	| submitButton submitButtonLayoutSpec |
@@ -5386,14 +4866,12 @@ buildSubmitButton
 	^submitButton! !
 
 !ExtractToMethodObjectWindow methodsFor: 'GUI building' stamp: 'FGJ 12/Feb/2019, 6:29:28 pm (UTC)'!
-!methodProperties: {}!
 initializeFormLayout
 
 	formLayout := LayoutMorph newColumn.
 	formLayout separation: 10; color: self backgroundColor.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'GUI building' stamp: 'FGJ 7/Feb/2019, 3:52:07 pm (UTC)'!
-!methodProperties: {}!
 initializeScrollableContainer
 
 	scrollPane := ColoredScrollPane initializedInstance.
@@ -5403,13 +4881,11 @@ initializeScrollableContainer
 	self layoutMorph addMorphUseAll: scrollPane.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'events' stamp: 'FGJ 13/Feb/2019, 6:29:04 pm (UTC)'!
-!methodProperties: {}!
 cancelButtonClicked
 
 	model cancel.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'events' stamp: 'FGJ 6/Feb/2019, 4:12:47 pm (UTC)'!
-!methodProperties: {}!
 fontPreferenceChanged
 	"Copied from CodePackageListWindow"
 	"System fonts have changed; rebuild myself"
@@ -5419,31 +4895,26 @@ fontPreferenceChanged
 ! !
 
 !ExtractToMethodObjectWindow methodsFor: 'events' stamp: 'FGJ 8/Apr/2019, 3:39:00 pm (UTC)'!
-!methodProperties: {}!
 previewTextInputReceivedKeyStroke
 
 	self buildPreview.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'events' stamp: 'FGJ 10/Feb/2019, 10:04:21 pm (UTC)'!
-!methodProperties: {}!
 row: aRowIndex wasSwappedWith: anotherRowIndex
 
 	self buildPreview.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'events' stamp: 'HAW 31/Mar/2025, 8:03:59 pm (UTC)'!
-!methodProperties: {}!
 submitButtonClicked
 
 	model userSubmitted: configuration.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'messages' stamp: 'FGJ 11/Feb/2019, 7:47:48 pm (UTC)'!
-!methodProperties: {}!
 previewUnavailableMessage
 
 	^'All the keywords and parameter names must be filled for the preview to appear here'! !
 
 !ExtractToMethodObjectWindow methodsFor: 'initialization' stamp: 'HAW 31/Mar/2025, 8:03:59 pm (UTC)'!
-!methodProperties: {}!
 initializeWithModel: aModel
 
 	super model: aModel.
@@ -5456,13 +4927,11 @@ initializeWithModel: aModel
 	focusMorphs := OrderedCollection new.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'focus change' stamp: 'FGJ 11/Apr/2019, 3:50:38 pm (UTC)'!
-!methodProperties: {}!
 addFocusReceiver: anInnerTextMorph
 
 	focusMorphs add: anInnerTextMorph.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'focus change' stamp: 'FGJ 11/Apr/2019, 4:03:28 pm (UTC)'!
-!methodProperties: {}!
 moveFrom: anInnerTextMorph
 
 	| newFocusMorph oldFocusIndex |
@@ -5473,31 +4942,26 @@ moveFrom: anInnerTextMorph
 	self world activeHand newKeyboardFocus: newFocusMorph.! !
 
 !ExtractToMethodObjectWindow methodsFor: 'user interface support' stamp: 'HAW 26/Jul/2023, 5:58:28 pm (UTC)'!
-!methodProperties: {}!
 shouldAutoHighlight
 	
 	^false! !
 
 !ExtractToMethodObjectWindow methodsFor: 'user interface support' stamp: 'FGJ 11/Feb/2019, 3:57:14 pm (UTC)'!
-!methodProperties: {}!
 textStylerClassFor: textGetter
 
 	^SHTextStylerST80 ! !
 
 !ExtractToMethodObjectWindow class methodsFor: 'as yet unclassified' stamp: 'HAW 11/Jul/2022, 11:18:15 pm (UTC)'!
-!methodProperties: {}!
 fontProportionalUnitOfReferenceForHeight
 
 	^(Preferences at: #windowTitleFont) lineSpacing+1 ! !
 
 !ExtractToMethodObjectWindow class methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 5:32:55 pm (UTC)'!
-!methodProperties: {}!
 fontProportionalUnitOfReferenceForWidth
 
 	^FontFamily defaultFamilyAndPointSize widthOfString: 'A'! !
 
 !ExtractToMethodObjectWindow class methodsFor: 'as yet unclassified' stamp: 'FGJ 8/Apr/2019, 8:26:06 pm (UTC)'!
-!methodProperties: {}!
 open: aModel label: aString
 
 	|  window |
@@ -5509,44 +4973,37 @@ open: aModel label: aString
 	^window! !
 
 !ExtractToMethodObjectWindow class methodsFor: 'as yet unclassified' stamp: 'FGJ 11/Feb/2019, 9:27:24 pm (UTC)'!
-!methodProperties: {}!
 recommendedWidth
 
 	^self fontProportionalUnitOfReferenceForWidth * 70! !
 
 !ExtractToMethodObjectWindow class methodsFor: 'as yet unclassified' stamp: 'FGJ 8/Apr/2019, 8:26:21 pm (UTC)'!
-!methodProperties: {}!
 withModel: aModel
 
 	^self new initializeWithModel: aModel! !
 
 !IntroduceNullObjectWindow methodsFor: 'as yet unclassified' stamp: 'FGJ 26/Mar/2019, 3:42:50 pm (UTC)'!
-!methodProperties: {}!
 backgroundColor
 
 	^Color lightGray! !
 
 !IntroduceNullObjectWindow methodsFor: 'as yet unclassified' stamp: 'FGJ 29/Mar/2019, 7:41:04 pm (UTC)'!
-!methodProperties: {}!
 deleteDiscardingEdits
 
 	discardEdits := true.
 	super delete.! !
 
 !IntroduceNullObjectWindow methodsFor: 'as yet unclassified' stamp: 'FGJ 27/Mar/2019, 8:26:18 pm (UTC)'!
-!methodProperties: {}!
 ifNilChecks: someMessageSendings
 
 	messageSendingList := someMessageSendings. ! !
 
 !IntroduceNullObjectWindow methodsFor: 'as yet unclassified' stamp: 'FGJ 26/Mar/2019, 3:44:02 pm (UTC)'!
-!methodProperties: {}!
 layoutSpecForSection: aSection
 
 	^LayoutSpec proportionalWidth: 1.0 fixedHeight: aSection recommendedHeight! !
 
 !IntroduceNullObjectWindow methodsFor: 'as yet unclassified' stamp: 'FGJ 3/Sep/2020, 5:28:42 pm (UTC)'!
-!methodProperties: {}!
 recommendedWidthForLabels: labels
 
 	| rightMargin |
@@ -5555,7 +5012,6 @@ recommendedWidthForLabels: labels
 	^(labels collect: [:aLabel | FontFamily defaultFamilyAndPointSize widthOfString: aLabel]) max + rightMargin! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 1:54:43 pm (UTC)'!
-!methodProperties: {}!
 buildActionButtonsSection
 
 	| section sectionLayoutSpec submorphsWidth sectionWidth submorphsHeight |
@@ -5579,7 +5035,6 @@ buildActionButtonsSection
 	! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 buildCancelButton
 
 	| button buttonLayoutSpec |
@@ -5596,7 +5051,6 @@ buildCancelButton
 	^button! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'HAW 28/Mar/2025, 5:52:00 pm (UTC)'!
-!methodProperties: {}!
 buildCodePaneFor: anIfNilCheck
 
 	| codePane |
@@ -5613,7 +5067,6 @@ buildCodePaneFor: anIfNilCheck
 	^codePane! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 1:54:56 pm (UTC)'!
-!methodProperties: {}!
 buildIfNilCheckFormFor: anIfNilCheck
 
 	| layout variablesToExtract polymorphicSelectorSection codePane |
@@ -5644,13 +5097,11 @@ buildIfNilCheckFormFor: anIfNilCheck
 	^layout.! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'FGJ 29/Mar/2019, 7:57:12 pm (UTC)'!
-!methodProperties: {}!
 buildIfNilChecksFormsFor: someIfNilChecks
 
 	ifNilChecksForms := someIfNilChecks collect: [:ifNilCheck | self buildIfNilCheckFormFor: ifNilCheck].! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'HAW 28/Mar/2025, 5:52:00 pm (UTC)'!
-!methodProperties: {}!
 buildMessageSendingListSection
 
 	| list |
@@ -5666,7 +5117,6 @@ buildMessageSendingListSection
 	^list! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'FGJ 3/Sep/2020, 5:19:55 pm (UTC)'!
-!methodProperties: {}!
 buildMorphicWindow
 
 	firstTimeBuild := true.
@@ -5692,7 +5142,6 @@ buildMorphicWindow
 	self showFormForMessage: messageListModel messageListIndex.! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'FGJ 6/Sep/2020, 7:20:43 pm (UTC)'!
-!methodProperties: {}!
 buildNullObjectHierarchyClassesSection
 
 	| section maxLabelWidth nullClassInput concreteClassInput |
@@ -5713,7 +5162,6 @@ buildNullObjectHierarchyClassesSection
 ! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'HAW 28/Mar/2025, 5:52:00 pm (UTC)'!
-!methodProperties: {}!
 buildPolymorphicSelectorInputFor: anIfNilCheck
 
 	| selectorInput inputWidth ifNilCheckModel |
@@ -5727,7 +5175,6 @@ buildPolymorphicSelectorInputFor: anIfNilCheck
 	^selectorInput ! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 1:55:04 pm (UTC)'!
-!methodProperties: {}!
 buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor: someVariablesToExtract
 
 	| parametersTable preview layout previewLayoutSpec |
@@ -5766,7 +5213,6 @@ buildPolymorphicSelectorTableFor: anIfNilCheck toSelectKeywordsAndParametersFor:
 	^layout! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'FGJ 10/Apr/2019, 9:38:31 pm (UTC)'!
-!methodProperties: {}!
 buildPreviewOf: anIfNilCheckForm
 
 	| keywordParamStrings previewContent currentlyShownPreview currentlyShownTable |
@@ -5787,7 +5233,6 @@ buildPreviewOf: anIfNilCheckForm
 	currentlyShownPreview model actualContents: previewContent.! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 buildSubmitButton
 
 	| submitButton submitButtonLayoutSpec |
@@ -5804,14 +5249,12 @@ buildSubmitButton
 	^submitButton! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'FGJ 26/Mar/2019, 3:27:29 pm (UTC)'!
-!methodProperties: {}!
 initializeFormLayout
 
 	formLayout := LayoutMorph newColumn.
 	formLayout separation: 10; color: self backgroundColor.! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'FGJ 26/Mar/2019, 3:26:44 pm (UTC)'!
-!methodProperties: {}!
 initializeScrollableContainer
 
 	scrollPane := ColoredScrollPane initializedInstance.
@@ -5821,7 +5264,6 @@ initializeScrollableContainer
 	self layoutMorph addMorphUseAll: scrollPane.! !
 
 !IntroduceNullObjectWindow methodsFor: 'GUI building' stamp: 'HAW 31/Mar/2025, 1:55:10 pm (UTC)'!
-!methodProperties: {}!
 setExtents
 
 
@@ -5847,25 +5289,21 @@ setExtents
 	firstTimeBuild ifTrue: [initialExtent := requiredExtent + windowElementsExtent. firstTimeBuild := false].! !
 
 !IntroduceNullObjectWindow methodsFor: 'open/close' stamp: 'FGJ 27/Mar/2019, 8:41:06 pm (UTC)'!
-!methodProperties: {}!
 closeBoxHit
 
 	model formWasClosed.! !
 
 !IntroduceNullObjectWindow methodsFor: 'events' stamp: 'FGJ 29/Mar/2019, 5:26:25 pm (UTC)'!
-!methodProperties: {}!
 cancelButtonClicked
 
 	model cancel.! !
 
 !IntroduceNullObjectWindow methodsFor: 'events' stamp: 'FGJ 8/Apr/2019, 3:40:02 pm (UTC)'!
-!methodProperties: {}!
 currentlyShownIfNilCheckForm
 
 	^ifNilChecksForms at: messageListModel messageListIndex! !
 
 !IntroduceNullObjectWindow methodsFor: 'events' stamp: 'FGJ 5/Apr/2019, 6:19:11 pm (UTC)'!
-!methodProperties: {}!
 fontPreferenceChanged
 	"Copied from CodePackageListWindow"
 	"System fonts have changed; rebuild myself"
@@ -5875,13 +5313,11 @@ fontPreferenceChanged
 ! !
 
 !IntroduceNullObjectWindow methodsFor: 'events' stamp: 'FGJ 28/Mar/2019, 7:39:03 pm (UTC)'!
-!methodProperties: {}!
 hideFormForMessage: anIndex
 
 	(ifNilChecksForms at: anIndex) hide.! !
 
 !IntroduceNullObjectWindow methodsFor: 'events' stamp: 'FGJ 8/Apr/2019, 6:25:57 pm (UTC)'!
-!methodProperties: {}!
 okToChangeDueTo: aMorph
 
 	aMorph = messageSendingListSection ifTrue: [^true].
@@ -5889,19 +5325,16 @@ okToChangeDueTo: aMorph
 	^self okToChange.! !
 
 !IntroduceNullObjectWindow methodsFor: 'events' stamp: 'FGJ 8/Apr/2019, 3:39:44 pm (UTC)'!
-!methodProperties: {}!
 previewTextInputReceivedKeyStroke
 
 	self buildPreviewOf: self currentlyShownIfNilCheckForm.! !
 
 !IntroduceNullObjectWindow methodsFor: 'events' stamp: 'FGJ 8/Apr/2019, 3:40:16 pm (UTC)'!
-!methodProperties: {}!
 row: aRowIndex wasSwappedWith: anotherRowIndex
 
 	self buildPreviewOf: self currentlyShownIfNilCheckForm.! !
 
 !IntroduceNullObjectWindow methodsFor: 'events' stamp: 'FGJ 8/Apr/2019, 3:44:18 pm (UTC)'!
-!methodProperties: {}!
 showFormForMessage: anIndex
 
 	| form |
@@ -5912,25 +5345,21 @@ showFormForMessage: anIndex
 	self setExtents.! !
 
 !IntroduceNullObjectWindow methodsFor: 'events' stamp: 'FGJ 29/Mar/2019, 5:26:42 pm (UTC)'!
-!methodProperties: {}!
 submitButtonClicked
 
 	model userSubmitted: introduceNullObjectRequest.! !
 
 !IntroduceNullObjectWindow methodsFor: 'accessing' stamp: 'FGJ 4/Apr/2019, 8:41:18 pm (UTC)'!
-!methodProperties: {}!
 initialExtent
 
 	^initialExtent! !
 
 !IntroduceNullObjectWindow methodsFor: 'accessing' stamp: 'FGJ 28/Mar/2019, 10:01:20 pm (UTC)'!
-!methodProperties: {}!
 previewUnavailableMessage
 
 	^'All the keywords and parameter names must be filled for the preview to appear here'! !
 
 !IntroduceNullObjectWindow methodsFor: 'text provider' stamp: 'FGJ 28/Mar/2019, 10:14:30 pm (UTC)'!
-!methodProperties: {}!
 shouldStyle: text with: anSHTextStyler
 
 	text = self previewUnavailableMessage ifFalse: [
@@ -5940,13 +5369,11 @@ shouldStyle: text with: anSHTextStyler
 	^false.! !
 
 !IntroduceNullObjectWindow methodsFor: 'text provider' stamp: 'FGJ 28/Mar/2019, 4:21:08 pm (UTC)'!
-!methodProperties: {}!
 textStylerClassFor: textGetter
 
 	^SHTextStylerST80 ! !
 
 !IntroduceNullObjectWindow methodsFor: 'user interface' stamp: 'FGJ 29/Mar/2019, 7:41:15 pm (UTC)'!
-!methodProperties: {}!
 okToChange
 
 	discardEdits
@@ -5954,7 +5381,6 @@ okToChange
 		ifFalse: [^super okToChange].! !
 
 !IntroduceNullObjectWindow methodsFor: 'initialization' stamp: 'HAW 28/Mar/2025, 5:52:10 pm (UTC)'!
-!methodProperties: {}!
 initializeWithModel: aModel
 
 	super model: aModel.
@@ -5971,13 +5397,11 @@ initializeWithModel: aModel
 ! !
 
 !IntroduceNullObjectWindow methodsFor: 'focus change' stamp: 'FGJ 11/Apr/2019, 4:13:28 pm (UTC)'!
-!methodProperties: {}!
 addFocusReceiver: anInnerTextMorph
 
 	focusMorphs add: anInnerTextMorph.! !
 
 !IntroduceNullObjectWindow methodsFor: 'focus change' stamp: 'FGJ 11/Apr/2019, 4:21:46 pm (UTC)'!
-!methodProperties: {}!
 moveFrom: anInnerTextMorph
 
 	| newFocusMorph oldFocusIndex |
@@ -5989,31 +5413,26 @@ moveFrom: anInnerTextMorph
 	self world activeHand newKeyboardFocus: newFocusMorph.! !
 
 !IntroduceNullObjectWindow methodsFor: 'user interface support' stamp: 'HAW 26/Jul/2023, 6:03:50 pm (UTC)'!
-!methodProperties: {}!
 shouldAutoHighlight
 	
 	^false! !
 
 !IntroduceNullObjectWindow methodsFor: 'user interface support' stamp: 'HAW 26/Jul/2023, 6:03:43 pm (UTC)'!
-!methodProperties: {}!
 styleByParagraphs
 	
 	^false! !
 
 !IntroduceNullObjectWindow class methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 fontProportionalUnitOfReferenceForHeight
 
 	^ExtractToMethodObjectWindow fontProportionalUnitOfReferenceForHeight ! !
 
 !IntroduceNullObjectWindow class methodsFor: 'as yet unclassified' stamp: 'FGJ 26/Mar/2019, 5:32:21 pm (UTC)'!
-!methodProperties: {}!
 fontProportionalUnitOfReferenceForWidth
 
 	^AbstractFont default widthOf: $A! !
 
 !IntroduceNullObjectWindow class methodsFor: 'instance creation' stamp: 'FGJ 5/Apr/2019, 7:13:58 pm (UTC)'!
-!methodProperties: {}!
 open: aModel label: aString
 
 	|  window |
@@ -6025,25 +5444,21 @@ open: aModel label: aString
 	^window! !
 
 !IntroduceNullObjectWindow class methodsFor: 'instance creation' stamp: 'FGJ 5/Apr/2019, 7:14:16 pm (UTC)'!
-!methodProperties: {}!
 withModel: aModel
 
 	^self new initializeWithModel: aModel! !
 
 !TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 11/Apr/2019, 3:31:07 pm (UTC)'!
-!methodProperties: {}!
 focusMover: aFocusMover
 
 	focusMover := aFocusMover.! !
 
 !TabPassingInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 11/Apr/2019, 3:28:05 pm (UTC)'!
-!methodProperties: {}!
 keyStroke: aKeyboardEvent
 
 	aKeyboardEvent isTab ifTrue: [focusMover moveFrom: self] ifFalse: [super keyStroke: aKeyboardEvent].! !
 
 !PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 14/Feb/2019, 2:37:10 pm (UTC)'!
-!methodProperties: {}!
 keyStroke: aKeyboardEvent
 
 	super keyStroke: aKeyboardEvent.
@@ -6051,19 +5466,16 @@ keyStroke: aKeyboardEvent
 	previewModel previewTextInputReceivedKeyStroke.! !
 
 !PreviewInnerTextMorph methodsFor: 'as yet unclassified' stamp: 'FGJ 11/Feb/2019, 1:40:05 pm (UTC)'!
-!methodProperties: {}!
 previewModel: aPreviewModel
 
 	previewModel := aPreviewModel.! !
 
 !FormsClassNameCompleter methodsFor: 'as yet unclassified' stamp: 'FGJ 6/Sep/2020, 7:33:55 pm (UTC)'!
-!methodProperties: {}!
 selectedEntryFormatted
 
 	^super selectedEntryFormatted withBlanksTrimmed! !
 
 !SelectionMenuWithSubtitles methodsFor: 'basic control sequence' stamp: 'mc 18/Apr/2025, 6:32:12 am (UTC)'!
-!methodProperties: {}!
 startUpWithCaption: captionOrNil at: location allowKeyboard: aBoolean 
 	| index |
 	index := (MVCMenuMorphWithSubtitles from: self title: captionOrNil) 
@@ -6074,19 +5486,16 @@ startUpWithCaption: captionOrNil at: location allowKeyboard: aBoolean
 	^ selections at: index! !
 
 !SelectionMenuWithSubtitles methodsFor: 'subtitles' stamp: 'mc 3/Apr/2025, 5:07:15 am (UTC)'!
-!methodProperties: {}!
 subtitles
 
 	^subtitles! !
 
 !SelectionMenuWithSubtitles methodsFor: 'subtitles' stamp: 'mc 3/Apr/2025, 1:58:48 am (UTC)'!
-!methodProperties: {}!
 subtitles: anOrderedCollection 
 	
 	subtitles := anOrderedCollection! !
 
 !SelectionMenuWithSubtitles class methodsFor: 'instance creation' stamp: 'mc 10/Apr/2025, 4:02:25 am (UTC)'!
-!methodProperties: {}!
 fromArray: anArray
 	"Construct a menu from anArray.  The elements of anArray must be either:
 	*  A pair of the form: <label> <selector> <isSubtitle>
@@ -6125,7 +5534,6 @@ or	*  The 'dash' (or 'minus sign') symbol
 		('fifth label'	tano))) startUp"! !
 
 !ExtractClass methodsFor: 'initialization' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
-!methodProperties: {}!
 initializeFrom: aSourceClassName to: aTargetClassName instanceVariableNamed: anInstanceVariableNameForSourceClass instVarToExtract: collectionOfInstVarsToExtract methodToExtract: collectionOfMethodsToExtract  
 	sourceClass := aSourceClassName.
 	targetClassName := aTargetClassName.
@@ -6135,7 +5543,6 @@ initializeFrom: aSourceClassName to: aTargetClassName instanceVariableNamed: anI
 	! !
 
 !ExtractClass methodsFor: 'applying' stamp: 'HAW 26/Aug/2026, 4:47:24 pm (UTC)'!
-!methodProperties: {}!
 apply
 
 	| newClass |
@@ -6152,13 +5559,11 @@ apply
 ! !
 
 !ExtractClass methodsFor: 'private' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
-!methodProperties: {}!
 addInstanceVariableToAccessNewClass
 
 	^ sourceClass addInstVarName: variableToAccessToNewClass! !
 
 !ExtractClass methodsFor: 'private' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
-!methodProperties: {}!
 createNewClass
 
 	^ Object 
@@ -6169,13 +5574,11 @@ createNewClass
 		category: sourceClass category! !
 
 !ExtractClass methodsFor: 'private' stamp: 'mc 23/Feb/2024, 4:34:52 am (UTC)'!
-!methodProperties: {}!
 dontMoveMethod: selectorToMove
 
 	^ methodsToExtract remove: selectorToMove! !
 
 !ExtractClass methodsFor: 'private' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
-!methodProperties: {}!
 extraParameterFor: aMethodToMove
 	| extraParameter parameterName |
 	(MoveMethod needParameterNameToMove: aMethodToMove from: sourceClass accessingThrough: variableToAccessToNewClass)
@@ -6188,7 +5591,6 @@ extraParameterFor: aMethodToMove
 	^extraParameter! !
 
 !ExtractClass methodsFor: 'private' stamp: 'mc 23/Feb/2024, 5:27:52 am (UTC)'!
-!methodProperties: {}!
 getterSelectorFor: anInstanceVariableToMove 
 	| getterCandidate |
 	getterCandidate := anInstanceVariableToMove asSymbol.
@@ -6200,7 +5602,6 @@ getterSelectorFor: anInstanceVariableToMove
 	^getterCandidate.! !
 
 !ExtractClass methodsFor: 'private' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
-!methodProperties: {}!
 initializeNewObject
 	| newSourceInitialize |
 	sourceClass methodDict 
@@ -6215,20 +5616,17 @@ initializeNewObject
 	sourceClass compile: newSourceInitialize! !
 
 !ExtractClass methodsFor: 'private' stamp: 'mc 23/Feb/2024, 5:27:04 am (UTC)'!
-!methodProperties: {}!
 isGoingToMove: getterCandidate andIsGetterOf: anInstanceVariableToMove
 
 	^ (methodsToExtract includes: getterCandidate) and: [(sourceClass compiledMethodAt: getterCandidate) isGetterOf: anInstanceVariableToMove at: (sourceClass allInstVarNames indexOf: anInstanceVariableToMove)]! !
 
 !ExtractClass methodsFor: 'private' stamp: 'mc 24/Feb/2024, 5:09:25 am (UTC)'!
-!methodProperties: {}!
 isGoingToMove: setterCandidate andIsSetterOf: anInstanceVariableToMove
 
 	^(methodsToExtract includes: setterCandidate) 
 	and: [self method: (sourceClass compiledMethodAt: setterCandidate) isSetterOf: anInstanceVariableToMove]! !
 
 !ExtractClass methodsFor: 'private' stamp: 'HAW 3/Dec/2025, 6:42:55 pm (UTC)'!
-!methodProperties: {}!
 method: setterCandidate isSetterOf: anInstVarName 
 
 	^setterCandidate 
@@ -6237,7 +5635,6 @@ method: setterCandidate isSetterOf: anInstVarName
 		allowsReturnReceiver: true! !
 
 !ExtractClass methodsFor: 'private' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 moveInstanceVariables
 
 	| newGetter newSetter |
@@ -6262,7 +5659,6 @@ moveInstanceVariables
 		]! !
 
 !ExtractClass methodsFor: 'private' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 moveMethods
 	"self halt."
 	^ methodsToExtract do: [ :aMethodToMove | |extraParameter|
@@ -6279,7 +5675,6 @@ moveMethods
 		]! !
 
 !ExtractClass methodsFor: 'private' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
-!methodProperties: {}!
 newSourceCodeForInitializeWhenExists: initializeCompiledMethod 
 	| codeForTemporaries newSourceInitialize originalSourceInitialize rangesForTmpVars |
 	originalSourceInitialize := sourceClass sourceCodeAt: #initialize.
@@ -6296,7 +5691,6 @@ newSourceCodeForInitializeWhenExists: initializeCompiledMethod
 	^newSourceInitialize! !
 
 !ExtractClass methodsFor: 'private' stamp: 'mc 28/Jul/2024, 6:06:57 am (UTC)'!
-!methodProperties: {}!
 parameterNameForSourceClass: aSelector
 	
 	| defaultParamterName |
@@ -6306,7 +5700,6 @@ parameterNameForSourceClass: aSelector
 	^defaultParamterName! !
 
 !ExtractClass methodsFor: 'private' stamp: 'mc 27/Jul/2024, 6:08:27 am (UTC)'!
-!methodProperties: {}!
 renameTmpVarsEqualsAsNewInsVarToCreate
 	|methodNode renameRefactoringForSelector |
 	methodsToExtract 
@@ -6320,7 +5713,6 @@ renameTmpVarsEqualsAsNewInsVarToCreate
 			sourceClass compile: renameRefactoringForSelector apply].! !
 
 !ExtractClass methodsFor: 'private' stamp: 'mc 23/Feb/2024, 4:37:49 am (UTC)'!
-!methodProperties: {}!
 setterSelectorFor: anInstanceVariableToMove 
 	| setterCandidate |
 	setterCandidate := (anInstanceVariableToMove, ':') asSymbol .
@@ -6332,7 +5724,6 @@ setterSelectorFor: anInstanceVariableToMove
 	^setterCandidate.! !
 
 !ExtractClass class methodsFor: 'instance creation' stamp: 'mc 24/Sep/2024, 3:04:54 am (UTC)'!
-!methodProperties: {}!
 from: sourceClass to: targetClassName instanceVariableNamed: anInstanceVariableNameForSourceClass instVarToExtract: instVarToExtract methodToExtract: methodsToExtract  
 	
 	| methodsWithSameVariable |
@@ -6358,62 +5749,50 @@ from: sourceClass to: targetClassName instanceVariableNamed: anInstanceVariableN
 	^self new initializeFrom: sourceClass to: targetClassName instanceVariableNamed: anInstanceVariableNameForSourceClass instVarToExtract: instVarToExtract methodToExtract: methodsToExtract  ! !
 
 !ExtractClass class methodsFor: 'message handling' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
-!methodProperties: {}!
 instanceVariable: anInsVarName shouldExistsOn: aClassName 
 	^'instance variable ', anInsVarName, ' should exists on ', aClassName! !
 
 !ExtractClass class methodsFor: 'message handling' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
-!methodProperties: {}!
 instanceVariableToExtractShouldExistsOnSourceClass
 	^'instance variable to extract should exists on source class'.! !
 
 !ExtractClass class methodsFor: 'message handling' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
-!methodProperties: {}!
 selector: aSelector shouldExistsOn: aClassName 
 	^'selector ', aSelector, ' should exists on ', aClassName! !
 
 !ExtractClass class methodsFor: 'message handling' stamp: 'mc 19/Jan/2024, 4:48:11 am (UTC)'!
-!methodProperties: {}!
 targetClassShouldNotBeEmptyErrorMessage
 	^'Target class should not be empty'! !
 
 !ExtractClass class methodsFor: 'message handling' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
-!methodProperties: {}!
 targetClassShouldNotExistsErrorMessage
 	^'Target class should not exists'! !
 
 !ExtractClass class methodsFor: 'message handling' stamp: 'mc 20/Jan/2024, 3:23:16 am (UTC)'!
-!methodProperties: {}!
 targetClassShouldStartWithUppercaseErrorMessage
 	^'Target class should start with uppercase'! !
 
 !ExtractClass class methodsFor: 'message handling' stamp: 'mc 24/Sep/2024, 3:11:58 am (UTC)'!
-!methodProperties: {}!
 variable: aVariableName alreadyExistsOnMethods: aCollectionOfMethods
 	^'Variable ', aVariableName, ' already exists on methods: ', (aCollectionOfMethods sorted fold: [:a :b | a, ', ', b])! !
 
 !ExtractClass class methodsFor: 'message handling' stamp: 'mc 20/Jan/2024, 4:49:24 am (UTC)'!
-!methodProperties: {}!
 variableToAccessNewClassShouldBeInLowercaseErrorMessage
 	^'Variable to access new class should be in lowercase'! !
 
 !ExtractClass class methodsFor: 'message handling' stamp: 'mc 19/Jan/2024, 4:52:35 am (UTC)'!
-!methodProperties: {}!
 variableToAccessNewClassShouldNotBeEmptyErrorMessage
 	^'Variable to access new class should not be empty'! !
 
 !ExtractClass class methodsFor: 'message handling' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
-!methodProperties: {}!
 variableToAccessNewClassShouldNotBeInUseErrorMessage
 	^'variable to access new class should not be in use'! !
 
 !ExtractClass class methodsFor: 'message handling' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
-!methodProperties: {}!
 variableToAccessNewClassShouldNotBeNilErrorMessage
 	^'variable to access new class should not be nil'! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 10/Apr/2019, 7:36:33 pm (UTC)'!
-!methodProperties: {}!
 compileExtractedMethodAsEvaluationMethodOn: aClass
 
 	| methodNode originalSourceCode endHeaderIndex sourceCodeWithSelectorReplaced disregardType sourceCodeWithVariablesReplaced rangesToNewStrings rangesToNewStringsWithArgsFiltered |
@@ -6452,7 +5831,6 @@ compileExtractedMethodAsEvaluationMethodOn: aClass
 	aClass organization classify: methodObjectEvaluationSelector asSymbol under: #evaluating! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'HAW 23/Mar/2025, 10:28:28 pm (UTC)'!
-!methodProperties: {}!
 compileInstanceCreationMethodInto: aClass
 
 	| classMethodHeader methodBody keywordsWithParam instVarAssignments instanceInitializationSelector instanceCreationSelector keywords instanceMethodHeader |
@@ -6484,7 +5862,6 @@ compileInstanceCreationMethodInto: aClass
 	^true.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 26/May/2020, 8:36:18 pm (UTC)'!
-!methodProperties: {}!
 filter: rangesToStrings ofArgRangesOf: aMethodNode
 
 	| endHeaderIndex |
@@ -6496,7 +5873,6 @@ filter: rangesToStrings ofArgRangesOf: aMethodNode
 		rangeToString key first > endHeaderIndex].! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'HAW 27/Jul/2023, 9:42:46 pm (UTC)'!
-!methodProperties: {}!
 methodHeaderFrom: aCompiledMethod
 
 	| headerLength methodToExtractSourceCode |
@@ -6508,7 +5884,6 @@ methodHeaderFrom: aCompiledMethod
 	! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'HAW 30/Jan/2024, 4:26:47 pm (UTC)'!
-!methodProperties: {}!
 methodToExtractBodySourceCode
 
 	| aStream methodBodyAsBlock |
@@ -6519,7 +5894,6 @@ methodToExtractBodySourceCode
 	^self removeBlockEnclosingCharacters: aStream contents.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 31/Jan/2019, 4:28:42 pm (UTC)'!
-!methodProperties: {}!
 onlyReturnsSelf: aMethodNode
 
 	aMethodNode
@@ -6529,7 +5903,6 @@ onlyReturnsSelf: aMethodNode
 	^true.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 17/Feb/2019, 6:26:45 pm (UTC)'!
-!methodProperties: {}!
 parameterNameForInstVarName: instVarName
 
 	| variableName keywordDefinitionForVariableName |
@@ -6543,13 +5916,11 @@ parameterNameForInstVarName: instVarName
 	^keywordDefinitionForVariableName at: #parameterName! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'FGJ 30/Nov/2018, 5:56:23 pm (UTC)'!
-!methodProperties: {}!
 removeBlockEnclosingCharacters: aBlockSourceCode
 
 	^(aBlockSourceCode withoutPrefix: '[') withoutSuffix: ']'.! !
 
 !ExtractToMethodObject methodsFor: 'as yet unclassified' stamp: 'HAW 27/Jul/2023, 9:43:02 pm (UTC)'!
-!methodProperties: {}!
 replaceExtractedMethodWithMethodObjectEvaluation
 
 	| classToRefactor constructorMessage methodToExtractHeader refactoredSourceCode optionalReturn |
@@ -6576,7 +5947,6 @@ replaceExtractedMethodWithMethodObjectEvaluation
 	classToRefactor compile: refactoredSourceCode.! !
 
 !ExtractToMethodObject methodsFor: 'initialization' stamp: 'FGJ 10/Apr/2019, 7:20:27 pm (UTC)'!
-!methodProperties: {}!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
@@ -6596,7 +5966,6 @@ evaluatedWith: anInvocationSelector
 ! !
 
 !ExtractToMethodObject methodsFor: 'applying' stamp: 'HAW 26/Aug/2026, 4:47:24 pm (UTC)'!
-!methodProperties: {}!
 apply
 
 	| methodObjectClass |
@@ -6617,7 +5986,6 @@ apply
 ! !
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'FGJ 19/Dec/2018, 1:08:21 pm (UTC)'!
-!methodProperties: {}!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
@@ -6635,7 +6003,6 @@ evaluatedWith: anEvaluationSelector
 ! !
 
 !ExtractToMethodObject class methodsFor: 'instance creation' stamp: 'HAW 27/Jul/2023, 10:01:32 pm (UTC)'!
-!methodProperties: {}!
 from: aCompiledMethod
 toMethodObjectClassNamed: aClassName
 subclassing: aClass
@@ -6717,285 +6084,239 @@ evaluatedWith: anEvaluationSelector
 ! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 17/Dec/2018, 10:18:12 pm (UTC)'!
-!methodProperties: {}!
 duplicatedInstanceVariablesErrorMessageFor: duplicateNames
 
 	^'The following instance variables are duplicated: ', ', ' join: duplicateNames, '.'.! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 11/Apr/2019, 2:46:31 pm (UTC)'!
-!methodProperties: {}!
 evaluationSelectorMustNotBeEmptyErrorMessage
 
 	^'The evaluation selector must no be empty.'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 11/Apr/2019, 2:50:20 pm (UTC)'!
-!methodProperties: {}!
 evaluationSelectorMustNotInvalidCharactersErrorMessage
 
 	^'The evaluation selector must not contain invalid characters.'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 11/Apr/2019, 2:54:01 pm (UTC)'!
-!methodProperties: {}!
 evaluationSelectorMustNotStartWithAnInvalidStartOfSelectorErrorMessage
 
 	^'The evaluation selector must not start with an invalid start of selector.'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 21/Dec/2018, 6:34:17 pm (UTC)'!
-!methodProperties: {}!
 instanceCreationMessageKeywordsCannotBeEmptyErrorMessage
 
 	^'Method Object instance creation message keywords cannot be empty'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 16/Feb/2019, 7:28:04 pm (UTC)'!
-!methodProperties: {}!
 instanceCreationMessageParameterNamesAreDuplicated: duplicateParameterNames
 
 		^'The following instance creation message parameter names are duplicated: ',
 		(', ' join: duplicateParameterNames), '.'.! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 18/Dec/2018, 2:47:44 pm (UTC)'!
-!methodProperties: {}!
 instanceVariableNamesSameAsTemporalsErrorMessageFor: overlappingNames
 
 	^'The following instance variable names overlap with the names of method temporals: ',
 		', ' join: overlappingNames.! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 18/Dec/2018, 7:40:41 pm (UTC)'!
-!methodProperties: {}!
 instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: overlappingNames
 
 	'The following instance variable names will be shadowed by block temporals with the same name: ',
 		', ' join: overlappingNames! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 17/Feb/2019, 5:29:35 pm (UTC)'!
-!methodProperties: {}!
 invalidParameterNamesErrorMessage: invalidParameterNames
 
 	^'The following parameter names are invalid: ', (', ' join: invalidParameterNames)! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 19/Dec/2018, 2:37:21 pm (UTC)'!
-!methodProperties: {}!
 keywordForUnknownVariablesToParametrizeErrorMessage: unknownVariablesWithKeyword
 
 	^'The following variables have a keyword assigned in the Method Object instance creation message but they are not variables to parametrize: ',
 		', ' join: unknownVariablesWithKeyword ! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 19/Dec/2018, 6:49:59 pm (UTC)'!
-!methodProperties: {}!
 keywordsContainInvalidCharactersErrorMessage: keywordsWithInvalidCharacters
 
 	^'The following keywords contain invalid characters: ', ', ' join: keywordsWithInvalidCharacters! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 11/Dec/2018, 5:49:45 pm (UTC)'!
-!methodProperties: {}!
 methodCanNotReferenceSuperErrorMessage
 	^'The method to be extracted can not reference super pseudo variable'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 31/Jan/2019, 11:37:09 pm (UTC)'!
-!methodProperties: {}!
 methodCannotContainClassVarAssignmentsErrorMessage
 
 	^'The method cannot contain assignments to class variables'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 31/Jan/2019, 11:00:08 pm (UTC)'!
-!methodProperties: {}!
 methodCannotContainInstVarAssignmentsErrorMessage
 
 	^'The method cannot contain assignments to instance variables'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 1/Feb/2019, 2:55:40 pm (UTC)'!
-!methodProperties: {}!
 methodCannotContainPoolVarAssignmentsErrorMessage
 
 	^'The method cannot contain assignments to pool variables'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 21/Dec/2018, 7:04:21 pm (UTC)'!
-!methodProperties: {}!
 methodObjectSuperclassCannotBeMetaErrorMessage
 
 	^'Method Object superclass cannot be a Meta Class'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 17/Feb/2019, 5:47:30 pm (UTC)'!
-!methodProperties: {}!
 parameterNamesOverlapWithInstanceVariableNamesErrorMessage: overlappingParameterNames
 
 	^'The following parameter names overlap with the instance variable names: ',
 		(', ' join: overlappingParameterNames)! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 19/Dec/2018, 7:03:50 pm (UTC)'!
-!methodProperties: {}!
 selectorStartsWithInvalidStartOfSelectorCharacterErrorMessage
 
 	^'The selector choosed for the instance creation message of the Method Object starts with a character that is not alphanumeric'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 17/Dec/2018, 5:53:33 pm (UTC)'!
-!methodProperties: {}!
 unknownVariablesToParametrizeErrorMessage: unknownVariablesToParametrize
 
 	^'The variables: ', (', ' join: unknownVariablesToParametrize), ' were given a corresponding instance variable name but they are not variables to parametrize.'! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 19/Dec/2018, 2:28:30 pm (UTC)'!
-!methodProperties: {}!
 variablesToParametrizeHaveMultipleKeywordsErrorMessage: variablesWithMultipleKeywords
 
 	^'The following variables to parametrize have multiple corresponding keywords in the Method Object instance creation message: ',
 		', ' join: variablesWithMultipleKeywords! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 19/Dec/2018, 1:42:15 pm (UTC)'!
-!methodProperties: {}!
 variablesToParametrizeHaveNoKeywordErrorMessage: someVariablesNames
 
 	^'The following variables have no keyword assigned on the instance creation message of the Method Object ',
 		', ' join: someVariablesNames! !
 
 !ExtractToMethodObject class methodsFor: 'error messages' stamp: 'FGJ 17/Dec/2018, 3:35:43 pm (UTC)'!
-!methodProperties: {}!
 variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesWithoutNames
 
 	^'The variables: ', (', ' join: variablesWithoutNames), ' do not have a corresponding Method Object instance variable name'! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 17/Dec/2018, 5:52:22 pm (UTC)'!
-!methodProperties: {}!
 signaUnknownlVariablesToParametrize: unknownVariablesToParametrize
 
 	self refactoringError: (self unknownVariablesToParametrizeErrorMessage: unknownVariablesToParametrize).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 17/Dec/2018, 10:17:08 pm (UTC)'!
-!methodProperties: {}!
 signalDuplicateInstanceVariableNames: duplicateNames
 
 	self refactoringError: (self duplicatedInstanceVariablesErrorMessageFor: duplicateNames).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 16/Feb/2019, 7:19:14 pm (UTC)'!
-!methodProperties: {}!
 signalDuplicateParameterNames: duplicateParameterNames
 
 	self refactoringError: (self instanceCreationMessageParameterNamesAreDuplicated: duplicateParameterNames).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 11/Apr/2019, 2:46:15 pm (UTC)'!
-!methodProperties: {}!
 signalEvaluationSelectorMustNotBeEmpty
 
 	self refactoringError: self evaluationSelectorMustNotBeEmptyErrorMessage.! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 11/Apr/2019, 2:49:50 pm (UTC)'!
-!methodProperties: {}!
 signalEvaluationSelectorMustNotContainInvalidCharacters
 
 	self refactoringError: self evaluationSelectorMustNotInvalidCharactersErrorMessage.! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 11/Apr/2019, 2:53:38 pm (UTC)'!
-!methodProperties: {}!
 signalEvaluationSelectorMustNotStartWithAnInvalidStartOfSelector
 
 	self refactoringError: self evaluationSelectorMustNotStartWithAnInvalidStartOfSelectorErrorMessage.! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 21/Dec/2018, 6:33:46 pm (UTC)'!
-!methodProperties: {}!
 signalInstanceCreationMessageKeywordsCannotBeEmpty
 
 	self refactoringError: (self instanceCreationMessageKeywordsCannotBeEmptyErrorMessage).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 19/Dec/2018, 7:02:29 pm (UTC)'!
-!methodProperties: {}!
 signalInstanceCreationMessageSelectorStartsWithInvalidStartOfSelector
 
 	self refactoringError: (self selectorStartsWithInvalidStartOfSelectorCharacterErrorMessage).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 18/Dec/2018, 2:46:09 pm (UTC)'!
-!methodProperties: {}!
 signalInstanceVariableNamesSameAsTemporals: overlappingNames
 
 	self refactoringError: (self instanceVariableNamesSameAsTemporalsErrorMessageFor: overlappingNames).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 18/Dec/2018, 7:40:41 pm (UTC)'!
-!methodProperties: {}!
 signalInstanceVariableNamesShadowedByBlockTemporals: overlappingNames
 
 	self refactoringError: (self instanceVariableNamesShadowedByBlockArgumentsOrTemporalsErrorMessageFor: overlappingNames).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 17/Feb/2019, 5:28:30 pm (UTC)'!
-!methodProperties: {}!
 signalInvalidParameterNames: invalidParameterNames
 
 	self refactoringError: (self invalidParameterNamesErrorMessage: invalidParameterNames).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 19/Dec/2018, 6:49:27 pm (UTC)'!
-!methodProperties: {}!
 signalKeywordsContainInvalidCharacters: keywordsWithInvalidCharacters
 
 	self refactoringError: (self keywordsContainInvalidCharactersErrorMessage:keywordsWithInvalidCharacters).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 31/Jan/2019, 11:36:26 pm (UTC)'!
-!methodProperties: {}!
 signalMethodContainsClassVarAssignments
 
 	self refactoringError: (self methodCannotContainClassVarAssignmentsErrorMessage).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 31/Jan/2019, 10:59:27 pm (UTC)'!
-!methodProperties: {}!
 signalMethodContainsInstVarAssignments
 
 	self refactoringError: (self methodCannotContainInstVarAssignmentsErrorMessage).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 1/Feb/2019, 2:55:23 pm (UTC)'!
-!methodProperties: {}!
 signalMethodContainsPoolVarAssignments
 
 	self refactoringError: (self methodCannotContainPoolVarAssignmentsErrorMessage).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 21/Dec/2018, 7:04:00 pm (UTC)'!
-!methodProperties: {}!
 signalMethodObjectSuperclassCannotBeMeta
 
 	self refactoringError: (self methodObjectSuperclassCannotBeMetaErrorMessage).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 11/Dec/2018, 5:51:12 pm (UTC)'!
-!methodProperties: {}!
 signalMethodReferencesSuper
 
 	self refactoringError: self methodCanNotReferenceSuperErrorMessage.! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 17/Feb/2019, 5:46:24 pm (UTC)'!
-!methodProperties: {}!
 signalParameterNamesOverlapWithInstanceVariableNames: overlappingParameterNames
 
 	self refactoringError: (
 		self parameterNamesOverlapWithInstanceVariableNamesErrorMessage: overlappingParameterNames).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 19/Dec/2018, 2:36:25 pm (UTC)'!
-!methodProperties: {}!
 signalUnknownVariablesWithKeyword: unknownVariablesWithKeyword
 
 	self refactoringError:
 		(self keywordForUnknownVariablesToParametrizeErrorMessage: unknownVariablesWithKeyword).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 19/Dec/2018, 2:27:21 pm (UTC)'!
-!methodProperties: {}!
 signalVariablesToParametrizeHaveMultipleKeywords: variablesWithMultipleKeywords
 
 	self refactoringError: (self variablesToParametrizeHaveMultipleKeywordsErrorMessage: variablesWithMultipleKeywords).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 17/Dec/2018, 3:35:54 pm (UTC)'!
-!methodProperties: {}!
 signalVariablesToParametrizeWithoutInstanceVariableName: variablesWithoutNames
 
 	self refactoringError: (self variablesToParametrizedDoNotHaveInstanceVariableNamesErrorMessage: variablesWithoutNames).! !
 
 !ExtractToMethodObject class methodsFor: 'exceptions' stamp: 'FGJ 19/Dec/2018, 1:41:14 pm (UTC)'!
-!methodProperties: {}!
 signalVariablesToParametrizeWithoutKeywordAssigned: someVariablesNames
 
 	self refactoringError: (self variablesToParametrizeHaveNoKeywordErrorMessage: someVariablesNames).! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 13/Nov/2019, 11:49:21 pm (UTC)'!
-!methodProperties: {}!
 assertAllInstanceVariableNamesAreValid: instanceVariableNames for: aClass
 
 	instanceVariableNames do: [ :anInstanceVariableName | (NewInstanceVariablePrecondition of: anInstanceVariableName for: aClass) valueForSuperclass ].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 27/Jul/2023, 9:56:03 pm (UTC)'!
-!methodProperties: {}!
 assertAllInstanceVariableNamesIn: variablesToParametrizeToInstanceVariableNames
 haveACorrespondingVariableToParametrizeFrom: aMethodNode
 
@@ -7012,7 +6333,6 @@ haveACorrespondingVariableToParametrizeFrom: aMethodNode
 	! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 16/Feb/2019, 5:59:07 pm (UTC)'!
-!methodProperties: {}!
 assertAllKeywords: keywordsDefinitions
 correspondToAVariableToParametrize: variablesToParametrize
 
@@ -7026,7 +6346,6 @@ correspondToAVariableToParametrize: variablesToParametrize
 			self signalUnknownVariablesWithKeyword: unknownVariablesWithKeyword].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 16/Feb/2019, 6:03:19 pm (UTC)'!
-!methodProperties: {}!
 assertAllVariablesToParametrize: variablesToParametrize
 haveOneCorrespondingKeyword: keywordsDefinitions
 
@@ -7050,7 +6369,6 @@ haveOneCorrespondingKeyword: keywordsDefinitions
 			self signalVariablesToParametrizeHaveMultipleKeywords: variablesWithMultipleKeywords asSet].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 27/Jul/2023, 9:56:33 pm (UTC)'!
-!methodProperties: {}!
 assertAllVariablesToParametrizeFrom: aMethodNode
 haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariableNames
 
@@ -7066,25 +6384,21 @@ haveAnInstanceVariableNameIn: variablesToParametrizeToInstanceVariableNames
 			self signalVariablesToParametrizeWithoutInstanceVariableName: variablesWithoutNames.]! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 11/Apr/2019, 2:45:50 pm (UTC)'!
-!methodProperties: {}!
 assertEvaluationSelectorMustNotBeEmpty: anEvaluationSelector
 
 	anEvaluationSelector isEmpty ifTrue: [self signalEvaluationSelectorMustNotBeEmpty].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 11/Apr/2019, 2:49:29 pm (UTC)'!
-!methodProperties: {}!
 assertEvaluationSelectorMustNotContainInvalidCharacters: anEvaluationSelector
 
 	(self keywordHasInvalidCharacters: anEvaluationSelector) ifTrue: [self signalEvaluationSelectorMustNotContainInvalidCharacters].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 11/Apr/2019, 2:53:16 pm (UTC)'!
-!methodProperties: {}!
 assertEvaluationSelectorMustNotStartWithAnInvalidStartOfSelector: anEvaluationSelector
 
 	anEvaluationSelector first isValidStartOfIdentifiers ifFalse: [self signalEvaluationSelectorMustNotStartWithAnInvalidStartOfSelector].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 27/Jul/2023, 9:59:17 pm (UTC)'!
-!methodProperties: {}!
 assertInstanceVariableNames: variableNames
 areNotNamedAsMethodTemporariesOf: aMethodNode
 
@@ -7100,7 +6414,6 @@ areNotNamedAsMethodTemporariesOf: aMethodNode
 		ifFalse: [self signalInstanceVariableNamesSameAsTemporals: overlappingNames].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 27/Jul/2023, 10:00:41 pm (UTC)'!
-!methodProperties: {}!
 assertInstanceVariableNamesFrom: methodVariableNamesToInstanceVariableNames
 areNotShadowedByBlockArgumentsOrTemporariesOf: aMethodNode
 
@@ -7115,14 +6428,12 @@ areNotShadowedByBlockArgumentsOrTemporariesOf: aMethodNode
 		ifFalse: [self signalInstanceVariableNamesShadowedByBlockTemporals: shadowedInstanceVariables].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 21/Dec/2018, 6:33:21 pm (UTC)'!
-!methodProperties: {}!
 assertKeywordsAreNotEmpty: instanceCreationMessageKeywords
 
 	(instanceCreationMessageKeywords anySatisfy: [:aKeyword | aKeyword withBlanksTrimmed isEmpty])
 		ifTrue: [self signalInstanceCreationMessageKeywordsCannotBeEmpty].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 19/Dec/2018, 6:51:17 pm (UTC)'!
-!methodProperties: {}!
 assertKeywordsHaveNoInvalidCharacters: keywords
 
 	| keywordsWithInvalidCharacters |
@@ -7134,28 +6445,24 @@ assertKeywordsHaveNoInvalidCharacters: keywords
 		ifFalse: [self signalKeywordsContainInvalidCharacters: keywordsWithInvalidCharacters].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 27/Jul/2023, 9:49:31 pm (UTC)'!
-!methodProperties: {}!
 assertMethodDoesNotContainClassVarAssignments: aMethodNode
 
 	(self doesMethodContainsClassVarAssignments: aMethodNode )
 		ifTrue: [self signalMethodContainsClassVarAssignments].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 27/Jul/2023, 9:48:04 pm (UTC)'!
-!methodProperties: {}!
 assertMethodDoesNotContainInstVarAssignments: aMethodNode
 
 	(self doesMethodContainsInstVarAssignments: aMethodNode )
 		ifTrue: [self signalMethodContainsInstVarAssignments].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'HAW 27/Jul/2023, 9:50:55 pm (UTC)'!
-!methodProperties: {}!
 assertMethodDoesNotContainPoolVarAssignments: aMethodNode
 
 	(self doesMethodContainsPoolVarAssignments: aMethodNode )
 		ifTrue: [self signalMethodContainsPoolVarAssignments].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 21/Dec/2018, 7:03:38 pm (UTC)'!
-!methodProperties: {}!
 assertMethodObjectSuperclassIsNotMeta: aClass
 
 	aClass
@@ -7163,14 +6470,12 @@ assertMethodObjectSuperclassIsNotMeta: aClass
 		ifTrue: [self signalMethodObjectSuperclassCannotBeMeta].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 4/Jan/2019, 3:40:32 pm (UTC)'!
-!methodProperties: {}!
 assertMethodToExtractDoesNotReferenceSuper: aCompiledMethod
 
 	aCompiledMethod sendsToSuper
 		ifTrue: [self signalMethodReferencesSuper].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 17/Dec/2018, 10:20:59 pm (UTC)'!
-!methodProperties: {}!
 assertNoDuplicatedInstanceVariableNames: names
 
 	| duplicateNames |
@@ -7181,7 +6486,6 @@ assertNoDuplicatedInstanceVariableNames: names
 		ifFalse: [ self signalDuplicateInstanceVariableNames: duplicateNames asSet ].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 17/Feb/2019, 5:45:44 pm (UTC)'!
-!methodProperties: {}!
 assertParameterNames: parameterNames
 doNotOverlapWithMethodObjectInstanceVariableNames: instanceVariableNames
 
@@ -7193,7 +6497,6 @@ doNotOverlapWithMethodObjectInstanceVariableNames: instanceVariableNames
 		self signalParameterNamesOverlapWithInstanceVariableNames: overlappingParameterNames].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 17/Feb/2019, 6:38:05 pm (UTC)'!
-!methodProperties: {}!
 assertParameterNamesAreNotDuplicated: parameterNames
 
 	| duplicatedParameterNames |
@@ -7206,7 +6509,6 @@ assertParameterNamesAreNotDuplicated: parameterNames
 		self signalDuplicateParameterNames: duplicatedParameterNames asSet ].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 17/Feb/2019, 5:25:31 pm (UTC)'!
-!methodProperties: {}!
 assertParameterNamesAreValid: parameterNames
 
 	| invalidParameterNames |
@@ -7218,7 +6520,6 @@ assertParameterNamesAreValid: parameterNames
 	invalidParameterNames size > 0 ifTrue: [self signalInvalidParameterNames: invalidParameterNames].! !
 
 !ExtractToMethodObject class methodsFor: 'assertions' stamp: 'FGJ 21/Dec/2018, 7:01:40 pm (UTC)'!
-!methodProperties: {}!
 assertSelectorFromKeywordsStartsWithValidStartOfSelector: instanceCreationMessageKeywords
 
 	| firstKeyword |
@@ -7235,7 +6536,6 @@ assertSelectorFromKeywordsStartsWithValidStartOfSelector: instanceCreationMessag
 		! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 18/Dec/2018, 6:13:34 pm (UTC)'!
-!methodProperties: {}!
 blockNodesFrom: aMethodNode
 
 	| blockNodes |
@@ -7252,7 +6552,6 @@ blockNodesFrom: aMethodNode
 	^blockNodes! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'HAW 27/Jul/2023, 9:49:21 pm (UTC)'!
-!methodProperties: {}!
 doesMethodContainsClassVarAssignments: aMethodNode
 
 	| methodClass |
@@ -7265,7 +6564,6 @@ doesMethodContainsClassVarAssignments: aMethodNode
 ! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'HAW 27/Jul/2023, 9:47:51 pm (UTC)'!
-!methodProperties: {}!
 doesMethodContainsInstVarAssignments: aMethodNode
 
 	aMethodNode accept: (
@@ -7275,7 +6573,6 @@ doesMethodContainsInstVarAssignments: aMethodNode
 ! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'HAW 27/Jul/2023, 9:50:47 pm (UTC)'!
-!methodProperties: {}!
 doesMethodContainsPoolVarAssignments: aMethodNode
 
 	| poolVariablesNames |
@@ -7293,13 +6590,11 @@ doesMethodContainsPoolVarAssignments: aMethodNode
 ! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 31/Jan/2019, 10:57:30 pm (UTC)'!
-!methodProperties: {}!
 isAssignmentToInstVarNode: aNode
 
 	^aNode isAssignmentNode and: [aNode variable isInstanceVariableNode] ! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 17/Feb/2019, 5:26:07 pm (UTC)'!
-!methodProperties: {}!
 isInvalidParameterName: aParameterName
 
 	| scannedNames |
@@ -7312,26 +6607,22 @@ isInvalidParameterName: aParameterName
 ! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 31/Jan/2019, 11:33:54 pm (UTC)'!
-!methodProperties: {}!
 isNode: aNode anAssignmentToAClassVarFrom: aClass
 
 	^aNode isAssignmentNode and: [aClass definesClassVariableNamedInHierarchy: aNode variable name] ! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 19/Dec/2018, 6:48:36 pm (UTC)'!
-!methodProperties: {}!
 keywordHasInvalidCharacters: keyword
 
 	^keyword anySatisfy: [:c | c isValidInIdentifiers not]. ! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 27/Nov/2018, 6:46:47 pm (UTC)'!
-!methodProperties: {}!
 newClassPreconditionClass
 
 	^NewClassPrecondition.
 	! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'HAW 27/Jul/2023, 10:00:31 pm (UTC)'!
-!methodProperties: {}!
 shadowedInstanceVariablesByArgumentsOrTemporariesOfBlockNodesOf: aMethodNode
 whenReplacingWith: methodVariableNamesToInstanceVariableNames
 
@@ -7352,7 +6643,6 @@ whenReplacingWith: methodVariableNamesToInstanceVariableNames
 	^shadowedInstanceVariables! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 18/Dec/2018, 7:44:54 pm (UTC)'!
-!methodProperties: {}!
 shadowedInstanceVariablesIn: aBlockNode
 whenReplacingWith: methodVariableNamesToInstanceVariableNames
 
@@ -7373,7 +6663,6 @@ whenReplacingWith: methodVariableNamesToInstanceVariableNames
 		intersection: blockVariablesToExtractInstVarNames! !
 
 !ExtractToMethodObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 18/Dec/2018, 6:57:30 pm (UTC)'!
-!methodProperties: {}!
 variableNodesFrom: aBlockNode
 
 	| variableNodes |
@@ -7390,7 +6679,6 @@ variableNodesFrom: aBlockNode
 	^variableNodes! !
 
 !IntroduceNullObject methodsFor: 'initialization' stamp: 'FGJ 19/Mar/2019, 8:52:48 pm (UTC)'!
-!methodProperties: {}!
 initializeOn: anInstVarName
 of: aClassToRefactor
 usingAsConcreteClass: aConcreteClass
@@ -7404,7 +6692,6 @@ for: someReplacementParameters
 	replacementParameters := someReplacementParameters.! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 24/Oct/2020, 1:44:33 pm (UTC)'!
-!methodProperties: {}!
 addTo: aDictionary defaultFor: ifNilParameter
 
 	| key |
@@ -7416,7 +6703,6 @@ addTo: aDictionary defaultFor: ifNilParameter
 	].! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 17/Nov/2020, 2:31:10 pm (UTC)'!
-!methodProperties: {}!
 apply
 
 	replacementParameters do: [:parameter | self applyWith: parameter].
@@ -7427,7 +6713,6 @@ apply
 	self compileNilIfNullObject.! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 24/Oct/2020, 1:21:11 pm (UTC)'!
-!methodProperties: {}!
 applyWith: replacementParameter
 
 	self
@@ -7444,7 +6729,6 @@ applyWith: replacementParameter
 		with: (Association key: instVar value: 'self nilIfNullObject').	! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 24/Oct/2020, 1:46:29 pm (UTC)'!
-!methodProperties: {}!
 buildSelectorToReplacements
 
 	| result |
@@ -7464,7 +6748,6 @@ buildSelectorToReplacements
 	^result! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 3/Oct/2020, 7:20:09 pm (UTC)'!
-!methodProperties: {}!
 compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass using: replacementParameter with: anExtraMapping
 
 	| polymorphicMessageSourceCode refactoredBlockSourceCode rangesToReplacingParameter |
@@ -7482,7 +6765,6 @@ compile: aBlockSourceCode in: aBlockRange asPolymorphicMessageOnClass: aClass us
 	ReturnStatementAdder valueTo: (aClass compiledMethodAt: replacementParameter polymorphicSelector).! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 17/Nov/2020, 2:31:29 pm (UTC)'!
-!methodProperties: {}!
 compileAssignNullObjectIfNil
 
 	| body header paramName selectorName |
@@ -7495,26 +6777,22 @@ compileAssignNullObjectIfNil
 	classToRefactor compile: header, body. ! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 5/Sep/2020, 5:42:03 pm (UTC)'!
-!methodProperties: {}!
 compileNilIfNullObject
 
 	nullClass compile: 'nilIfNullObject', String newLineString, String tab, '^nil'.
 	concreteClass compile: 'nilIfNullObject', String newLineString, String tab, '^self'.! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 30/Jun/2020, 9:57:22 pm (UTC)'!
-!methodProperties: {}!
 isAssignmentToNil: aNode
 
 	^aNode isAssignmentNode and: [(aNode value isNilPseudoVariable) and: [aNode variable name =  instVar]].! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 2/Jul/2020, 10:00:40 pm (UTC)'!
-!methodProperties: {}!
 isAssignmentToNonNil: aNode
 
 	^(aNode isAssignmentNode and: [aNode variable name =  instVar]) and: [aNode value isNilPseudoVariable not].! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 17/Nov/2020, 2:32:15 pm (UTC)'!
-!methodProperties: {}!
 rangeToReplaceToReplacementFrom: methodNode of: node
 
 	| assignmentRange leftSideRange originalSource rangeToReplace replacement sourceToReplace variableRanges |
@@ -7530,7 +6808,6 @@ rangeToReplaceToReplacementFrom: methodNode of: node
 	^Association key: rangeToReplace value: replacement! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 25/Sep/2020, 1:26:02 am (UTC)'!
-!methodProperties: {}!
 rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter with: anExtraMapping
 
 	| rangesInsideBlockRange rangesOffsetToBlock variableToParametrizeRangeToReplacingParameter offset |
@@ -7545,7 +6822,6 @@ rangesIn: aBlockRange toReplacementParametersFrom: replacementParameter with: an
 	^rangesOffsetToBlock! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 17/Nov/2020, 1:19:08 pm (UTC)'!
-!methodProperties: {}!
 replaceAssignments
 
 	| encoder rangesToReplacement nilAssignmentsFinder nullObjectNew methodNode selectorsChecked |
@@ -7572,7 +6848,6 @@ replaceAssignments
 			methodNode methodClass compile: refactoredSource]]! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 24/Oct/2020, 1:34:55 pm (UTC)'!
-!methodProperties: {}!
 replaceIfNilChecks
 
 	| selectorToReplacements |
@@ -7587,7 +6862,6 @@ replaceIfNilChecks
 	].! !
 
 !IntroduceNullObject methodsFor: 'evaluating' stamp: 'FGJ 5/Sep/2020, 5:40:36 pm (UTC)'!
-!methodProperties: {}!
 replaceIvarWithNilIfNullObject
 
 	replacementParameters do: [:replacementParameter | | refactoredSource  finder methodNode |
@@ -7598,7 +6872,6 @@ replaceIvarWithNilIfNullObject
 		methodNode methodClass compile: refactoredSource]! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 20/Feb/2019, 2:01:56 pm (UTC)'!
-!methodProperties: {}!
 assert: methodNodes belongToTheHierarchyToRefactorRootedOn: aClass
 
 	methodNodes do: [
@@ -7607,21 +6880,18 @@ assert: methodNodes belongToTheHierarchyToRefactorRootedOn: aClass
 			ifFalse: [ self signalMethodNodesMustBelongToHierarchyToRefactor ]].! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 20/Feb/2019, 12:52:26 am (UTC)'!
-!methodProperties: {}!
 assert: anInstVarName belongsTo: aClass
 
 	(aClass instVarNames includes: anInstVarName) ifFalse: [
 		self signalInstVarMustBelongToClassToRefactor].! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 20/Feb/2019, 2:23:53 am (UTC)'!
-!methodProperties: {}!
 assert: aConcreteClass isDifferentFrom: aNullClass
 
 	aConcreteClass = aNullClass ifTrue: [
 		self signalConcreteClassMustBeDifferentFromNullClass].! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 19/Feb/2019, 9:33:21 pm (UTC)'!
-!methodProperties: {}!
 assertBlocksDoNotContainAssignmentsToVariablesThatAreNotBlockTemporals: messageNodes
 
 	(messageNodes anySatisfy: [
@@ -7629,7 +6899,6 @@ assertBlocksDoNotContainAssignmentsToVariablesThatAreNotBlockTemporals: messageN
 		ifTrue: [ self signalBlocksCannotContainAssignmentsToVariablesThatAreNotBlockTemporals].! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 11/Apr/2019, 2:33:57 pm (UTC)'!
-!methodProperties: {}!
 assertBlocksDoNotContainReferencesToSuper: messageNodes
 
 	| nodesWithReferenceToSuper |
@@ -7640,7 +6909,6 @@ assertBlocksDoNotContainReferencesToSuper: messageNodes
 		self signalMessageNodesReferenceSuper: nodesWithReferenceToSuper].! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 19/Feb/2019, 10:26:36 pm (UTC)'!
-!methodProperties: {}!
 assertBlocksDoNotContainReturnStatements: messageNodes
 
 	messageNodes do: [
@@ -7648,7 +6916,6 @@ assertBlocksDoNotContainReturnStatements: messageNodes
 		(self containsReturnStatement: messageNode) ifTrue: [self signalBlockMustNotContainReturnStatements]].! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 8:27:33 pm (UTC)'!
-!methodProperties: {}!
 assertMessageNode: messageNode receiverIs: anInstVarName
 
 	| variableReceiver |
@@ -7659,13 +6926,11 @@ assertMessageNode: messageNode receiverIs: anInstVarName
 	variableReceiver name = anInstVarName ifFalse: [self signalMessageNodeReceiverMustBeTheInstVar].! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 18/Mar/2019, 8:24:56 pm (UTC)'!
-!methodProperties: {}!
 assertMessageNodes: messageNodes receiverIs: anInstVarName
 
 	messageNodes do: [:messageNode | self assertMessageNode: messageNode receiverIs: anInstVarName].! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 20/Feb/2019, 5:13:44 pm (UTC)'!
-!methodProperties: {}!
 assertMessageNodesAreNotDuplicated: messageNodes
 
 	messageNodes do: [
@@ -7674,7 +6939,6 @@ assertMessageNodesAreNotDuplicated: messageNodes
 			self signalMessageNodesMustNotBeDuplicated ]].! !
 
 !IntroduceNullObject class methodsFor: 'assertions' stamp: 'FGJ 19/Mar/2019, 8:06:00 pm (UTC)'!
-!methodProperties: {}!
 assertPolymorphicSelectorsFrom: replacementParameters areNotDefinedIn: aClass
 
 	| anySelectorAlreadyDefined |
@@ -7685,7 +6949,6 @@ assertPolymorphicSelectorsFrom: replacementParameters areNotDefinedIn: aClass
 	! !
 
 !IntroduceNullObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 19/Feb/2019, 9:44:32 pm (UTC)'!
-!methodProperties: {}!
 containsAssignmentToNotBlockTemporal: messageNode
 
 	| assignableTemporals assignmentToNotBlockTemporalDetector |
@@ -7713,7 +6976,6 @@ containsAssignmentToNotBlockTemporal: messageNode
 	^false! !
 
 !IntroduceNullObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 19/Feb/2019, 10:33:04 pm (UTC)'!
-!methodProperties: {}!
 containsReturnStatement: aMessageNode
 
 	aMessageNode accept: (ParseNodeEnumerator ofBlock: [
@@ -7723,7 +6985,6 @@ containsReturnStatement: aMessageNode
 	^false! !
 
 !IntroduceNullObject class methodsFor: 'as yet unclassified' stamp: 'FGJ 18/Feb/2019, 9:56:41 pm (UTC)'!
-!methodProperties: {}!
 referencesSuper: aParseNode
 
 	aParseNode accept: (ParseNodeEnumerator ofBlock: [
@@ -7733,115 +6994,96 @@ referencesSuper: aParseNode
 	^false! !
 
 !IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 20/Feb/2019, 12:35:28 am (UTC)'!
-!methodProperties: {}!
 signalBlockMustNotContainReturnStatements
 
 	self refactoringError: self blocksToExtractMustNotContainReturnStatementsErrorMessage! !
 
 !IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 19/Feb/2019, 9:17:17 pm (UTC)'!
-!methodProperties: {}!
 signalBlocksCannotContainAssignmentsToVariablesThatAreNotBlockTemporals
 
 	self refactoringError: self blocksToExtractCannotContainAssignmentsToVariablesThatAreNotBlockTemporalsErrorMessage.! !
 
 !IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 20/Feb/2019, 2:24:12 am (UTC)'!
-!methodProperties: {}!
 signalConcreteClassMustBeDifferentFromNullClass
 
 	self refactoringError: self concreteClassMustBeDifferentFromNullClassErrorMessage.! !
 
 !IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 20/Feb/2019, 12:52:50 am (UTC)'!
-!methodProperties: {}!
 signalInstVarMustBelongToClassToRefactor
 
 	self refactoringError: self instVarMustBelongToTheClassToRefactorErrorMessage.! !
 
 !IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 18/Mar/2019, 8:27:58 pm (UTC)'!
-!methodProperties: {}!
 signalMessageNodeReceiverMustBeTheInstVar
 
 	self refactoringError: self messageNodeReceiverMustBeTheInstVarErrorMessage.! !
 
 !IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 20/Feb/2019, 5:11:26 pm (UTC)'!
-!methodProperties: {}!
 signalMessageNodesMustNotBeDuplicated
 
 	self refactoringError: self messageNodesMustNotBeDuplicatedErrorMessage.! !
 
 !IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 17/Feb/2019, 10:01:08 pm (UTC)'!
-!methodProperties: {}!
 signalMessageNodesReferenceSuper: nodesWithReferenceToSuper
 
 	self refactoringError: (self messageNodesReferenceSuperErrorMessage: nodesWithReferenceToSuper).! !
 
 !IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 20/Feb/2019, 2:02:19 pm (UTC)'!
-!methodProperties: {}!
 signalMethodNodesMustBelongToHierarchyToRefactor
 
 	self refactoringError: self methodsMustBelongToTheHierarchyToRefactorErrorMessage.! !
 
 !IntroduceNullObject class methodsFor: 'exceptions' stamp: 'FGJ 19/Mar/2019, 8:06:18 pm (UTC)'!
-!methodProperties: {}!
 signalPolymorphicSelectorsMustNotBeDefinedInTheNullObjectClasses
 
 	self refactoringError: self polymorphicSelectorsMustNotBeDefinedInTheNullObjectClassesErrorMessage.! !
 
 !IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 19/Feb/2019, 9:18:10 pm (UTC)'!
-!methodProperties: {}!
 blocksToExtractCannotContainAssignmentsToVariablesThatAreNotBlockTemporalsErrorMessage
 
 	^'Blocks to extract cannot contain assignments to variables that are not temporals of a block'! !
 
 !IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 20/Feb/2019, 12:35:51 am (UTC)'!
-!methodProperties: {}!
 blocksToExtractMustNotContainReturnStatementsErrorMessage
 
 	^'Blocks to extract must not contain return statements.'! !
 
 !IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 20/Feb/2019, 2:24:36 am (UTC)'!
-!methodProperties: {}!
 concreteClassMustBeDifferentFromNullClassErrorMessage
 
 	^'The concrete class must be different from the null class.'! !
 
 !IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 20/Feb/2019, 12:53:29 am (UTC)'!
-!methodProperties: {}!
 instVarMustBelongToTheClassToRefactorErrorMessage
 
 	^'The instance variable on which the Null Object will be introduced must belong to the class to refactor'! !
 
 !IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 18/Mar/2019, 8:28:29 pm (UTC)'!
-!methodProperties: {}!
 messageNodeReceiverMustBeTheInstVarErrorMessage
 
 	^'The receiver of the message must be the instance variable'! !
 
 !IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 20/Feb/2019, 5:11:44 pm (UTC)'!
-!methodProperties: {}!
 messageNodesMustNotBeDuplicatedErrorMessage
 
 	^'Message nodes must not be duplicated'! !
 
 !IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 17/Feb/2019, 10:01:50 pm (UTC)'!
-!methodProperties: {}!
 messageNodesReferenceSuperErrorMessage: nodesWithReferenceToSuper
 
 	^'Blocks to extract cannot contain references to super.'! !
 
 !IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 20/Feb/2019, 2:02:40 pm (UTC)'!
-!methodProperties: {}!
 methodsMustBelongToTheHierarchyToRefactorErrorMessage
 
 	^'Methods must belong to the hierarchy to refactor'! !
 
 !IntroduceNullObject class methodsFor: 'error messages' stamp: 'FGJ 19/Mar/2019, 8:07:07 pm (UTC)'!
-!methodProperties: {}!
 polymorphicSelectorsMustNotBeDefinedInTheNullObjectClassesErrorMessage
 
 	^'Polymorphic selectors must not be defined neither in the concrete nor the null class.' ! !
 
 !IntroduceNullObject class methodsFor: 'instance creation' stamp: 'FGJ 16/Jun/2020, 5:59:10 pm (UTC)'!
-!methodProperties: {}!
 on: anInstVarName
 of: aClassToRefactor
 usingAsConcreteClass: aConcreteClass
@@ -7876,7 +7118,6 @@ for: replacementParameters
 ! !
 
 !NullObjectHierarchyCreator methodsFor: 'evaluating' stamp: 'FGJ 23/Jan/2019, 8:10:26 pm (UTC)'!
-!methodProperties: {}!
 apply
 
 	| concreteClassSuperclass abstractClass nullObjectClass |
@@ -7912,7 +7153,6 @@ apply
 	concreteClass superclass: abstractClass.! !
 
 !NullObjectHierarchyCreator methodsFor: 'initialization' stamp: 'FGJ 23/Jan/2019, 6:45:22 pm (UTC)'!
-!methodProperties: {}!
 from: aConcreteClass
 withAbstractClassName: anAbstractClassName
 withNullClassName: aNullObjectClassName
@@ -7924,7 +7164,6 @@ inCategory: aCategory
 	category := aCategory.! !
 
 !NullObjectHierarchyCreator class methodsFor: 'instance creation' stamp: 'FGJ 23/Jan/2019, 6:45:55 pm (UTC)'!
-!methodProperties: {}!
 from: aConcreteClass
 withAbstractClassName: anAbstractClassName
 withNullClassName: aNullClassName
@@ -7940,13 +7179,11 @@ inCategory: aCategory
 		inCategory: aCategory! !
 
 !NullObjectHierarchyCreator class methodsFor: 'instance creation' stamp: 'FGJ 23/Jan/2019, 5:34:12 pm (UTC)'!
-!methodProperties: {}!
 newClassPreconditionClass
 
 	^NewClassPrecondition! !
 
 !MoveInstanceVariable methodsFor: 'initialization' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 initializeNamed: anInstVarNameSourceClass from: aSourceClass to: aTargetClass accessingThrough: anInstVarNameTargetClass usingGetter: aGetterSelector usingSetter: aSetterSelector 
 	instVarNameSourceClass := anInstVarNameSourceClass.
 	sourceClass := aSourceClass.
@@ -7958,7 +7195,6 @@ initializeNamed: anInstVarNameSourceClass from: aSourceClass to: aTargetClass ac
 	setterToUse := aSetterSelector! !
 
 !MoveInstanceVariable methodsFor: 'applying' stamp: 'HAW 26/Aug/2026, 4:47:00 pm (UTC)'!
-!methodProperties: {}!
 apply
 
 	self replaceAccessInSourceClass.
@@ -7971,7 +7207,6 @@ apply
 ! !
 
 !MoveInstanceVariable methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 accessInSourceClass
 	| accessMethods |
 	accessMethods := OrderedCollection new.
@@ -7982,14 +7217,12 @@ accessInSourceClass
 	^ accessMethods! !
 
 !MoveInstanceVariable methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 compileSource: sourceCode on: aTargetClass 
 	^ aTargetClass 
 		compile: sourceCode
 		classified: self class getterSetterCategoryName ! !
 
 !MoveInstanceVariable methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 createGetterOnTargetClass
 	^self 
 		compileSource: getterToUse, String newLineString, String tab, '^', instVarNameSourceClass 
@@ -7997,14 +7230,12 @@ createGetterOnTargetClass
 ! !
 
 !MoveInstanceVariable methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 createSetterOnTargetClass
 	^self 
 		compileSource: setterToUse , ' anObject', String newLineString, String tab, '^', instVarNameSourceClass, ' := anObject.' 
 		on: targetClass.! !
 
 !MoveInstanceVariable methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 replaceAccessInSourceClass
 	| newSource result |
 	self accessInSourceClass do: [ :aMethod | | replacer |
@@ -8022,54 +7253,44 @@ replaceAccessInSourceClass
 		]! !
 
 !MoveInstanceVariable class methodsFor: 'error messages' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 getterExistsOnTargetHierarchyErrorMessage
 
 	^ 'getter exists on target hierarchy'! !
 
 !MoveInstanceVariable class methodsFor: 'error messages' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 instanceVariableExistsOnTargetHierarchyErrorMessage
 
 	^ 'instance variable exists on target hierarchy'! !
 
 !MoveInstanceVariable class methodsFor: 'error messages' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 instanceVariableToAccessThroughShouldExistOnSourceClassErrorMessage
 	^'instance variable to access through does not exists on source class'.! !
 
 !MoveInstanceVariable class methodsFor: 'error messages' stamp: 'HAW 28/Apr/2025, 7:44:42 pm (UTC)'!
-!methodProperties: {}!
 instanceVariableToAccessingThroughShouldHaveAtLeastOneAssigmentErrorMessage: instanceVariableName
 	^'Instance variable ', instanceVariableName, ' should have at least one assigment'! !
 
 !MoveInstanceVariable class methodsFor: 'error messages' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 instanceVariableToMoveShouldExistOnSourceClassErrorMessage
 	^'instance variable does not exists on source class'.! !
 
 !MoveInstanceVariable class methodsFor: 'error messages' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 setterExistsOnTargetHierarchyErrorMessage
 	^'setter exists on target hierarchy'! !
 
 !MoveInstanceVariable class methodsFor: 'error messages' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 souceClassAndTargetClassCanNotBeTheSameErrorMessage
 	^'source class and target class can not be the same'.! !
 
 !MoveInstanceVariable class methodsFor: 'error messages' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 targetClassCanNotBeSubClassOfSourceClassErrorMessage
 	^'Target class can not be sub class of source class. Use push-down refactoring'! !
 
 !MoveInstanceVariable class methodsFor: 'error messages' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 targetClassCanNotBeSuperClassOfSourceClassErrorMessage
 	^'Target class can not be super class of source class. Use push-up refactoring'! !
 
 !MoveInstanceVariable class methodsFor: 'instance creation' stamp: 'HAW 28/Apr/2025, 7:45:16 pm (UTC)'!
-!methodProperties: {}!
 existsAssigmentOf: instanceVariable inHierarchyOf: sourceClass 
 	| existsAssignation |
 	existsAssignation := false.
@@ -8079,7 +7300,6 @@ existsAssigmentOf: instanceVariable inHierarchyOf: sourceClass
 	^existsAssignation.! !
 
 !MoveInstanceVariable class methodsFor: 'instance creation' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 named: instVarNameSourceClass from: sourceClass to: targetClass accessingThrough: instVarNameTargetClass 
 	^self 
 		named: instVarNameSourceClass
@@ -8089,7 +7309,6 @@ named: instVarNameSourceClass from: sourceClass to: targetClass accessingThrough
 		usingGetter: instVarNameSourceClass asSymbol.! !
 
 !MoveInstanceVariable class methodsFor: 'instance creation' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 named: instVarNameSourceClass from: sourceClass to: targetClass accessingThrough: instVarNameTargetClass  usingGetter: aGetterSelector 
 
 	^self  
@@ -8101,7 +7320,6 @@ named: instVarNameSourceClass from: sourceClass to: targetClass accessingThrough
 		usingSetter: (instVarNameSourceClass, ':') asSymbol ! !
 
 !MoveInstanceVariable class methodsFor: 'instance creation' stamp: 'HAW 28/Apr/2025, 7:45:16 pm (UTC)'!
-!methodProperties: {}!
 named: instVarNameSourceClass from: sourceClass to: targetClass accessingThrough: instVarNameTargetClass  usingGetter: aGetterSelector usingSetter: aSetterSelector 
 
 	(sourceClass = targetClass) ifTrue: [ self refactoringError: self souceClassAndTargetClassCanNotBeTheSameErrorMessage ].
@@ -8117,12 +7335,10 @@ named: instVarNameSourceClass from: sourceClass to: targetClass accessingThrough
 	^self new initializeNamed: instVarNameSourceClass from: sourceClass to: targetClass accessingThrough: instVarNameTargetClass usingGetter: aGetterSelector usingSetter: aSetterSelector ! !
 
 !MoveInstanceVariable class methodsFor: 'category name' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 getterSetterCategoryName
 	^'getter-setter'! !
 
 !ExtractParameterObject methodsFor: '1 - creating parameter object' stamp: 'HAW 24/Mar/2025, 9:14:27 pm (UTC)'!
-!methodProperties: {}!
 compileParameterObjectInitializationMessageFor: initializeSelector 
 	
 	| initializeSourceCode |
@@ -8136,7 +7352,6 @@ compileParameterObjectInitializationMessageFor: initializeSelector
 ! !
 
 !ExtractParameterObject methodsFor: '1 - creating parameter object' stamp: 'HAW 24/Mar/2025, 9:14:50 pm (UTC)'!
-!methodProperties: {}!
 compileParameterObjectInstanceCreationMessageFor: selectorTail initializingWith: initializeSelector 
 	
 	| instanceCreationSourceCode |
@@ -8150,7 +7365,6 @@ compileParameterObjectInstanceCreationMessageFor: selectorTail initializingWith:
 ! !
 
 !ExtractParameterObject methodsFor: '1 - creating parameter object' stamp: 'HAW 24/Mar/2025, 11:11:46 pm (UTC)'!
-!methodProperties: {}!
 createParameterObjectClass
 
 	parameterObjectClass := (Smalltalk classNamed: parameterObjectSuperclassName)
@@ -8161,7 +7375,6 @@ createParameterObjectClass
 		category: parameterObjectCategoryName .! !
 
 !ExtractParameterObject methodsFor: '1 - creating parameter object' stamp: 'HAW 24/Mar/2025, 9:20:02 pm (UTC)'!
-!methodProperties: {}!
 createParameterObjectGetterFor: aVariableName
 
 	parameterObjectClass
@@ -8169,13 +7382,11 @@ createParameterObjectGetterFor: aVariableName
 		classified: Categorizer accessing ! !
 
 !ExtractParameterObject methodsFor: '1 - creating parameter object' stamp: 'HAW 24/Mar/2025, 8:49:55 pm (UTC)'!
-!methodProperties: {}!
 createParameterObjectGetters
 
 	parameterObjectClass instVarNames do: [ :aVariableName | self createParameterObjectGetterFor: aVariableName ]! !
 
 !ExtractParameterObject methodsFor: '1 - creating parameter object' stamp: 'HAW 28/Mar/2025, 11:56:43 pm (UTC)'!
-!methodProperties: {}!
 createParameterObjectInstanceCreationMethods
 
 	| selectorKeywords initializeSelector selectorTail |
@@ -8193,7 +7404,6 @@ createParameterObjectInstanceCreationMethods
 	! !
 
 !ExtractParameterObject methodsFor: '1 - creating parameter object' stamp: 'HAW 23/Mar/2025, 5:32:09 pm (UTC)'!
-!methodProperties: {}!
 getterSourceCodeFor: aVariableName 
 	
 	^String streamContents: [ :stream |
@@ -8206,13 +7416,11 @@ getterSourceCodeFor: aVariableName
 			nextPutAll: aVariableName ]! !
 
 !ExtractParameterObject methodsFor: '1 - creating parameter object' stamp: 'HAW 24/Mar/2025, 11:27:07 pm (UTC)'!
-!methodProperties: {}!
 parameterNameOf: anInstanceVariable
 	
 	^anInstanceVariable article, anInstanceVariable capitalized ! !
 
 !ExtractParameterObject methodsFor: '1 - creating parameter object' stamp: 'HAW 24/Mar/2025, 11:27:30 pm (UTC)'!
-!methodProperties: {}!
 parameterObjectInitializeSourceCodeFor: initializeSelector 
 	
 	| initializeSourceCode |
@@ -8239,7 +7447,6 @@ parameterObjectInitializeSourceCodeFor: initializeSelector
 ! !
 
 !ExtractParameterObject methodsFor: '1 - creating parameter object' stamp: 'HAW 24/Mar/2025, 9:14:50 pm (UTC)'!
-!methodProperties: {}!
 parameterObjectInstanceCreationSourceCodeFor: selectorTail initializingWith: initializeSelector 
 	
 	^String streamContents: [ :stream |
@@ -8252,7 +7459,6 @@ parameterObjectInstanceCreationSourceCodeFor: selectorTail initializingWith: ini
 			nextPutAll: '^self new ', initializeSelector ]! !
 
 !ExtractParameterObject methodsFor: '1 - creating parameter object' stamp: 'HAW 24/Mar/2025, 11:48:05 pm (UTC)'!
-!methodProperties: {}!
 writeParameterObjectInstanceCreationMessageOf: messageSend into: stream 
 	
 	parameterPositions 
@@ -8268,7 +7474,6 @@ writeParameterObjectInstanceCreationMessageOf: messageSend into: stream
 	! !
 
 !ExtractParameterObject methodsFor: '2 - adding parameter object' stamp: 'HAW 24/Mar/2025, 10:15:09 pm (UTC)'!
-!methodProperties: {}!
 addParameterObjectToImplementors
 
 	| refactoring |
@@ -8280,7 +7485,6 @@ addParameterObjectToImplementors
 	self updateSendersAndImplementorsFrom: refactoring! !
 
 !ExtractParameterObject methodsFor: '2 - adding parameter object' stamp: 'HAW 25/Mar/2025, 3:00:16 pm (UTC)'!
-!methodProperties: {}!
 createAddParameterRefactoring
 
 	^ AddParameter
@@ -8293,13 +7497,11 @@ createAddParameterRefactoring
 		senders: originalSenders! !
 
 !ExtractParameterObject methodsFor: '2 - adding parameter object' stamp: 'HAW 24/Mar/2025, 11:17:02 pm (UTC)'!
-!methodProperties: {}!
 parameterObjectKeyword
 
 	^ (parameterObjectClassName uncapitalized, ':') asSymbol! !
 
 !ExtractParameterObject methodsFor: '3 - replacing with parameter object instantiation' stamp: 'HAW 24/Mar/2025, 10:56:26 pm (UTC)'!
-!methodProperties: {}!
 addInstanceCreationStringsTo: instanceCreationStrings 
 	andRangesTo: placeholdersRanges 
 	when: parseNode 
@@ -8319,7 +7521,6 @@ addInstanceCreationStringsTo: instanceCreationStrings
 		! !
 
 !ExtractParameterObject methodsFor: '3 - replacing with parameter object instantiation' stamp: 'HAW 24/Mar/2025, 10:38:14 pm (UTC)'!
-!methodProperties: {}!
 compilePlaceholdersReplacementsFor: aSender
 
 	| newSourceCode rangesWithReplacements |
@@ -8333,13 +7534,11 @@ compilePlaceholdersReplacementsFor: aSender
 ! !
 
 !ExtractParameterObject methodsFor: '3 - replacing with parameter object instantiation' stamp: 'HAW 24/Mar/2025, 10:55:27 pm (UTC)'!
-!methodProperties: {}!
 isMessageSendToReplace: parseNode
 
 	^ parseNode isMessageNode and: [ parseNode selector isNamed: method selector ]! !
 
 !ExtractParameterObject methodsFor: '3 - replacing with parameter object instantiation' stamp: 'HAW 24/Mar/2025, 10:53:31 pm (UTC)'!
-!methodProperties: {}!
 parameterObjectInstanceCreationSourceCodeFor: messageSend
 
 	^String streamContents: [ :stream |
@@ -8352,7 +7551,6 @@ parameterObjectInstanceCreationSourceCodeFor: messageSend
 			! !
 
 !ExtractParameterObject methodsFor: '3 - replacing with parameter object instantiation' stamp: 'HAW 24/Mar/2025, 10:55:08 pm (UTC)'!
-!methodProperties: {}!
 placeholdersRangesAndReplacementsFor: aSender
 	
 	| instanceCreationStrings senderMethodNode placeholdersRanges enumerator |
@@ -8373,13 +7571,11 @@ placeholdersRangesAndReplacementsFor: aSender
 	^Array with: placeholdersRanges with: instanceCreationStrings ! !
 
 !ExtractParameterObject methodsFor: '3 - replacing with parameter object instantiation' stamp: 'HAW 25/Mar/2025, 2:54:39 pm (UTC)'!
-!methodProperties: {}!
 replaceParameterObjectPlaceholders
 
 	newSenders := newSenders collect: [ :aNewSender | self replaceParameterObjectPlaceholdersFor: aNewSender ].! !
 
 !ExtractParameterObject methodsFor: '3 - replacing with parameter object instantiation' stamp: 'HAW 26/Mar/2025, 7:51:18 pm (UTC)'!
-!methodProperties: {}!
 replaceParameterObjectPlaceholdersFor: aSender
 
 	| implementorIndex newSender |
@@ -8397,7 +7593,6 @@ replaceParameterObjectPlaceholdersFor: aSender
 	! !
 
 !ExtractParameterObject methodsFor: '4 - replacing with parameter object getters' stamp: 'HAW 25/Mar/2025, 2:55:52 pm (UTC)'!
-!methodProperties: {}!
 replaceAllOccurrencesOf: aParameter with: parameterObjectGetterSend in: anImplementor
 
 	| parameterRanges newSourceCode|
@@ -8410,7 +7605,6 @@ replaceAllOccurrencesOf: aParameter with: parameterObjectGetterSend in: anImplem
 	^ anImplementor methodClass >> anImplementor selector! !
 
 !ExtractParameterObject methodsFor: '4 - replacing with parameter object getters' stamp: 'HAW 25/Mar/2025, 2:55:27 pm (UTC)'!
-!methodProperties: {}!
 replaceParametersWithParameterObjectGetters
 
 	parameters 
@@ -8423,7 +7617,6 @@ replaceParametersWithParameterObjectGetters
 	method := method methodClass >> method selector.! !
 
 !ExtractParameterObject methodsFor: '5 - removing extracted parameters' stamp: 'HAW 25/Mar/2025, 2:56:35 pm (UTC)'!
-!methodProperties: {}!
 createRemoveParameterRefactoringFor: aParameter at: anIndex 
 
 	^ RemoveParameter
@@ -8433,7 +7626,6 @@ createRemoveParameterRefactoringFor: aParameter at: anIndex
 		senders: newSenders! !
 
 !ExtractParameterObject methodsFor: '5 - removing extracted parameters' stamp: 'HAW 24/Mar/2025, 11:46:44 pm (UTC)'!
-!methodProperties: {}!
 removeParameter: aParameter at: anIndex 
 
 	| refactoring |
@@ -8447,7 +7639,6 @@ removeParameter: aParameter at: anIndex
 ! !
 
 !ExtractParameterObject methodsFor: '5 - removing extracted parameters' stamp: 'HAW 25/Mar/2025, 1:22:13 pm (UTC)'!
-!methodProperties: {}!
 removeParameters
 
 	parameters 
@@ -8455,7 +7646,6 @@ removeParameters
 		do: [ :aParameter :aPosition | self removeParameter: aParameter at: aPosition ]! !
 
 !ExtractParameterObject methodsFor: 'evaluating' stamp: 'HAW 25/Mar/2025, 1:56:00 pm (UTC)'!
-!methodProperties: {}!
 apply
 
 	self 
@@ -8471,7 +7661,6 @@ apply
 	^changes! !
 
 !ExtractParameterObject methodsFor: 'initialization' stamp: 'HAW 25/Mar/2025, 3:00:16 pm (UTC)'!
-!methodProperties: {}!
 initializeFor: aCompiledMethod 
 	toClassNamed: aClassName 
 	subclassing: aSuperclassName 
@@ -8503,13 +7692,11 @@ initializeFor: aCompiledMethod
 ! !
 
 !ExtractParameterObject methodsFor: 'changes' stamp: 'HAW 27/Mar/2025, 2:16:08 pm (UTC)'!
-!methodProperties: {}!
 newSelector
 	
 	^method selector ! !
 
 !ExtractParameterObject methodsFor: 'changes' stamp: 'HAW 25/Mar/2025, 2:57:58 pm (UTC)'!
-!methodProperties: {}!
 updateChanges
 	
 	"Show changes when the refactoring has finished"	
@@ -8521,7 +7708,6 @@ updateChanges
 	changes := changes asSet.! !
 
 !ExtractParameterObject methodsFor: 'changes' stamp: 'HAW 27/Mar/2025, 2:25:45 pm (UTC)'!
-!methodProperties: {}!
 updateSendersAndImplementorsFrom: aParametersCountChange
 
 	method := method methodClass >> aParametersCountChange newSelector.
@@ -8533,7 +7719,6 @@ updateSendersAndImplementorsFrom: aParametersCountChange
 			thenCollect: [ :aMethodReference | aMethodReference compiledMethod ]! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 9/Nov/2024, 2:30:49 am (UTC)'!
-!methodProperties: {}!
 assert: parameters areNotIn: aSuperclassName
 
 	| instVarNames invalidParameters |
@@ -8544,7 +7729,6 @@ assert: parameters areNotIn: aSuperclassName
 	invalidParameters isEmpty ifFalse: [ self signalParametersMustNotExistOnSuperClass: parameters ].! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 11/Nov/2024, 3:55:15 pm (UTC)'!
-!methodProperties: {}!
 assert: parameters areValidToExtractFrom: arguments
 
 	| difference |
@@ -8554,20 +7738,17 @@ assert: parameters areValidToExtractFrom: arguments
 	difference ifNotEmpty: [ self signalParametersAreNotInMethod: difference ].! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 11/Nov/2024, 3:59:29 pm (UTC)'!
-!methodProperties: {}!
 assert: parameters areValidToExtractFromImplementors: implementors
 
 	implementors do: [ :aMethod | self assert: parameters areValidToExtractFrom: aMethod methodNode arguments ]! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 9/Nov/2024, 12:34:09 am (UTC)'!
-!methodProperties: {}!
 assert: parameterPositions haveSameSizeAs: parameters	
 	
 	parameterPositions size = parameters size 
 		ifFalse: [self signalParameterPositionsMustHaveSameSizeAsParameters ].! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 11/Nov/2024, 3:57:51 pm (UTC)'!
-!methodProperties: {}!
 assertIsValidParameterPositions: parameterPositions with: parameters for: arguments
 
 	parameterPositions withIndexDo: [ :position :index | (arguments at: position) key = (parameters at: index) ifFalse: [ self signalParameterPositionsAreInvalid ] ].
@@ -8578,14 +7759,12 @@ assertIsValidParameterPositions: parameterPositions with: parameters for: argume
 	! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 24/Jan/2024, 2:51:06 am (UTC)'!
-!methodProperties: {}!
 assertIsValidSuperclassName: aSuperclassName
 
 	self assertSuperclassNameIsNotEmpty: aSuperclassName.
 	self assertSuperclassAlreadyExists: aSuperclassName! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 11/Nov/2024, 3:45:22 pm (UTC)'!
-!methodProperties: {}!
 assertParametersAreAValidInstanceVariableName: parameters
 
 	| invalidParameters |
@@ -8595,7 +7774,6 @@ assertParametersAreAValidInstanceVariableName: parameters
 	invalidParameters isEmpty ifFalse: [ self signalParametersMustBeAValidInstanceVariableName: invalidParameters ].! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 11/Nov/2024, 3:22:26 pm (UTC)'!
-!methodProperties: {}!
 assertParametersAreNotAReservedName: parameters
 
 	| invalidParameters |
@@ -8605,19 +7783,16 @@ assertParametersAreNotAReservedName: parameters
 	invalidParameters isEmpty ifFalse: [ self signalParametersMustNotBeAReservedName: invalidParameters ].! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 11/Nov/2024, 3:07:01 pm (UTC)'!
-!methodProperties: {}!
 assertParametersAreNotBlank: parameters
 
 	(parameters anySatisfy: [:parameter | parameter isEmpty]) ifTrue: [ self signalParametersMustNotBeBlank ].! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 11/Nov/2024, 3:07:19 pm (UTC)'!
-!methodProperties: {}!
 assertParametersAreNotEmpty: parameters
 
 	parameters ifEmpty: [ self signalParametersMustNotBeEmpty ].! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 21/Jan/2024, 5:08:12 pm (UTC)'!
-!methodProperties: {}!
 assertSuperclassAlreadyExists: aClassName
 
 	Smalltalk at: aClassName
@@ -8625,13 +7800,11 @@ assertSuperclassAlreadyExists: aClassName
 			ifAbsent: [ self signalSuperclassMustExist ]! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 24/Jan/2024, 2:50:25 am (UTC)'!
-!methodProperties: {}!
 assertSuperclassNameIsNotEmpty: aSuperclassName
 
 	aSuperclassName withBlanksTrimmed isEmpty ifTrue: [ self signalSuperclassMustNotBeEmpty ]! !
 
 !ExtractParameterObject class methodsFor: 'pre-conditions' stamp: 'MEGL 11/Nov/2024, 3:34:20 pm (UTC)'!
-!methodProperties: {}!
 isValidInstanceVariableName: parameter
 
 	| scannedNames |
@@ -8643,7 +7816,6 @@ isValidInstanceVariableName: parameter
 ! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 11/Nov/2024, 3:25:31 pm (UTC)'!
-!methodProperties: {}!
 parameterMustBeAValidInstanceVariableNameErrorMessage: parameters
 
 	^String streamContents: [ :stream |
@@ -8652,7 +7824,6 @@ parameterMustBeAValidInstanceVariableNameErrorMessage: parameters
 			nextPutAll: parameters asCommaStringAnd ]! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 11/Nov/2024, 3:18:50 pm (UTC)'!
-!methodProperties: {}!
 parameterMustNotBeAReservedNameErrorMessage: parameters
 
 	^String streamContents: [ :stream |
@@ -8663,7 +7834,6 @@ parameterMustNotBeAReservedNameErrorMessage: parameters
 	! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 9/Nov/2024, 2:18:25 am (UTC)'!
-!methodProperties: {}!
 parameterMustNotExistOnSuperClassErrorMessage: parameters
 
 	^String streamContents: [ :stream |
@@ -8674,19 +7844,16 @@ parameterMustNotExistOnSuperClassErrorMessage: parameters
 	! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 9/Nov/2024, 12:01:58 am (UTC)'!
-!methodProperties: {}!
 parameterPositionsAreInvalidErrorMessage
 
 	^'Selected parameters must have a valid position'! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 9/Nov/2024, 12:33:23 am (UTC)'!
-!methodProperties: {}!
 parameterPositionsMustHaveSameSizeAsParametersErrorMessage
 
 	^'Selected parameter positions list must have same size as parameters list'! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 9/Nov/2024, 2:42:03 am (UTC)'!
-!methodProperties: {}!
 parametersAreNotInMethodErrorMessage: parameters
 
 	^String streamContents: [ :stream |
@@ -8695,94 +7862,79 @@ parametersAreNotInMethodErrorMessage: parameters
 			nextPutAll: parameters asCommaStringAnd ]! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 11/Nov/2024, 3:14:34 pm (UTC)'!
-!methodProperties: {}!
 parametersMustNotBeBlankErrorMessage
 
 	^'Selected parameters must not be blank'! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 11/Nov/2024, 3:14:42 pm (UTC)'!
-!methodProperties: {}!
 parametersMustNotBeEmptyErrorMessage
 
 	^'Selected parameters must not be empty'! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 9/Nov/2024, 12:01:16 am (UTC)'!
-!methodProperties: {}!
 signalParameterPositionsAreInvalid
 
 	self refactoringError: (self parameterPositionsAreInvalidErrorMessage)! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 9/Nov/2024, 12:33:42 am (UTC)'!
-!methodProperties: {}!
 signalParameterPositionsMustHaveSameSizeAsParameters
 
 	self refactoringError: (self parameterPositionsMustHaveSameSizeAsParametersErrorMessage)! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 9/Nov/2024, 2:42:44 am (UTC)'!
-!methodProperties: {}!
 signalParametersAreNotInMethod: parameters
 
 	self refactoringError: (self parametersAreNotInMethodErrorMessage: parameters)! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 11/Nov/2024, 3:24:36 pm (UTC)'!
-!methodProperties: {}!
 signalParametersMustBeAValidInstanceVariableName: parameters
 
 	self refactoringError: (self parameterMustBeAValidInstanceVariableNameErrorMessage: parameters)! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 11/Nov/2024, 3:17:27 pm (UTC)'!
-!methodProperties: {}!
 signalParametersMustNotBeAReservedName: parameters
 
 	self refactoringError: (self parameterMustNotBeAReservedNameErrorMessage: parameters)! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 11/Nov/2024, 3:15:03 pm (UTC)'!
-!methodProperties: {}!
 signalParametersMustNotBeBlank
 
 	self refactoringError: self parametersMustNotBeBlankErrorMessage 
 ! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 11/Nov/2024, 3:15:20 pm (UTC)'!
-!methodProperties: {}!
 signalParametersMustNotBeEmpty
 
 	self refactoringError: self parametersMustNotBeEmptyErrorMessage 
 ! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 9/Nov/2024, 2:15:49 am (UTC)'!
-!methodProperties: {}!
 signalParametersMustNotExistOnSuperClass: parameters
 
 	self refactoringError: (self parameterMustNotExistOnSuperClassErrorMessage: parameters)! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 21/Jan/2024, 5:07:14 pm (UTC)'!
-!methodProperties: {}!
 signalSuperclassMustExist
 
 	self refactoringError: self superclassMustExistErrorMessage
 ! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 24/Jan/2024, 2:53:48 am (UTC)'!
-!methodProperties: {}!
 signalSuperclassMustNotBeEmpty
 
 	self refactoringError: self superclassMustNotBeEmptyErrorMessage! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 21/Jan/2024, 5:07:53 pm (UTC)'!
-!methodProperties: {}!
 superclassMustExistErrorMessage
 
 	^'The superclass must exist'! !
 
 !ExtractParameterObject class methodsFor: 'exceptions' stamp: 'MEGL 24/Jan/2024, 2:54:00 am (UTC)'!
-!methodProperties: {}!
 superclassMustNotBeEmptyErrorMessage
 
 	^'The superclass must not be empty'! !
 
 !ExtractParameterObject class methodsFor: 'instance creation' stamp: 'HAW 25/Mar/2025, 2:03:05 pm (UTC)'!
-!methodProperties: {}!
 from: aCompiledMethod 
 	toClassNamed: aClassName 
 	subclassing: aSuperclassName 
@@ -8822,7 +7974,6 @@ from: aCompiledMethod
 		withImplementors: anImplementors! !
 
 !MoveMethod methodsFor: 'initialization' stamp: 'HAW 26/Aug/2026, 4:47:24 pm (UTC)'!
-!methodProperties: {}!
 initializeMethodNamed: aMethodName from: aSourceClass to: aTargetClass accessingThrough: aVariableToAccessTarget parameterNeeded: anExtraParameterNeeded 
 	methodName := aMethodName.
 	sourceClass := aSourceClass.
@@ -8833,7 +7984,6 @@ initializeMethodNamed: aMethodName from: aSourceClass to: aTargetClass accessing
 ! !
 
 !MoveMethod methodsFor: 'applying' stamp: 'HAW 26/Aug/2026, 4:47:24 pm (UTC)'!
-!methodProperties: {}!
 apply
 
 	self
@@ -8849,26 +7999,22 @@ apply
 ! !
 
 !MoveMethod methodsFor: 'private' stamp: 'mc 25/Dec/2024, 3:51:05 pm (UTC)'!
-!methodProperties: {}!
 compileInTargetClass
 
 	^resultAfterReplaceDependencies compileInTargetClass! !
 
 !MoveMethod methodsFor: 'private' stamp: 'mc 27/Dec/2024, 6:18:16 am (UTC)'!
-!methodProperties: {}!
 createAccessors
 	
 	^resultAfterReplaceDependencies compileOnSourceClass.! !
 
 !MoveMethod methodsFor: 'private' stamp: 'mc 30/Dec/2024, 6:23:38 am (UTC)'!
-!methodProperties: {}!
 findMethodToMove
 
 	compiledMethodToMove := sourceClass methodDict at: methodName.
 	methodNodeToMove := compiledMethodToMove methodNode.! !
 
 !MoveMethod methodsFor: 'private' stamp: 'mc 3/Mar/2025, 9:12:49 pm (UTC)'!
-!methodProperties: {}!
 replaceDependenciesOnMethodToMove
 	| replacer methodNode |
 	
@@ -8882,7 +8028,6 @@ replaceDependenciesOnMethodToMove
 	resultAfterReplaceDependencies := replacer value.! !
 
 !MoveMethod methodsFor: 'private' stamp: 'HAW 26/Aug/2026, 4:47:24 pm (UTC)'!
-!methodProperties: {}!
 replaceMethodForDelegation
 	
 	(methodNodeToMove argumentNames includes: variableToAccessTarget)
@@ -8896,108 +8041,88 @@ replaceMethodForDelegation
 	^sourceClass compile: codeForDelegation
 ! !
 
-!MoveMethod class methodsFor: 'instance creation' stamp: 'HAW 28/Apr/2025, 7:45:16 pm (UTC)'!
-!methodProperties: {}!
+!MoveMethod class methodsFor: 'instance creation' stamp: 'HAW 9/Sep/2026, 2:14:08 pm (UTC)'!
 methodNamed: methodName from: sourceClass to: targetClass accessingThrough: accessThroughVariable parameterNeeded: anExtraParameterNeeded  
-	
-	
+
 	(targetClass isNil) ifTrue: [ self refactoringError: self targetClassShouldNotBeNilErrorMessage ].
 	(sourceClass isNil) ifTrue: [ self refactoringError: self sourceClassShouldNotBeNilErrorMessage].
 	(methodName isNil) ifTrue: [ self refactoringError: self methodShouldNotBeNilErrorMessage ].
 	(sourceClass includesSelector: methodName) ifFalse: [ self refactoringError: self methodShouldExistsOnSourceClassErrorMessage ].
 	accessThroughVariable ifNotNil: [
-		((sourceClass allInstVarNames includes: accessThroughVariable) or: [(((sourceClass>>methodName) methodNode ) hasLocallyArgumentNamed: accessThroughVariable) or: [sourceClass allClassVarNames includes: accessThroughVariable] ]) ifFalse: [ self refactoringError: self instanceVariableToAccessingThroughShouldExistsInSourceClassErrorMessage ].
-	].
+		((self is: accessThroughVariable aVariableOf: sourceClass reachedIn: methodName) or: [ self isGlobalNamed: accessThroughVariable ])
+			ifFalse: [ self refactoringError: self instanceVariableToAccessingThroughShouldExistsInSourceClassErrorMessage ] ].
 	anExtraParameterNeeded assertIfCanMove: methodName from: sourceClass to: targetClass accessingThrough: accessThroughVariable.
-	
 	accessThroughVariable ifNotNil: [
-	(
-		(self existsAssigmentOf: accessThroughVariable inHierarchyOf: sourceClass) 
-		or: [((sourceClass>>methodName) methodNode ) hasLocallyArgumentNamed: accessThroughVariable ] 
-	) ifFalse: [ self refactoringWarning: (self instanceVariableToAccessingThroughShouldHaveAtLeastOneAssigmentErrorMessage: accessThroughVariable) ].
-	].
+		(self is: accessThroughVariable aVariableOf: sourceClass reachedIn: methodName) ifTrue: [
+			((self existsAssigmentOf: accessThroughVariable inHierarchyOf: sourceClass)
+				or: [ ((sourceClass>>methodName) methodNode) hasLocallyArgumentNamed: accessThroughVariable ])
+					ifFalse: [ self refactoringWarning: (self instanceVariableToAccessingThroughShouldHaveAtLeastOneAssigmentErrorMessage: accessThroughVariable) ] ] ].
 	^self new 
 		initializeMethodNamed: methodName 
 		from: sourceClass 
 		to: targetClass 
 		accessingThrough: accessThroughVariable 
-		parameterNeeded: anExtraParameterNeeded 
-		! !
+		parameterNeeded: anExtraParameterNeeded! !
 
 !MoveMethod class methodsFor: 'instance creation' stamp: 'mc 2/Mar/2025, 8:36:36 pm (UTC)'!
-!methodProperties: {}!
 methodNamed: methodName from: sourceClass toClass: targetClass parameterNeeded: anExtraParameterNeeded 
 	(targetClass isNil) ifTrue: [ self refactoringError: self targetClassShouldNotBeNilErrorMessage ].
 	^self methodNamed: methodName from: sourceClass to: targetClass class accessingThrough: nil parameterNeeded: anExtraParameterNeeded  
 ! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 instanceVariableToAccessingThroughShouldExistsInSourceClassErrorMessage
 	^'InstanceVariable to accessing through should exists in source class'! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'HAW 28/Apr/2025, 7:44:42 pm (UTC)'!
-!methodProperties: {}!
 instanceVariableToAccessingThroughShouldHaveAtLeastOneAssigmentErrorMessage: instanceVariableName
 	^'Instance variable ', instanceVariableName, ' should have at least one assigment'! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 instanceVariableToAccessingThroughShouldNotBeNilErrorMessage
 	^'InstanceVariable to accessing through should not be nil'! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 7/Aug/2024, 3:46:46 am (UTC)'!
-!methodProperties: {}!
 method: aSelector IsGoingToOverrideWarningMessageOn: aTargetClass
 	^'Method ', aSelector , ' will override a method on class ', aTargetClass name! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 methodShouldExistsOnSourceClassErrorMessage
 	^'Method should exists on source class'! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 methodShouldNotBeNilErrorMessage
 	^'Method should not be nil'! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 methodShouldNotExistsOnTargertClassErrorMessage
 	^'Method should not exists on targert class'! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 nameForNewParameterKeywordShouldBeProvidedClassErrorMessage
 	^'name for new parameter keyword should be provided'! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 nameForNewParameterKeywordShouldNotBeProvidedClassErrorMessage
 	^'name for new parameter keyword should not be provided'.! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 nameForNewParameterShouldBeProvidedClassErrorMessage
 	^'name for new parameter should be provided.'! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 nameForNewParameterShouldNotBeProvidedClassErrorMessage
 	^'name for new parameter should not be provided.'! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 sourceClassShouldNotBeNilErrorMessage
 	^'Source class should not be nil'! !
 
 !MoveMethod class methodsFor: 'error messages' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 targetClassShouldNotBeNilErrorMessage
 	^'Target class should not be nil'! !
 
 !MoveMethod class methodsFor: 'testing' stamp: 'HAW 28/Apr/2025, 7:45:16 pm (UTC)'!
-!methodProperties: {}!
 existsAssigmentOf: accessThroughVariable inHierarchyOf: sourceClass 
 	| existsAssignation |
 	existsAssignation := false.
@@ -9015,8 +8140,19 @@ existsAssigmentOf: accessThroughVariable inHierarchyOf: sourceClass
 	].
 	^existsAssignation.! !
 
+!MoveMethod class methodsFor: 'testing' stamp: 'HAW 9/Sep/2026, 2:14:00 pm (UTC)'!
+is: aVariableName aVariableOf: aSourceClass reachedIn: aMethodName
+
+	^(aSourceClass allInstVarNames includes: aVariableName)
+		or: [ ((aSourceClass >> aMethodName) methodNode hasLocallyArgumentNamed: aVariableName)
+			or: [ aSourceClass allClassVarNames includes: aVariableName ] ]! !
+
+!MoveMethod class methodsFor: 'testing' stamp: 'HAW 9/Sep/2026, 2:14:05 pm (UTC)'!
+isGlobalNamed: aName
+
+	^Smalltalk includesKey: aName asSymbol! !
+
 !MoveMethod class methodsFor: 'testing' stamp: 'mc 3/Mar/2025, 8:01:29 pm (UTC)'!
-!methodProperties: {}!
 needParameterNameToMove: methodName from: sourceClass accessingThrough: instanceVariable 
 	| compiledMethod needParameterNameVisitor |
 	compiledMethod := sourceClass compiledMethodAt: methodName.
@@ -9024,13 +8160,11 @@ needParameterNameToMove: methodName from: sourceClass accessingThrough: instance
 	^needParameterNameVisitor value! !
 
 !ExtractClassApplier methodsFor: 'initialization' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 initializeToApplyOn: aClass
 
 	classToRefactor := aClass.! !
 
 !ExtractClassApplier methodsFor: 'refactoring - creation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
-!methodProperties: {}!
 createRefactoring
 	"self halt."
 	
@@ -9042,7 +8176,6 @@ createRefactoring
 		methodToExtract: extractClassRequest methodsToExtract.! !
 
 !ExtractClassApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 28/Mar/2025, 5:39:42 pm (UTC)'!
-!methodProperties: {}!
 requestRefactoringParameters
 
 	"ver si hay que agregar check si la clase esta vacia"
@@ -9057,37 +8190,30 @@ requestRefactoringParameters
 	form := ExtractClassWindow open: self.! !
 
 !ExtractClassApplier methodsFor: 'evaluating' stamp: 'mc 18/Jan/2024, 6:13:58 am (UTC)'!
-!methodProperties: {}!
 value
 	self requestRefactoringParametersHandlingRefactoringExceptions.! !
 
 !ExtractClassApplier methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 classToRefactorName
 	^classToRefactor name! !
 
 !ExtractClassApplier methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 compiledMethodAt: aMessage 
 	^classToRefactor compiledMethodAt: aMessage! !
 
 !ExtractClassApplier methodsFor: 'accessing' stamp: 'mc 18/Jan/2024, 5:15:42 am (UTC)'!
-!methodProperties: {}!
 instanceVariableList
 	^classToRefactor instVarNames sorted! !
 
 !ExtractClassApplier methodsFor: 'accessing' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 selectorList
 	^classToRefactor selectors sort! !
 
 !ExtractClassApplier methodsFor: 'actions' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 cancel
 	form delete.! !
 
 !ExtractClassApplier methodsFor: 'actions' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 userSubmitted: request 
 	
 	extractClassRequest := request.
@@ -9096,13 +8222,11 @@ userSubmitted: request
 	! !
 
 !ExtractClassApplier class methodsFor: 'instance creation' stamp: 'mc 5/Jan/2024, 4:23:50 am (UTC)'!
-!methodProperties: {}!
 applyOn: aClass 
 	
 	^self new initializeToApplyOn: aClass! !
 
 !ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'HAW 28/Mar/2025, 4:31:51 pm (UTC)'!
-!methodProperties: {}!
 createRefactoring
 
 	^ExtractToMethodObject
@@ -9115,38 +8239,32 @@ createRefactoring
 		evaluatedWith: refactoringConfiguration methodObjectEvaluationMessageSelector.! !
 
 !ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'HAW 31/Mar/2025, 8:03:35 pm (UTC)'!
-!methodProperties: {}!
 requestRefactoringParameters
 
 	panel := ExtractToMethodObjectWindow open: self.
 	! !
 
 !ExtractToMethodObjectApplier methodsFor: 'as yet unclassified' stamp: 'HAW 28/Mar/2025, 4:36:47 pm (UTC)'!
-!methodProperties: {}!
 showChanges
 
 	panel delete ! !
 
 !ExtractToMethodObjectApplier methodsFor: 'event handling' stamp: 'FGJ 4/Apr/2019, 8:32:47 pm (UTC)'!
-!methodProperties: {}!
 cancel
 
 	panel delete.! !
 
 !ExtractToMethodObjectApplier methodsFor: 'event handling' stamp: 'FGJ 4/Apr/2019, 8:33:21 pm (UTC)'!
-!methodProperties: {}!
 handleRefactoringError: aRefactoringError
 
 	self inform: aRefactoringError messageText.! !
 
 !ExtractToMethodObjectApplier methodsFor: 'event handling' stamp: 'FGJ 13/Feb/2019, 7:00:37 pm (UTC)'!
-!methodProperties: {}!
 panelWasClosed
 
 	self cancel.! !
 
 !ExtractToMethodObjectApplier methodsFor: 'event handling' stamp: 'HAW 28/Mar/2025, 4:31:51 pm (UTC)'!
-!methodProperties: {}!
 userSubmitted: anExtractToMethodObjectConfiguration
 
 	refactoringConfiguration := anExtractToMethodObjectConfiguration.
@@ -9155,31 +8273,26 @@ userSubmitted: anExtractToMethodObjectConfiguration
 	refactoring ifNotNil: [self applyRefactoring; showChanges].! !
 
 !ExtractToMethodObjectApplier methodsFor: 'initialization' stamp: 'FGJ 13/Feb/2019, 6:24:32 pm (UTC)'!
-!methodProperties: {}!
 initializeToExtract: aCompiledMethod
 
 	compiledMethodToExtract := aCompiledMethod.! !
 
 !ExtractToMethodObjectApplier methodsFor: 'accessing' stamp: 'FGJ 11/Apr/2019, 7:56:27 pm (UTC)'!
-!methodProperties: {}!
 methodToExtract
 
 	^compiledMethodToExtract! !
 
 !ExtractToMethodObjectApplier methodsFor: 'accessing' stamp: 'HAW 27/Jul/2023, 9:54:28 pm (UTC)'!
-!methodProperties: {}!
 variablesToParametrize
 
 	^OrderedCollection newFrom: (VariablesToExtractFinder valueIn: compiledMethodToExtract notOptimizedMethodNode)! !
 
 !ExtractToMethodObjectApplier methodsFor: 'evaluating' stamp: 'FGJ 4/Apr/2019, 8:35:17 pm (UTC)'!
-!methodProperties: {}!
 value
 
 	self requestRefactoringParametersHandlingRefactoringExceptions.! !
 
 !ExtractToMethodObjectApplier class methodsFor: 'as yet unclassified' stamp: 'FGJ 10/Dec/2018, 2:45:57 pm (UTC)'!
-!methodProperties: {}!
 errorMessageForCanNotParseMethod: anError
 
 	^ String streamContents: [ :stream |
@@ -9189,25 +8302,21 @@ errorMessageForCanNotParseMethod: anError
 			nextPutAll: anError messageText ]! !
 
 !ExtractToMethodObjectApplier class methodsFor: 'as yet unclassified' stamp: 'FGJ 13/Feb/2019, 6:23:57 pm (UTC)'!
-!methodProperties: {}!
 extract: aCompiledMethod
 
 	^self new initializeToExtract: aCompiledMethod! !
 
 !IntroduceNullObjectApplier methodsFor: 'initialization' stamp: 'FGJ 26/Mar/2019, 2:35:25 pm (UTC)'!
-!methodProperties: {}!
 initializeToApplyOn: aClass
 
 	classToRefactor := aClass.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/Apr/2019, 4:05:04 pm (UTC)'!
-!methodProperties: {}!
 cancel
 
 	form delete.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 26/Mar/2019, 5:58:59 pm (UTC)'!
-!methodProperties: {}!
 chooseInstanceVariable
 
 	instanceVariable ifNotNil: [ ^self ].
@@ -9217,7 +8326,6 @@ chooseInstanceVariable
 		thenDo: [ :anInstanceVariable | ^instanceVariable := anInstanceVariable ].! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 8/Apr/2019, 8:46:44 pm (UTC)'!
-!methodProperties: {}!
 createRefactoring
 
 	^IntroduceNullObject
@@ -9230,25 +8338,21 @@ createRefactoring
 		! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 27/Mar/2019, 8:41:30 pm (UTC)'!
-!methodProperties: {}!
 formWasClosed
 
 	self cancel.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/Apr/2019, 4:07:17 pm (UTC)'!
-!methodProperties: {}!
 handleRefactoringError: aRefactoringError
 
 	self inform: aRefactoringError messageText.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 27/Mar/2019, 8:47:08 pm (UTC)'!
-!methodProperties: {}!
 ifNilChecks
 
 	^ifNilChecks! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'HAW 28/Mar/2025, 5:52:00 pm (UTC)'!
-!methodProperties: {}!
 requestRefactoringParameters
 
 	self chooseInstanceVariable.
@@ -9262,20 +8366,17 @@ requestRefactoringParameters
 	form := IntroduceNullObjectWindow open: self.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 26/Mar/2019, 5:58:00 pm (UTC)'!
-!methodProperties: {}!
 selectVariableLabel
 
 	^'Select instance variable to introduce null object on'! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 29/Mar/2019, 7:40:04 pm (UTC)'!
-!methodProperties: {}!
 showChanges
 
 	form deleteDiscardingEdits.
 	Transcript log: 'Successfully applied the Introduce Null Object refactoring'.! !
 
 !IntroduceNullObjectApplier methodsFor: 'as yet unclassified' stamp: 'FGJ 4/Apr/2019, 4:10:03 pm (UTC)'!
-!methodProperties: {}!
 userSubmitted: anIntroduceNullObjectRequest
 
 	introduceNullObjectRequest := anIntroduceNullObjectRequest.
@@ -9284,25 +8385,21 @@ userSubmitted: anIntroduceNullObjectRequest
 	refactoring ifNotNil: [self applyRefactoring; showChanges].! !
 
 !IntroduceNullObjectApplier methodsFor: 'accessing' stamp: 'FGJ 28/Mar/2019, 4:22:43 pm (UTC)'!
-!methodProperties: {}!
 classToRefactor
 
 	^classToRefactor! !
 
 !IntroduceNullObjectApplier methodsFor: 'evaluating' stamp: 'FGJ 4/Apr/2019, 8:34:24 pm (UTC)'!
-!methodProperties: {}!
 value
 
 	self requestRefactoringParametersHandlingRefactoringExceptions.! !
 
 !IntroduceNullObjectApplier class methodsFor: 'instance creation' stamp: 'FGJ 26/Mar/2019, 2:34:57 pm (UTC)'!
-!methodProperties: {}!
 applyOn: aClass
 
 	^self new initializeToApplyOn: aClass! !
 
 !ExtractParameterObjectApplier methodsFor: 'evaluating' stamp: 'HAW 27/Mar/2025, 2:30:59 pm (UTC)'!
-!methodProperties: {}!
 value
 
 	requestExitBlock := [ ^self ].
@@ -9311,19 +8408,16 @@ value
 	self requestRefactoringParametersHandlingRefactoringExceptions.! !
 
 !ExtractParameterObjectApplier methodsFor: 'accessing' stamp: 'HAW 27/Mar/2025, 2:33:03 pm (UTC)'!
-!methodProperties: {}!
 methodToRefactor
 
 	^methodToRefactor! !
 
 !ExtractParameterObjectApplier methodsFor: 'accessing' stamp: 'MEGL 11/Nov/2024, 1:51:14 pm (UTC)'!
-!methodProperties: {}!
 refactoringClass
 
 	^ExtractParameterObject! !
 
 !ExtractParameterObjectApplier methodsFor: 'refactoring - applying' stamp: 'HAW 28/Mar/2025, 4:36:57 pm (UTC)'!
-!methodProperties: {}!
 createAndApplyRefactoring
 
 	super createAndApplyRefactoring.
@@ -9331,7 +8425,6 @@ createAndApplyRefactoring
 	configurationWindow delete! !
 
 !ExtractParameterObjectApplier methodsFor: 'refactoring - applying' stamp: 'HAW 27/Mar/2025, 2:51:58 pm (UTC)'!
-!methodProperties: {}!
 createRefactoring
 
 	^self refactoringClass 
@@ -9345,26 +8438,22 @@ createRefactoring
 		senders: senders ! !
 
 !ExtractParameterObjectApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 28/Mar/2025, 3:07:57 pm (UTC)'!
-!methodProperties: {}!
 parameterNames
 
 	^OrderedCollection withAll: methodToRefactor methodNode argumentNames! !
 
 !ExtractParameterObjectApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 27/Mar/2025, 2:41:27 pm (UTC)'!
-!methodProperties: {}!
 requestRefactoringParameters
 
 	configurationWindow := ExtractParameterObjectConfigurationWindow open: self.
 	! !
 
 !ExtractParameterObjectApplier methodsFor: 'event handling' stamp: 'HAW 27/Mar/2025, 2:32:13 pm (UTC)'!
-!methodProperties: {}!
 cancel
 
 	configurationWindow delete.! !
 
 !ExtractParameterObjectApplier methodsFor: 'event handling' stamp: 'HAW 28/Mar/2025, 4:31:41 pm (UTC)'!
-!methodProperties: {}!
 userSubmitted: anExtractParameterObjectConfiguration
 
 	refactoringConfiguration := anExtractParameterObjectConfiguration.
@@ -9372,11 +8461,9 @@ userSubmitted: anExtractParameterObjectConfiguration
 	self askForImplementosAndSenders.! !
 
 !ExtractParameterObjectApplier class methodsFor: 'as yet unclassified' stamp: 'MEGL 16/Jul/2024, 11:56:41 pm (UTC)'!
-!methodProperties: {}!
 assertCanApplyRefactoringFor: aSelector in: aSelectedClass! !
 
 !MoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 askTargetClassName
 	| targetClassNameTmp initialAnswer |
 	initialAnswer := self initialAnswerForInstanceVariable: accessingThroughinstanceVariableName in: classToRefactor.
@@ -9386,7 +8473,6 @@ askTargetClassName
 	targetClass := Smalltalk at: targetClassNameTmp asSymbol ifAbsent: [Refactoring refactoringErrorClass signal: 'Cant find the target class'].! !
 
 !MoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 chooseInstanceVariableToAccessThrough
 	| vars index |
 	"self halt."
@@ -9399,7 +8485,6 @@ chooseInstanceVariableToAccessThrough
 	accessingThroughinstanceVariableName := vars at: index.! !
 
 !MoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 chooseInstanceVariableToMove
 	instanceVariableName ifNotNil: [ ^self ].
 	
@@ -9410,7 +8495,6 @@ chooseInstanceVariableToMove
 	self endRequest ! !
 
 !MoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 28/Mar/2025, 5:52:28 pm (UTC)'!
-!methodProperties: {}!
 createRefactoring
 	^MoveInstanceVariable 
 		named: instanceVariableName 
@@ -9419,13 +8503,11 @@ createRefactoring
 		accessingThrough: accessingThroughinstanceVariableName.! !
 
 !MoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 initialAnswerForInstanceVariable: anAccessingThroughinstanceVariableName in: aSourceClass 
 	
 	^''! !
 
 !MoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 requestRefactoringParameters
 
 	self 
@@ -9435,7 +8517,6 @@ requestRefactoringParameters
 		askTargetClassName! !
 
 !MoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 selectClassWichInstaceVariableIsDefined
 	| classToRefactorWithIVDefined |
 	"self halt."
@@ -9445,24 +8526,20 @@ selectClassWichInstaceVariableIsDefined
 		classToRefactor := classToRefactorWithIVDefined ]! !
 
 !MoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 selectVariableLabel
 	^'Select variable to access through'! !
 
 !MoveInstanceVariableApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 4/Apr/2024, 4:39:10 am (UTC)'!
-!methodProperties: {}!
 selectVariableToMoveLabel
 	^'Choose instance variable to move'! !
 
 !MoveMethodApplier methodsFor: 'initialization' stamp: 'HAW 22/Mar/2025, 11:44:12 pm (UTC)'!
-!methodProperties: {}!
 initializeOn: aModel forMethod: aMethodReference
  
 	model := aModel.
 	methodReference := aMethodReference.! !
 
 !MoveMethodApplier methodsFor: 'refactoring - creation' stamp: 'HAW 28/Apr/2025, 7:26:42 pm (UTC)'!
-!methodProperties: {}!
 createRefactoring
 	
 	accessingThroughVariableName = 'ToClassGlobalObject' 
@@ -9482,7 +8559,6 @@ createRefactoring
 ! !
 
 !MoveMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 18/Apr/2025, 6:55:46 am (UTC)'!
-!methodProperties: {}!
 addAllReachableVariableInClass: aClass onCollection: variableListWithSubtitles
 
 	aClass instVarNames ifNotEmpty: [
@@ -9495,7 +8571,6 @@ addAllReachableVariableInClass: aClass onCollection: variableListWithSubtitles
 		]! !
 
 !MoveMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
-!methodProperties: {}!
 askExtraParameterIfNeeded
 	
 	| parameterKeyword parameterName |
@@ -9536,7 +8611,6 @@ askExtraParameterIfNeeded
 			]! !
 
 !MoveMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 3/Dec/2024, 9:59:19 pm (UTC)'!
-!methodProperties: {}!
 askTargetClassName
 	| targetClassNameTmp initialAnswer |
 	"self halt."
@@ -9546,12 +8620,10 @@ askTargetClassName
 	targetClass := Smalltalk at: targetClassNameTmp asSymbol ifAbsent: [Refactoring refactoringErrorClass signal: 'Cant find the target class'].! !
 
 !MoveMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 chooseMethodToMove
 	methodToMove := methodReference selector! !
 
 !MoveMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 18/Apr/2025, 6:59:36 am (UTC)'!
-!methodProperties: {}!
 chooseVariableToAccessThrough
 	| methodArgumentNames variableListWithSubtitles varSelected |
 	
@@ -9575,7 +8647,6 @@ chooseVariableToAccessThrough
 	! !
 
 !MoveMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 3/Dec/2024, 10:01:03 pm (UTC)'!
-!methodProperties: {}!
 initialAnswerForInstanceVariable: anAccessingThroughVariableName in: aSourceClass 
 	
 	^''
@@ -9583,7 +8654,6 @@ initialAnswerForInstanceVariable: anAccessingThroughVariableName in: aSourceClas
 	! !
 
 !MoveMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 6/Dec/2024, 12:23:09 pm (UTC)'!
-!methodProperties: {}!
 requestRefactoringParameters
 	"self halt."
 	self 
@@ -9595,34 +8665,28 @@ requestRefactoringParameters
 		! !
 
 !MoveMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 selectClassWichMethodIsDefined
 	sourceClass := methodReference actualClass ! !
 
 !MoveMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 selectVariableLabel
 	^'Select variable to access through'! !
 
 !MoveMethodApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 14/Jul/2024, 5:17:02 am (UTC)'!
-!methodProperties: {}!
 showChanges
 	"nothing to inform"! !
 
 !MoveMethodApplier class methodsFor: 'instance creation' stamp: 'HAW 22/Mar/2025, 11:43:41 pm (UTC)'!
-!methodProperties: {}!
 createAndValueHandlingExceptionsOn: aModel forMethod: aMethodReference 
 
 	self createAndValueHandlingExceptions: [ self on: aModel forMethod: aMethodReference ].! !
 
 !MoveMethodApplier class methodsFor: 'instance creation' stamp: 'HAW 22/Mar/2025, 11:43:58 pm (UTC)'!
-!methodProperties: {}!
 on: aModel forMethod: aMethodReference 
 
 	^self new initializeOn: aModel forMethod: aMethodReference ! !
 
 !CompiledMethod methodsFor: '*ExtraRefactorings-testing' stamp: 'HAW 3/Dec/2025, 6:43:02 pm (UTC)'!
-!methodProperties: {}!
 isRelaxedSetterOf: anInstVarName at: anInstVarIndex allowsReturnReceiver: allowsReturnReceiver
 	"This method is copy of #isSetterOf:at: with some changes, not nice... but the easiest way
 	without modifing Cuis.
@@ -9647,14 +8711,12 @@ isRelaxedSetterOf: anInstVarName at: anInstVarIndex allowsReturnReceiver: allows
 	^instruction selector == #methodReturnTop or: [allowsReturnReceiver and: [instruction selector == #methodReturnReceiver ]]! !
 
 !CharacterSequence methodsFor: '*ExtraRefactorings' stamp: 'HAW 24/Mar/2025, 9:30:53 pm (UTC)'!
-!methodProperties: {}!
 asInstanceVariableNameWithoutChangeMe
 	
 	^self asInstanceVariableNameIfHasNoPrefix: [ self ]
 	! !
 
 !BrowserWindow methodsFor: '*ExtraRefactorings' stamp: 'HAW 28/Apr/2025, 8:36:51 pm (UTC)'!
-!methodProperties: {}!
 contextualExtractClass
 
 	| classToRefactor |
@@ -9664,14 +8726,12 @@ contextualExtractClass
 	classToRefactor ifNotNil: [(ExtractClassApplier applyOn: classToRefactor) value.].! !
 
 !BrowserWindow methodsFor: '*ExtraRefactorings' stamp: 'HAW 28/Apr/2025, 8:36:56 pm (UTC)'!
-!methodProperties: {}!
 contextualMoveInstanceVariable
 
 	model selectedClassOrMetaClass ifNotNil: [ :aClass |
 		(RefactoringApplier moveInstanceVariableApplier on: model at: aClass ) value].! !
 
 !BrowserWindow methodsFor: '*ExtraRefactorings' stamp: 'FGJ 14/Mar/2019, 2:52:44 pm (UTC)'!
-!methodProperties: {}!
 extractMethodToMethodObject
 
 	| classToRefactor messageName |
@@ -9685,14 +8745,12 @@ extractMethodToMethodObject
 		(ExtractToMethodObjectApplier extract: compiledMethod) value.].! !
 
 !BrowserWindow methodsFor: '*ExtraRefactorings' stamp: 'MEGL 11/Nov/2024, 2:20:20 pm (UTC)'!
-!methodProperties: {}!
 extractParameterObject
 	
 	model selectedMessageName ifNotNil: [ :oldSelector |
 		RefactoringApplier extractParameterObjectApplier createAndValueHandlingExceptionsOn: model for: oldSelector in: model selectedClassOrMetaClass ]! !
 
 !BrowserWindow methodsFor: '*ExtraRefactorings' stamp: 'FGJ 26/Mar/2019, 2:33:13 pm (UTC)'!
-!methodProperties: {}!
 introduceNullObject
 
 	| classToRefactor |
@@ -9702,7 +8760,6 @@ introduceNullObject
 	classToRefactor ifNotNil: [(IntroduceNullObjectApplier applyOn: classToRefactor) value.].! !
 
 !BrowserWindow methodsFor: '*ExtraRefactorings' stamp: 'mc 28/Apr/2024, 11:29:11 pm (UTC)'!
-!methodProperties: {}!
 moveMethod
 	
 	model selectedMessageName ifNotNil: [ :selectorToInline |
@@ -9711,7 +8768,6 @@ moveMethod
 			forMethod: (MethodReference class: model selectedClassOrMetaClass selector: selectorToInline )]! !
 
 !SmalltalkEditor methodsFor: '*ExtraRefactorings' stamp: 'HAW 28/Apr/2025, 8:36:08 pm (UTC)'!
-!methodProperties: {}!
 contextualMoveInstanceVariable
 	
 	self isEditingClassDefinition 
@@ -9720,7 +8776,6 @@ contextualMoveInstanceVariable
 	! !
 
 !SmalltalkEditor methodsFor: '*ExtraRefactorings' stamp: 'mc 10/Jan/2023, 2:33:58 am (UTC)'!
-!methodProperties: {}!
 contextualMoveInstanceVariableInClassDefinition 
 
 	self ifSourceCodeRefactoringCanBeAppliedDo: [
@@ -9730,7 +8785,6 @@ contextualMoveInstanceVariableInClassDefinition
 			ifErrorsParsing: [ :anError | morph flash ] ]! !
 
 !SmalltalkEditor methodsFor: '*ExtraRefactorings' stamp: 'mc 22/Jan/2023, 5:44:48 pm (UTC)'!
-!methodProperties: {}!
 contextualMoveInstanceVariableInClassDefinitionOf: aClassDefinitionNode in: aSelectedClass 
 	
 	| analyzer cursorPosition |
@@ -9751,7 +8805,6 @@ contextualMoveInstanceVariableInClassDefinitionOf: aClassDefinitionNode in: aSel
 	! !
 
 !SmalltalkEditor methodsFor: '*ExtraRefactorings' stamp: 'HAW 28/Apr/2025, 8:36:15 pm (UTC)'!
-!methodProperties: {}!
 contextualMoveInstanceVariableInMethod
 
 	self
@@ -9759,7 +8812,6 @@ contextualMoveInstanceVariableInMethod
 		ifErrorsParsing: [ :anError | morph flash ]		! !
 
 !SmalltalkEditor methodsFor: '*ExtraRefactorings' stamp: 'mc 8/Jan/2023, 5:33:14 am (UTC)'!
-!methodProperties: {}!
 contextualMoveInstanceVariableOf: aMethodNode in: aSelectedClass
 
 	aMethodNode
@@ -9770,7 +8822,6 @@ contextualMoveInstanceVariableOf: aMethodNode in: aSelectedClass
 				ifFalse: [ morph flash ]]! !
 
 !SmalltalkEditor methodsFor: '*ExtraRefactorings' stamp: 'HAW 28/Apr/2025, 8:36:21 pm (UTC)'!
-!methodProperties: {}!
 contextualMoveMethod
 	
 	self isEditingClassDefinition ifTrue: [ ^morph flash ].
@@ -9781,7 +8832,6 @@ contextualMoveMethod
 	! !
 
 !SmalltalkEditor methodsFor: '*ExtraRefactorings' stamp: 'HAW 28/Apr/2025, 8:36:29 pm (UTC)'!
-!methodProperties: {}!
 contextualMoveMethodOf: aMethodNode in: aSelectedClass
 
 	| aReference |
@@ -9799,7 +8849,6 @@ contextualMoveMethodOf: aMethodNode in: aSelectedClass
 ! !
 
 !SmalltalkEditor methodsFor: '*ExtraRefactorings' stamp: 'mc 8/Jan/2023, 5:34:44 am (UTC)'!
-!methodProperties: {}!
 moveInstanceVariable: aNodeUnderCursor in: aSelectedClass at: aMethodNode
 
 	aNodeUnderCursor isTempOrArg ifTrue: [ ^morph flash ].
@@ -9810,31 +8859,26 @@ moveInstanceVariable: aNodeUnderCursor in: aSelectedClass at: aMethodNode
 			ifFalse: [^morph flash]. ]! !
 
 !SmalltalkEditor methodsFor: '*ExtraRefactorings' stamp: 'HAW 28/Apr/2025, 8:36:35 pm (UTC)'!
-!methodProperties: {}!
 moveInstanceVariableOn: aBrowser at: aClassToRefactor
 
 	self moveInstanceVariableOn: aBrowser for: nil at: aClassToRefactor.! !
 
 !SmalltalkEditor methodsFor: '*ExtraRefactorings' stamp: 'HAW 28/Apr/2025, 8:36:42 pm (UTC)'!
-!methodProperties: {}!
 moveInstanceVariableOn: aBrowser for: anInstanceVariableName at: aClassToRefactor
 	
 	(RefactoringApplier moveInstanceVariableApplier on: aBrowser for: anInstanceVariableName at: aClassToRefactor) value! !
 
 !ParametersSizeChange methodsFor: '*ExtraRefactorings-changes' stamp: 'HAW 23/Mar/2025, 10:43:09 pm (UTC)'!
-!methodProperties: {}!
 changedSenders
 	
 	^changedSenders! !
 
 !ParametersSizeChange methodsFor: '*ExtraRefactorings-changes' stamp: 'HAW 23/Mar/2025, 10:42:55 pm (UTC)'!
-!methodProperties: {}!
 newImplementors
 	
 	^newImplementors! !
 
 !NewInstanceVariablePrecondition methodsFor: '*ExtraRefactorings-pre-conditions' stamp: 'LLM 29/Jul/2026, 7:39:36 pm (UTC)'!
-!methodProperties: {}!
 assertIsNotAlreadyDefinedInSuperclasses
 
 	^ (classToAddInstVar classThatDefinesInstanceVariable: instVarName) 
@@ -9842,7 +8886,6 @@ assertIsNotAlreadyDefinedInSuperclasses
 		! !
 
 !NewInstanceVariablePrecondition methodsFor: '*ExtraRefactorings-evaluating' stamp: 'LLM 29/Jul/2026, 7:43:22 pm (UTC)'!
-!methodProperties: {}!
 valueForSuperclass
 	
 	self assertIsNotEmpty.

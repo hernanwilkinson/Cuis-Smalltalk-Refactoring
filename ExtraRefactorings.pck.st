@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8160] on 10 September 2026 at 2:55:23 pm'!
-'Description Let a method be moved to the class of what a global holds'!
-!provides: 'ExtraRefactorings' 1 15!
+'From Cuis7.9 [latest update: #8180] on 14 September 2026 at 12:52:07 pm'!
+'Description Move method parentheses'!
+!provides: 'ExtraRefactorings' 1 16!
 SystemOrganization addCategory: #ExtraRefactorings!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-UI'!
@@ -994,7 +994,7 @@ initializeFor: aMethodNode variableToAcessThrough: aVariableToAccesoThroughName 
 	targetClass := aTargetClass.
 	methodToCompileOnSourceClass := Set new.! !
 
-!CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 21/Jan/2025, 5:32:45 am (UTC)'!
+!CodeForNodeToMove methodsFor: 'visiting' stamp: 'HAW 13/Sep/2026, 12:04:27 am (UTC)'!
 visitAssignmentNode: anAssignmentNode 
 	| assigmentValue completeRangesOfassigmentNode resultForValue setterSelectorAsString |
 	"self halt."
@@ -1006,7 +1006,7 @@ visitAssignmentNode: anAssignmentNode
 					onNode: anAssignmentNode value
 					parameterNeeded: parameterNeeded
 					targetClass: targetClass) value.
-	(self shouldAddParenthesisOnValueOf: anAssignmentNode)
+	anAssignmentNode value requiresParenthesesAsAKeywordArgument
 		ifTrue: [assigmentValue := '(', resultForValue sourceCode , ')'.] 
 		ifFalse: [assigmentValue := resultForValue sourceCode .].
 	
@@ -1337,11 +1337,6 @@ setterForInstanceVariable: anInstanceVariableName
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
 shouldAddParenthesis: argumentNode 
 	^argumentNode isAssignmentNode! !
-
-!CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
-shouldAddParenthesisOnValueOf: anAssignmentNode
-
-	^ ((anAssignmentNode value isMessageNode and: [anAssignmentNode value isKeywordMessageSend])) or: [anAssignmentNode value isAssignmentNode ]! !
 
 !CodeForNodeToMove methodsFor: 'accessing' stamp: 'mc 31/Dec/2024, 6:40:27 am (UTC)'!
 value
@@ -8685,6 +8680,11 @@ createAndValueHandlingExceptionsOn: aModel forMethod: aMethodReference
 on: aModel forMethod: aMethodReference 
 
 	^self new initializeOn: aModel forMethod: aMethodReference ! !
+
+!ParseNode methodsFor: '*ExtraRefactorings-testing' stamp: 'HAW 14/Sep/2026, 3:50:16 pm (UTC)'!
+requiresParenthesesAsAKeywordArgument
+
+	^self expressionPrecedence >= self class keywordPrecedence ! !
 
 !CompiledMethod methodsFor: '*ExtraRefactorings-testing' stamp: 'HAW 3/Dec/2025, 6:43:02 pm (UTC)'!
 isRelaxedSetterOf: anInstVarName at: anInstVarIndex allowsReturnReceiver: allowsReturnReceiver

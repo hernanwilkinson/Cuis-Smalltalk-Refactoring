@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8160] on 10 September 2026 at 2:55:29 pm'!
-'Description Let a method be moved to the class of what a global holds'!
-!provides: 'ExtraRefactoringsTests' 1 4!
+'From Cuis7.9 [latest update: #8180] on 14 September 2026 at 12:52:25 pm'!
+'Description Move method parentheses'!
+!provides: 'ExtraRefactoringsTests' 1 5!
 !requires: 'BaseImageTests' 1 473 nil!
 !requires: 'ExtraRefactorings' 1 11 nil!
 SystemOrganization addCategory: #'ExtraRefactoringsTests-ExtractClass'!
@@ -9213,6 +9213,26 @@ test206moveGetterShouldNotMakeDoubleRecursion
 	
 	! !
 
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 12/Sep/2026, 11:37:27 pm (UTC)'!
+test207AnAssignmentToAnInstanceVariableUsedAsAReceiverIsParenthesizedWhenMoved
+
+	| sourceClass targetClass refactoring |
+
+	sourceClass := self createClassNamed: #SourceClass instanceVariableNames: 'iv1 iv3'.
+	targetClass := self createClassNamed: #TargetClass.
+	sourceClass compile: 'initializeIv1 iv1 := TargetClass new.'.
+	sourceClass compile: 'm1 ^(iv3 := 1) printString.'.
+
+	refactoring := MoveMethod
+		methodNamed: #m1
+		from: sourceClass
+		to: targetClass
+		accessingThrough: 'iv1'
+		parameterNeeded: (ExtraParameterNameNeeded parameterName: 'sourceObject').
+	refactoring apply.
+
+	self assert: (targetClass sourceCodeAt: #m1:) equals: 'm1: sourceObject ^(sourceObject iv3: 1) printString.'! !
+
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
 test207moveGetterShouldNotMakeDoubleRecursion
 	
@@ -9242,6 +9262,53 @@ test207moveGetterShouldNotMakeDoubleRecursion
 	^iv1 iv2_: self.' equals: (sourceClass sourceCodeAt: #iv2_).
 	
 	! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 12/Sep/2026, 11:41:16 pm (UTC)'!
+test208AnAssignmentOfACascadeToAnInstanceVariableParenthesizesTheCascadeWhenMoved
+
+	| sourceClass targetClass refactoring |
+
+	sourceClass := self createClassNamed: #SourceClass instanceVariableNames: 'iv1 iv3'.
+	targetClass := self createClassNamed: #TargetClass.
+	sourceClass compile: 'initializeIv1 iv1 := TargetClass new.'.
+	sourceClass compile: 'm1 iv3 := OrderedCollection new add: 1; yourself.'.
+
+	refactoring := MoveMethod
+		methodNamed: #m1
+		from: sourceClass
+		to: targetClass
+		accessingThrough: 'iv1'
+		parameterNeeded: (ExtraParameterNameNeeded parameterName: 'sourceObject').
+	refactoring apply.
+
+	self
+		assert: (targetClass sourceCodeAt: #m1:)
+		equals: 'm1: sourceObject sourceObject iv3: (OrderedCollection new add: 1; yourself).' , String newLineString , String tab , '^sourceObject.'! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 12/Sep/2026, 11:59:53 pm (UTC)'!
+test209AnAssignmentInParenthesesAsAnArgumentOfASuperSendKeepsOnePairWhenMoved
+
+	| sourceClass targetClass refactoring sourceSuperClass |
+
+	sourceSuperClass := self createClassNamed: #SourceSuperClass.
+	sourceClass := self
+		createClassNamed: #SourceClass
+		subclassOf: sourceSuperClass
+		instanceVariableNames: 'iv1 iv3'.
+	targetClass := self createClassNamed: #TargetClass.
+	sourceSuperClass compile: 'increment: aSmallinteger ^1+aSmallinteger.'.
+	sourceClass compile: 'initializeIv1 iv1 := TargetClass new.'.
+	sourceClass compile: 'm1 ^super increment: (iv3 := 1).'.
+
+	refactoring := MoveMethod
+		methodNamed: #m1
+		from: sourceClass
+		to: targetClass
+		accessingThrough: 'iv1'
+		parameterNeeded: (ExtraParameterNameNeeded parameterName: 'sourceObject').
+	refactoring apply.
+
+	self assert: (targetClass sourceCodeAt: #m1:) equals: 'm1: sourceObject ^sourceObject CHANGE_ME_super_increment: (sourceObject iv3: 1).'! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
 test300MovingMethodWichUsesAccesingThroughVariableShouldBeRepalcedForSelf

@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8134] on 27 August 2026 at 2:06:43 pm'!
-'Description fix sent unimplemented messages'!
-!provides: 'ExtraRefactoringsLiveTyping' 1 3!
+'From Cuis7.9 [latest update: #8184] on 15 September 2026 at 10:27:27 am'!
+'Description Test the extra refactorings with actual scope'!
+!provides: 'ExtraRefactoringsLiveTyping' 1 4!
 !requires: 'ExtraRefactoringsTests' 1 0 nil!
 !requires: 'LiveTyping' 1 128 nil!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTyping-ExtractParameterObject-Model'!
@@ -51,14 +51,12 @@ MoveMethodWithActualScopeApplier class
 
 
 !ExtractParameterObjectWithActualScope methodsFor: 'initialization' stamp: 'HAW 25/Aug/2026, 12:27:06 pm (UTC)'!
-!methodProperties: {}!
 initializeWithPossibleMessageSends: aShouldChangePossibleMessageSends
 
 	shouldChangePossibleMessageSends := aShouldChangePossibleMessageSends
 ! !
 
 !ExtractParameterObjectWithActualScope methodsFor: 'refactoring-changes' stamp: 'HAW 25/Aug/2026, 12:27:06 pm (UTC)'!
-!methodProperties: {}!
 createAddParameterRefactoring
 
 	"The add parameter is the first change made, so the implementors and the senders to give it
@@ -77,7 +75,6 @@ createAddParameterRefactoring
 ! !
 
 !ExtractParameterObjectWithActualScope methodsFor: 'refactoring-changes' stamp: 'HAW 25/Aug/2026, 12:30:18 pm (UTC)'!
-!methodProperties: {}!
 createRemoveParameterRefactoringFor: aParameter at: anIndex 
 
 	"The index I was made with is where the parameter stood before any other was removed, so
@@ -94,7 +91,6 @@ createRemoveParameterRefactoringFor: aParameter at: anIndex
 ! !
 
 !ExtractParameterObjectWithActualScope class methodsFor: 'instance creation' stamp: 'HAW 25/Aug/2026, 12:26:54 pm (UTC)'!
-!methodProperties: {}!
 from: aCompiledMethod
 toClassNamed: aClassName
 subclassing: aSuperclassName
@@ -117,13 +113,11 @@ withPossibleMessageSends: aShouldChangePossibleMessageSends
 ! !
 
 !ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 17/May/2024, 2:19:52 pm (UTC)'!
-!methodProperties: {}!
 actualScopeOptionLabels
 
 	^{ 'Actual Scope' }! !
 
 !ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 13/May/2025, 7:43:30 pm (UTC)'!
-!methodProperties: {}!
 calculateImplementorsAndSenders
 
 	self isActualScopeChoice 
@@ -132,134 +126,133 @@ calculateImplementorsAndSenders
 ! !
 
 !ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 25/Nov/2024, 11:44:07 pm (UTC)'!
-!methodProperties: {}!
 convertSendersToCompiledMethods
 
 	self filterSenders! !
 
 !ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 25/Nov/2024, 11:04:19 pm (UTC)'!
-!methodProperties: {}!
 messageNode
 
 	^nil! !
 
 !ExtractParameterObjectWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'MEGL 17/May/2024, 2:24:47 pm (UTC)'!
-!methodProperties: {}!
 scopeOptionLabels
 
 	^super scopeOptionLabels, self actualScopeOptionLabels! !
 
 !ExtractParameterObjectWithActualScopeApplier class methodsFor: 'as yet unclassified' stamp: 'HAW 28/Apr/2025, 9:07:37 pm (UTC)'!
-!methodProperties: {}!
 initialize
 	
 	RefactoringApplier registerExtractParameterObjectApplier: self! !
 
-!MoveInstanceVariableWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'mc 17/Jun/2024, 6:53:03 pm (UTC)'!
-!methodProperties: {}!
-initialAnswerForInstanceVariable: anAccessingThroughinstanceVariableName in: aSourceClass 
-	
-	| liveTypingTypes |
-	classToRefactor shouldLiveTypingBeDisabled ifTrue: [^''].
-	accessingThroughinstanceVariableName ifNil: [^''].
-	liveTypingTypes := classToRefactor commonSupertypeOfInstanceVariableNamed: accessingThroughinstanceVariableName ifNoTypes: [^''].
-	^liveTypingTypes name asString ! !
+!MoveInstanceVariableWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 15/Sep/2026, 12:13:11 pm (UTC)'!
+initialAnswerForInstanceVariable: anAccessingThroughInstanceVariableName in: aSourceClass
+
+	| commonSupertype |
+
+	aSourceClass shouldLiveTypingBeDisabled ifTrue: [ ^'' ].
+	anAccessingThroughInstanceVariableName ifNil: [ ^'' ].
+	commonSupertype := aSourceClass
+		commonSupertypeOfInstanceVariableNamed: anAccessingThroughInstanceVariableName
+		ifNoTypes: [ ^'' ].
+
+	^commonSupertype name asString! !
 
 !MoveInstanceVariableWithActualScopeApplier class methodsFor: 'as yet unclassified' stamp: 'HAW 28/Apr/2025, 9:07:50 pm (UTC)'!
-!methodProperties: {}!
 initialize
 	
 	RefactoringApplier registerMoveInstanceVariableApplier: self ! !
 
-!MoveMethodWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 28/Apr/2025, 7:51:51 pm (UTC)'!
-!methodProperties: {}!
-initialAnswerForInstanceVariable: anAccessingThroughVariableName in: aSourceClass 
-	
-	| liveTypingTypes |
-	
+!MoveMethodWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 15/Sep/2026, 12:14:45 pm (UTC)'!
+classHeldBy: aVariableName in: aSourceClass ifNone: aNoneBlock
+
+	(methodReference methodNode argumentNames includes: aVariableName) ifTrue: [
+		^self classHeldByTheParameter: aVariableName ifNone: aNoneBlock ].
+
+	^aSourceClass
+		commonSupertypeOfInstanceVariableNamed: aVariableName
+		ifNoTypes: aNoneBlock! !
+
+!MoveMethodWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 15/Sep/2026, 12:13:11 pm (UTC)'!
+classHeldByTheParameter: aParameterName ifNone: aNoneBlock
+
+	^(methodReference compiledMethod
+		typeInfoOfVariableNamed: aParameterName
+		ifAbsent: aNoneBlock) commonSupertypeIfNoTypes: aNoneBlock! !
+
+!MoveMethodWithActualScopeApplier methodsFor: 'refactoring - parameters request' stamp: 'HAW 15/Sep/2026, 12:14:45 pm (UTC)'!
+initialAnswerForInstanceVariable: anAccessingThroughVariableName in: aSourceClass
+
 	anAccessingThroughVariableName = 'ToClassGlobalObject' ifTrue: [ ^'' ].
-	sourceClass shouldLiveTypingBeDisabled ifTrue: [^''].
-	accessingThroughVariableName ifNil: [^''].
-	(methodReference methodNode argumentNames includes: accessingThroughVariableName) ifTrue: [^((sourceClass>>methodToMove typeInfoOfVariableNamed: accessingThroughVariableName ifAbsent: [^'']) commonSupertypeIfNoTypes: [^'']) name asString].
-	liveTypingTypes := sourceClass commonSupertypeOfInstanceVariableNamed: accessingThroughVariableName ifNoTypes: [^''].
-	
-	^liveTypingTypes name asString 
-! !
+	aSourceClass shouldLiveTypingBeDisabled ifTrue: [ ^'' ].
+	anAccessingThroughVariableName ifNil: [ ^'' ].
+
+	^(self
+		classHeldBy: anAccessingThroughVariableName
+		in: aSourceClass
+		ifNone: [ ^'' ]) name asString! !
 
 !MoveMethodWithActualScopeApplier class methodsFor: 'instance creation' stamp: 'HAW 28/Apr/2025, 9:08:13 pm (UTC)'!
-!methodProperties: {}!
 initialize
 	
 	RefactoringApplier registerMoveMethodApplier: self! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/Nov/2024, 2:20:47 pm (UTC)'!
-!methodProperties: {}!
 extractParameterObjectApplier
 	
 	^self applierAt: self extractParameterObjectApplierId ifAbsent: [ ExtractParameterObjectApplier ]! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/Nov/2024, 2:20:31 pm (UTC)'!
-!methodProperties: {}!
 extractParameterObjectApplierId
 
 	^#extractParameterObjectApplier! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 11/Dec/2023, 4:54:26 am (UTC)'!
-!methodProperties: {}!
 moveInstanceVariableApplier
 	"self halt."
 	^self applierAt: self moveInstanceVariableApplierId ifAbsent: [ MoveInstanceVariableApplier ]! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 11/Dec/2023, 4:55:07 am (UTC)'!
-!methodProperties: {}!
 moveInstanceVariableApplierId
 	
 	^#moveInstanceVariableApplier! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'HAW 28/Apr/2025, 7:36:34 pm (UTC)'!
-!methodProperties: {}!
 moveMethodApplier
 	
 	^self applierAt: self moveMethodApplierId ifAbsent: [ MoveMethodApplier ]! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 6/Aug/2023, 6:07:01 pm (UTC)'!
-!methodProperties: {}!
 moveMethodApplierId
 	^#moveMethodApplier! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/Nov/2024, 2:21:06 pm (UTC)'!
-!methodProperties: {}!
 registerExtractParameterObjectApplier: aExtractParameterObjectApplierClass
 
 	self registerApplierAt: self extractParameterObjectApplierId with: aExtractParameterObjectApplierClass! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 11/Dec/2023, 4:57:01 am (UTC)'!
-!methodProperties: {}!
 registerMoveInstanceVariableApplier: aMoveInstanceVariableApplierClass
 
 	self registerApplierAt: self moveInstanceVariableApplierId with: aMoveInstanceVariableApplierClass! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'mc 6/Aug/2023, 6:13:19 pm (UTC)'!
-!methodProperties: {}!
 registerMoveMethodApplier: aMoveMethodApplierClass
 
 	self registerApplierAt: self moveMethodApplierId with: aMoveMethodApplierClass
 ! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'MEGL 11/Nov/2024, 2:21:12 pm (UTC)'!
-!methodProperties: {}!
 resetExtractParameterObjectApplier
 	
 	self resetApplierAt: self extractParameterObjectApplierId! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'HAW 28/Apr/2025, 7:38:42 pm (UTC)'!
-!methodProperties: {}!
 resetMoveInstanceVariableApplier
 	
 	self resetApplierAt: self moveInstanceVariableApplierId ! !
 
 !RefactoringApplier class methodsFor: '*ExtraRefactoringsLiveTyping' stamp: 'HAW 28/Apr/2025, 7:38:57 pm (UTC)'!
-!methodProperties: {}!
 resetMoveMethodApplier
 	
 	self resetApplierAt: self moveMethodApplierId ! !

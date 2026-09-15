@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8184] on 15 September 2026 at 8:35:59 am'!
-'Description Keep the parentheses of a send whose parameters are gathered into an object'!
-!provides: 'ExtraRefactoringsTests' 1 6!
+'From Cuis7.9 [latest update: #8184] on 15 September 2026 at 8:50:29 am'!
+'Description Parenthesize a moved cascade and drop the pairs around parameter object getters'!
+!provides: 'ExtraRefactoringsTests' 1 7!
 !requires: 'BaseImageTests' 1 473 nil!
 !requires: 'ExtraRefactorings' 1 11 nil!
 SystemOrganization addCategory: #'ExtraRefactoringsTests-ExtractClass'!
@@ -1187,7 +1187,7 @@ test08ExtractParametersFromEmptyMessageToParameterObject
 	self assert: (classToRefactor includesSelector: #second:parameterClass:).
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
-!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
+!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 15/Sep/2026, 11:41:21 am (UTC)'!
 test09ExtractParametersFromMessageShouldBeExtractedToParameterObject
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCode |
@@ -1206,7 +1206,7 @@ test09ExtractParametersFromMessageShouldBeExtractedToParameterObject
 	positions := #(1 3).
 	
 	newImplementorCode := 'second: b parameterClass: aParameterClass 
-	^ (aParameterClass a) + b + (aParameterClass c)'.
+	^ aParameterClass a + b + aParameterClass c'.
 	newSenderCode := 'm1
 	self second: 2 parameterClass: (', self parameterClassName, ' newA: 1 c: 3)'.
 
@@ -1228,7 +1228,7 @@ test09ExtractParametersFromMessageShouldBeExtractedToParameterObject
 	self assert: newSenderCode equals: (classToRefactor >> #m1) sourceCode.
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
-!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
+!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 15/Sep/2026, 11:41:21 am (UTC)'!
 test10ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSenders
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCodeM1 newSenderCodeM2 |
@@ -1250,7 +1250,7 @@ test10ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSenders
 	positions := #(1 3).
 	
 	newImplementorCode := 'second: b parameterClass: aParameterClass 
-	^ (aParameterClass a) + b + (aParameterClass c)'.
+	^ aParameterClass a + b + aParameterClass c'.
 	newSenderCodeM1 := 'm1
 	self second: 2 parameterClass: (', self parameterClassName, ' newA: 1 c: 3)'.
 	newSenderCodeM2 := 'm2
@@ -1275,7 +1275,7 @@ test10ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSenders
 	self assert: newSenderCodeM2 equals: (classToRefactor >> #m2) sourceCode.
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
-!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
+!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 15/Sep/2026, 11:41:21 am (UTC)'!
 test11ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSendersInOtherClasses
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCodeM1 newSenderCodeM2 anotherClass |
@@ -1299,7 +1299,7 @@ test11ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSendersI
 	positions := #(1 3).
 	
 	newImplementorCode := 'second: b parameterClass: aParameterClass 
-	^ (aParameterClass a) + b + (aParameterClass c)'.
+	^ aParameterClass a + b + aParameterClass c'.
 	newSenderCodeM1 := 'm1
 	', self classToRefactorName, ' new second: 2 parameterClass: (', self parameterClassName, ' newA: 1 c: 3)'.
 	newSenderCodeM2 := 'm2
@@ -1324,7 +1324,7 @@ test11ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSendersI
 	self assert: newSenderCodeM2 equals: (anotherClass >> #m2) sourceCode.
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
-!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
+!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 15/Sep/2026, 11:41:21 am (UTC)'!
 test12ExtractAllParametersFromMessageShouldBeExtractedToParameterObject
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCode |
@@ -1343,7 +1343,7 @@ test12ExtractAllParametersFromMessageShouldBeExtractedToParameterObject
 	positions := #(1 2 3).
 	
 	newImplementorCode := 'parameterClass: aParameterClass 
-	^ (aParameterClass a) + (aParameterClass b) + (aParameterClass c)'.
+	^ aParameterClass a + aParameterClass b + aParameterClass c'.
 	newSenderCode := 'm1
 	self parameterClass: (', self parameterClassName, ' newA: 1 b: 2 c: 3)'.
 
@@ -1365,7 +1365,7 @@ test12ExtractAllParametersFromMessageShouldBeExtractedToParameterObject
 	self assert: newSenderCode equals: (classToRefactor >> #m1) sourceCode.
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
-!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
+!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 15/Sep/2026, 11:41:21 am (UTC)'!
 test13ExtractOnlyOneParameterFromMessageShouldBeExtractedToParameterObject
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCode |
@@ -1384,7 +1384,7 @@ test13ExtractOnlyOneParameterFromMessageShouldBeExtractedToParameterObject
 	positions := #(2).
 	
 	newImplementorCode := 'first: a third: c parameterClass: aParameterClass 
-	^ a + (aParameterClass b) + c'.
+	^ a + aParameterClass b + c'.
 	newSenderCode := 'm1
 	self first: 1 third: 3 parameterClass: (', self parameterClassName, ' newB: 2)'.
 
@@ -1406,7 +1406,7 @@ test13ExtractOnlyOneParameterFromMessageShouldBeExtractedToParameterObject
 	self assert: newSenderCode equals: (classToRefactor >> #m1) sourceCode.
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
-!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
+!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 15/Sep/2026, 11:41:21 am (UTC)'!
 test14ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSendersAndImplementors
 
 	| selector classToRefactor parameters positions refactor newImplementorCode anotherImplementorCode newAnotherImplementorCode newSenderCodeM1 newSenderCodeM2 anotherClass |
@@ -1435,9 +1435,9 @@ test14ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSendersA
 	positions := #(1 3).
 	
 	newImplementorCode := 'second: b parameterClass: aParameterClass 
-	^ (aParameterClass a) + b + (aParameterClass c)'.
+	^ aParameterClass a + b + aParameterClass c'.
 	newAnotherImplementorCode := 'second: b parameterClass: aParameterClass 
-	^ (aParameterClass a) + b - (aParameterClass c)'.
+	^ aParameterClass a + b - aParameterClass c'.
 	newSenderCodeM1 := 'm1
 	self second: 2 parameterClass: (', self parameterClassName, ' newA: 1 c: 3)'.
 	newSenderCodeM2 := 'm2
@@ -1464,7 +1464,7 @@ test14ExtractParametersFromMessageShouldBeReplacedWhenCalledFromMultipleSendersA
 	self assert: newSenderCodeM2 equals: (anotherClass >> #m2) sourceCode.
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
-!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
+!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 15/Sep/2026, 11:41:21 am (UTC)'!
 test15ExtractParametersFromMessageShouldNotBeReplacedFromOtherClassesWhenNotIncludedInImplementors
 
 	| selector classToRefactor parameters positions refactor newImplementorCode anotherClassSenderCode newSenderCode anotherClass |
@@ -1493,7 +1493,7 @@ test15ExtractParametersFromMessageShouldNotBeReplacedFromOtherClassesWhenNotIncl
 	positions := #(1 3).
 	
 	newImplementorCode := 'second: b parameterClass: aParameterClass 
-	^ (aParameterClass a) + b + (aParameterClass c)'.
+	^ aParameterClass a + b + aParameterClass c'.
 	newSenderCode := 'm1
 	self second: 2 parameterClass: (', self parameterClassName, ' newA: 1 c: 3)'.
 
@@ -1684,7 +1684,7 @@ test21CannotExtractWithAnInvalidInstanceVariableNameParameter
 		failsWith: [ ExtractParameterObject
 			parameterMustBeAValidInstanceVariableNameErrorMessage: #('2a' 'a b') ].! !
 
-!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
+!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 15/Sep/2026, 11:41:21 am (UTC)'!
 test22ExtractParametersFromMessageWithImplementorThatIsAlsoASenderShouldBeExtractedToParameterObject
 
 	| selector classToRefactor parameters positions refactor classToRefactorNewImplementorCode anotherClassToRefactorNewImplementorCode anotherClass |
@@ -1705,10 +1705,10 @@ test22ExtractParametersFromMessageWithImplementorThatIsAlsoASenderShouldBeExtrac
 	positions := #(1 3).
 	
 	classToRefactorNewImplementorCode := 'second: b parameterClass: aParameterClass 
-	^ (aParameterClass a) + b + (aParameterClass c)'.
+	^ aParameterClass a + b + aParameterClass c'.
 	
 	anotherClassToRefactorNewImplementorCode := 'second: b parameterClass: aParameterClass 
-	^ classToRefactor second: b parameterClass: (', self parameterClassName, ' newA: (aParameterClass a) c: (aParameterClass c))'.
+	^ classToRefactor second: b parameterClass: (', self parameterClassName, ' newA: aParameterClass a c: aParameterClass c)'.
 
 	refactor := ExtractParameterObject 
 		from: classToRefactor >> selector 
@@ -1730,7 +1730,7 @@ test22ExtractParametersFromMessageWithImplementorThatIsAlsoASenderShouldBeExtrac
 	self assert: anotherClassToRefactorNewImplementorCode equals: (anotherClass >> #second:parameterClass:) sourceCode.
 	self assertParameterClassHasSelectorsFrom: parameters.! !
 
-!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:07:11 pm (UTC)'!
+!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 15/Sep/2026, 11:41:21 am (UTC)'!
 test23ExtractParametersFromMessageWithArticleShouldBeExtractedToParameterObjectWithoutArticle
 
 	| selector classToRefactor parameters positions refactor newImplementorCode newSenderCode |
@@ -1749,7 +1749,7 @@ test23ExtractParametersFromMessageWithArticleShouldBeExtractedToParameterObjectW
 	positions := #(1 3).
 	
 	newImplementorCode := 'second: aB parameterClass: aParameterClass 
-	^ (aParameterClass a) + aB + (aParameterClass c)'.
+	^ aParameterClass a + aB + aParameterClass c'.
 	newSenderCode := 'm1
 	self second: 2 parameterClass: (', self parameterClassName, ' newA: 1 c: 3)'.
 
@@ -1800,6 +1800,35 @@ test24TheParenthesesAroundASendThatStaysKeywordAreKept
 		assert: (classToRefactor >> #m1) sourceCode
 		equals: 'm1
 	^(self parameterClass: (', self parameterClassName, ' newA: 1 b: 2)) yourself'! !
+
+!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 15/Sep/2026, 11:42:35 am (UTC)'!
+test25TheGetterOfAGatheredParameterIsWrittenWithoutParenthesesWhereverItIsSent
+
+	| selector classToRefactor refactor |
+
+	selector := #first:second:.
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: 'first: a second: b
+	^ a size max: b size + a'.
+	classToRefactor compile: 'm1
+	^self first: 1 second: 2'.
+	self createClassNamed: self parameterClassSuperclassName.
+
+	refactor := ExtractParameterObject
+		from: classToRefactor >> selector
+		toClassNamed: self parameterClassName
+		subclassing: self parameterClassSuperclassName
+		onCategory: self classCategoryOfTestData
+		withParameters: #('a')
+		placedAt: #(1)
+		implementors: { classToRefactor >> selector }
+		senders: { classToRefactor >> #m1 }.
+	refactor apply.
+
+	self
+		assert: (classToRefactor >> #second:parameterClass:) sourceCode
+		equals: 'second: b parameterClass: aParameterClass 
+	^ aParameterClass a size max: b size + aParameterClass a'! !
 
 !ExtractParameterObjectTest methodsFor: 'factories' stamp: 'MEGL 14/May/2024, 6:36:44 pm (UTC)'!
 classToRefactorName	
@@ -7338,6 +7367,22 @@ test34CodeWithDiferentStructureInClousureShouldBeRefactored
 		iv2 iv1: [iv2 iv1: [iv2 iv1+iv2 iv1]]. 
 		]' equals: (sourceClass compiledMethodAt: #accessIv1) sourceCode.
 	! !
+
+!MoveInstanceVariableTest methodsFor: 'tests' stamp: 'HAW 15/Sep/2026, 11:40:23 am (UTC)'!
+test47ACascadeAssignedToTheMovedVariableIsParenthesized
+
+	| refactoring sourceClass targetClass |
+
+	sourceClass := self createAnInitializedClassNamed: #SourceClass instanceVariableNames: 'iv2 iv5'.
+	sourceClass compile: 'iv5: anObject iv5 := OrderedCollection new add: anObject; yourself.'.
+	targetClass := self createClassNamed: #TargetClass.
+
+	refactoring := MoveInstanceVariable named: 'iv5' from: sourceClass to: targetClass accessingThrough: 'iv2'.
+	refactoring apply.
+
+	self
+		assert: (sourceClass compiledMethodAt: #iv5:) sourceCode
+		equals: 'iv5: anObject iv2 iv5: (OrderedCollection new add: anObject; yourself).'! !
 
 !MoveMethodTest methodsFor: 'validations' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
 test001SelectorShouldExistsOnSourceClass

@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8180] on 14 September 2026 at 12:52:07 pm'!
-'Description Move method parentheses'!
-!provides: 'ExtraRefactorings' 1 16!
+'From Cuis7.9 [latest update: #8184] on 15 September 2026 at 8:50:24 am'!
+'Description Parenthesize a moved cascade and drop the pairs around parameter object getters'!
+!provides: 'ExtraRefactorings' 1 17!
 SystemOrganization addCategory: #ExtraRefactorings!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-UI'!
@@ -787,7 +787,7 @@ initializeFor: aNode replace: instVarNameToReplace onMethod: aCompiledMethod acc
 	getterToUse := aGetterToUse .
 	setterToUse := aSetterToUse ! !
 
-!CodeForNodeOnMethod methodsFor: 'visiting' stamp: 'mc 28/Apr/2024, 10:17:15 pm (UTC)'!
+!CodeForNodeOnMethod methodsFor: 'visiting' stamp: 'HAW 15/Sep/2026, 11:41:17 am (UTC)'!
 visitAssignmentNode: anAssignmentNode 
 	| rangesOfassigmentNode assigmentValue newAssignmentCode newCodeForValue nodeReplacer resultForValue |
 
@@ -804,7 +804,7 @@ visitAssignmentNode: anAssignmentNode
 					rejectingIntervals: intervalsToReject.
 	resultForValue :=			nodeReplacer value.
 	newCodeForValue := resultForValue resultCode .
-	(self shouldAddParenthesisOnValueOf: anAssignmentNode)
+	anAssignmentNode value requiresParenthesesAsAKeywordArgument
 		ifTrue: [assigmentValue := '(', newCodeForValue, ')'.] 
 		ifFalse: [assigmentValue := newCodeForValue.].
 	newAssignmentCode := instVarNameTargetClass, ' ', setterToUse, ' ', assigmentValue.
@@ -900,11 +900,6 @@ registerInterval: anIntervalToModify withModification: sourceCodeForInterval
 removeSeenRanges: rangesOfNode
 
 	^ rangesOfNode removeAllSuchThat: [ :aSourceInterval | intervalsToReject anySatisfy: [ :aSourceIntervalToModify | aSourceIntervalToModify includesAllOf: aSourceInterval ] ]! !
-
-!CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 28/Apr/2024, 10:17:15 pm (UTC)'!
-shouldAddParenthesisOnValueOf: anAssignmentNode
-
-	^ ((anAssignmentNode value isMessageNode and: [anAssignmentNode value isKeywordMessageSend])) or: [anAssignmentNode value isAssignmentNode ]! !
 
 !CodeForNodeOnMethod methodsFor: 'private' stamp: 'mc 4/Apr/2024, 4:39:09 am (UTC)'!
 sourceRangesOf: aNode
@@ -7599,13 +7594,13 @@ replaceAllOccurrencesOf: aParameter with: parameterObjectGetterSend in: anImplem
 
 	^ anImplementor methodClass >> anImplementor selector! !
 
-!ExtractParameterObject methodsFor: '4 - replacing with parameter object getters' stamp: 'HAW 25/Mar/2025, 2:55:27 pm (UTC)'!
+!ExtractParameterObject methodsFor: '4 - replacing with parameter object getters' stamp: 'HAW 15/Sep/2026, 11:41:17 am (UTC)'!
 replaceParametersWithParameterObjectGetters
 
 	parameters 
 		with: parameterObjectInstanceVariables 
 		do: [ :aParameter :anInstVar | | getterMessageSend |
-			getterMessageSend := '(', parameterObjectName , ' ', anInstVar, ')'.
+			getterMessageSend := parameterObjectName , ' ', anInstVar.
 			newImplementors := newImplementors collect: [ :anImplementor |
 				self replaceAllOccurrencesOf: aParameter with: getterMessageSend in: anImplementor ]].
 

@@ -1,6 +1,7 @@
-'From Cuis7.9 [latest update: #8184] on 15 September 2026 at 10:27:21 am'!
-'Description Test the extra refactorings with actual scope'!
-!provides: 'ExtraRefactoringsLiveTypingTest' 1 1!
+'From Cuis7.9 [latest update: #8184] on 15 September 2026 at 10:33:10 am'!
+'Description Require ExtraRefactoringsLiveTyping'!
+!provides: 'ExtraRefactoringsLiveTypingTest' 1 2!
+!requires: 'ExtraRefactoringsLiveTyping' nil nil nil!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTypingTest-ExtractParameterObject'!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTypingTest-MoveMethod'!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTypingTest-MoveInstanceVariable'!

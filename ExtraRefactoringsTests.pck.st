@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8180] on 14 September 2026 at 12:52:25 pm'!
-'Description Move method parentheses'!
-!provides: 'ExtraRefactoringsTests' 1 5!
+'From Cuis7.9 [latest update: #8184] on 15 September 2026 at 8:35:59 am'!
+'Description Keep the parentheses of a send whose parameters are gathered into an object'!
+!provides: 'ExtraRefactoringsTests' 1 6!
 !requires: 'BaseImageTests' 1 473 nil!
 !requires: 'ExtraRefactorings' 1 11 nil!
 SystemOrganization addCategory: #'ExtraRefactoringsTests-ExtractClass'!
@@ -1771,6 +1771,35 @@ test23ExtractParametersFromMessageWithArticleShouldBeExtractedToParameterObjectW
 	self assert: newSenderCode equals: (classToRefactor >> #m1) sourceCode.
 	self assertParameterClassHasSelectorsFrom: 
 		(parameters collect: [ :parameter | parameter asInstanceVariableNameWithoutChangeMe ]).! !
+
+!ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 15/Sep/2026, 12:14:08 am (UTC)'!
+test24TheParenthesesAroundASendThatStaysKeywordAreKept
+
+	| selector classToRefactor refactor |
+
+	selector := #first:second:.
+	classToRefactor := self createClassNamed: self classToRefactorName.
+	classToRefactor compile: 'first: a second: b
+	^ a + b'.
+	classToRefactor compile: 'm1
+	^(self first: 1 second: 2) yourself'.
+	self createClassNamed: self parameterClassSuperclassName.
+
+	refactor := ExtractParameterObject
+		from: classToRefactor >> selector
+		toClassNamed: self parameterClassName
+		subclassing: self parameterClassSuperclassName
+		onCategory: self classCategoryOfTestData
+		withParameters: #('a' 'b')
+		placedAt: #(1 2)
+		implementors: { classToRefactor >> selector }
+		senders: { classToRefactor >> #m1 }.
+	refactor apply.
+
+	self
+		assert: (classToRefactor >> #m1) sourceCode
+		equals: 'm1
+	^(self parameterClass: (', self parameterClassName, ' newA: 1 b: 2)) yourself'! !
 
 !ExtractParameterObjectTest methodsFor: 'factories' stamp: 'MEGL 14/May/2024, 6:36:44 pm (UTC)'!
 classToRefactorName	

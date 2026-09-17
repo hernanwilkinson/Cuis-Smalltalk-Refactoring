@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8184] on 15 September 2026 at 8:50:24 am'!
-'Description Parenthesize a moved cascade and drop the pairs around parameter object getters'!
-!provides: 'ExtraRefactorings' 1 17!
+'From Cuis7.9 [latest update: #8184] on 17 September 2026 at 12:08:20 pm'!
+'Description Move a method keeping its category, through a global and with formatted generated methods'!
+!provides: 'ExtraRefactorings' 1 18!
 SystemOrganization addCategory: #ExtraRefactorings!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-UI'!
@@ -989,102 +989,69 @@ initializeFor: aMethodNode variableToAcessThrough: aVariableToAccesoThroughName 
 	targetClass := aTargetClass.
 	methodToCompileOnSourceClass := Set new.! !
 
-!CodeForNodeToMove methodsFor: 'visiting' stamp: 'HAW 13/Sep/2026, 12:04:27 am (UTC)'!
-visitAssignmentNode: anAssignmentNode 
+!CodeForNodeToMove methodsFor: 'visiting' stamp: 'HAW 17/Sep/2026, 9:56:08 am (UTC)'!
+visitAssignmentNode: anAssignmentNode
+
 	| assigmentValue completeRangesOfassigmentNode resultForValue setterSelectorAsString |
-	"self halt."
-	anAssignmentNode variable isTemp ifTrue: [^super visitAssignmentNode: anAssignmentNode].
+
+	anAssignmentNode variable isTemp ifTrue: [ ^super visitAssignmentNode: anAssignmentNode ].
 	completeRangesOfassigmentNode := self firstUnseenIntervalFor: anAssignmentNode.
-	resultForValue := (CodeForNodeToMove 
-					methodNode: methodNode
-					variableToAcessThrough: variableToAccesThrough 
-					onNode: anAssignmentNode value
-					parameterNeeded: parameterNeeded
-					targetClass: targetClass) value.
-	anAssignmentNode value requiresParenthesesAsAKeywordArgument
-		ifTrue: [assigmentValue := '(', resultForValue sourceCode , ')'.] 
-		ifFalse: [assigmentValue := resultForValue sourceCode .].
-	
-	anAssignmentNode variable isLiteralVariableNode 
-		ifTrue: [setterSelectorAsString := self setterForClassVariable: anAssignmentNode variable name.]
-		ifFalse: [setterSelectorAsString := self setterForInstanceVariable: anAssignmentNode variable name.].
-	
-	methodNode methodClass methodDict 
-					at: setterSelectorAsString asSymbol 
-					ifPresent: [ :aMethod | ]
-					ifAbsent: [
-						methodToCompileOnSourceClass add: (setterSelectorAsString, ' anObject', String newLineString, String tab, '^', anAssignmentNode variable name, ' := anObject.').
-						].
+	resultForValue := (self class
+		methodNode: methodNode
+		variableToAcessThrough: variableToAccesThrough
+		onNode: anAssignmentNode value
+		parameterNeeded: parameterNeeded
+		targetClass: targetClass) value.
+	assigmentValue := anAssignmentNode value requiresParenthesesAsAKeywordArgument
+		ifTrue: [ '(' , resultForValue sourceCode , ')' ]
+		ifFalse: [ resultForValue sourceCode ].
+	setterSelectorAsString := anAssignmentNode variable isLiteralVariableNode
+		ifTrue: [ self setterForClassVariable: anAssignmentNode variable name ]
+		ifFalse: [ self setterForInstanceVariable: anAssignmentNode variable name ].
+	(methodNode methodClass includesSelector: setterSelectorAsString asSymbol) ifFalse: [
+		methodToCompileOnSourceClass add: (self
+			sourceOfMethod: setterSelectorAsString , ' anObject'
+			returning: anAssignmentNode variable name , ' := anObject') ].
+	self
+		registerInterval: completeRangesOfassigmentNode
+		withModification: parameterNeeded parameterName , ' ' , setterSelectorAsString , ' ' , assigmentValue.
+	methodToCompileOnSourceClass addAll: resultForValue methodToCompileOnSourceClass! !
 
-	
-	self registerInterval: completeRangesOfassigmentNode withModification: (parameterNeeded parameterName , ' ', setterSelectorAsString, ' ', assigmentValue).
-	methodToCompileOnSourceClass addAll: resultForValue methodToCompileOnSourceClass.
-	! !
+!CodeForNodeToMove methodsFor: 'visiting' stamp: 'HAW 17/Sep/2026, 9:56:08 am (UTC)'!
+visitInstanceVariableNode: anInstanceVariableNode
 
-!CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 30/Dec/2024, 6:39:02 am (UTC)'!
-visitInstanceVariableNode: anInstanceVariableNode 
-	| sourceCodeForInterval anInterval getterToUse |
-	"self halt."
+	| anInterval getterToUse |
+
 	anInterval := self firstUnseenIntervalFor: anInstanceVariableNode.
-	(anInstanceVariableNode name = variableToAccesThrough)
-		ifTrue: [sourceCodeForInterval := 'self'.]
-		ifFalse: [
-			getterToUse := self getterForInstanceVariable: anInstanceVariableNode key.
-			sourceCodeForInterval := parameterNeeded parameterName, ' ', getterToUse.
-			(methodNode methodClass selectors includes: getterToUse) 
-				ifFalse: [
-					methodToCompileOnSourceClass add: (getterToUse, String newLineString, String tab, '^', anInstanceVariableNode key, '.').
-					].
-			].
-	self registerInterval: anInterval withModification: sourceCodeForInterval.
-	! !
+	anInstanceVariableNode name = variableToAccesThrough
+		ifTrue: [ ^self registerInterval: anInterval withModification: 'self' ].
+	getterToUse := self getterForInstanceVariable: anInstanceVariableNode key.
+	(methodNode methodClass selectors includes: getterToUse) ifFalse: [
+		methodToCompileOnSourceClass add: (self
+			sourceOfMethod: getterToUse
+			returning: anInstanceVariableNode key) ].
+	self
+		registerInterval: anInterval
+		withModification: parameterNeeded parameterName , ' ' , getterToUse! !
 
-!CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 25/Jan/2025, 5:57:49 am (UTC)'!
-visitLiteralVariableNode: aLiteralVariableNode 
-	| sourceCodeForInterval anInterval getterToUse |
-	"self halt."
-	aLiteralVariableNode isReferencingGlobal ifTrue: [^self].
-	anInterval := self firstUnseenIntervalFor: aLiteralVariableNode.
-	(variableToAccesThrough = aLiteralVariableNode name)
-		ifFalse: [
-			getterToUse := self getterForClassVariable: aLiteralVariableNode name.
-			sourceCodeForInterval := parameterNeeded parameterName, ' ', getterToUse.
-			(methodNode methodClass selectors includes: getterToUse) 
-						ifFalse: [
-							methodToCompileOnSourceClass add: (getterToUse, String newLineString, String tab, '^', aLiteralVariableNode name, '.').
-							].
-			
-			]
-		ifTrue: [
-			sourceCodeForInterval := 'self'.
-			].
-	self registerInterval: anInterval withModification: sourceCodeForInterval.
-			
-! !
+!CodeForNodeToMove methodsFor: 'visiting' stamp: 'HAW 16/Sep/2026, 10:49:39 pm (UTC)'!
+visitLiteralVariableNode: aLiteralVariableNode
 
-!CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 31/Dec/2024, 6:32:44 am (UTC)'!
-visitMessageNode: aMessageNode 
-	| rangeMessageNode newSend |
-	"self halt."
-	(aMessageNode receiver referencesSuper and: (aMessageNode receiver isVariableNode ))
-		ifTrue:[
-			rangeMessageNode := self firstUnseenIntervalFor: aMessageNode.
-			aMessageNode isKeywordMessageSend
-				ifTrue: [ 
-					newSend := self newSenderFor: aMessageNode.
-					((methodNode sourceText at: rangeMessageNode first) = $()
-						ifTrue: [newSend := '(', newSend, ')'].
-					self registerInterval: rangeMessageNode withModification: newSend.
-					self encapsulateSuperColaboration: aMessageNode.
-					]
-				ifFalse: [
-					self registerInterval: rangeMessageNode withModification: (parameterNeeded parameterName, ' ', (self newSelectorForSuperColaboration: aMessageNode)).
-					methodToCompileOnSourceClass add: (self newSelectorForSuperColaboration: aMessageNode), String newLineString, String tab, '^super ', aMessageNode selector key asString, '.'.
-					].
-			
-			]
-		ifFalse:[ super visitMessageNode: aMessageNode ].
-	! !
+	variableToAccesThrough = aLiteralVariableNode name
+		ifTrue: [ ^self replaceWithSelf: aLiteralVariableNode ].
+	aLiteralVariableNode isReferencingGlobal ifTrue: [ ^self ].
+
+	self replaceWithClassVariableGetter: aLiteralVariableNode! !
+
+!CodeForNodeToMove methodsFor: 'visiting' stamp: 'HAW 17/Sep/2026, 9:56:08 am (UTC)'!
+visitMessageNode: aMessageNode
+
+	(aMessageNode receiver referencesSuper and: [ aMessageNode receiver isVariableNode ])
+		ifFalse: [ ^super visitMessageNode: aMessageNode ].
+
+	aMessageNode isKeywordMessageSend
+		ifTrue: [ self replaceKeywordSuperSend: aMessageNode ]
+		ifFalse: [ self replaceUnarySuperSend: aMessageNode ]! !
 
 !CodeForNodeToMove methodsFor: 'visiting' stamp: 'mc 3/Mar/2025, 8:41:41 pm (UTC)'!
 visitMethodNode: aMethodNode 
@@ -1132,20 +1099,19 @@ compiledMethodAt: aSelector
 
 	^ methodNode methodClass compiledMethodAt: aSelector! !
 
-!CodeForNodeToMove methodsFor: 'private' stamp: 'mc 31/Dec/2024, 6:39:35 am (UTC)'!
+!CodeForNodeToMove methodsFor: 'private' stamp: 'HAW 17/Sep/2026, 9:44:47 am (UTC)'!
 encapsulateSuperColaboration: aMessageNode
-	
-	| colaborationEncapsulated indexSourceCode newSelector newSourceCode |
-	newSelector := self newKeywordSelector: aMessageNode .
+
+	| indexSourceCode superSend |
+
 	indexSourceCode := 1.
-	newSourceCode := ''.
-	aMessageNode selector key keywords do: [:aKeyword | 
-		newSourceCode := newSourceCode, ' ', aKeyword, ' ', 'arg', indexSourceCode asString. 
-		indexSourceCode := indexSourceCode +1 ].
-	newSourceCode := newSourceCode withBlanksTrimmed.
-	newSourceCode := '^super ', newSourceCode, '.'.
-	colaborationEncapsulated := newSelector, String newLineString, String tab, newSourceCode.
-	methodToCompileOnSourceClass add: colaborationEncapsulated.! !
+	superSend := ''.
+	aMessageNode selector key keywords do: [ :aKeyword |
+		superSend := superSend , ' ' , aKeyword , ' ' , 'arg' , indexSourceCode asString.
+		indexSourceCode := indexSourceCode + 1 ].
+	methodToCompileOnSourceClass add: (self
+		sourceOfMethod: (self newKeywordSelector: aMessageNode)
+		returning: 'super ' , superSend withBlanksTrimmed)! !
 
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
 filterRangesThatDoNotBelongToTheCurrentNodeIn: aCollectionOfRanges
@@ -1302,6 +1268,52 @@ removeSeenRanges: rangesOfNode
 	^rangesOfNode removeAllSuchThat: [ :aSourceInterval | 
 	someIntervalsToExclude anySatisfy: [ :aSourceIntervalToModify | aSourceIntervalToModify includesAllOf: aSourceInterval ] ]! !
 
+!CodeForNodeToMove methodsFor: 'private' stamp: 'HAW 17/Sep/2026, 9:56:08 am (UTC)'!
+replaceKeywordSuperSend: aMessageNode
+
+	| rangeMessageNode newSend |
+
+	rangeMessageNode := self firstUnseenIntervalFor: aMessageNode.
+	newSend := self newSenderFor: aMessageNode.
+	(methodNode sourceText at: rangeMessageNode first) = $( ifTrue: [ newSend := '(' , newSend , ')' ].
+	self registerInterval: rangeMessageNode withModification: newSend.
+	self encapsulateSuperColaboration: aMessageNode! !
+
+!CodeForNodeToMove methodsFor: 'private' stamp: 'HAW 17/Sep/2026, 9:56:08 am (UTC)'!
+replaceUnarySuperSend: aMessageNode
+
+	| newSelector |
+
+	newSelector := self newSelectorForSuperColaboration: aMessageNode.
+	self
+		registerInterval: (self firstUnseenIntervalFor: aMessageNode)
+		withModification: parameterNeeded parameterName , ' ' , newSelector.
+	methodToCompileOnSourceClass add: (self
+		sourceOfMethod: newSelector
+		returning: 'super ' , aMessageNode selector key asString)! !
+
+!CodeForNodeToMove methodsFor: 'private' stamp: 'HAW 17/Sep/2026, 9:56:08 am (UTC)'!
+replaceWithClassVariableGetter: aLiteralVariableNode
+
+	| getterToUse |
+
+	getterToUse := self getterForClassVariable: aLiteralVariableNode name.
+	(methodNode methodClass selectors includes: getterToUse) ifFalse: [
+		methodToCompileOnSourceClass add: (self
+			sourceOfMethod: getterToUse
+			returning: aLiteralVariableNode name) ].
+
+	self
+		registerInterval: (self firstUnseenIntervalFor: aLiteralVariableNode)
+		withModification: parameterNeeded parameterName , ' ' , getterToUse! !
+
+!CodeForNodeToMove methodsFor: 'private' stamp: 'HAW 16/Sep/2026, 10:49:39 pm (UTC)'!
+replaceWithSelf: aVariableNode
+
+	self
+		registerInterval: (self firstUnseenIntervalFor: aVariableNode)
+		withModification: 'self'! !
+
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 29/Dec/2024, 8:00:13 pm (UTC)'!
 selectorsWhichSatisfy: aBlock
 
@@ -1332,6 +1344,11 @@ setterForInstanceVariable: anInstanceVariableName
 !CodeForNodeToMove methodsFor: 'private' stamp: 'mc 14/Jul/2024, 5:17:01 am (UTC)'!
 shouldAddParenthesis: argumentNode 
 	^argumentNode isAssignmentNode! !
+
+!CodeForNodeToMove methodsFor: 'private' stamp: 'HAW 17/Sep/2026, 9:44:47 am (UTC)'!
+sourceOfMethod: aSelectorAndArguments returning: anExpression
+
+	^aSelectorAndArguments , String newLineString , String newLineString , String tab , '^' , anExpression! !
 
 !CodeForNodeToMove methodsFor: 'accessing' stamp: 'mc 31/Dec/2024, 6:40:27 am (UTC)'!
 value
@@ -2960,9 +2977,10 @@ resultCode
 newWith: newCode modifiedReads: modifiedReads modifiedWrites: modifiedWrites
 	^self new initielizeWith: newCode modifiedReads: modifiedReads modifiedWrites: modifiedWrites! !
 
-!CodeForNodeToMoveResult methodsFor: 'public' stamp: 'mc 25/Dec/2024, 3:51:52 pm (UTC)'!
-compileInTargetClass
-	^targetClass compile: self sourceCode! !
+!CodeForNodeToMoveResult methodsFor: 'public' stamp: 'HAW 17/Sep/2026, 3:19:31 am (UTC)'!
+compileInTargetClassUnder: aMethodCategory
+
+	^targetClass compile: self sourceCode classified: aMethodCategory! !
 
 !CodeForNodeToMoveResult methodsFor: 'public' stamp: 'HAW 26/Aug/2026, 4:47:24 pm (UTC)'!
 compileOnSourceClass
@@ -7988,10 +8006,10 @@ apply
 	^changes
 ! !
 
-!MoveMethod methodsFor: 'private' stamp: 'mc 25/Dec/2024, 3:51:05 pm (UTC)'!
+!MoveMethod methodsFor: 'private' stamp: 'HAW 17/Sep/2026, 3:19:31 am (UTC)'!
 compileInTargetClass
 
-	^resultAfterReplaceDependencies compileInTargetClass! !
+	^resultAfterReplaceDependencies compileInTargetClassUnder: compiledMethodToMove category! !
 
 !MoveMethod methodsFor: 'private' stamp: 'mc 27/Dec/2024, 6:18:16 am (UTC)'!
 createAccessors
@@ -8017,19 +8035,18 @@ replaceDependenciesOnMethodToMove
 		targetClass: targetClass .
 	resultAfterReplaceDependencies := replacer value.! !
 
-!MoveMethod methodsFor: 'private' stamp: 'HAW 26/Aug/2026, 4:47:24 pm (UTC)'!
+!MoveMethod methodsFor: 'private' stamp: 'HAW 17/Sep/2026, 4:09:17 am (UTC)'!
 replaceMethodForDelegation
-	
-	(methodNodeToMove argumentNames includes: variableToAccessTarget)
-		ifFalse: [messageSendForDelegation := parameterNeeded newSenderFor: methodNodeToMove.]
-		ifTrue: [messageSendForDelegation := parameterNeeded newSenderFor: methodNodeToMove usingParameter: variableToAccessTarget.].
-	codeForDelegation := methodNodeToMove selectorAndArgumentsAsString, String newLineString, String tab, '^'.
-	
-	variableToAccessTarget isNil ifTrue: [ variableToAccessTarget := targetClass soleInstance name ].
-	codeForDelegation := codeForDelegation, variableToAccessTarget, ' ', messageSendForDelegation, '.'.
 
-	^sourceClass compile: codeForDelegation
-! !
+	messageSendForDelegation := (methodNodeToMove argumentNames includes: variableToAccessTarget)
+		ifTrue: [ parameterNeeded newSenderFor: methodNodeToMove usingParameter: variableToAccessTarget ]
+		ifFalse: [ parameterNeeded newSenderFor: methodNodeToMove ].
+	variableToAccessTarget ifNil: [ variableToAccessTarget := targetClass soleInstance name ].
+	codeForDelegation := methodNodeToMove selectorAndArgumentsAsString ,
+		String newLineString , String newLineString , String tab ,
+		'^' , variableToAccessTarget , ' ' , messageSendForDelegation.
+
+	^sourceClass compile: codeForDelegation! !
 
 !MoveMethod class methodsFor: 'instance creation' stamp: 'HAW 9/Sep/2026, 2:14:08 pm (UTC)'!
 methodNamed: methodName from: sourceClass to: targetClass accessingThrough: accessThroughVariable parameterNeeded: anExtraParameterNeeded  

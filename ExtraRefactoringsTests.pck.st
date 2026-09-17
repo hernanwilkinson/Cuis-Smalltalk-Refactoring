@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8184] on 15 September 2026 at 8:50:29 am'!
-'Description Parenthesize a moved cascade and drop the pairs around parameter object getters'!
-!provides: 'ExtraRefactoringsTests' 1 7!
+'From Cuis7.9 [latest update: #8184] on 17 September 2026 at 12:08:23 pm'!
+'Description Move a method keeping its category, through a global and with formatted generated methods'!
+!provides: 'ExtraRefactoringsTests' 1 8!
 !requires: 'BaseImageTests' 1 473 nil!
 !requires: 'ExtraRefactorings' 1 11 nil!
 SystemOrganization addCategory: #'ExtraRefactoringsTests-ExtractClass'!
@@ -538,7 +538,7 @@ test105GivenSourceClassAndOneInstanceVariableWhenExtractClassThenInstanceVariabl
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'iv1' equals: targetClass instVarNames first.! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 4:05:10 am (UTC)'!
 test106GivenMethodWhenExtractClassThenMoveMethodShouldBePerformed
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -562,10 +562,11 @@ test106GivenMethodWhenExtractClassThenMoveMethodShouldBePerformed
 	self assert: targetClass notNil.
 	self assert: 0 equals: targetClass instVarNames size.
 	self assert: 'm1
-	^aTargetClass m1: self.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^aTargetClass m1: self' equals: (sourceClass sourceCodeAt: #m1).
 	self assert: 'm1: aSourceClass ^aSourceClass iv1+1.' equals: (targetClass sourceCodeAt: #m1:).! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 4:05:10 am (UTC)'!
 test107Given2MethodsWhenExtractClassThenMoveMethodShouldBePerformed
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -591,10 +592,12 @@ test107Given2MethodsWhenExtractClassThenMoveMethodShouldBePerformed
 	self assert: targetClass notNil.
 	self assert: 0 equals: targetClass instVarNames size.
 	self assert: 'm1
-	^aTargetClass m1: self.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^aTargetClass m1: self' equals: (sourceClass sourceCodeAt: #m1).
 	self assert: 'm1: aSourceClass ^aSourceClass iv1+1.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm2
-	^aTargetClass m2.' equals: (sourceClass sourceCodeAt: #m2).
+
+	^aTargetClass m2' equals: (sourceClass sourceCodeAt: #m2).
 	self assert: 'm2 ^1.' equals: (targetClass sourceCodeAt: #m2).! !
 
 !ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
@@ -628,7 +631,7 @@ test108GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSam
 
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 4:05:10 am (UTC)'!
 test109GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -656,13 +659,14 @@ test109GivenAGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveSam
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'cbu ^aCbu cbu.' equals: (sourceClass sourceCodeAt: #cbu).
 	self assert: 'cbu_
-	^aCbu cbu_.' equals: (sourceClass sourceCodeAt: #cbu_).
+
+	^aCbu cbu_' equals: (sourceClass sourceCodeAt: #cbu_).
 	self assert: 'cbuPlusOne ^aCbu cbu+1 .' equals: (sourceClass sourceCodeAt: #cbuPlusOne).
 	self assert: 'cbu
 	^cbu' equals: (targetClass sourceCodeAt: #cbu).
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 4:05:10 am (UTC)'!
 test110GivenANonGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHaveUndescore
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -689,9 +693,11 @@ test110GivenANonGetterAndInstvarWithSameNameWhenExtractClassThenGetterShouldHave
 	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'cbu
-	^aCbu cbu.' equals: (sourceClass sourceCodeAt: #cbu).
+
+	^aCbu cbu' equals: (sourceClass sourceCodeAt: #cbu).
 	self assert: 'cbu_
-	^aCbu cbu_.' equals: (sourceClass sourceCodeAt: #cbu_).
+
+	^aCbu cbu_' equals: (sourceClass sourceCodeAt: #cbu_).
 	self assert: 'cbuPlusOne ^aCbu cbu__+1 .' equals: (sourceClass sourceCodeAt: #cbuPlusOne).
 	self assert: 'cbu ^1.' equals: (targetClass sourceCodeAt: #cbu).
 	self assert: 'cbu_ ^self cbu__.' equals: (targetClass sourceCodeAt: #cbu_).
@@ -734,7 +740,7 @@ test111GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSam
 	^counter := anObject.' equals: (targetClass sourceCodeAt: #counter:).
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 4:05:10 am (UTC)'!
 test112GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSameName
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -764,7 +770,8 @@ test112GivenASetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveSam
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'counter: anInt ^aCounter counter: anInt.' equals: (sourceClass sourceCodeAt: #counter:).
 	self assert: 'counter_: anInt
-	^aCounter counter_: anInt.' equals: (sourceClass sourceCodeAt: #counter_:).
+
+	^aCounter counter_: anInt' equals: (sourceClass sourceCodeAt: #counter_:).
 	self assert: 'counterReset
 	aCounter counter: 1.
 	^aCounter counter' equals: (sourceClass sourceCodeAt: #counterReset).
@@ -808,7 +815,7 @@ test113GivenASetterWhichDoesntReturnAssigmentAndInstvarWithSameNameWhenExtractCl
 	^counter := anObject.' equals: (targetClass sourceCodeAt: #counter:).
 	! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 4:05:10 am (UTC)'!
 test114GivenANonSetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHaveUndescore
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -837,9 +844,11 @@ test114GivenANonSetterAndInstvarWithSameNameWhenExtractClassThenSetterShouldHave
 	self assert: targetClass notNil.
 	self assert: 1 equals: targetClass instVarNames size.
 	self assert: 'counter: anInt
-	^aCounter counter: anInt.' equals: (sourceClass sourceCodeAt: #counter:).
+
+	^aCounter counter: anInt' equals: (sourceClass sourceCodeAt: #counter:).
 	self assert: 'counter_: anInt
-	^aCounter counter_: anInt.' equals: (sourceClass sourceCodeAt: #counter_:).
+
+	^aCounter counter_: anInt' equals: (sourceClass sourceCodeAt: #counter_:).
 	self assert: 'counterReset
 	aCounter counter__: 1.
 	^aCounter counter' equals: (sourceClass sourceCodeAt: #counterReset).
@@ -947,7 +956,7 @@ test117InstVarToCreateCanBeAsParameterInOneMethodButThatMethodShouldBeMoved
 	^aCounter counter' equals: (sourceClass sourceCodeAt: #counterReset).
 ! !
 
-!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 3/Dec/2025, 4:57:37 pm (UTC)'!
+!ExtractClassTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 4:05:10 am (UTC)'!
 test118ExtractClassCanOverrideMethodsOfObjectClass
 	
 	| targetClassName sourceClass instVarsToExtract methodsToExtract refactoring targetClass |
@@ -971,7 +980,8 @@ test118ExtractClassCanOverrideMethodsOfObjectClass
 	self assert: targetClass notNil.
 	self assert: 0 equals: targetClass instVarNames size.
 	self assert: 'name
-	^aTargetClass name.' equals: (sourceClass sourceCodeAt: #name).
+
+	^aTargetClass name' equals: (sourceClass sourceCodeAt: #name).
 	self assert: 'name ^1.' equals: (targetClass sourceCodeAt: #name).! !
 
 !ExtractParameterObjectTest methodsFor: 'testing' stamp: 'HAW 25/Mar/2025, 2:08:31 pm (UTC)'!
@@ -8276,7 +8286,7 @@ test040ShouldNotPassNameForNewParameterWhenIsNotNeeded
 		failsWith: [MoveMethod nameForNewParameterKeywordShouldNotBeProvidedClassErrorMessage ].
 		! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test100CanMoveMethodWithoutReferences
 	
 	| sourceClass targetClass refactoring |
@@ -8296,11 +8306,12 @@ test100CanMoveMethodWithoutReferences
 	
 	self assert: 'm1 ^1.' equals: (targetClass sourceCodeAt: #m1).
 	self assert: 'm1
-	^iv1 m1.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^iv1 m1' equals: (sourceClass sourceCodeAt: #m1).
 	self deny: (sourceClass includesSelector: #iv1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test101CanMoveMethodWithoutReferences
 	
 	| sourceClass targetClass refactoring |
@@ -8320,10 +8331,11 @@ test101CanMoveMethodWithoutReferences
 	
 	self assert: 'm1 ^2.' equals: (targetClass sourceCodeAt: #m1).
 	self assert: 'm1
-	^iv1 m1.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^iv1 m1' equals: (sourceClass sourceCodeAt: #m1).
 	self deny: (sourceClass includesSelector: #iv1).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test102CanMoveMethodWhenReferencesAnInstanceVariable
 	
 	| sourceClass targetClass refactoring |
@@ -8344,12 +8356,13 @@ test102CanMoveMethodWhenReferencesAnInstanceVariable
 	
 	self assert: 'm1: sourceObject ^sourceObject iv2.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
 	self deny: (sourceClass includesSelector: #iv1).
-	self assert: 'iv2', String newLineString, String tab, '^iv2.' equals: (sourceClass sourceCodeAt: #iv2).
+	self assert: 'iv2', String newLineString, String newLineString, String tab, '^iv2' equals: (sourceClass sourceCodeAt: #iv2).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test103CanMoveMethodWhenReferencesAnInstanceVariableForReading
 	
 	| sourceClass targetClass refactoring |
@@ -8371,11 +8384,12 @@ test103CanMoveMethodWhenReferencesAnInstanceVariableForReading
 	
 	self assert: 'm1: sourceObject ^sourceObject iv3.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
-	self deny: (sourceClass includesSelector: #iv1).
-	self assert: 'iv3', String newLineString, String tab, '^iv3.' equals: (sourceClass sourceCodeAt: #iv3).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
+	self deny: (sourceClass includesSelector: #iv1).
+	self assert: 'iv3', String newLineString, String newLineString, String tab, '^iv3' equals: (sourceClass sourceCodeAt: #iv3).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test104CanMoveMethodWhenReferencesTwoInstanceVariableForReading
 	
 	| sourceClass targetClass refactoring |
@@ -8397,12 +8411,13 @@ test104CanMoveMethodWhenReferencesTwoInstanceVariableForReading
 	
 	self assert: 'm1: sourceObject ^sourceObject iv3 + sourceObject iv4.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
-	self deny: (sourceClass includesSelector: #iv1).
-	self assert: 'iv3', String newLineString, String tab, '^iv3.' equals: (sourceClass sourceCodeAt: #iv3).
-	self assert: 'iv4', String newLineString, String tab, '^iv4.' equals: (sourceClass sourceCodeAt: #iv4).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
+	self deny: (sourceClass includesSelector: #iv1).
+	self assert: 'iv3', String newLineString, String newLineString, String tab, '^iv3' equals: (sourceClass sourceCodeAt: #iv3).
+	self assert: 'iv4', String newLineString, String newLineString, String tab, '^iv4' equals: (sourceClass sourceCodeAt: #iv4).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test105CanMoveMethodWhenReferencesAnInstanceVariableForWriting
 	
 	| sourceClass targetClass refactoring |
@@ -8424,12 +8439,13 @@ test105CanMoveMethodWhenReferencesAnInstanceVariableForWriting
 	
 	self assert: 'm1: sourceObject ^sourceObject iv3: 1.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
 	self deny: (sourceClass includesSelector: #iv1).
-	self assert: 'iv3: anObject', String newLineString, String tab, '^iv3 := anObject.' equals: (sourceClass sourceCodeAt: #iv3:).
+	self assert: 'iv3: anObject', String newLineString, String newLineString, String tab, '^iv3 := anObject' equals: (sourceClass sourceCodeAt: #iv3:).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:52:32 am (UTC)'!
 test106CanMoveMethodWhenReferencesTwoInstanceVariableForWriting
 	
 	| sourceClass targetClass refactoring |
@@ -8452,12 +8468,13 @@ test106CanMoveMethodWhenReferencesTwoInstanceVariableForWriting
 	self assert: 'm1: sourceObject sourceObject iv3: (sourceObject iv4: 1).
 	^sourceObject.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
-	self deny: (sourceClass includesSelector: #iv1).
-	self assert: 'iv3: anObject', String newLineString, String tab, '^iv3 := anObject.' equals: (sourceClass sourceCodeAt: #iv3:).
-	self assert: 'iv4: anObject', String newLineString, String tab, '^iv4 := anObject.' equals: (sourceClass sourceCodeAt: #iv4:).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
+	self deny: (sourceClass includesSelector: #iv1).
+	self assert: 'iv3: anObject', String newLineString, String newLineString, String tab, '^iv3 := anObject' equals: (sourceClass sourceCodeAt: #iv3:).
+	self assert: 'iv4: anObject', String newLineString, String newLineString, String tab, '^iv4 := anObject' equals: (sourceClass sourceCodeAt: #iv4:).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test107CanMoveMethodWhenReferencesInstanceVariableAnd2Params
 	
 	| sourceClass targetClass refactoring |
@@ -8480,11 +8497,12 @@ test107CanMoveMethodWhenReferencesInstanceVariableAnd2Params
 	
 	self assert: 'm1: anInt param: anInt2 iv2Object: anIv2Object ^anIv2Object iv2: anInt + anInt2 + anIv2Object iv2.' equals: (targetClass sourceCodeAt: #m1:param:iv2Object:).
 	self assert: 'm1: anInt param: anInt2
-	^iv1 m1: anInt param: anInt2 iv2Object: self.' equals: (sourceClass sourceCodeAt: #m1:param:).
+
+	^iv1 m1: anInt param: anInt2 iv2Object: self' equals: (sourceClass sourceCodeAt: #m1:param:).
 	self deny: (sourceClass includesSelector: #iv1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test107CanMoveMethodWhenReferencesTwoInstanceVariableForWritingAndOneForReading
 	
 	| sourceClass targetClass refactoring |
@@ -8507,11 +8525,12 @@ test107CanMoveMethodWhenReferencesTwoInstanceVariableForWritingAndOneForReading
 	self assert: 'm1: sourceObject sourceObject iv3: (sourceObject iv4: sourceObject iv5).
 	^sourceObject.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
 	self deny: (sourceClass includesSelector: #iv1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test108CanMoveMethodWhenReferencesAnInstanceVariableAndHasAParameter
 	
 	| sourceClass targetClass refactoring |
@@ -8534,11 +8553,12 @@ test108CanMoveMethodWhenReferencesAnInstanceVariableAndHasAParameter
 	
 	self assert: 'm1: anObject sourceObject: sourceObject ^sourceObject iv2.' equals: (targetClass sourceCodeAt: #m1:sourceObject:).
 	self assert: 'm1: anObject
-	^iv1 m1: anObject sourceObject: self.' equals: (sourceClass sourceCodeAt: #m1:).
+
+	^iv1 m1: anObject sourceObject: self' equals: (sourceClass sourceCodeAt: #m1:).
 	self deny: (sourceClass includesSelector: #iv1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:39:34 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test109AfterMovingMethodWhichReferencesAnInstanceVariableForReadingShouldUseTheExistingGetter
 	
 	| sourceClass targetClass refactoring |
@@ -8562,7 +8582,8 @@ test109AfterMovingMethodWhichReferencesAnInstanceVariableForReadingShouldUseTheE
 	self assert: 'iv3 ^iv3.' equals: (sourceClass sourceCodeAt: #iv3).
 	self assert: 'm1: sourceObject ^sourceObject iv3 + 1.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
 	self deny: (sourceClass includesSelector: #iv1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:39:44 pm (UTC)'!
@@ -8588,7 +8609,7 @@ test110AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	
 	self assert: 'iv3: anObject ^iv3 := anObject.' equals: (sourceClass sourceCodeAt: #iv3:)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:32:56 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter
 	
 	| sourceClass targetClass refactoring |
@@ -8610,11 +8631,12 @@ test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	refactoring apply.
 	
 	self assert: 'm1: sourceObject ^sourceObject iv3_: 1.' equals: (targetClass sourceCodeAt: #m1:).
-	self assert: 'iv3_: anObject', String newLineString, String tab, '^iv3 := anObject.' equals: (sourceClass sourceCodeAt: #iv3_:).
+	self assert: 'iv3_: anObject', String newLineString, String newLineString, String tab, '^iv3 := anObject' equals: (sourceClass sourceCodeAt: #iv3_:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:39:56 pm (UTC)'!
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter2
 	
 	| sourceClass targetClass refactoring |
@@ -8641,9 +8663,10 @@ test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	self assert: 'iv3: anObject ^1.' equals: (sourceClass sourceCodeAt: #iv3:).
 	self assert: 'iv3_2: anObject ^iv3 := anObject.' equals: (sourceClass sourceCodeAt: #iv3_2:).
 	self assert: 'iv3_: anObject
-	^iv1 iv3_: anObject originalObject: self.' equals: (sourceClass sourceCodeAt: #iv3_:).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:40:03 pm (UTC)'!
+	^iv1 iv3_: anObject originalObject: self' equals: (sourceClass sourceCodeAt: #iv3_:).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter3
 	
 	| sourceClass targetClass refactoring |
@@ -8668,11 +8691,13 @@ test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	self assert: 'iv3_: anObject originalObject: sourceObject ^sourceObject iv3__: anObject.' equals: (targetClass sourceCodeAt: #iv3_:originalObject:).
 	self assert: 'iv3: anObject ^1.' equals: (sourceClass sourceCodeAt: #iv3:).
 	self assert: 'iv3__: anObject
-	^iv3 := anObject.' equals: (sourceClass sourceCodeAt: #iv3__:).
-	self assert: 'iv3_: anObject
-	^iv1 iv3_: anObject originalObject: self.' equals: (sourceClass sourceCodeAt: #iv3_:).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 30/Jun/2025, 7:40:12 pm (UTC)'!
+	^iv3 := anObject' equals: (sourceClass sourceCodeAt: #iv3__:).
+	self assert: 'iv3_: anObject
+
+	^iv1 iv3_: anObject originalObject: self' equals: (sourceClass sourceCodeAt: #iv3_:).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheExistingSetter4
 	
 	| sourceClass targetClass refactoring |
@@ -8695,11 +8720,12 @@ test111AfterMovingMethodWhichReferencesAnInstanceVariableForWritingShouldUseTheE
 	
 	self assert: 'm1: sourceObject ^sourceObject iv3: 1.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'iv3: anObject
-	^iv3 := anObject.' equals: (sourceClass sourceCodeAt: #iv3:).
+
+	^iv3 := anObject' equals: (sourceClass sourceCodeAt: #iv3:).
 	self assert: 'iv3_: anObject iv3 := anObject.' equals: (sourceClass sourceCodeAt: #iv3_:).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter
 	
 	| sourceClass targetClass refactoring |
@@ -8720,9 +8746,9 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	refactoring apply.
 	
 	self assert: 'm1: sourceObject ^sourceObject icv1.' equals: (targetClass sourceCodeAt: #m1:).
-	self assert: 'icv1', String newLineString, String tab, '^Icv1.' equals: (sourceClass sourceCodeAt: #icv1).! !
+	self assert: 'icv1', String newLineString, String newLineString, String tab, '^Icv1' equals: (sourceClass sourceCodeAt: #icv1).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter2
 	
 	| sourceClass targetClass refactoring |
@@ -8746,9 +8772,10 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	self assert: 'm1: sourceObject ^sourceObject icv1_.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'icv1 ^1.' equals: (sourceClass sourceCodeAt: #icv1).
 	self assert: 'icv1_
-	^Icv1.' equals: (sourceClass sourceCodeAt: #icv1_).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^Icv1' equals: (sourceClass sourceCodeAt: #icv1_).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter3
 	
 	| sourceClass targetClass refactoring |
@@ -8778,9 +8805,10 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	^sourceObject.' equals: (targetClass sourceCodeAt: #icv1:).
 	self assert: 'icv1_ ^Icv1.' equals: (sourceClass sourceCodeAt: #icv1_).
 	self assert: 'icv1
-	^iv1 icv1: self.' equals: (sourceClass sourceCodeAt: #icv1).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^iv1 icv1: self' equals: (sourceClass sourceCodeAt: #icv1).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter4
 	
 	| sourceClass targetClass refactoring |
@@ -8804,11 +8832,13 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	self assert: 'icv1_: sourceObject ^sourceObject icv1__.' equals: (targetClass sourceCodeAt: #icv1_:).
 	self assert: 'icv1 .' equals: (sourceClass sourceCodeAt: #icv1).
 	self assert: 'icv1_
-	^iv1 icv1_: self.' equals: (sourceClass sourceCodeAt: #icv1_).
-	self assert: 'icv1__
-	^Icv1.' equals: (sourceClass sourceCodeAt: #icv1__).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^iv1 icv1_: self' equals: (sourceClass sourceCodeAt: #icv1_).
+	self assert: 'icv1__
+
+	^Icv1' equals: (sourceClass sourceCodeAt: #icv1__).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter5
 	
 	| sourceClass targetClass refactoring |
@@ -8832,11 +8862,13 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	self assert: 'icv1_: sourceObject ^sourceObject icv1__.' equals: (targetClass sourceCodeAt: #icv1_:).
 	self assert: 'icv1 ^1+1.' equals: (sourceClass sourceCodeAt: #icv1).
 	self assert: 'icv1_
-	^iv1 icv1_: self.' equals: (sourceClass sourceCodeAt: #icv1_).
-	self assert: 'icv1__
-	^Icv1.' equals: (sourceClass sourceCodeAt: #icv1__).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+	^iv1 icv1_: self' equals: (sourceClass sourceCodeAt: #icv1_).
+	self assert: 'icv1__
+
+	^Icv1' equals: (sourceClass sourceCodeAt: #icv1__).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGetter6
 	
 	| sourceClass targetClass refactoring |
@@ -8859,12 +8891,14 @@ test112AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateGett
 	
 	self assert: 'm1: sourceObject ^sourceObject icv1+1.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'icv1
-	^Icv1.' equals: (sourceClass sourceCodeAt: #icv1).
+
+	^Icv1' equals: (sourceClass sourceCodeAt: #icv1).
 	self assert: 'icv1_ ^1.' equals: (sourceClass sourceCodeAt: #icv1_).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test113AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateSetter
 	
 	| sourceClass targetClass refactoring |
@@ -8885,9 +8919,9 @@ test113AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateSett
 	refactoring apply.
 	
 	self assert: 'm1: sourceObject ^sourceObject icv1: 1.' equals: (targetClass sourceCodeAt: #m1:).
-	self assert: 'icv1: anObject', String newLineString, String tab, '^Icv1 := anObject.' equals: (sourceClass sourceCodeAt: #icv1:).! !
+	self assert: 'icv1: anObject', String newLineString, String newLineString, String tab, '^Icv1 := anObject' equals: (sourceClass sourceCodeAt: #icv1:).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test113AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateSetter2
 	
 	| sourceClass targetClass refactoring |
@@ -8910,12 +8944,14 @@ test113AfterMovingMethodWhichReferencesAnClassVariableForReadingShouldCreateSett
 	
 	self assert: 'icv1: anObject originalObject: sourceObject ^sourceObject icv1_: anObject.' equals: (targetClass sourceCodeAt: #icv1:originalObject:).
 	self assert: 'icv1: anObject
-	^iv1 icv1: anObject originalObject: self.' equals: (sourceClass sourceCodeAt: #icv1:).
+
+	^iv1 icv1: anObject originalObject: self' equals: (sourceClass sourceCodeAt: #icv1:).
 	self assert: 'icv1_: anObject
-	^Icv1 := anObject.' equals: (sourceClass sourceCodeAt: #icv1_:).
+
+	^Icv1 := anObject' equals: (sourceClass sourceCodeAt: #icv1_:).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test114ParameterNameShouldBeRespected
 	
 	| sourceClass targetClass refactoring |
@@ -8940,10 +8976,11 @@ test114ParameterNameShouldBeRespected
 	self assert: 'iv3 ^iv3.' equals: (sourceClass sourceCodeAt: #iv3).
 	self assert: 'm1: anInt extractIv3From: originalObject ^originalObject iv3 + anInt.' equals: (targetClass sourceCodeAt: #m1:extractIv3From:).
 	self assert: 'm1: anInt
-	^iv1 m1: anInt extractIv3From: self.' equals: (sourceClass sourceCodeAt: #m1:).
+
+	^iv1 m1: anInt extractIv3From: self' equals: (sourceClass sourceCodeAt: #m1:).
 	self deny: (sourceClass includesSelector: #iv1).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test115ParameterNameShouldBeRespected
 	
 	| sourceClass targetClass refactoring |
@@ -8967,7 +9004,8 @@ test115ParameterNameShouldBeRespected
 	self assert: 'iv3 ^iv3.' equals: (sourceClass sourceCodeAt: #iv3).
 	self assert: 'm1: originalObject ^originalObject iv3 + 1.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
 	self deny: (sourceClass includesSelector: #iv1).! !
 
 !MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
@@ -9037,7 +9075,7 @@ test200CanMoveMethodWhenSendsMessageToSelf
 	
 	self assert: 'm1: sourceObject ^sourceObject justOne.' equals: (targetClass sourceCodeAt: #m1:).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test200CanMoveMethodWhenSendsUnaryMessageToSuper
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9060,9 +9098,9 @@ test200CanMoveMethodWhenSendsUnaryMessageToSuper
 	refactoring apply.
 	
 	self assert: 'm1: sourceObject ^sourceObject CHANGE_ME_super_justOne.' equals: (targetClass sourceCodeAt: #m1:).
-	self assert: 'CHANGE_ME_super_justOne', String newLineString, String tab, '^super justOne.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_justOne)! !
+	self assert: 'CHANGE_ME_super_justOne', String newLineString, String newLineString, String tab, '^super justOne' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_justOne)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test201CanMoveMethodWhenSendsKeywordMessageToSuperWithOneColaborators
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9085,9 +9123,9 @@ test201CanMoveMethodWhenSendsKeywordMessageToSuperWithOneColaborators
 	refactoring apply.
 	
 	self assert: 'm1: sourceObject ^sourceObject CHANGE_ME_super_increment: 1.' equals: (targetClass sourceCodeAt: #m1:).
-	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String tab, '^super increment: arg1.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
+	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String newLineString, String tab, '^super increment: arg1' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test202CanMoveMethodWhenSendsKeywordMessageToSuperWithTwoColaborators
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9110,9 +9148,9 @@ test202CanMoveMethodWhenSendsKeywordMessageToSuperWithTwoColaborators
 	refactoring apply.
 	
 	self assert: 'm1: sourceObject ^sourceObject CHANGE_ME_super_increment: 1 andIncrement: 2.' equals: (targetClass sourceCodeAt: #m1:).
-	self assert: 'CHANGE_ME_super_increment: arg1 andIncrement: arg2', String newLineString, String tab, '^super increment: arg1 andIncrement: arg2.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:andIncrement:)! !
+	self assert: 'CHANGE_ME_super_increment: arg1 andIncrement: arg2', String newLineString, String newLineString, String tab, '^super increment: arg1 andIncrement: arg2' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:andIncrement:)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test203CanMoveMethodWhenSendsKeywordMessageToSuperWithOneInstVarAsColaborators
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9135,9 +9173,9 @@ test203CanMoveMethodWhenSendsKeywordMessageToSuperWithOneInstVarAsColaborators
 	refactoring apply.
 	
 	self assert: 'm1: sourceObject ^sourceObject CHANGE_ME_super_increment: sourceObject iv2.' equals: (targetClass sourceCodeAt: #m1:).
-	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String tab, '^super increment: arg1.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
+	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String newLineString, String tab, '^super increment: arg1' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test204CanMoveMethodWhenSendsKeywordMessageToSuperWithOneInstVarAsColaborators
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9160,10 +9198,10 @@ test204CanMoveMethodWhenSendsKeywordMessageToSuperWithOneInstVarAsColaborators
 	refactoring apply.
 	
 	self assert: 'm1: sourceObject ^sourceObject CHANGE_ME_super_increment: (sourceObject iv2: 1).' equals: (targetClass sourceCodeAt: #m1:).
-	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String tab, '^super increment: arg1.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:).
-	self assert: 'iv2: anObject', String newLineString, String tab, '^iv2 := anObject.' equals: (sourceClass sourceCodeAt: #iv2:)! !
+	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String newLineString, String tab, '^super increment: arg1' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:).
+	self assert: 'iv2: anObject', String newLineString, String newLineString, String tab, '^iv2 := anObject' equals: (sourceClass sourceCodeAt: #iv2:)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test205CanMoveMethodWhenReferenceSuperIndirectly
 	
 	| sourceClass targetClass refactoring |
@@ -9184,9 +9222,10 @@ test205CanMoveMethodWhenReferenceSuperIndirectly
 	
 	self assert: 'm1: sourceObject |asd| ^sourceObject CHANGE_ME_super_printString, 1 asString.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'CHANGE_ME_super_printString
-	^super printString.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_printString)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Apr/2025, 7:47:34 pm (UTC)'!
+	^super printString' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_printString)! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test205CanMoveMethodWhenReferenceSuperOnAssigmentNode
 	
 	| sourceClass targetClass refactoring |
@@ -9207,9 +9246,10 @@ test205CanMoveMethodWhenReferenceSuperOnAssigmentNode
 	
 	self assert: 'm1: sourceObject ^sourceObject iv3: sourceObject CHANGE_ME_super_printString.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'CHANGE_ME_super_printString
-	^super printString.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_printString)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^super printString' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_printString)! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test205CanMoveMethodWhenSendsKeywordMessageToSuperWithOneTmpVarAsColaborators
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9232,9 +9272,9 @@ test205CanMoveMethodWhenSendsKeywordMessageToSuperWithOneTmpVarAsColaborators
 	refactoring apply.
 	
 	self assert: 'm1: sourceObject |asd| ^sourceObject CHANGE_ME_super_increment: asd.' equals: (targetClass sourceCodeAt: #m1:).
-	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String tab, '^super increment: arg1.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
+	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String newLineString, String tab, '^super increment: arg1' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test206CanMoveMethodWhenSendsKeywordMessageToSuperWithParenthesis
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9257,9 +9297,9 @@ test206CanMoveMethodWhenSendsKeywordMessageToSuperWithParenthesis
 	refactoring apply.
 	
 	self assert: 'm1: sourceObject ^(sourceObject CHANGE_ME_super_increment: 1) + 1.' equals: (targetClass sourceCodeAt: #m1:).
-	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String tab, '^super increment: arg1.' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
+	self assert: 'CHANGE_ME_super_increment: arg1', String newLineString, String newLineString, String tab, '^super increment: arg1' equals: (sourceClass sourceCodeAt: #CHANGE_ME_super_increment:)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test206moveGetterShouldNotMakeDoubleRecursion
 	
 	| sourceClass targetClass refactoring |
@@ -9281,9 +9321,11 @@ test206moveGetterShouldNotMakeDoubleRecursion
 	
 	self assert: 'iv2: sourceObject ^sourceObject iv2_.' equals: (targetClass sourceCodeAt: #iv2:).
 	self assert: 'iv2_
-	^iv2.' equals: (sourceClass sourceCodeAt: #iv2_).
+
+	^iv2' equals: (sourceClass sourceCodeAt: #iv2_).
 	self assert: 'iv2
-	^iv1 iv2: self.' equals: (sourceClass sourceCodeAt: #iv2).
+
+	^iv1 iv2: self' equals: (sourceClass sourceCodeAt: #iv2).
 	
 	! !
 
@@ -9307,7 +9349,7 @@ test207AnAssignmentToAnInstanceVariableUsedAsAReceiverIsParenthesizedWhenMoved
 
 	self assert: (targetClass sourceCodeAt: #m1:) equals: 'm1: sourceObject ^(sourceObject iv3: 1) printString.'! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test207moveGetterShouldNotMakeDoubleRecursion
 	
 	| sourceClass targetClass refactoring |
@@ -9331,9 +9373,11 @@ test207moveGetterShouldNotMakeDoubleRecursion
 	self assert: 'iv2 ^1.' equals: (sourceClass sourceCodeAt: #iv2).
 	self assert: 'iv2_: sourceObject ^sourceObject iv2__.' equals: (targetClass sourceCodeAt: #iv2_:).
 	self assert: 'iv2__
-	^iv2.' equals: (sourceClass sourceCodeAt: #iv2__).
+
+	^iv2' equals: (sourceClass sourceCodeAt: #iv2__).
 	self assert: 'iv2_
-	^iv1 iv2_: self.' equals: (sourceClass sourceCodeAt: #iv2_).
+
+	^iv1 iv2_: self' equals: (sourceClass sourceCodeAt: #iv2_).
 	
 	! !
 
@@ -9384,7 +9428,7 @@ test209AnAssignmentInParenthesesAsAnArgumentOfASuperSendKeepsOnePairWhenMoved
 
 	self assert: (targetClass sourceCodeAt: #m1:) equals: 'm1: sourceObject ^sourceObject CHANGE_ME_super_increment: (sourceObject iv3: 1).'! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test300MovingMethodWichUsesAccesingThroughVariableShouldBeRepalcedForSelf
 	
 	| sourceClass targetClass refactoring |
@@ -9406,11 +9450,12 @@ test300MovingMethodWichUsesAccesingThroughVariableShouldBeRepalcedForSelf
 	
 	self assert: 'm1: sourceObject ^sourceObject iv3 + self number.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
-	self deny: (sourceClass includesSelector: #iv1).
-	self assert: 'iv3', String newLineString, String tab, '^iv3.' equals: (sourceClass sourceCodeAt: #iv3).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
+	self deny: (sourceClass includesSelector: #iv1).
+	self assert: 'iv3', String newLineString, String newLineString, String tab, '^iv3' equals: (sourceClass sourceCodeAt: #iv3).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test301MovingMethodWichUsesAccesingThroughVariableShouldBeRepalcedForSelf
 	
 	| sourceClass targetClass refactoring |
@@ -9431,10 +9476,11 @@ test301MovingMethodWichUsesAccesingThroughVariableShouldBeRepalcedForSelf
 	
 	self assert: 'm1 ^self number.' equals: (targetClass sourceCodeAt: #m1).
 	self assert: 'm1
-	^iv1 m1.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^iv1 m1' equals: (sourceClass sourceCodeAt: #m1).
 	self deny: (sourceClass includesSelector: #iv1).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test302CanMoveMethodWhenVariableToAccesThroughIsInSuperClass
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9454,9 +9500,10 @@ test302CanMoveMethodWhenVariableToAccesThroughIsInSuperClass
 	
 	self assert: 'm1 ^1.' equals: (targetClass sourceCodeAt: #m1).
 	self assert: 'm1
-	^iv1 m1.' equals: (sourceClass sourceCodeAt: #m1)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^iv1 m1' equals: (sourceClass sourceCodeAt: #m1)! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test303AfterMovingMethodWhichReferencesAClassShouldKeepTheClass
 	
 	| sourceClass targetClass refactoring |
@@ -9477,9 +9524,10 @@ test303AfterMovingMethodWhichReferencesAClassShouldKeepTheClass
 	
 	self assert: 'm1 ^Array new.' equals: (targetClass sourceCodeAt: #m1).
 	self assert: 'm1
-	^iv1 m1.' equals: (sourceClass sourceCodeAt: #m1)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+	^iv1 m1' equals: (sourceClass sourceCodeAt: #m1)! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test303AfterMovingMethodWhichReferencesAClassShouldKeepTheClassAndResolveDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9489,7 +9537,8 @@ test303AfterMovingMethodWhichReferencesAClassShouldKeepTheClassAndResolveDepende
 	sourceClass compile: 'initializeIv1 iv1 := TargetClass new.' .
 	sourceClass compile: 'm1
 	self printString.
-	^Array new.'.
+
+	^Array new'.
 	
 	
 	refactoring := MoveMethod 
@@ -9502,11 +9551,13 @@ test303AfterMovingMethodWhichReferencesAClassShouldKeepTheClassAndResolveDepende
 	
 	self assert: 'm1: sourceObject
 	sourceObject printString.
-	^Array new.' equals: (targetClass sourceCodeAt: #m1:).
-	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+	^Array new' equals: (targetClass sourceCodeAt: #m1:).
+	self assert: 'm1
+
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1)! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test304CanMoveClassMethodWithoutDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9524,9 +9575,10 @@ test304CanMoveClassMethodWithoutDependencies
 	
 	self assert: 'm1 ^1.' equals: (targetClass class sourceCodeAt: #m1).
 	self assert: 'm1
-	^TargetClass m1.' equals: (sourceClass class sourceCodeAt: #m1)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^TargetClass m1' equals: (sourceClass class sourceCodeAt: #m1)! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test305CanMoveClassMethodWithSelfAndClassReferenceDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9548,9 +9600,10 @@ test305CanMoveClassMethodWithSelfAndClassReferenceDependencies
 	aSourceClassClass printString.
 	^SmallInteger.' equals: (targetClass class sourceCodeAt: #m1:).
 	self assert: 'm1
-	^TargetClass m1: self.' equals: (sourceClass class sourceCodeAt: #m1)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+	^TargetClass m1: self' equals: (sourceClass class sourceCodeAt: #m1)! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test305CanMoveClassMethodWithSelfDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9568,9 +9621,10 @@ test305CanMoveClassMethodWithSelfDependencies
 	
 	self assert: 'm1: aSourceClassClass ^aSourceClassClass new.' equals: (targetClass class sourceCodeAt: #m1:).
 	self assert: 'm1
-	^TargetClass m1: self.' equals: (sourceClass class sourceCodeAt: #m1)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^TargetClass m1: self' equals: (sourceClass class sourceCodeAt: #m1)! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test306CanMoveClassMethodWithSuperUnaryDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9588,11 +9642,13 @@ test306CanMoveClassMethodWithSuperUnaryDependencies
 	
 	self assert: 'm1: aSourceClassClass ^aSourceClassClass CHANGE_ME_super_new.' equals: (targetClass class sourceCodeAt: #m1:).
 	self assert: 'm1
-	^TargetClass m1: self.' equals: (sourceClass class sourceCodeAt: #m1).
-	self assert: 'CHANGE_ME_super_new
-	^super new.' equals: (sourceClass class sourceCodeAt: #CHANGE_ME_super_new).! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^TargetClass m1: self' equals: (sourceClass class sourceCodeAt: #m1).
+	self assert: 'CHANGE_ME_super_new
+
+	^super new' equals: (sourceClass class sourceCodeAt: #CHANGE_ME_super_new).! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test307CanMoveClassMethodWithInstVarReadDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9613,9 +9669,10 @@ test307CanMoveClassMethodWithInstVarReadDependencies
 	self assert: 'iv3 ^iv3.' equals: (sourceClass class sourceCodeAt: #iv3).
 	self assert: 'm1: aSourceClassClass ^aSourceClassClass iv3 + 1.' equals: (targetClass class sourceCodeAt: #m1:).
 	self assert: 'm1
-	^TargetClass m1: self.' equals: (sourceClass class sourceCodeAt: #m1)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+	^TargetClass m1: self' equals: (sourceClass class sourceCodeAt: #m1)! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test308CanMoveClassMethodWithInstVarWriteDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9636,9 +9693,10 @@ test308CanMoveClassMethodWithInstVarWriteDependencies
 	self assert: 'iv3: anObject ^iv3 := anObject.' equals: (sourceClass class sourceCodeAt: #iv3:).
 	self assert: 'm1: aSourceClassClass ^aSourceClassClass iv3: 1.' equals: (targetClass class sourceCodeAt: #m1:).
 	self assert: 'm1
-	^TargetClass m1: self.' equals: (sourceClass class sourceCodeAt: #m1)! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+	^TargetClass m1: self' equals: (sourceClass class sourceCodeAt: #m1)! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test309CanMoveClassMethodWithSuperKeywordDependencies
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9656,12 +9714,14 @@ test309CanMoveClassMethodWithSuperKeywordDependencies
 
 	self assert: 'm1: aSourceClassClass ^aSourceClassClass CHANGE_ME_super_increment: 1.' equals: (targetClass class sourceCodeAt: #m1:).
 	self assert: 'm1
-	^TargetClass m1: self.' equals: (sourceClass class sourceCodeAt: #m1).
+
+	^TargetClass m1: self' equals: (sourceClass class sourceCodeAt: #m1).
 	self assert: 'CHANGE_ME_super_increment: arg1
-	^super increment: arg1.' equals: (sourceClass class sourceCodeAt: #CHANGE_ME_super_increment:).
+
+	^super increment: arg1' equals: (sourceClass class sourceCodeAt: #CHANGE_ME_super_increment:).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test310CanMoveClassMethodWithClassReferenceDependencies
 	
 	| sourceClass targetClass refactoring sourceSuperClass |
@@ -9680,10 +9740,11 @@ test310CanMoveClassMethodWithClassReferenceDependencies
 
 	self assert: 'm1 ^TargetClass onePlusOne.' equals: (targetClass class sourceCodeAt: #m1).
 	self assert: 'm1
-	^TargetClass m1.' equals: (sourceClass class sourceCodeAt: #m1).
+
+	^TargetClass m1' equals: (sourceClass class sourceCodeAt: #m1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 9:47:53 am (UTC)'!
 test311CanMoveClassMethodWithClassVarDependencies
 	
 	| sourceClass targetClass refactoring |
@@ -9702,12 +9763,14 @@ test311CanMoveClassMethodWithClassVarDependencies
 
 	self assert: 'm1: aSourceClass ^aSourceClass aSD onePlusOne.' equals: (targetClass class sourceCodeAt: #m1:).
 	self assert: 'm1
-	^TargetClass m1: self.' equals: (sourceClass class sourceCodeAt: #m1).
+
+	^TargetClass m1: self' equals: (sourceClass class sourceCodeAt: #m1).
 	self assert: 'aSD
-	^ASD.' equals: (sourceClass class sourceCodeAt: #aSD).
+
+	^ASD' equals: (sourceClass class sourceCodeAt: #aSD).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test401ImplicitReturnShouldBeMoved
 	
 	| sourceClass targetClass refactoring |
@@ -9727,10 +9790,11 @@ test401ImplicitReturnShouldBeMoved
 	self assert: 'm1: aSourceObject .
 	^aSourceObject.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test402ImplicitReturnShouldBeMovedAndAddADotInLastWritedSentence
 	
 	| sourceClass targetClass refactoring |
@@ -9750,10 +9814,11 @@ test402ImplicitReturnShouldBeMovedAndAddADotInLastWritedSentence
 	self assert: 'm1: aSourceObject 1.
 	^aSourceObject.' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test403aNonImplicitReturnShouldBeMoved
 	
 	| sourceClass targetClass refactoring |
@@ -9772,10 +9837,11 @@ test403aNonImplicitReturnShouldBeMoved
 
 	self assert: 'm1: aSourceObject ^aSourceObject' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1
-	^iv1 m1: self.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^iv1 m1: self' equals: (sourceClass sourceCodeAt: #m1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test500CanMoveMethodUsingParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -9796,10 +9862,11 @@ test500CanMoveMethodUsingParameterAsAccessThrougVariable
 	
 	self assert: 'm1 ^self m2' equals: (targetClass sourceCodeAt: #m1).
 	self assert: 'm1: aTargetClass
-	^aTargetClass m1.' equals: (sourceClass sourceCodeAt: #m1:).
+
+	^aTargetClass m1' equals: (sourceClass sourceCodeAt: #m1:).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test501CanMoveMethodUsingLastParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -9820,10 +9887,11 @@ test501CanMoveMethodUsingLastParameterAsAccessThrougVariable
 	
 	self assert: 'm1: anInt ^self m2' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1: anInt m11: aTargetClass
-	^aTargetClass m1: anInt.' equals: (sourceClass sourceCodeAt: #m1:m11:).
+
+	^aTargetClass m1: anInt' equals: (sourceClass sourceCodeAt: #m1:m11:).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test502CanMoveMethodUsingFirstParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -9844,10 +9912,11 @@ test502CanMoveMethodUsingFirstParameterAsAccessThrougVariable
 	
 	self assert: 'm11: anInt ^self m2' equals: (targetClass sourceCodeAt: #m11:).
 	self assert: 'm1: aTargetClass m11: anInt
-	^aTargetClass m11: anInt.' equals: (sourceClass sourceCodeAt: #m1:m11:).
+
+	^aTargetClass m11: anInt' equals: (sourceClass sourceCodeAt: #m1:m11:).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test504CanMoveMethodUsingSecondParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -9868,10 +9937,11 @@ test504CanMoveMethodUsingSecondParameterAsAccessThrougVariable
 	
 	self assert: 'm1: anInt1 m111: anInt2 ^self m2' equals: (targetClass sourceCodeAt: #m1:m111:).
 	self assert: 'm1: anInt1 m11: aTargetClass m111: anInt2
-	^aTargetClass m1: anInt1 m111: anInt2.' equals: (sourceClass sourceCodeAt: #m1:m11:m111:).
+
+	^aTargetClass m1: anInt1 m111: anInt2' equals: (sourceClass sourceCodeAt: #m1:m11:m111:).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test505CanMoveMethodWithInstVarUsingParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -9892,10 +9962,11 @@ test505CanMoveMethodWithInstVarUsingParameterAsAccessThrougVariable
 	
 	self assert: 'm1: sourceObject ^self m2: sourceObject iv1' equals: (targetClass sourceCodeAt: #m1:).
 	self assert: 'm1: aTargetClass
-	^aTargetClass m1: self.' equals: (sourceClass sourceCodeAt: #m1:).
+
+	^aTargetClass m1: self' equals: (sourceClass sourceCodeAt: #m1:).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:51 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test506CanMoveMethodWithInstVarUsingLastParameterAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -9916,10 +9987,11 @@ test506CanMoveMethodWithInstVarUsingLastParameterAsAccessThrougVariable
 	
 	self assert: 'm1: arg1 withObject: sourceObject ^self m2: sourceObject iv1' equals: (targetClass sourceCodeAt: #m1:withObject:).
 	self assert: 'm1: arg1 m2: aTargetClass
-	^aTargetClass m1: arg1 withObject: self.' equals: (sourceClass sourceCodeAt: #m1:m2:).
+
+	^aTargetClass m1: arg1 withObject: self' equals: (sourceClass sourceCodeAt: #m1:m2:).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test600CanMoveMethodUsingClassVarAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -9946,10 +10018,11 @@ test600CanMoveMethodUsingClassVarAsAccessThrougVariable
 	
 	self assert: 'm1 ^1' equals: (targetClass sourceCodeAt: #m1).
 	self assert: 'm1
-	^CLASSVAR m1.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^CLASSVAR m1' equals: (sourceClass sourceCodeAt: #m1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test601CanMoveMethodWithClassVarUsingClassVarAsAccessThrougVariable
 	
 	| sourceClass targetClass refactoring |
@@ -9976,10 +10049,11 @@ test601CanMoveMethodWithClassVarUsingClassVarAsAccessThrougVariable
 	
 	self assert: 'm1 ^self' equals: (targetClass sourceCodeAt: #m1).
 	self assert: 'm1
-	^CLASSVAR m1.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^CLASSVAR m1' equals: (sourceClass sourceCodeAt: #m1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 28/Mar/2025, 5:52:52 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test700CanMoveInstanceMethodToClass
 	
 	| sourceClass targetClass refactoring |
@@ -9998,10 +10072,11 @@ test700CanMoveInstanceMethodToClass
 	
 	self assert: 'm1 ^1' equals: (targetClass class sourceCodeAt: #m1).
 	self assert: 'm1
-	^TargetClass m1.' equals: (sourceClass sourceCodeAt: #m1).
+
+	^TargetClass m1' equals: (sourceClass sourceCodeAt: #m1).
 	! !
 
-!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 9/Sep/2026, 2:15:27 pm (UTC)'!
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
 test701CanMoveInstanceMethodToTheClassOfWhatAGlobalHolds
 
 	| sourceClass targetClass refactoring |
@@ -10021,5 +10096,113 @@ test701CanMoveInstanceMethodToTheClassOfWhatAGlobalHolds
 
 	self assert: (targetClass sourceCodeAt: #m1) equals: 'm1 ^1'.
 	self assert: (sourceClass sourceCodeAt: #m1) equals: 'm1
-	^MoveMethodTestGlobal m1.' ]
+
+	^MoveMethodTestGlobal m1' ]
 		ensure: [ Smalltalk removeKey: 'MoveMethodTestGlobal' asSymbol ifAbsent: [ nil ] ]! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:08 am (UTC)'!
+test702MovingThroughAGlobalSendsToSelfWhatWasSentToTheGlobal
+
+	| sourceClass targetClass refactoring |
+
+	sourceClass := self createClassNamed: #SourceClass.
+	targetClass := self createClassNamed: #TargetClass.
+	sourceClass compile: 'm1 ^(MoveMethodTestGlobal yourself) printString'.
+
+	[ Smalltalk at: 'MoveMethodTestGlobal' asSymbol put: targetClass new.
+	refactoring := MoveMethod
+		methodNamed: #m1
+		from: sourceClass
+		to: targetClass
+		accessingThrough: 'MoveMethodTestGlobal'
+		parameterNeeded: NonExtraParameterNameNeeded new.
+	refactoring apply.
+
+	self assert: (targetClass sourceCodeAt: #m1) equals: 'm1 ^(self yourself) printString'.
+	self assert: (sourceClass sourceCodeAt: #m1) equals: 'm1
+
+	^MoveMethodTestGlobal m1' ]
+		ensure: [ Smalltalk removeKey: 'MoveMethodTestGlobal' asSymbol ifAbsent: [ nil ] ]! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:41:09 am (UTC)'!
+test703MovingToTheClassSideThroughItsGlobalSendsToSelfWhatWasSentToTheClass
+
+	| sourceClass targetClass refactoring |
+
+	sourceClass := self createClassNamed: #SourceClass.
+	targetClass := self createClassNamed: #TargetClass.
+	sourceClass compile: 'm1 ^TargetClass name'.
+
+	refactoring := MoveMethod
+		methodNamed: #m1
+		from: sourceClass
+		to: targetClass class
+		accessingThrough: 'TargetClass'
+		parameterNeeded: NonExtraParameterNameNeeded new.
+	refactoring apply.
+
+	self assert: (targetClass class sourceCodeAt: #m1) equals: 'm1 ^self name'.
+	self assert: (sourceClass sourceCodeAt: #m1) equals: 'm1
+
+	^TargetClass m1'! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:19:31 am (UTC)'!
+test800MovedMethodKeepsItsCategory
+
+	| sourceClass targetClass refactoring |
+
+	sourceClass := self createClassNamed: #SourceClass instanceVariableNames: 'iv1'.
+	targetClass := self createClassNamed: #TargetClass.
+	sourceClass compile: 'initializeIv1 iv1 := TargetClass new.'.
+	sourceClass compile: 'm1 ^1' classified: 'applying'.
+
+	refactoring := MoveMethod
+		methodNamed: #m1
+		from: sourceClass
+		to: targetClass
+		accessingThrough: 'iv1'
+		parameterNeeded: NonExtraParameterNameNeeded new.
+	refactoring apply.
+
+	self assert: (targetClass organization categoryOfElement: #m1) equals: 'applying'.
+	self assert: (sourceClass organization categoryOfElement: #m1) equals: 'applying'! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:19:31 am (UTC)'!
+test801MethodMovedToClassSideKeepsItsCategory
+
+	| sourceClass targetClass refactoring |
+
+	sourceClass := self createClassNamed: #SourceClass.
+	targetClass := self createClassNamed: #TargetClass.
+	sourceClass compile: 'm1 ^1' classified: 'applying'.
+
+	refactoring := MoveMethod
+		methodNamed: #m1
+		from: sourceClass
+		toClass: targetClass
+		parameterNeeded: NonExtraParameterNameNeeded new.
+	refactoring apply.
+
+	self assert: (targetClass class organization categoryOfElement: #m1) equals: 'applying'! !
+
+!MoveMethodTest methodsFor: 'tests' stamp: 'HAW 17/Sep/2026, 3:37:48 am (UTC)'!
+test802DelegationIsWrittenLikeAnyOtherMethod
+
+	| sourceClass targetClass refactoring |
+
+	sourceClass := self createClassNamed: #SourceClass instanceVariableNames: 'iv1'.
+	targetClass := self createClassNamed: #TargetClass.
+	sourceClass compile: 'initializeIv1 iv1 := TargetClass new.'.
+	sourceClass compile: 'm1: aNumber ^aNumber'.
+
+	refactoring := MoveMethod
+		methodNamed: #m1:
+		from: sourceClass
+		to: targetClass
+		accessingThrough: 'iv1'
+		parameterNeeded: NonExtraParameterNameNeeded new.
+	refactoring apply.
+
+	self assert: (sourceClass sourceCodeAt: #m1:) equals: 'm1: aNumber
+
+	^iv1 m1: aNumber'! !

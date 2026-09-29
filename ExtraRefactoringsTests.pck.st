@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8184] on 17 September 2026 at 12:08:23 pm'!
-'Description Move a method keeping its category, through a global and with formatted generated methods'!
-!provides: 'ExtraRefactoringsTests' 1 8!
+'From Cuis7.9 [latest update: #8184] on 29 September 2026 at 6:14:10 pm'!
+'Description Convert a cascade to statements and back'!
+!provides: 'ExtraRefactoringsTests' 1 9!
 !requires: 'BaseImageTests' 1 473 nil!
 !requires: 'ExtraRefactorings' 1 11 nil!
 SystemOrganization addCategory: #'ExtraRefactoringsTests-ExtractClass'!
@@ -9,7 +9,38 @@ SystemOrganization addCategory: #'ExtraRefactoringsTests-ExtractParameterObject'
 SystemOrganization addCategory: #'ExtraRefactoringsTests-IntroduceNullObject'!
 SystemOrganization addCategory: #'ExtraRefactoringsTests-MoveInstanceVariable'!
 SystemOrganization addCategory: #'ExtraRefactoringsTests-MoveMethod'!
+SystemOrganization addCategory: #'ExtraRefactoringsTests-CascadeConversion'!
 
+
+!classDefinition: #CascadeConversionTest category: #'ExtraRefactoringsTests-CascadeConversion'!
+RefactoringTest subclass: #CascadeConversionTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ExtraRefactoringsTests-CascadeConversion'!
+!classDefinition: 'CascadeConversionTest class' category: #'ExtraRefactoringsTests-CascadeConversion'!
+CascadeConversionTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #CascadeToStatementsTest category: #'ExtraRefactoringsTests-CascadeConversion'!
+RefactoringTest subclass: #CascadeToStatementsTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ExtraRefactoringsTests-CascadeConversion'!
+!classDefinition: 'CascadeToStatementsTest class' category: #'ExtraRefactoringsTests-CascadeConversion'!
+CascadeToStatementsTest class
+	instanceVariableNames: ''!
+
+!classDefinition: #StatementsToCascadeTest category: #'ExtraRefactoringsTests-CascadeConversion'!
+RefactoringTest subclass: #StatementsToCascadeTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ExtraRefactoringsTests-CascadeConversion'!
+!classDefinition: 'StatementsToCascadeTest class' category: #'ExtraRefactoringsTests-CascadeConversion'!
+StatementsToCascadeTest class
+	instanceVariableNames: ''!
 
 !classDefinition: #ExtractClassTest category: #'ExtraRefactoringsTests-ExtractClass'!
 RefactoringTest subclass: #ExtractClassTest
@@ -151,6 +182,348 @@ RefactoringTest subclass: #MoveMethodTest
 MoveMethodTest class
 	instanceVariableNames: ''!
 
+
+!CascadeConversionTest methodsFor: 'assertions' stamp: 'HAW 29/Sep/2026, 7:38:16 pm (UTC)'!
+assertConverting: aSourceCode at: aSourceCodeIndex gives: anExpectedSourceCode
+
+	| methodNode |
+
+	methodNode := Object methodNodeFor: aSourceCode noPattern: false.
+
+	self
+		assert: (methodNode cascadeConversionAt: aSourceCodeIndex) apply
+		equals: anExpectedSourceCode! !
+
+!CascadeConversionTest methodsFor: 'assertions' stamp: 'HAW 29/Sep/2026, 8:42:20 pm (UTC)'!
+collapsedSourceCode
+
+	^'m112
+	self
+		m2;
+		m3;
+		m4.'! !
+
+!CascadeConversionTest methodsFor: 'assertions' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+expandedSourceCode
+
+	^'m112
+	self m2.
+	self m3.
+	self m4.'! !
+
+!CascadeConversionTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+test01TheCursorInsideACascadeConvertsItToStatements
+
+	self
+		assertConverting: self collapsedSourceCode
+		at: 13
+		gives: self expandedSourceCode! !
+
+!CascadeConversionTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+test02TheCursorInsideAStatementConvertsTheStatementsToACascade
+
+	self
+		assertConverting: self expandedSourceCode
+		at: 13
+		gives: self collapsedSourceCode! !
+
+!CascadeConversionTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+test03TheCursorBetweenTheSelectorAndThePeriodConvertsTheStatements
+
+	self
+		assertConverting: self expandedSourceCode
+		at: 14
+		gives: self collapsedSourceCode! !
+
+!CascadeConversionTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+test04TheCursorAfterThePeriodConvertsTheStatements
+
+	self
+		assertConverting: self expandedSourceCode
+		at: 15
+		gives: self collapsedSourceCode! !
+
+!CascadeConversionTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+test05TheCursorInTheIndentationOfAStatementConvertsTheStatements
+
+	self
+		assertConverting: self expandedSourceCode
+		at: 16
+		gives: self collapsedSourceCode! !
+
+!CascadeConversionTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+test06TheCursorInTheIndentationOfTheFirstStatementConvertsTheStatements
+
+	self
+		assertConverting: self expandedSourceCode
+		at: 6
+		gives: self collapsedSourceCode! !
+
+!CascadeConversionTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+test07TheCursorAtTheEndOfTheSourceCodeConvertsTheStatements
+
+	self
+		assertConverting: self expandedSourceCode
+		at: self expandedSourceCode size + 1
+		gives: self collapsedSourceCode! !
+
+!CascadeConversionTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+test08TheCursorAfterTheCascadeConvertsItToStatements
+
+	self
+		assertConverting: self collapsedSourceCode
+		at: self collapsedSourceCode size + 1
+		gives: self expandedSourceCode! !
+
+!CascadeToStatementsTest methodsFor: 'assertions' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+assertConverting: aSourceCode at: aText gives: anExpectedSourceCode
+
+	self
+		assert: (self refactoringOf: aSourceCode at: aText) apply
+		equals: anExpectedSourceCode! !
+
+!CascadeToStatementsTest methodsFor: 'assertions' stamp: 'HAW 29/Sep/2026, 6:50:22 pm (UTC)'!
+refactoringClass
+
+	^CascadeToStatements! !
+
+!CascadeToStatementsTest methodsFor: 'assertions' stamp: 'HAW 29/Sep/2026, 6:50:22 pm (UTC)'!
+refactoringOf: aSourceCode at: aText
+
+	^self refactoringClass
+		in: (Object methodNodeFor: aSourceCode noPattern: false)
+		at: (aSourceCode findString: aText)! !
+
+!CascadeToStatementsTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 1:56:39 pm (UTC)'!
+test01EachMessageOfTheCascadeBecomesAStatementSentToTheReceiver
+
+	self
+		assertConverting: 'm1
+	self
+		m2;
+		m3;
+		m4'
+		at: 'm3'
+		gives: 'm1
+	self m2.
+	self m3.
+	self m4.'! !
+
+!CascadeToStatementsTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 1:56:39 pm (UTC)'!
+test02UnaryBinaryAndKeywordMessagesAreConverted
+
+	self
+		assertConverting: 'm1
+	self m2; + 3; at: 1 put: 2.
+	^self'
+		at: '+ 3'
+		gives: 'm1
+	self m2.
+	self + 3.
+	self at: 1 put: 2.
+	^self'! !
+
+!CascadeToStatementsTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 1:56:39 pm (UTC)'!
+test03TheStatementsAreIndentedAsTheCascade
+
+	self
+		assertConverting: 'm1: aStream
+	^[
+		aStream m2; m3.
+		aStream ]'
+		at: 'm2'
+		gives: 'm1: aStream
+	^[
+		aStream m2.
+		aStream m3.
+		aStream ]'! !
+
+!CascadeToStatementsTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 1:56:39 pm (UTC)'!
+test04TheCursorOnTheReceiverOfTheCascadeConvertsIt
+
+	self
+		assertConverting: 'm1
+	self m2; m3.'
+		at: 'self'
+		gives: 'm1
+	self m2.
+	self m3.'! !
+
+!CascadeToStatementsTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 1:56:39 pm (UTC)'!
+test05ACascadeWhoseReceiverIsNotAVariableCannotBeConverted
+
+	self
+		assertCreation: [ self refactoringOf: 'm1
+	self m5 m2; m3' at: 'm3' ]
+		failsWith: [ CascadeToStatements receiverIsNotVariableErrorMessage ]! !
+
+!CascadeToStatementsTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 7:38:16 pm (UTC)'!
+test06ACascadeWhoseValueIsUsedCannotBeConverted
+
+	self
+		assertCreation: [ self refactoringOf: 'm1
+	^self m5: (self m2; m3)' at: 'm3' ]
+		failsWith: [ CascadeToStatements valueIsUsedErrorMessage ]! !
+
+!CascadeToStatementsTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 1:56:39 pm (UTC)'!
+test07ItCannotBeCreatedWhereThereIsNoCascade
+
+	self
+		assertCreation: [ self refactoringOf: 'm1
+	self m2' at: 'm2' ]
+		failsWith: [ CascadeToStatements noCascadeErrorMessage ]! !
+
+!CascadeToStatementsTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 7:38:16 pm (UTC)'!
+test08TheLastMessageOfAReturnedCascadeIsReturned
+
+	self
+		assertConverting: 'm1
+	^self m2; m3; m4.'
+		at: 'm3'
+		gives: 'm1
+	self m2.
+	self m3.
+	^self m4.'! !
+
+!CascadeToStatementsTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 7:38:16 pm (UTC)'!
+test09AnAssignedCascadeCannotBeConverted
+
+	self
+		assertCreation: [ self refactoringOf: 'm1
+	| t |
+	t := self m2; m3' at: 'm3' ]
+		failsWith: [ CascadeToStatements valueIsUsedErrorMessage ]! !
+
+!StatementsToCascadeTest methodsFor: 'assertions' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+assertConverting: aSourceCode at: aText gives: anExpectedSourceCode
+
+	self
+		assert: (self refactoringOf: aSourceCode at: aText) apply
+		equals: anExpectedSourceCode! !
+
+!StatementsToCascadeTest methodsFor: 'assertions' stamp: 'HAW 29/Sep/2026, 6:50:22 pm (UTC)'!
+refactoringClass
+
+	^StatementsToCascade! !
+
+!StatementsToCascadeTest methodsFor: 'assertions' stamp: 'HAW 29/Sep/2026, 6:50:22 pm (UTC)'!
+refactoringOf: aSourceCode at: aText
+
+	^self refactoringClass
+		in: (Object methodNodeFor: aSourceCode noPattern: false)
+		at: (aSourceCode findString: aText)! !
+
+!StatementsToCascadeTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 8:42:20 pm (UTC)'!
+test01TheMessageSendsToTheSameReceiverBecomeACascade
+
+	self
+		assertConverting: 'm1
+	self m2.
+	self m3.
+	self m4.'
+		at: 'm3'
+		gives: 'm1
+	self
+		m2;
+		m3;
+		m4.'! !
+
+!StatementsToCascadeTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 8:42:20 pm (UTC)'!
+test02UnaryBinaryAndKeywordMessagesAreConverted
+
+	self
+		assertConverting: 'm1
+	self m2.
+	self + 3.
+	self at: 1 put: 2.
+	^self'
+		at: '+ 3'
+		gives: 'm1
+	self
+		m2;
+		+ 3;
+		at: 1 put: 2.
+	^self'! !
+
+!StatementsToCascadeTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 8:42:20 pm (UTC)'!
+test03TheCascadeTakesTheMessageSendsWhileTheReceiverIsTheSame
+
+	self
+		assertConverting: 'm1: aStream
+	self m2.
+	aStream m3.
+	aStream m4: 1.
+	self m5'
+		at: 'm4'
+		gives: 'm1: aStream
+	self m2.
+	aStream
+		m3;
+		m4: 1.
+	self m5'! !
+
+!StatementsToCascadeTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 8:42:20 pm (UTC)'!
+test04TheCascadeIsIndentedAsTheStatements
+
+	self
+		assertConverting: 'm1: aStream
+	^[
+		aStream m2.
+		aStream m3.
+		aStream ]'
+		at: 'm2'
+		gives: 'm1: aStream
+	^[
+		aStream
+			m2;
+			m3.
+		aStream ]'! !
+
+!StatementsToCascadeTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 8:42:20 pm (UTC)'!
+test05TheCursorInsideABlockOfAMessageSendConvertsTheStatementsAroundIt
+
+	self
+		assertConverting: 'm1
+	self m2: [ :each | each m4 ].
+	self m3'
+		at: 'm4'
+		gives: 'm1
+	self
+		m2: [ :each | each m4 ];
+		m3'! !
+
+!StatementsToCascadeTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 1:56:39 pm (UTC)'!
+test06AMessageSendAloneCannotBeConverted
+
+	self
+		assertCreation: [ self refactoringOf: 'm1: aStream
+	self m2.
+	aStream m3' at: 'm2' ]
+		failsWith: [ StatementsToCascade noMessageSendsToSameReceiverErrorMessage ]! !
+
+!StatementsToCascadeTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 1:56:39 pm (UTC)'!
+test07MessageSendsWhoseReceiverIsNotAVariableCannotBeConverted
+
+	self
+		assertCreation: [ self refactoringOf: 'm1
+	self m5 m2.
+	self m5 m3' at: 'm3' ]
+		failsWith: [ StatementsToCascade noMessageSendsToSameReceiverErrorMessage ]! !
+
+!StatementsToCascadeTest methodsFor: 'tests' stamp: 'HAW 29/Sep/2026, 8:42:20 pm (UTC)'!
+test09AReturnedMessageSendEndsTheCascadeThatIsReturned
+
+	self
+		assertConverting: 'm1
+	self m2.
+	self m3.
+	^self m4.'
+		at: 'm3'
+		gives: 'm1
+	^self
+		m2;
+		m3;
+		m4.'! !
 
 !ExtractClassTest methodsFor: 'validation' stamp: 'HAW 28/Mar/2025, 5:36:49 pm (UTC)'!
 test001TargetClassNameShouldNotBeEmpty

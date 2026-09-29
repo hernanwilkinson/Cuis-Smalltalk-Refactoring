@@ -1,6 +1,6 @@
-'From Cuis7.9 [latest update: #8184] on 17 September 2026 at 12:08:20 pm'!
-'Description Move a method keeping its category, through a global and with formatted generated methods'!
-!provides: 'ExtraRefactorings' 1 18!
+'From Cuis7.9 [latest update: #8184] on 29 September 2026 at 6:14:08 pm'!
+'Description Convert a cascade to statements and back'!
+!provides: 'ExtraRefactorings' 1 19!
 SystemOrganization addCategory: #ExtraRefactorings!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-Model'!
 SystemOrganization addCategory: #'ExtraRefactorings-ExtractClass-UI'!
@@ -14,6 +14,7 @@ SystemOrganization addCategory: #'ExtraRefactorings-MoveInstanceVariable-Model'!
 SystemOrganization addCategory: #'ExtraRefactorings-MoveInstanceVariable-UI'!
 SystemOrganization addCategory: #'ExtraRefactorings-MoveMethod-Model'!
 SystemOrganization addCategory: #'ExtraRefactorings-MoveMethod-UI'!
+SystemOrganization addCategory: #'ExtraRefactorings-CascadeConversion-Model'!
 
 
 !classDefinition: #EntranceExitBlockEnumerator category: #'ExtraRefactorings-ExtractToMethodObject-Model'!
@@ -484,6 +485,26 @@ SelectionMenu subclass: #SelectionMenuWithSubtitles
 	category: 'ExtraRefactorings-MoveMethod-UI'!
 !classDefinition: 'SelectionMenuWithSubtitles class' category: #'ExtraRefactorings-MoveMethod-UI'!
 SelectionMenuWithSubtitles class
+	instanceVariableNames: ''!
+
+!classDefinition: #CascadeToStatements category: #'ExtraRefactorings-CascadeConversion-Model'!
+Refactoring subclass: #CascadeToStatements
+	instanceVariableNames: 'methodNode sourceCodeIndex'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ExtraRefactorings-CascadeConversion-Model'!
+!classDefinition: 'CascadeToStatements class' category: #'ExtraRefactorings-CascadeConversion-Model'!
+CascadeToStatements class
+	instanceVariableNames: ''!
+
+!classDefinition: #StatementsToCascade category: #'ExtraRefactorings-CascadeConversion-Model'!
+Refactoring subclass: #StatementsToCascade
+	instanceVariableNames: 'methodNode sourceCodeIndex'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ExtraRefactorings-CascadeConversion-Model'!
+!classDefinition: 'StatementsToCascade class' category: #'ExtraRefactorings-CascadeConversion-Model'!
+StatementsToCascade class
 	instanceVariableNames: ''!
 
 !classDefinition: #ExtractClass category: #'ExtraRefactorings-ExtractClass-Model'!
@@ -2090,12 +2111,13 @@ messageListMenuSpec
 		#(1078 	'Extract Parameter Object'	nil 	window 	extractParameterObject 			newFolderIcon)
 	)! !
 
-!ExtraRefactoringMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 28/Mar/2025, 5:55:14 pm (UTC)'!
+!ExtraRefactoringMenues class methodsFor: 'menu & kbd shortcuts' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
 smalltalkEditorMenuSpec
 	
 	^#(
 		#(2160		'Move Instance Variable' 	$Y 	editor 	contextualMoveInstanceVariable 	saveAsIcon		'Move instance variable what is under cursor')
 		#(2170		'Move Method' 			$7 	editor 	contextualMoveMethod saveAsIcon 	'Move Method what is under cursor')
+		#(2180		'Cascade to Statements and back' 	$9 	editor 	convertCascadeOrStatements saveAsIcon 	'Converts the cascade under cursor to statements, or the statements sent to the same variable to a cascade')
 	)! !
 
 !ExtraRefactoringMenues class methodsFor: 'initialization' stamp: 'HAW 29/Apr/2025, 12:11:49 am (UTC)'!
@@ -5541,6 +5563,317 @@ or	*  The 'dash' (or 'minus sign') symbol
 		('fourth label'	nne)
 		('fifth label'	tano))) startUp"! !
 
+!CascadeToStatements methodsFor: 'initialization' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+initializeIn: aMethodNode at: aSourceCodeIndex
+
+	methodNode := aMethodNode.
+	sourceCodeIndex := aSourceCodeIndex! !
+
+!CascadeToStatements methodsFor: 'applying' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+apply
+
+	| range |
+
+	range := self rangeToConvert.
+
+	^methodNode sourceText
+		copyReplaceFrom: range first
+		to: range last
+		with: self convertedSourceCode! !
+
+!CascadeToStatements methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+convertedMessageSends
+
+	| messageSends lastStatement |
+
+	messageSends := self messageSends.
+	lastStatement := self statementAndRangeToConvert key returnSourceCode ,
+		messageSends last.
+
+	^messageSends allButLast copyWith: lastStatement! !
+
+!CascadeToStatements methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+isFollowedByPeriod
+
+	| sourceCodeAfter |
+
+	sourceCodeAfter := methodNode sourceText
+		copyFrom: self rangeToConvert last + 1
+		to: methodNode sourceText size.
+
+	^sourceCodeAfter withBlanksTrimmed beginsWith: '.'! !
+
+!CascadeToStatements methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+messageSends
+
+	| receiverSourceCode |
+
+	receiverSourceCode := self sourceCodeOf: self nodeToConvert receiver.
+
+	^self nodeToConvert messages collect: [ :aMessage |
+		receiverSourceCode , ' ' , (self sourceCodeOf: aMessage) ]! !
+
+!CascadeToStatements methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:39:24 pm (UTC)'!
+nodeToConvert
+
+	^(methodNode cascadeAndEnclosingNodesAt: sourceCodeIndex) first key! !
+
+!CascadeToStatements methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 2:01:38 pm (UTC)'!
+rangeOf: aParseNode
+
+	| ranges rangeToConvert |
+
+	ranges := methodNode completeSourceRangesOf: aParseNode ifAbsent: [ #() ].
+	rangeToConvert := self rangeToConvert.
+
+	^ranges detect: [ :aRange | rangeToConvert includesAllOf: aRange ]! !
+
+!CascadeToStatements methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+separator
+
+	| indentation |
+
+	indentation := methodNode sourceText
+		indentationOfLineAt: self rangeToConvert first.
+
+	^'.' , String newLineString , indentation! !
+
+!CascadeToStatements methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+sourceCodeOf: aParseNode
+
+	| range |
+
+	range := self rangeOf: aParseNode.
+
+	^methodNode sourceText copyFrom: range first to: range last! !
+
+!CascadeToStatements methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:39:37 pm (UTC)'!
+statementAndRangeToConvert
+
+	| nodesAndRanges statements |
+
+	nodesAndRanges := methodNode cascadeAndEnclosingNodesAt: sourceCodeIndex.
+	statements := (nodesAndRanges first: (2 min: nodesAndRanges size))
+		select: [ :aNodeAndRange | aNodeAndRange key isReturn ].
+
+	^statements ifEmpty: [ nodesAndRanges first ] ifNotEmpty: [ statements first ]! !
+
+!CascadeToStatements methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 2:01:38 pm (UTC)'!
+terminator
+
+	^self isFollowedByPeriod
+		ifTrue: [ '' ]
+		ifFalse: [ '.' ]! !
+
+!CascadeToStatements methodsFor: 'source code' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+convertedSourceCode
+
+	| sourceCode |
+
+	sourceCode := self separator join: self convertedMessageSends.
+
+	^sourceCode , self terminator! !
+
+!CascadeToStatements methodsFor: 'source code' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+rangeToConvert
+
+	^self statementAndRangeToConvert value! !
+
+!CascadeToStatements class methodsFor: 'instance creation' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+in: aMethodNode at: aSourceCodeIndex
+
+	self assertHasCascadeAt: aSourceCodeIndex in: aMethodNode.
+	self assertIsStatementCascadeAt: aSourceCodeIndex in: aMethodNode.
+	self assertIsVariableReceiverAt: aSourceCodeIndex in: aMethodNode.
+
+	^self new initializeIn: aMethodNode at: aSourceCodeIndex! !
+
+!CascadeToStatements class methodsFor: 'preconditions' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+assertHasCascadeAt: aSourceCodeIndex in: aMethodNode
+
+	(self nodesFromCascadeAt: aSourceCodeIndex in: aMethodNode)
+		ifEmpty: [ self refactoringError: self noCascadeErrorMessage ]! !
+
+!CascadeToStatements class methodsFor: 'preconditions' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+assertIsStatementCascadeAt: aSourceCodeIndex in: aMethodNode
+
+	| nodes enclosingNodes |
+
+	nodes := self nodesFromCascadeAt: aSourceCodeIndex in: aMethodNode.
+	enclosingNodes := self nodesEnclosingStatementOf: nodes.
+
+	(enclosingNodes isEmpty or: [ enclosingNodes first isBlockNode ])
+		ifFalse: [ self refactoringError: self valueIsUsedErrorMessage ]! !
+
+!CascadeToStatements class methodsFor: 'preconditions' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+assertIsVariableReceiverAt: aSourceCodeIndex in: aMethodNode
+
+	| nodes |
+
+	nodes := self nodesFromCascadeAt: aSourceCodeIndex in: aMethodNode.
+
+	nodes first receiver isVariableNode
+		ifFalse: [ self refactoringError: self receiverIsNotVariableErrorMessage ]! !
+
+!CascadeToStatements class methodsFor: 'preconditions' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+nodesEnclosingStatementOf: aCollectionOfNodes
+
+	| enclosingNodes |
+
+	enclosingNodes := aCollectionOfNodes allButFirst.
+
+	^(enclosingNodes notEmpty and: [ enclosingNodes first isReturn ])
+		ifTrue: [ enclosingNodes allButFirst ]
+		ifFalse: [ enclosingNodes ]! !
+
+!CascadeToStatements class methodsFor: 'preconditions' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+nodesFromCascadeAt: aSourceCodeIndex in: aMethodNode
+
+	| nodesAndRanges |
+
+	nodesAndRanges := aMethodNode cascadeAndEnclosingNodesAt: aSourceCodeIndex.
+
+	^nodesAndRanges collect: [ :aNodeAndRange | aNodeAndRange key ]! !
+
+!CascadeToStatements class methodsFor: 'error messages' stamp: 'HAW 29/Sep/2026, 1:58:02 pm (UTC)'!
+noCascadeErrorMessage
+
+	^'There is no cascade to convert'! !
+
+!CascadeToStatements class methodsFor: 'error messages' stamp: 'HAW 29/Sep/2026, 9:09:16 pm (UTC)'!
+receiverIsNotVariableErrorMessage
+
+	^'The receiver of the cascade is not a variable or pseudo variable, each statement would evaluate it again'! !
+
+!CascadeToStatements class methodsFor: 'error messages' stamp: 'HAW 29/Sep/2026, 1:58:02 pm (UTC)'!
+valueIsUsedErrorMessage
+
+	^'The cascade is not a statement on its own, its value is used'! !
+
+!StatementsToCascade methodsFor: 'initialization' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+initializeIn: aMethodNode at: aSourceCodeIndex
+
+	methodNode := aMethodNode.
+	sourceCodeIndex := aSourceCodeIndex! !
+
+!StatementsToCascade methodsFor: 'applying' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+apply
+
+	| range |
+
+	range := self rangeToConvert.
+
+	^methodNode sourceText
+		copyReplaceFrom: range first
+		to: range last
+		with: self convertedSourceCode! !
+
+!StatementsToCascade methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+indentation
+
+	^methodNode sourceText indentationOfLineAt: self rangeToConvert first! !
+
+!StatementsToCascade methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+lineSeparator
+
+	^String newLineString , self indentation , String tab! !
+
+!StatementsToCascade methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 2:01:38 pm (UTC)'!
+messageSends
+
+	^methodNode messageSendsToSameVariableAt: sourceCodeIndex! !
+
+!StatementsToCascade methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+messageSourceCodeOf: aStatement
+
+	| sourceCode |
+
+	sourceCode := methodNode sourceText
+		copyFrom: (self receiverRangeOf: aStatement) last + 1
+		to: (self rangeOfMessageSendOf: aStatement) last.
+
+	^sourceCode withBlanksTrimmed! !
+
+!StatementsToCascade methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+messages
+
+	^self messageSends collect: [ :aStatement |
+		self messageSourceCodeOf: aStatement ]! !
+
+!StatementsToCascade methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 2:01:38 pm (UTC)'!
+rangeOf: aMessageSend
+
+	^methodNode singleCompleteSourceRangeOf: aMessageSend! !
+
+!StatementsToCascade methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+rangeOfMessageSendOf: aStatement
+
+	^methodNode singleCompleteSourceRangeOf: aStatement messageSend! !
+
+!StatementsToCascade methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 2:01:38 pm (UTC)'!
+rangeToConvert
+
+	| messageSends |
+
+	messageSends := self messageSends.
+
+	^(self rangeOf: messageSends first) first
+		to: (self rangeOf: messageSends last) last! !
+
+!StatementsToCascade methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+receiverRangeOf: aStatement
+
+	| start ranges |
+
+	start := (self rangeOfMessageSendOf: aStatement) first.
+	ranges := methodNode
+		completeSourceRangesOf: aStatement messageSend receiver
+		ifAbsent: [ #() ].
+
+	^ranges detect: [ :aRange | aRange first = start ]! !
+
+!StatementsToCascade methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+receiverSourceCode
+
+	| range |
+
+	range := self receiverRangeOf: self messageSends first.
+
+	^methodNode sourceText copyFrom: range first to: range last! !
+
+!StatementsToCascade methodsFor: 'source code - private' stamp: 'HAW 29/Sep/2026, 7:40:49 pm (UTC)'!
+returnSourceCode
+
+	^self messageSends last returnSourceCode! !
+
+!StatementsToCascade methodsFor: 'source code' stamp: 'HAW 29/Sep/2026, 8:42:20 pm (UTC)'!
+convertedSourceCode
+
+	| separator |
+
+	separator := self lineSeparator.
+
+	^self returnSourceCode , self receiverSourceCode , separator ,
+		(';' , separator join: self messages)! !
+
+!StatementsToCascade class methodsFor: 'instance creation' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+in: aMethodNode at: aSourceCodeIndex
+
+	self assertHasMessageSendsAt: aSourceCodeIndex in: aMethodNode.
+
+	^self new initializeIn: aMethodNode at: aSourceCodeIndex! !
+
+!StatementsToCascade class methodsFor: 'preconditions' stamp: 'HAW 29/Sep/2026, 6:48:40 pm (UTC)'!
+assertHasMessageSendsAt: aSourceCodeIndex in: aMethodNode
+
+	(aMethodNode messageSendsToSameVariableAt: aSourceCodeIndex) ifEmpty: [
+		self refactoringError: self noMessageSendsToSameReceiverErrorMessage ]! !
+
+!StatementsToCascade class methodsFor: 'error messages' stamp: 'HAW 29/Sep/2026, 9:08:04 pm (UTC)'!
+noMessageSendsToSameReceiverErrorMessage
+
+	^'There are no consecutive message sends to the same receiver to convert to a cascade'! !
+
 !ExtractClass methodsFor: 'initialization' stamp: 'mc 5/Jan/2024, 4:23:51 am (UTC)'!
 initializeFrom: aSourceClassName to: aTargetClassName instanceVariableNamed: anInstanceVariableNameForSourceClass instVarToExtract: collectionOfInstVarsToExtract methodToExtract: collectionOfMethodsToExtract  
 	sourceClass := aSourceClassName.
@@ -8693,10 +9026,209 @@ on: aModel forMethod: aMethodReference
 
 	^self new initializeOn: aModel forMethod: aMethodReference ! !
 
+!ParseNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+isMessageSendToVariable
+
+	^false! !
+
+!ParseNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+isSentToSameVariableAs: aParseNode
+
+	^false! !
+
 !ParseNode methodsFor: '*ExtraRefactorings-testing' stamp: 'HAW 14/Sep/2026, 3:50:16 pm (UTC)'!
 requiresParenthesesAsAKeywordArgument
 
 	^self expressionPrecedence >= self class keywordPrecedence ! !
+
+!ParseNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+returnSourceCode
+
+	^''! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+cascadeAndEnclosingNodesAt: aSourceCodeIndex
+
+	| nodesAndRanges cascadeIndex |
+
+	nodesAndRanges := self parseNodesAndRangesAt: aSourceCodeIndex.
+	cascadeIndex := nodesAndRanges findFirst: [ :aNodeAndRange |
+		aNodeAndRange key isCascadeNode ].
+
+	^cascadeIndex = 0
+		ifTrue: [ #() ]
+		ifFalse: [ nodesAndRanges allButFirst: cascadeIndex - 1 ]! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+cascadeConversionAt: aSourceCodeIndex
+
+	| index |
+
+	index := self cascadeConversionIndexAt: aSourceCodeIndex.
+
+	^(self cascadeConversionClassAt: index) in: self at: index! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+cascadeConversionClassAt: aSourceCodeIndex
+
+	^(self cascadeAndEnclosingNodesAt: aSourceCodeIndex)
+		ifEmpty: [ StatementsToCascade ]
+		ifNotEmpty: [ :nodesAndRanges | CascadeToStatements ]! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+cascadeConversionIndexAt: aSourceCodeIndex
+
+	| candidates |
+
+	candidates := {
+		self sourceCodeIndexBefore: aSourceCodeIndex.
+		self sourceCodeIndexAfter: aSourceCodeIndex }.
+
+	^candidates
+		detect: [ :anIndex | self hasCascadeConversionAt: anIndex ]
+		ifNone: [ aSourceCodeIndex ]! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+hasCascadeConversionAt: aSourceCodeIndex
+
+	^(self cascadeAndEnclosingNodesAt: aSourceCodeIndex) notEmpty
+		or: [ (self messageSendsToSameVariableAt: aSourceCodeIndex) notEmpty ]! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+is: aSourceCodeIndex inside: aParseNode
+
+	| ranges |
+
+	ranges := self completeSourceRangesOf: aParseNode ifAbsent: [ #() ].
+
+	^ranges anySatisfy: [ :aRange | aRange includes: aSourceCodeIndex ]! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+messageSendsToSameVariableAt: aSourceCodeIndex
+
+	| candidates |
+
+	candidates := (self statementsEnclosing: aSourceCodeIndex)
+		collect: [ :statements |
+			self
+				messageSendsToSameVariableIn: statements
+				at: aSourceCodeIndex ].
+
+	^candidates
+		detect: [ :messageSends | messageSends size > 1 ]
+		ifNone: [ #() ]! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+messageSendsToSameVariableIn: aCollectionOfStatements at: aSourceCodeIndex
+
+	| position |
+
+	position := aCollectionOfStatements findFirst: [ :aStatement |
+		self is: aSourceCodeIndex inside: aStatement ].
+	position = 0 ifTrue: [ ^#() ].
+
+	^aCollectionOfStatements
+		copyAround: position
+		while: [ :aStatement |
+			aStatement isSentToSameVariableAs: (aCollectionOfStatements at: position) ]! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+parseNodesAndRangesAt: aSourceCodeIndex
+
+	^(self parseNodesPathAt: aSourceCodeIndex ifAbsent: [ #() ]) asArray! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+sourceCodeIndexAfter: aSourceCodeIndex
+
+	| sourceCodeAfter |
+
+	sourceCodeAfter := sourceText allButFirst: aSourceCodeIndex - 1.
+
+	^aSourceCodeIndex - 1 + (sourceCodeAfter
+		findFirst: [ :aCharacter | aCharacter isSeparatorOrPeriod not ])! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+sourceCodeIndexBefore: aSourceCodeIndex
+
+	^(sourceText first: (aSourceCodeIndex min: sourceText size))
+		findLast: [ :aCharacter | aCharacter isSeparatorOrPeriod not ]! !
+
+!MethodNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+statementsEnclosing: aSourceCodeIndex
+
+	| blocks |
+
+	blocks := (self parseNodesAndRangesAt: aSourceCodeIndex)
+		select: [ :aNodeAndRange | aNodeAndRange key isBlockNode ]
+		thenCollect: [ :aNodeAndRange | aNodeAndRange key ].
+
+	^(blocks copyWith: block) collect: [ :aBlock | aBlock statements ]! !
+
+!MessageNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+isMessageSendToVariable
+
+	^receiver notNil and: [ receiver isVariableNode ]! !
+
+!MessageNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+isSentToSameVariableAs: aParseNode
+
+	^self isMessageSendToVariable
+		and: [ aParseNode isMessageSendToVariable
+		and: [ receiver equivalentTo: aParseNode messageSend receiver ]]! !
+
+!MessageNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+messageSend
+
+	^self! !
+
+!ReturnNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+isMessageSendToVariable
+
+	^expr isMessageSendToVariable! !
+
+!ReturnNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+isSentToSameVariableAs: aParseNode
+
+	^expr isSentToSameVariableAs: aParseNode! !
+
+!ReturnNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+messageSend
+
+	^expr! !
+
+!ReturnNode methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+returnSourceCode
+
+	^'^'! !
+
+!SequenceableCollection methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+copyAround: anIndex while: aBlock
+
+	^self
+		copyFrom: (self firstIndexBefore: anIndex while: aBlock)
+		to: (self lastIndexAfter: anIndex while: aBlock)! !
+
+!SequenceableCollection methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+firstIndexBefore: anIndex while: aBlock
+
+	| first |
+
+	first := anIndex.
+	[ first > 1 and: [ aBlock value: (self at: first - 1) ] ]
+		whileTrue: [ first := first - 1 ].
+
+	^first! !
+
+!SequenceableCollection methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+lastIndexAfter: anIndex while: aBlock
+
+	| last |
+
+	last := anIndex.
+	[ last < self size and: [ aBlock value: (self at: last + 1) ] ]
+		whileTrue: [ last := last + 1 ].
+
+	^last! !
 
 !CompiledMethod methodsFor: '*ExtraRefactorings-testing' stamp: 'HAW 3/Dec/2025, 6:43:02 pm (UTC)'!
 isRelaxedSetterOf: anInstVarName at: anInstVarIndex allowsReturnReceiver: allowsReturnReceiver
@@ -8727,6 +9259,11 @@ asInstanceVariableNameWithoutChangeMe
 	
 	^self asInstanceVariableNameIfHasNoPrefix: [ self ]
 	! !
+
+!Character methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+isSeparatorOrPeriod
+
+	^self isSeparator or: [ self = $. ]! !
 
 !BrowserWindow methodsFor: '*ExtraRefactorings' stamp: 'HAW 28/Apr/2025, 8:36:51 pm (UTC)'!
 contextualExtractClass
@@ -8860,6 +9397,25 @@ contextualMoveMethodOf: aMethodNode in: aSelectedClass
 
 ! !
 
+!SmalltalkEditor methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+convertCascadeOrStatements
+
+	self
+		withMethodNodeAndClassDo: [ :aMethodNode :aSelectedClass |
+			self convertCascadeOrStatementsIn: aMethodNode ]
+		ifErrorsParsing: [ :anError | morph flash ]! !
+
+!SmalltalkEditor methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+convertCascadeOrStatementsIn: aMethodNode
+
+	| conversion |
+
+	conversion := [ aMethodNode cascadeConversionAt: self startIndex ]
+		on: Refactoring refactoringErrorClass
+		do: [ :anError | ^self inform: anError messageText ].
+
+	self replace: conversion rangeToConvert with: conversion convertedSourceCode! !
+
 !SmalltalkEditor methodsFor: '*ExtraRefactorings' stamp: 'mc 8/Jan/2023, 5:34:44 am (UTC)'!
 moveInstanceVariable: aNodeUnderCursor in: aSelectedClass at: aMethodNode
 
@@ -8879,6 +9435,13 @@ moveInstanceVariableOn: aBrowser at: aClassToRefactor
 moveInstanceVariableOn: aBrowser for: anInstanceVariableName at: aClassToRefactor
 	
 	(RefactoringApplier moveInstanceVariableApplier on: aBrowser for: anInstanceVariableName at: aClassToRefactor) value! !
+
+!SmalltalkEditor methodsFor: '*ExtraRefactorings-CascadeConversion' stamp: 'HAW 29/Sep/2026, 7:39:18 pm (UTC)'!
+replace: aSourceRange with: aSourceCode
+
+	self selectFrom: aSourceRange first to: aSourceRange last.
+	self replaceSelectionWith: aSourceCode.
+	self deselectAndPlaceCursorAt: aSourceRange first! !
 
 !ParametersSizeChange methodsFor: '*ExtraRefactorings-changes' stamp: 'HAW 23/Mar/2025, 10:43:09 pm (UTC)'!
 changedSenders

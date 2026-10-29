@@ -1,8 +1,8 @@
 'From Cuis7.9 [latest update: #8184] on 15 September 2026 at 10:27:27 am'!
 'Description Test the extra refactorings with actual scope'!
-!provides: 'ExtraRefactoringsLiveTyping' 1 4!
-!requires: 'ExtraRefactoringsTests' 1 0 nil!
-!requires: 'LiveTyping' 1 128 nil!
+!provides: 'ExtraRefactoringsLiveTyping' '1.4.0'!
+!requires: 'ExtraRefactoringsTests' '1.0.0' '1.*.*'!
+!requires: 'LiveTyping' '1.128.0' '1.*.*'!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTyping-ExtractParameterObject-Model'!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTyping-ExtractParameterObject-UI'!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTyping-MoveInstanceVariable-UI'!

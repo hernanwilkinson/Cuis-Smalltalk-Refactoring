@@ -1,7 +1,7 @@
 'From Cuis7.9 [latest update: #8184] on 15 September 2026 at 10:33:10 am'!
 'Description Require ExtraRefactoringsLiveTyping'!
-!provides: 'ExtraRefactoringsLiveTypingTest' 1 2!
-!requires: 'ExtraRefactoringsLiveTyping' nil nil nil!
+!provides: 'ExtraRefactoringsLiveTypingTest' '1.2.0'!
+!requires: 'ExtraRefactoringsLiveTyping' '0.0.0' '*.*.*'!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTypingTest-ExtractParameterObject'!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTypingTest-MoveMethod'!
 SystemOrganization addCategory: #'ExtraRefactoringsLiveTypingTest-MoveInstanceVariable'!

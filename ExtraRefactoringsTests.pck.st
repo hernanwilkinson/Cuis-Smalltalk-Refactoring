@@ -1,8 +1,8 @@
 'From Cuis7.9 [latest update: #8184] on 29 September 2026 at 6:14:10 pm'!
 'Description Convert a cascade to statements and back'!
-!provides: 'ExtraRefactoringsTests' 1 9!
-!requires: 'BaseImageTests' 1 473 nil!
-!requires: 'ExtraRefactorings' 1 11 nil!
+!provides: 'ExtraRefactoringsTests' '1.9.0'!
+!requires: 'BaseImageTests' '1.473.0' '1.*.*'!
+!requires: 'ExtraRefactorings' '1.11.0' '1.*.*'!
 SystemOrganization addCategory: #'ExtraRefactoringsTests-ExtractClass'!
 SystemOrganization addCategory: #'ExtraRefactoringsTests-ExtractToMethodObject'!
 SystemOrganization addCategory: #'ExtraRefactoringsTests-ExtractParameterObject'!
